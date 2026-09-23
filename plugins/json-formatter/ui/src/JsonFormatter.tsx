@@ -15,7 +15,7 @@ import {
   type CodeEditorHandle,
   type CursorPosition,
 } from '@toolforge/ui'
-import { host, usePlugin } from '@toolforge/plugin-ui-sdk'
+import { host, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
 import {
   ArrowDownAZ,
   Binary,
@@ -42,7 +42,6 @@ import { TreeView } from './components/TreeView'
 import { ValidCard } from './components/ValidCard'
 import { SAMPLES } from './samples'
 import type { DiffReport, Indent, Mode, ProcessResult, Tab } from './types'
-import { useProcess } from './useProcess'
 
 const JSON_FILTERS = [{ name: 'JSON', extensions: ['json', 'json5', 'jsonc', 'txt'] }]
 
@@ -88,8 +87,8 @@ export function JsonFormatter() {
   const fn = tab === 'diff' ? null : tab === 'minify' ? 'minify' : tab === 'validate' ? 'validate' : isEscape ? escapeDir : 'format'
   const hasInput = input.trim().length > 0
   const args = !hasInput ? null : isEscape ? { input } : { input, mode, indent, sortKeys }
-  const { result, error, pending } = useProcess<ProcessResult>(fn, args, [fn, input, mode, indent, sortKeys])
-  const diff = useProcess<DiffReport>(tab === 'diff' ? 'diff' : null, { left: input, right, mode }, [tab, input, right, mode])
+  const { result, error, pending } = useDebouncedCall<ProcessResult>(fn, args, [fn, input, mode, indent, sortKeys])
+  const diff = useDebouncedCall<DiffReport>(tab === 'diff' ? 'diff' : null, { left: input, right, mode }, [tab, input, right, mode])
 
   const errorLine = error && !isEscape ? Number(error.params?.line ?? 0) || null : null
   const diffErrorLine =
