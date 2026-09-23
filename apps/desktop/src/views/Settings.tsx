@@ -1,10 +1,13 @@
-import { SegmentedControl, Select } from '@toolforge/ui'
+import { Button, SegmentedControl, Select, Switch } from '@toolforge/ui'
+import { useErrorMessage } from '@toolforge/plugin-ui-sdk'
+import { RefreshCw } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SUPPORTED_LOCALES, resolveLocale, type Locale } from '../i18n'
 import type { ThemeMode } from '../lib/boot'
 import { useApp } from '../stores/app'
 import { usePrefs } from '../stores/prefs'
+import { useUpdate } from '../stores/update'
 import { Page, Section } from './Page'
 
 const LOCALE_LABELS: Record<Locale, string> = { 'zh-CN': '简体中文', 'en-US': 'English' }
@@ -28,6 +31,28 @@ export function Settings() {
   const locale = usePrefs((s) => s.locale)
   const setLocale = usePrefs((s) => s.setLocale)
   const info = useApp((s) => s.info)
+  const autoUpdate = usePrefs((s) => s.autoUpdate)
+  const setAutoUpdate = usePrefs((s) => s.setAutoUpdate)
+  const update = useUpdate()
+  const errorMessage = useErrorMessage()
+
+  const updateHint = () => {
+    switch (update.status) {
+      case 'checking':
+        return t('update.checking')
+      case 'latest':
+        return t('update.latest')
+      case 'error':
+        return update.error ? errorMessage(update.error) : undefined
+      case 'available':
+      case 'downloading':
+      case 'installing':
+      case 'ready':
+        return update.info ? t('update.available', { version: update.info.version }) : undefined
+      default:
+        return t('update.hint')
+    }
+  }
 
   return (
     <Page title={t('nav.settings')}>
@@ -53,6 +78,25 @@ export function Settings() {
               aria-label={t('settings.language')}
               options={SUPPORTED_LOCALES.map((value) => ({ value, label: LOCALE_LABELS[value] }))}
             />
+          </Row>
+        </div>
+      </Section>
+      <Section title={t('update.title')}>
+        <div className="divide-y divide-border rounded-card border border-border bg-surface shadow-card">
+          <Row label={t('update.check')} hint={updateHint()}>
+            {update.info && update.status !== 'checking' ? (
+              <Button variant="primary" onClick={() => update.setDialogOpen(true)}>
+                {t('update.view')}
+              </Button>
+            ) : (
+              <Button loading={update.status === 'checking'} onClick={() => update.check()}>
+                <RefreshCw />
+                {t('update.check')}
+              </Button>
+            )}
+          </Row>
+          <Row label={t('update.auto')} hint={t('update.autoHint')}>
+            <Switch checked={autoUpdate} onCheckedChange={setAutoUpdate} aria-label={t('update.auto')} />
           </Row>
         </div>
       </Section>

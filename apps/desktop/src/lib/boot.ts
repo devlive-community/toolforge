@@ -7,6 +7,10 @@ export interface Prefs {
   locale: Locale | null
   /** 侧边栏各分类的折叠状态 */
   collapsed: Record<string, boolean>
+  /** 启动时自动检查更新 */
+  autoUpdate: boolean
+  /** 用户选择跳过的版本 */
+  skippedVersion: string | null
 }
 
 interface BootData {

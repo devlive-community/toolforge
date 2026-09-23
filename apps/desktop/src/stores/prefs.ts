@@ -8,6 +8,8 @@ interface PrefsState extends Prefs {
   setTheme: (theme: ThemeMode) => void
   setLocale: (locale: Locale) => void
   toggleCategory: (category: string) => void
+  setAutoUpdate: (value: boolean) => void
+  skipVersion: (version: string | null) => void
 }
 
 const systemDark = matchMedia('(prefers-color-scheme: dark)')
@@ -31,12 +33,16 @@ const snapshot = (state: PrefsState): Prefs => ({
   theme: state.theme,
   locale: state.locale,
   collapsed: state.collapsed,
+  autoUpdate: state.autoUpdate,
+  skippedVersion: state.skippedVersion,
 })
 
 export const usePrefs = create<PrefsState>((set, get) => ({
   theme: boot.prefs.theme ?? 'system',
   locale: boot.prefs.locale ?? null,
   collapsed: boot.prefs.collapsed ?? {},
+  autoUpdate: boot.prefs.autoUpdate ?? true,
+  skippedVersion: boot.prefs.skippedVersion ?? null,
   systemDark: systemDark.matches,
   setTheme: (theme) => {
     applyTheme(theme)
@@ -50,6 +56,14 @@ export const usePrefs = create<PrefsState>((set, get) => ({
   },
   toggleCategory: (category) => {
     set((state) => ({ collapsed: { ...state.collapsed, [category]: !state.collapsed[category] } }))
+    persist(snapshot(get()))
+  },
+  setAutoUpdate: (autoUpdate) => {
+    set({ autoUpdate })
+    persist(snapshot(get()))
+  },
+  skipVersion: (skippedVersion) => {
+    set({ skippedVersion })
     persist(snapshot(get()))
   },
 }))

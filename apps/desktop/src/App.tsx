@@ -4,7 +4,10 @@ import { Spinner, Toaster } from '@toolforge/ui'
 import { CommandPalette } from './layout/CommandPalette'
 import { Sidebar } from './layout/Sidebar'
 import { TitleBar } from './layout/TitleBar'
+import { UpdateDialog } from './layout/UpdateDialog'
 import { useApp } from './stores/app'
+import { usePrefs } from './stores/prefs'
+import { useUpdate } from './stores/update'
 import { Collection } from './views/Collection'
 import { History } from './views/History'
 import { Home } from './views/Home'
@@ -34,6 +37,13 @@ export function App() {
   const load = useApp((s) => s.load)
 
   useEffect(() => {
+    // 启动后稍等片刻再静默检查更新，避免与首屏加载争抢资源
+    if (!usePrefs.getState().autoUpdate) return
+    const timer = setTimeout(() => useUpdate.getState().check({ silent: true }), 3000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
     load().catch((error) => {
       invoke('app_log', { level: 'error', message: `load failed: ${JSON.stringify(error)}` }).catch(() => {})
     })
@@ -55,6 +65,7 @@ export function App() {
         </main>
       </div>
       <CommandPalette />
+      <UpdateDialog />
       <Toaster />
     </div>
   )

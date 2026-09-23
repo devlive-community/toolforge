@@ -24,6 +24,18 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI3MjEzNUYzMjE5NjUxQzcKUldUSFVaWWg4elVoSnpJRWlBZGdFVDF3WEY3YURNQUl1eDRyL1FMMmpKK3ZWUjJCeG96RDVvMGcK",
+      "endpoints": [
+        "https://github.com/devlive-community/toolforge/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
   }
 }

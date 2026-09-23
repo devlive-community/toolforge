@@ -85,6 +85,29 @@
       "notFound": "插件不存在或已被卸载",
       "noUi": "该插件没有界面",
       "crashed": "工具运行出错"
+    },
+    "update": {
+      "title": "软件更新",
+      "check": "检查更新",
+      "checking": "正在检查更新…",
+      "latest": "当前已是最新版本",
+      "hint": "从 GitHub Releases 获取新版本",
+      "available": "发现新版本 v{{version}}",
+      "current": "当前版本 v{{version}}",
+      "badge": "新版本 v{{version}}",
+      "view": "查看更新",
+      "auto": "自动检查更新",
+      "autoHint": "启动时在后台检查，不会自动下载",
+      "notes": "更新内容",
+      "install": "立即更新",
+      "retry": "重试",
+      "later": "稍后",
+      "skip": "跳过此版本",
+      "restart": "重启完成更新",
+      "downloading": "正在下载 {{done}} / {{total}}",
+      "downloadingUnknown": "正在下载 {{done}}",
+      "installing": "正在安装…",
+      "ready": "更新已安装，重启后生效"
     }
   },
   "common": {
@@ -112,7 +135,10 @@
       "plugin.invalid_args": "参数错误",
       "plugin.serialize_failed": "结果序列化失败",
       "plugin.crashed": "插件执行异常",
-      "fs.not_utf8": "文件不是 UTF-8 编码的文本"
+      "fs.not_utf8": "文件不是 UTF-8 编码的文本",
+      "update.check_failed": "检查更新失败，请检查网络后重试",
+      "update.install_failed": "更新安装失败",
+      "update.none": "没有可安装的更新"
     }
   }
 }

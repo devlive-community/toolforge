@@ -1,5 +1,6 @@
 mod commands;
 mod plugins;
+mod updater;
 mod window;
 
 use std::sync::Arc;
@@ -17,6 +18,8 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .manage(updater::PendingUpdate::default())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             let store = Store::open(&data_dir.join("toolforge.db"))?;
@@ -41,6 +44,9 @@ pub fn run() {
             commands::plugin_call,
             commands::fs_read_text,
             commands::fs_write_text,
+            updater::update_check,
+            updater::update_install,
+            updater::app_restart,
         ])
         .run(tauri::generate_context!())
         .expect("error while running ToolForge");

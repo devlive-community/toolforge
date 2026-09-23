@@ -1,10 +1,11 @@
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { Badge, Button, Kbd, Tooltip, cn } from '@toolforge/ui'
-import { History, Maximize2, Minus, Moon, Search, Settings, Star, Sun, X } from 'lucide-react'
+import { ArrowUpCircle, History, Maximize2, Minus, Moon, Search, Settings, Star, Sun, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { isMac } from '../lib/boot'
 import { useApp } from '../stores/app'
 import { useIsDark, usePrefs } from '../stores/prefs'
+import { useUpdate } from '../stores/update'
 import { Logo } from './Logo'
 
 export function TitleBar() {
@@ -13,6 +14,8 @@ export function TitleBar() {
   const setPaletteOpen = useApp((s) => s.setPaletteOpen)
   const setTheme = usePrefs((s) => s.setTheme)
   const isDark = useIsDark()
+  const newVersion = useUpdate((s) => (s.status !== 'idle' && s.status !== 'latest' && s.status !== 'checking' ? s.info?.version : undefined))
+  const openUpdate = useUpdate((s) => s.setDialogOpen)
 
   return (
     <header
@@ -41,6 +44,12 @@ export function TitleBar() {
       <div data-tauri-drag-region className="flex-1 self-stretch" />
 
       <nav className="flex items-center gap-1">
+        {newVersion && (
+          <Button variant="soft" size="sm" className="mr-1 rounded-full" onClick={() => openUpdate(true)}>
+            <ArrowUpCircle />
+            {t('update.badge', { version: newVersion })}
+          </Button>
+        )}
         <Tooltip content={t('titlebar.toggleTheme')}>
           <Button
             variant="ghost"

@@ -85,6 +85,29 @@
       "notFound": "Plugin not found or uninstalled",
       "noUi": "This plugin has no UI",
       "crashed": "The tool crashed"
+    },
+    "update": {
+      "title": "Software update",
+      "check": "Check for updates",
+      "checking": "Checking for updates…",
+      "latest": "You are on the latest version",
+      "hint": "New versions are fetched from GitHub Releases",
+      "available": "Version {{version}} is available",
+      "current": "Current version {{version}}",
+      "badge": "Update {{version}}",
+      "view": "View update",
+      "auto": "Check automatically",
+      "autoHint": "Checks in the background on startup; nothing is downloaded automatically",
+      "notes": "What's new",
+      "install": "Update now",
+      "retry": "Retry",
+      "later": "Later",
+      "skip": "Skip this version",
+      "restart": "Restart to finish",
+      "downloading": "Downloading {{done}} / {{total}}",
+      "downloadingUnknown": "Downloading {{done}}",
+      "installing": "Installing…",
+      "ready": "Update installed; restart to apply"
     }
   },
   "common": {
@@ -112,7 +135,10 @@
       "plugin.invalid_args": "Invalid arguments",
       "plugin.serialize_failed": "Failed to serialize the result",
       "plugin.crashed": "The plugin crashed",
-      "fs.not_utf8": "The file is not UTF-8 encoded text"
+      "fs.not_utf8": "The file is not UTF-8 encoded text",
+      "update.check_failed": "Failed to check for updates; check your network and try again",
+      "update.install_failed": "Failed to install the update",
+      "update.none": "No update to install"
     }
   }
 }
