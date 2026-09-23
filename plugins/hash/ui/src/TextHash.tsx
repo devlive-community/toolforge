@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { CodeEditor, Empty, Panel, Spinner } from '@toolforge/ui'
-import { useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
+import { ValueRow, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { FileText, Fingerprint } from 'lucide-react'
-import { DigestRow } from './components/DigestRow'
 import { formatBytes } from './format'
 import { ALGORITHM_LABELS, type Algorithm, type TextReport } from './types'
 
@@ -33,7 +32,7 @@ export function TextHash({ algorithms, uppercase }: { algorithms: Algorithm[]; u
         ) : algorithms.length === 0 ? (
           <Empty icon={<Fingerprint />} title={t('noAlgorithms')} />
         ) : (
-          result?.results.map((item) => <DigestRow key={item.algorithm} label={ALGORITHM_LABELS[item.algorithm]} digest={item.digest} />)
+          result?.results.map((item) => <ValueRow key={item.algorithm} label={ALGORITHM_LABELS[item.algorithm]} value={item.digest} />)
         )}
       </Panel>
     </div>

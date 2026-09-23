@@ -1,4 +1,5 @@
 export { callPlugin } from './call'
+export { CopyButton, ValueRow, useCopy, type CopyButtonProps } from './copy'
 export { host, type FileFilter } from './host'
 export { PluginProvider, usePlugin } from './context'
 export { useDebouncedCall } from './useDebouncedCall'

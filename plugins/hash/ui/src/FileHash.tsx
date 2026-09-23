@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Badge, Button, Empty, LogViewer, Panel, Progress, Tooltip, cn, toast } from '@toolforge/ui'
-import { host, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
+import { ValueRow, host, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
 import { FilePlus2, Files, Play, ScrollText, Square, TriangleAlert, Upload, X } from 'lucide-react'
-import { DigestRow } from './components/DigestRow'
 import { formatBytes } from './format'
 import { ALGORITHM_LABELS, type Algorithm, type FilesReport } from './types'
 
@@ -157,7 +156,7 @@ export function FileHash({ algorithms, uppercase }: { algorithms: Algorithm[]; u
                   ) : (
                     <div className="py-1">
                       {Object.entries(file.digests).map(([algorithm, digest]) => (
-                        <DigestRow key={algorithm} label={ALGORITHM_LABELS[algorithm as Algorithm]} digest={digest ?? ''} />
+                        <ValueRow key={algorithm} label={ALGORITHM_LABELS[algorithm as Algorithm]} value={digest ?? ''} />
                       ))}
                     </div>
                   )}
