@@ -2,7 +2,7 @@ import { cn } from '@toolforge/ui'
 
 export function Logo({ className }: { className?: string }) {
   return (
-    <span className={cn('inline-flex items-center justify-center rounded-[8px] tile-green text-on-tile', className)}>
+    <span className={cn('inline-flex shrink-0 items-center justify-center rounded-[8px] tile-green text-on-tile', className)}>
       <svg
         viewBox="0 0 24 24"
         className="size-[62%]"

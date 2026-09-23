@@ -13,14 +13,13 @@ export function TitleBar() {
   const setPaletteOpen = useApp((s) => s.setPaletteOpen)
   const setTheme = usePrefs((s) => s.setTheme)
   const isDark = useIsDark()
-  const win = getCurrentWindow()
 
   return (
     <header
       data-tauri-drag-region
       className="relative flex h-16 shrink-0 items-center gap-4 border-b border-border bg-surface pr-3"
     >
-      <div data-tauri-drag-region className={cn('flex w-56 shrink-0 items-center gap-2.5', isMac ? 'pl-24' : 'pl-5')}>
+      <div data-tauri-drag-region className={cn('flex min-w-56 shrink-0 items-center gap-2.5', isMac ? 'pl-24' : 'pl-5')}>
         <Logo className="size-7" />
         <span data-tauri-drag-region className="text-[17px] font-semibold tracking-tight text-fg">
           ToolForge
@@ -69,10 +68,10 @@ export function TitleBar() {
 
       {!isMac && (
         <div className="ml-2 flex items-center gap-0.5 border-l border-border pl-2">
-          <Button variant="ghost" size="icon-md" aria-label={t('window.minimize')} onClick={() => win.minimize()}>
+          <Button variant="ghost" size="icon-md" aria-label={t('window.minimize')} onClick={() => getCurrentWindow().minimize()}>
             <Minus />
           </Button>
-          <Button variant="ghost" size="icon-md" aria-label={t('window.maximize')} onClick={() => win.toggleMaximize()}>
+          <Button variant="ghost" size="icon-md" aria-label={t('window.maximize')} onClick={() => getCurrentWindow().toggleMaximize()}>
             <Maximize2 />
           </Button>
           <Button
@@ -80,7 +79,7 @@ export function TitleBar() {
             size="icon-md"
             aria-label={t('window.close')}
             className="hover:bg-danger hover:text-on-tile"
-            onClick={() => win.close()}
+            onClick={() => getCurrentWindow().close()}
           >
             <X />
           </Button>
