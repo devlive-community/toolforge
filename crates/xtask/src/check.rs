@@ -44,11 +44,18 @@ const RUST_STEPS: &[Step] = &[
     },
 ];
 
-const WEB_STEPS: &[Step] = &[Step {
-    name: "typecheck",
-    program: "pnpm",
-    args: &["typecheck"],
-}];
+const WEB_STEPS: &[Step] = &[
+    Step {
+        name: "typecheck",
+        program: "pnpm",
+        args: &["typecheck"],
+    },
+    Step {
+        name: "eslint",
+        program: "pnpm",
+        args: &["lint"],
+    },
+];
 
 const BUILD_STEPS: &[Step] = &[Step {
     name: "web build",

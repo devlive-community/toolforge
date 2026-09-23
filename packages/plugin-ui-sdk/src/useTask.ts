@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { LogEntry } from '@toolforge/ui'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
@@ -52,7 +52,7 @@ const initial: TaskState<never> = {
  */
 export function useTask<T = unknown>() {
   const { manifest } = usePlugin()
-  const ns = useRef([manifest.id, 'common']).current
+  const ns = useMemo(() => [manifest.id, 'common'], [manifest.id])
   const format = useLogFormatter(ns)
   const [state, setState] = useState<TaskState<T>>(initial)
   const seq = useRef(0)

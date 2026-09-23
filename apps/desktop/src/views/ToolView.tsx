@@ -105,6 +105,7 @@ export function ToolView({ pluginId }: { pluginId: string }) {
   if (!manifest) {
     return <Empty icon={<PackageX />} title={t('tool.notFound')} />
   }
+  // pluginComponent 在模块级缓存 lazy 组件，同一插件始终返回同一个组件实例
   const PluginUI = pluginComponent(manifest.id)
 
   return (
@@ -136,6 +137,7 @@ export function ToolView({ pluginId }: { pluginId: string }) {
               }
             >
               <PluginProvider manifest={manifest}>
+                {/* eslint-disable-next-line react-hooks/static-components -- 组件来自模块级缓存 */}
                 <PluginUI />
               </PluginProvider>
             </Suspense>

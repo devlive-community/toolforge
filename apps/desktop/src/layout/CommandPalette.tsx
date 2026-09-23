@@ -20,18 +20,8 @@ interface Entry {
 }
 
 export function CommandPalette() {
-  const { t } = useTranslation()
-  const text = usePluginText()
   const open = useApp((s) => s.paletteOpen)
   const setOpen = useApp((s) => s.setPaletteOpen)
-  const plugins = useApp((s) => s.plugins)
-  const openTool = useApp((s) => s.openTool)
-  const navigate = useApp((s) => s.navigate)
-  const setTheme = usePrefs((s) => s.setTheme)
-  const isDark = useIsDark()
-  const [query, setQuery] = useState('')
-  const [active, setActive] = useState(0)
-  const listRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const onKey = (event: globalThis.KeyboardEvent) => {
@@ -44,12 +34,26 @@ export function CommandPalette() {
     return () => window.removeEventListener('keydown', onKey)
   }, [setOpen])
 
-  useEffect(() => {
-    if (open) {
-      setQuery('')
-      setActive(0)
-    }
-  }, [open])
+  // 内容只在打开时挂载，每次打开都是全新的搜索状态
+  return (
+    <Modal open={open} onOpenChange={setOpen} position="top" size="lg" hideClose>
+      <PaletteContent />
+    </Modal>
+  )
+}
+
+function PaletteContent() {
+  const { t } = useTranslation()
+  const text = usePluginText()
+  const setOpen = useApp((s) => s.setPaletteOpen)
+  const plugins = useApp((s) => s.plugins)
+  const openTool = useApp((s) => s.openTool)
+  const navigate = useApp((s) => s.navigate)
+  const setTheme = usePrefs((s) => s.setTheme)
+  const isDark = useIsDark()
+  const [query, setQuery] = useState('')
+  const [active, setActive] = useState(0)
+  const listRef = useRef<HTMLDivElement>(null)
 
   const entries = useMemo<Entry[]>(() => {
     const tools = plugins.map((manifest) => {
@@ -109,7 +113,7 @@ export function CommandPalette() {
   }
 
   return (
-    <Modal open={open} onOpenChange={setOpen} position="top" size="lg" hideClose>
+    <>
       <div className="border-b border-border p-3" onKeyDown={onKeyDown}>
         <Input
           autoFocus
@@ -164,6 +168,6 @@ export function CommandPalette() {
           <Kbd>K</Kbd>
         </span>
       </div>
-    </Modal>
+    </>
   )
 }

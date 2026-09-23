@@ -41,6 +41,8 @@ const timeFormat = new Intl.DateTimeFormat(undefined, {
 export function LogViewer({ entries, emptyText, jumpLabel = 'Latest', className }: LogViewerProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [follow, setFollow] = useState(true)
+  // TanStack Virtual 返回的函数无法被 React Compiler 记忆化，这里不依赖编译器优化
+  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: entries.length,
     getScrollElement: () => scrollRef.current,
