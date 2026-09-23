@@ -1,0 +1,37 @@
+{
+  "name": "SQL Formatter",
+  "description": "Beautify and minify SQL with keyword casing, indentation and PostgreSQL / SQL Server dialects",
+  "help": [
+    "Supports generic SQL, PostgreSQL (arrays, $$ strings) and SQL Server ([identifiers], @variables).",
+    "Keywords can be uppercased, lowercased or preserved; “Compact” keeps short argument lists on one line.",
+    "Minify removes comments and collapses whitespace while leaving strings and quoted identifiers untouched."
+  ],
+  "modes": {
+    "format": "Format",
+    "minify": "Minify"
+  },
+  "output": {
+    "format": "Output (formatted)",
+    "minify": "Output (minified)"
+  },
+  "input": "Input (SQL)",
+  "placeholder": "Paste or type SQL here…",
+  "indent": "Indent",
+  "indent2": "2 spaces",
+  "indent4": "4 spaces",
+  "indentTab": "Tab",
+  "case": "Keywords",
+  "caseUpper": "Upper",
+  "caseLower": "Lower",
+  "casePreserve": "Preserve",
+  "dialect": "Dialect",
+  "dialectGeneric": "Generic SQL",
+  "dialectPostgresql": "PostgreSQL",
+  "dialectSqlserver": "SQL Server",
+  "compact": "Compact",
+  "statements": "{{count}} statements",
+  "errors": {
+    "sql.empty": "Input is empty",
+    "sql.too_large": "Input is too large (over {{limit}})"
+  }
+}

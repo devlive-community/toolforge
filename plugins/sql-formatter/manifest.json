@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.sql-formatter",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["sql", "format", "beautify", "minify", "mysql", "postgresql", "sql server", "格式化", "美化", "压缩"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],
+  "functions": {
+    "format": {},
+    "minify": {}
+  },
+  "sensitive": false
+}

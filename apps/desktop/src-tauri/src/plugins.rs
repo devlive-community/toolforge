@@ -15,5 +15,6 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_timestamp::Timestamp::default()));
     registry.register(Arc::new(tfp_regex::Regex::default()));
     registry.register(Arc::new(tfp_xml_formatter::XmlFormatter::default()));
+    registry.register(Arc::new(tfp_sql_formatter::SqlFormatter::default()));
     registry
 }

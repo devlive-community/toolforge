@@ -1,0 +1,37 @@
+{
+  "name": "SQL 格式化",
+  "description": "美化与压缩 SQL，支持关键字大小写、缩进与 PostgreSQL / SQL Server 方言",
+  "help": [
+    "格式化支持通用 SQL、PostgreSQL（数组、$$ 字符串）与 SQL Server（[标识符]、@变量）。",
+    "关键字可转为大写、小写或保持原样；「紧凑」会把较短的参数列表保持在一行。",
+    "压缩会删除注释、合并空白，字符串与引号标识符中的内容保持不变。"
+  ],
+  "modes": {
+    "format": "格式化",
+    "minify": "压缩"
+  },
+  "output": {
+    "format": "输出（已格式化）",
+    "minify": "输出（已压缩）"
+  },
+  "input": "输入（SQL）",
+  "placeholder": "在此粘贴或输入 SQL…",
+  "indent": "缩进",
+  "indent2": "2 空格",
+  "indent4": "4 空格",
+  "indentTab": "Tab",
+  "case": "关键字",
+  "caseUpper": "大写",
+  "caseLower": "小写",
+  "casePreserve": "保持",
+  "dialect": "方言",
+  "dialectGeneric": "通用 SQL",
+  "dialectPostgresql": "PostgreSQL",
+  "dialectSqlserver": "SQL Server",
+  "compact": "紧凑",
+  "statements": "{{count}} 条语句",
+  "errors": {
+    "sql.empty": "输入为空",
+    "sql.too_large": "内容过大（超过 {{limit}}）"
+  }
+}

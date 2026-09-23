@@ -25,6 +25,7 @@ tf-plugin-api.workspace = true
 tfp-hash.workspace = true
 tfp-json-formatter.workspace = true
 tfp-regex.workspace = true
+tfp-sql-formatter.workspace = true
 tfp-timestamp.workspace = true
 tfp-uuid.workspace = true
 tfp-xml-formatter.workspace = true
