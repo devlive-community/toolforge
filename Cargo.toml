@@ -20,6 +20,7 @@ serde_json = { version = "1", features = ["preserve_order", "arbitrary_precision
 thiserror = "2"
 tf-core = { path = "crates/tf-core" }
 tf-plugin-api = { path = "crates/tf-plugin-api" }
+tfp-hash = { path = "plugins/hash/backend" }
 tfp-json-formatter = { path = "plugins/json-formatter/backend" }
 
 [profile.release]

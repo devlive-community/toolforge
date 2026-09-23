@@ -1,0 +1,64 @@
+{
+  "name": "Hash",
+  "description": "Compute MD5, SHA, SM3 and CRC32 digests of text and files; large files run as tasks with live logs",
+  "help": [
+    "Text digests update as you type; file hashing runs as a background task you can cancel and review in the task center.",
+    "Each file is read once while every selected algorithm is computed.",
+    "Drag files onto the window to add them.",
+    "Everything runs in the local Rust engine; file contents never leave your machine."
+  ],
+  "functions": {
+    "hash_files": "Hash files",
+    "hash_text": "Hash text"
+  },
+  "tabs": {
+    "text": "Text",
+    "files": "Files"
+  },
+  "allAlgorithms": "All",
+  "uppercase": "Uppercase",
+  "noAlgorithms": "Select at least one algorithm",
+  "elapsed": "{{ms}} ms",
+  "text": {
+    "input": "Input",
+    "result": "Digests",
+    "placeholder": "Type text to hash…",
+    "bytes": "{{size}} (UTF-8)"
+  },
+  "files": {
+    "title": "Files",
+    "add": "Add files",
+    "remove": "Remove",
+    "drop": "Drop files or click to add",
+    "dropHint": "Multiple files supported; files are read locally",
+    "start": "Start",
+    "cancel": "Cancel",
+    "preparing": "Preparing…",
+    "result": "Results",
+    "running": "Hashing…",
+    "empty": "No results yet",
+    "emptyHint": "Add files and click “Start”",
+    "cancelled": "Cancelled",
+    "summary": "{{count}} files · {{size}} · {{ms}} ms",
+    "logs": "Live logs",
+    "noLogs": "Logs appear here in real time once hashing starts",
+    "jumpLatest": "Jump to latest"
+  },
+  "stages": {
+    "hash.scan": "Scanning files…",
+    "hash.compute": "Computing digests…"
+  },
+  "logs": {
+    "hash": {
+      "scanned": "{{count}} files, {{bytes, number}} bytes",
+      "file_start": "[{{index}}/{{count}}] Hashing {{file}} ({{size, number}} bytes)",
+      "digest": "{{file}} {{algorithm}} = {{digest}}",
+      "file_done": "Finished {{file}} in {{ms}} ms",
+      "file_failed": "Skipped {{file}}: {{code}}"
+    }
+  },
+  "errors": {
+    "hash.no_files": "Add some files first",
+    "hash.no_algorithms": "Select at least one algorithm"
+  }
+}

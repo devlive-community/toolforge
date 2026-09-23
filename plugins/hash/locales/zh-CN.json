@@ -1,0 +1,64 @@
+{
+  "name": "哈希计算",
+  "description": "计算文本与文件的 MD5、SHA、SM3、CRC32 等摘要，大文件以任务方式运行并实时显示日志",
+  "help": [
+    "文本摘要随输入实时计算；文件摘要以后台任务运行，可随时取消，任务中心可查看历史与日志。",
+    "文件只读取一次即可同时计算所有选中的算法。",
+    "可以把文件直接拖入窗口添加。",
+    "所有计算都在本地 Rust 引擎完成，文件内容不会离开本机。"
+  ],
+  "functions": {
+    "hash_files": "批量计算文件哈希",
+    "hash_text": "计算文本哈希"
+  },
+  "tabs": {
+    "text": "文本",
+    "files": "文件"
+  },
+  "allAlgorithms": "全部",
+  "uppercase": "大写",
+  "noAlgorithms": "请至少选择一种算法",
+  "elapsed": "耗时 {{ms}}ms",
+  "text": {
+    "input": "输入文本",
+    "result": "摘要结果",
+    "placeholder": "输入要计算摘要的文本…",
+    "bytes": "{{size}}（UTF-8）"
+  },
+  "files": {
+    "title": "文件",
+    "add": "添加文件",
+    "remove": "移除",
+    "drop": "拖入文件或点击添加",
+    "dropHint": "支持多个文件，文件只在本地读取",
+    "start": "开始计算",
+    "cancel": "取消",
+    "preparing": "准备中…",
+    "result": "计算结果",
+    "running": "正在计算…",
+    "empty": "暂无结果",
+    "emptyHint": "添加文件后点击「开始计算」",
+    "cancelled": "已取消",
+    "summary": "{{count}} 个文件 · {{size}} · {{ms}}ms",
+    "logs": "实时日志",
+    "noLogs": "开始计算后会在这里实时显示日志",
+    "jumpLatest": "跳到最新"
+  },
+  "stages": {
+    "hash.scan": "正在扫描文件…",
+    "hash.compute": "正在计算摘要…"
+  },
+  "logs": {
+    "hash": {
+      "scanned": "共 {{count}} 个文件，{{bytes, number}} 字节",
+      "file_start": "[{{index}}/{{count}}] 开始计算 {{file}}（{{size, number}} 字节）",
+      "digest": "{{file}} {{algorithm}} = {{digest}}",
+      "file_done": "完成 {{file}}，耗时 {{ms}}ms",
+      "file_failed": "跳过 {{file}}：{{code}}"
+    }
+  },
+  "errors": {
+    "hash.no_files": "请先添加文件",
+    "hash.no_algorithms": "请至少选择一种算法"
+  }
+}
