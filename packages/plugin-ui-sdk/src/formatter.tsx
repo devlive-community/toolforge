@@ -215,15 +215,18 @@ export function FormatterTool<R extends FormatterResult>({
           }
           footer={
             <>
-              {result && !error && (
-                <>
-                  {result.stats && <span>{t('formatter.lines', { count: result.stats.lines })}</span>}
-                  {result.stats && <span>{t('formatter.chars', { count: result.stats.chars })}</span>}
-                  {summary?.(result)}
-                  <span>{t('formatter.elapsed', { ms: result.elapsedMs })}</span>
-                </>
-              )}
-              <div className="ml-auto flex items-center gap-3">{options}</div>
+              {/* 统计信息不换行，空间不足时截断；插件选项固定在右侧 */}
+              <div className="flex min-w-0 flex-1 items-center gap-4 overflow-hidden whitespace-nowrap">
+                {result && !error && (
+                  <>
+                    {result.stats && <span>{t('formatter.lines', { count: result.stats.lines })}</span>}
+                    {result.stats && <span>{t('formatter.chars', { count: result.stats.chars })}</span>}
+                    {summary?.(result)}
+                    <span>{t('formatter.elapsed', { ms: result.elapsedMs })}</span>
+                  </>
+                )}
+              </div>
+              <div className="flex shrink-0 items-center gap-3 whitespace-nowrap">{options}</div>
             </>
           }
         >
