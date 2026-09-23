@@ -34,9 +34,14 @@
 | 工具 | 说明 |
 |------|------|
 | **JSON 格式化** | 格式化、压缩、校验、转义 / 反转义、树形视图、结构化对比；支持 JSON5；错误定位到行列；大文件树形视图按需加载 |
+| **XML 格式化** | 格式化、压缩、校验；保留注释、CDATA 与声明；未闭合、错配标签精确到行列 |
+| **SQL 格式化** | 美化与压缩；关键字大小写、缩进、紧凑模式；通用 SQL / PostgreSQL / SQL Server 方言 |
+| **正则测试** | 实时高亮匹配与分组、替换预览；支持断言、反向引用与命名分组；常用正则预设 |
+| **时间戳转换** | 秒 / 毫秒 / 微秒 / 纳秒自动识别；多时区对照；日期字符串转时间戳；实时时钟 |
+| **UUID 生成** | UUID v1 / v3 / v4 / v5 / v7、ULID、NanoID 批量生成；解析版本与内含时间 |
 | **哈希计算** | MD5、SHA-1、SHA-2、SHA3、SM3、CRC32；文本实时计算；文件拖入批量计算，任务化运行并显示实时日志 |
 
-更多工具（XML / SQL 格式化、时间戳、UUID、正则、编解码等）持续开发中。
+更多工具（编解码、文本处理、图像、网络等）持续开发中。
 
 ## 📦 下载安装
 
@@ -93,7 +98,8 @@ toolforge/
 │   ├── ui/                # @toolforge/ui：设计 Token 与组件库
 │   └── plugin-ui-sdk/     # @toolforge/plugin-ui-sdk：插件前端 SDK
 ├── plugins/               # 官方插件（每个插件独立版本）
-│   ├── json-formatter/
+│   ├── json-formatter/  xml-formatter/  sql-formatter/
+│   ├── regex/  timestamp/  uuid/
 │   └── hash/
 └── scripts/release.sh     # 发布脚本
 ```
