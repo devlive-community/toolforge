@@ -1,0 +1,29 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "close": "Close",
+    "copy": "Copy",
+    "copied": "Copied",
+    "paste": "Paste",
+    "clear": "Clear",
+    "download": "Download",
+    "saved": "Saved",
+    "open": "Open",
+    "loading": "Loading…",
+    "comingSoon": "Coming soon",
+    "errors": {
+      "app.unknown": "Unexpected error: {{detail}}",
+      "store.failed": "Failed to read or write local data",
+      "fs.not_found": "File not found",
+      "fs.permission_denied": "Permission denied",
+      "fs.io": "Failed to read or write the file",
+      "fs.too_large": "File is too large (over {{limit}})",
+      "plugin.not_found": "Plugin not found or disabled",
+      "plugin.function_not_found": "Unsupported operation: {{function}}",
+      "plugin.invalid_args": "Invalid arguments",
+      "plugin.serialize_failed": "Failed to serialize the result",
+      "plugin.crashed": "The plugin crashed"
+    }
+  }
+}

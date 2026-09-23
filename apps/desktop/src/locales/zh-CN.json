@@ -1,0 +1,29 @@
+{
+  "common": {
+    "ok": "确定",
+    "cancel": "取消",
+    "close": "关闭",
+    "copy": "复制",
+    "copied": "已复制",
+    "paste": "粘贴",
+    "clear": "清空",
+    "download": "下载",
+    "saved": "已保存",
+    "open": "打开",
+    "loading": "加载中…",
+    "comingSoon": "即将推出",
+    "errors": {
+      "app.unknown": "发生未知错误：{{detail}}",
+      "store.failed": "本地数据读写失败",
+      "fs.not_found": "文件不存在",
+      "fs.permission_denied": "没有访问该文件的权限",
+      "fs.io": "文件读写失败",
+      "fs.too_large": "文件过大（超过 {{limit}}）",
+      "plugin.not_found": "插件不存在或未启用",
+      "plugin.function_not_found": "插件不支持该操作：{{function}}",
+      "plugin.invalid_args": "参数错误",
+      "plugin.serialize_failed": "结果序列化失败",
+      "plugin.crashed": "插件执行异常"
+    }
+  }
+}
