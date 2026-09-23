@@ -4,6 +4,7 @@ members = [
     "apps/desktop/src-tauri",
     "crates/tf-core",
     "crates/tf-plugin-api",
+    "crates/xtask",
 ]
 
 [workspace.package]
