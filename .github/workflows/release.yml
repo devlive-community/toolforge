@@ -91,10 +91,14 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          # 使用项目专属的 Secret 名，避免读到组织级同名 Secret（其他项目的密钥）。
+          # 私钥需与 tauri.conf.json 中的 updater 公钥配对；密码未设置时为空字符串。
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TOOLFORGE_UPDATER_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TOOLFORGE_UPDATER_KEY_PASSWORD }}
         with:
           projectPath: apps/desktop
+          # projectPath 下没有锁文件，tauri-action 会误用 npm；显式使用 pnpm
+          tauriScript: pnpm tauri
           tagName: ${{ github.ref_name }}
           releaseName: ToolForge ${{ github.ref_name }}
           releaseBody: ${{ needs.notes.outputs.body }}

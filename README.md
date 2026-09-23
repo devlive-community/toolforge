@@ -134,7 +134,7 @@ scripts/release.sh --help           # 查看全部选项
 GitHub Actions 随后构建 macOS / Windows / Linux 安装包，全部成功后正式发布 Release 与自动更新清单，
 脚本最后把版本号更新为下一个开发版本并提交。
 
-发布前需在仓库 Secrets 中配置更新器签名私钥：`TAURI_SIGNING_PRIVATE_KEY`、`TAURI_SIGNING_PRIVATE_KEY_PASSWORD`。
+发布前需在**仓库** Secrets 中配置更新器签名私钥 `TOOLFORGE_UPDATER_PRIVATE_KEY`（私钥文件内容，须与 `tauri.conf.json` 中的公钥配对），私钥设有密码时再配置 `TOOLFORGE_UPDATER_KEY_PASSWORD`。
 
 ## 📄 License
 
