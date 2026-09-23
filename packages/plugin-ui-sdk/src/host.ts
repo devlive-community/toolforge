@@ -1,4 +1,5 @@
 import { invoke } from '@tauri-apps/api/core'
+import { getCurrentWebview } from '@tauri-apps/api/webview'
 import { readText, writeText } from '@tauri-apps/plugin-clipboard-manager'
 import { open, save } from '@tauri-apps/plugin-dialog'
 import { toAppError } from './types'
@@ -29,8 +30,28 @@ export const host = {
     /** 选择单个文件，取消时返回 null */
     openFile: (filters?: FileFilter[]) =>
       wrap(open({ multiple: false, directory: false, filters })) as Promise<string | null>,
+    /** 选择多个文件，取消时返回空数组 */
+    openFiles: async (filters?: FileFilter[]) => {
+      const picked = await wrap(open({ multiple: true, directory: false, filters }))
+      return picked ?? []
+    },
     saveFile: (defaultPath?: string, filters?: FileFilter[]) => wrap(save({ defaultPath, filters })),
   },
+  /**
+   * 监听从系统拖入窗口的文件；返回取消监听函数。
+   * `over` 表示文件正悬停在窗口上方，用于展示拖放高亮。
+   */
+  onFileDrop: async (handlers: { drop: (paths: string[]) => void; over?: (hovering: boolean) => void }) =>
+    getCurrentWebview().onDragDropEvent(({ payload }) => {
+      if (payload.type === 'drop') {
+        handlers.over?.(false)
+        handlers.drop(payload.paths)
+      } else if (payload.type === 'enter' || payload.type === 'over') {
+        handlers.over?.(true)
+      } else {
+        handlers.over?.(false)
+      }
+    }),
   fs: {
     readText: (path: string) => wrap(invoke<string>('fs_read_text', { path })),
     writeText: (path: string, text: string) => wrap(invoke<void>('fs_write_text', { path, text })),
