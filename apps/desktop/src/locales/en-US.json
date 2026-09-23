@@ -111,7 +111,8 @@
       "plugin.function_not_found": "Unsupported operation: {{function}}",
       "plugin.invalid_args": "Invalid arguments",
       "plugin.serialize_failed": "Failed to serialize the result",
-      "plugin.crashed": "The plugin crashed"
+      "plugin.crashed": "The plugin crashed",
+      "fs.not_utf8": "The file is not UTF-8 encoded text"
     }
   }
 }

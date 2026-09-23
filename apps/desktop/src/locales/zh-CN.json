@@ -111,7 +111,8 @@
       "plugin.function_not_found": "插件不支持该操作：{{function}}",
       "plugin.invalid_args": "参数错误",
       "plugin.serialize_failed": "结果序列化失败",
-      "plugin.crashed": "插件执行异常"
+      "plugin.crashed": "插件执行异常",
+      "fs.not_utf8": "文件不是 UTF-8 编码的文本"
     }
   }
 }

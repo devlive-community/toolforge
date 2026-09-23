@@ -80,3 +80,29 @@ pub async fn plugin_call(
         .await
         .map_err(|e| AppError::new("plugin.crashed").with("detail", e.to_string()))?
 }
+
+/// 编辑器可承载的文本文件上限；更大的文件需走流式处理
+const MAX_TEXT_FILE: u64 = 20 * 1024 * 1024;
+
+/// 读取用户通过系统对话框选择或拖入的文本文件
+#[tauri::command]
+pub async fn fs_read_text(path: String) -> AppResult<String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let size = std::fs::metadata(&path)?.len();
+        if size > MAX_TEXT_FILE {
+            return Err(AppError::new("fs.too_large").with("limit", "20 MB"));
+        }
+        let bytes = std::fs::read(&path)?;
+        String::from_utf8(bytes).map_err(|_| AppError::new("fs.not_utf8"))
+    })
+    .await
+    .map_err(|e| AppError::new("fs.io").with("detail", e.to_string()))?
+}
+
+/// 写入用户通过保存对话框选择的文件
+#[tauri::command]
+pub async fn fs_write_text(path: String, text: String) -> AppResult<()> {
+    tauri::async_runtime::spawn_blocking(move || Ok(std::fs::write(&path, text)?))
+        .await
+        .map_err(|e| AppError::new("fs.io").with("detail", e.to_string()))?
+}

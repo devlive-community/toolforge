@@ -15,6 +15,8 @@ pub struct AppState {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             let store = Store::open(&data_dir.join("toolforge.db"))?;
@@ -37,6 +39,8 @@ pub fn run() {
             commands::recent_touch,
             commands::plugin_list,
             commands::plugin_call,
+            commands::fs_read_text,
+            commands::fs_write_text,
         ])
         .run(tauri::generate_context!())
         .expect("error while running ToolForge");
