@@ -14,6 +14,7 @@ export function TitleBar() {
   const setPaletteOpen = useApp((s) => s.setPaletteOpen)
   const setTheme = usePrefs((s) => s.setTheme)
   const isDark = useIsDark()
+  const version = useApp((s) => s.info?.version)
   const newVersion = useUpdate((s) => (s.status !== 'idle' && s.status !== 'latest' && s.status !== 'checking' ? s.info?.version : undefined))
   const openUpdate = useUpdate((s) => s.setDialogOpen)
 
@@ -27,7 +28,7 @@ export function TitleBar() {
         <span data-tauri-drag-region className="text-[17px] font-semibold tracking-tight text-fg">
           ToolForge
         </span>
-        <Badge variant="primary">Beta</Badge>
+        {version && <Badge variant="primary">v{version}</Badge>}
       </div>
 
       <button
