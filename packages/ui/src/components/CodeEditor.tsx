@@ -1,6 +1,8 @@
 import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react'
 import CodeMirror, { type ReactCodeMirrorRef } from '@uiw/react-codemirror'
 import { json } from '@codemirror/lang-json'
+import { sql } from '@codemirror/lang-sql'
+import { xml } from '@codemirror/lang-xml'
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { EditorSelection } from '@codemirror/state'
 import { Decoration, EditorView } from '@codemirror/view'
@@ -48,6 +50,13 @@ const highlight = syntaxHighlighting(
     { tag: tags.null, color: 'var(--tf-syntax-null)' },
     { tag: [tags.punctuation, tags.separator, tags.brace, tags.squareBracket], color: 'var(--tf-syntax-punct)' },
     { tag: tags.comment, color: 'var(--tf-fg-subtle)', fontStyle: 'italic' },
+    // XML / SQL
+    { tag: [tags.tagName, tags.keyword, tags.operatorKeyword], color: 'var(--tf-syntax-key)', fontWeight: '500' },
+    { tag: tags.attributeName, color: 'var(--tf-syntax-bool)' },
+    { tag: tags.attributeValue, color: 'var(--tf-syntax-string)' },
+    { tag: [tags.processingInstruction, tags.documentMeta], color: 'var(--tf-syntax-null)' },
+    { tag: [tags.typeName, tags.standard(tags.name)], color: 'var(--tf-syntax-number)' },
+    { tag: [tags.angleBracket, tags.operator], color: 'var(--tf-syntax-punct)' },
   ]),
 )
 
@@ -80,7 +89,7 @@ export interface CodeEditorHandle {
 export interface CodeEditorProps {
   value: string
   onChange?: (value: string) => void
-  language?: 'json' | 'text'
+  language?: 'json' | 'xml' | 'sql' | 'text'
   readOnly?: boolean
   lineWrapping?: boolean
   placeholder?: string
@@ -123,6 +132,8 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function
   const extensions = useMemo(() => {
     const list = [theme, highlight]
     if (language === 'json') list.push(json())
+    else if (language === 'xml') list.push(xml())
+    else if (language === 'sql') list.push(sql())
     if (lineWrapping) list.push(EditorView.lineWrapping)
     if (errorLine && errorLine > 0) {
       list.push(
