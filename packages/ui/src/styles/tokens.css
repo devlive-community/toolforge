@@ -52,6 +52,11 @@
   --tf-editor-selection: rgb(28 154 79 / 0.18);
   --tf-editor-error-line: rgb(220 38 38 / 0.1);
 
+  /* 滚动条 */
+  --tf-scrollbar: rgb(15 23 20 / 0.16);
+  --tf-scrollbar-hover: rgb(15 23 20 / 0.3);
+  --tf-scrollbar-active: rgb(15 23 20 / 0.42);
+
   /* 工具图标底色（渐变两端）及其上的图标色 */
   --tf-on-tile: #ffffff;
   --tf-tile-violet-from: #8b5cf6;
@@ -123,6 +128,10 @@
   --tf-editor-active-line: rgb(52 196 109 / 0.07);
   --tf-editor-selection: rgb(52 196 109 / 0.22);
   --tf-editor-error-line: rgb(240 82 82 / 0.14);
+
+  --tf-scrollbar: rgb(255 255 255 / 0.14);
+  --tf-scrollbar-hover: rgb(255 255 255 / 0.26);
+  --tf-scrollbar-active: rgb(255 255 255 / 0.38);
 
   --tf-shadow-card: 0 1px 2px rgb(0 0 0 / 0.3);
   --tf-shadow-popover: 0 10px 28px rgb(0 0 0 / 0.5), 0 0 0 1px var(--tf-border);
@@ -283,9 +292,42 @@
     background: var(--tf-editor-selection);
   }
 
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--tf-border-strong) transparent;
+  /*
+   * 自定义滚动条（WKWebView / WebKitGTK / WebView2 均支持 ::-webkit-scrollbar）。
+   * 注意不要同时设置标准的 scrollbar-width / scrollbar-color：
+   * Chromium 一旦检测到标准属性就会忽略 ::-webkit-scrollbar。
+   */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    min-height: 32px;
+    min-width: 32px;
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-color: var(--tf-scrollbar);
+    background-clip: padding-box;
+  }
+
+  /* 悬停时滑块变粗、变深 */
+  ::-webkit-scrollbar-thumb:hover {
+    border-width: 2px;
+    background-color: var(--tf-scrollbar-hover);
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background-color: var(--tf-scrollbar-active);
   }
 
   :focus-visible {
