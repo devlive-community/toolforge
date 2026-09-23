@@ -1,6 +1,5 @@
-import { getCurrentWindow } from '@tauri-apps/api/window'
-import { Badge, Button, Kbd, Tooltip, cn } from '@toolforge/ui'
-import { ArrowUpCircle, History, ListChecks, Maximize2, Minus, Moon, Search, Settings, Star, Sun, X } from 'lucide-react'
+import { Badge, Button, Kbd, Tooltip } from '@toolforge/ui'
+import { ArrowUpCircle, History, ListChecks, Moon, Search, Settings, Star, Sun } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { isMac } from '../lib/boot'
 import { useApp } from '../stores/app'
@@ -8,6 +7,7 @@ import { useIsDark, usePrefs } from '../stores/prefs'
 import { useTasks, useRunningCount } from '../stores/tasks'
 import { useUpdate } from '../stores/update'
 import { Logo } from './Logo'
+import { WindowControls } from './WindowControls'
 
 export function TitleBar() {
   const { t } = useTranslation()
@@ -26,7 +26,7 @@ export function TitleBar() {
       data-tauri-drag-region
       className="relative flex h-16 shrink-0 items-center gap-4 border-b border-border bg-surface pr-3"
     >
-      <div data-tauri-drag-region className={cn('flex min-w-56 shrink-0 items-center gap-2.5', isMac ? 'pl-24' : 'pl-5')}>
+      <div data-tauri-drag-region className="flex min-w-56 shrink-0 items-center gap-2.5 pl-5">
         <Logo className="size-7" />
         <span data-tauri-drag-region className="text-[17px] font-semibold tracking-tight text-fg">
           ToolForge
@@ -88,25 +88,7 @@ export function TitleBar() {
         </Button>
       </nav>
 
-      {!isMac && (
-        <div className="ml-2 flex items-center gap-0.5 border-l border-border pl-2">
-          <Button variant="ghost" size="icon-md" aria-label={t('window.minimize')} onClick={() => getCurrentWindow().minimize()}>
-            <Minus />
-          </Button>
-          <Button variant="ghost" size="icon-md" aria-label={t('window.maximize')} onClick={() => getCurrentWindow().toggleMaximize()}>
-            <Maximize2 />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon-md"
-            aria-label={t('window.close')}
-            className="hover:bg-danger hover:text-on-tile"
-            onClick={() => getCurrentWindow().close()}
-          >
-            <X />
-          </Button>
-        </div>
-      )}
+      <WindowControls />
     </header>
   )
 }

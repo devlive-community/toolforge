@@ -7,7 +7,8 @@
     "window": {
       "minimize": "Minimize",
       "maximize": "Maximize",
-      "close": "Close"
+      "close": "Close",
+      "restore": "Restore"
     },
     "nav": {
       "home": "Home",

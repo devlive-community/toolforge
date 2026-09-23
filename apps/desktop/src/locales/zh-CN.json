@@ -7,7 +7,8 @@
     "window": {
       "minimize": "最小化",
       "maximize": "最大化",
-      "close": "关闭"
+      "close": "关闭",
+      "restore": "还原"
     },
     "nav": {
       "home": "首页",

@@ -39,15 +39,60 @@ pub fn create_main(app: &AppHandle, prefs: &Value) -> tauri::Result<()> {
             }
         });
 
+    // macOS 保留原生窗口（圆角、阴影、边缘缩放），只隐藏系统的红黄绿按钮；
+    // 其他平台使用无边框窗口。三个平台统一使用应用自绘的窗口控制按钮。
     #[cfg(target_os = "macos")]
     let builder = builder
         .title_bar_style(tauri::TitleBarStyle::Overlay)
-        .hidden_title(true)
-        .traffic_light_position(tauri::LogicalPosition::new(18.0, 26.0));
+        .hidden_title(true);
 
     #[cfg(not(target_os = "macos"))]
     let builder = builder.decorations(false);
 
-    builder.build()?;
+    let window = builder.build()?;
+
+    #[cfg(target_os = "macos")]
+    {
+        macos::hide_window_buttons(&window);
+        let handle = window.clone();
+        // 全屏切换、获得焦点等时机系统可能重新显示按钮，需要再次隐藏
+        window.on_window_event(move |event| {
+            if matches!(
+                event,
+                tauri::WindowEvent::Resized(_)
+                    | tauri::WindowEvent::Focused(_)
+                    | tauri::WindowEvent::ThemeChanged(_)
+            ) {
+                macos::hide_window_buttons(&handle);
+            }
+        });
+    }
+    #[cfg(not(target_os = "macos"))]
+    let _ = window;
+
     Ok(())
+}
+
+#[cfg(target_os = "macos")]
+mod macos {
+    use objc2_app_kit::{NSWindow, NSWindowButton};
+    use tauri::WebviewWindow;
+
+    /// 隐藏 NSWindow 的关闭 / 最小化 / 缩放按钮
+    pub fn hide_window_buttons(window: &WebviewWindow) {
+        let Ok(ptr) = window.ns_window() else {
+            return;
+        };
+        // SAFETY: ns_window 返回当前窗口有效的 NSWindow 指针；窗口事件与 setup 均在主线程执行
+        let ns_window = unsafe { &*(ptr as *const NSWindow) };
+        for kind in [
+            NSWindowButton::CloseButton,
+            NSWindowButton::MiniaturizeButton,
+            NSWindowButton::ZoomButton,
+        ] {
+            if let Some(button) = ns_window.standardWindowButton(kind) {
+                button.setHidden(true);
+            }
+        }
+    }
 }
