@@ -54,6 +54,8 @@ export function Modal({
     <FloatingPortal>
       <FloatingOverlay
         lockScroll
+        // floating-ui 默认 overflow: auto，弹出动画会短暂溢出而闪现滚动条
+        style={{ overflow: 'hidden' }}
         className={cn(
           'z-modal flex justify-center bg-overlay px-4 backdrop-blur-[2px] animate-fade-in',
           position === 'top' ? 'items-start pt-[12vh]' : 'items-center',

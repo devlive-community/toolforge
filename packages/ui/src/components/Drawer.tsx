@@ -32,7 +32,12 @@ export function Drawer({ open, onOpenChange, title, actions, children, className
   if (!open) return null
   return (
     <FloatingPortal>
-      <FloatingOverlay lockScroll className="z-modal flex animate-fade-in justify-end bg-overlay">
+      <FloatingOverlay
+        lockScroll
+        // floating-ui 默认 overflow: auto，滑入动画会短暂溢出而闪现滚动条
+        style={{ overflow: 'hidden' }}
+        className="z-modal flex animate-fade-in justify-end bg-overlay"
+      >
         <FloatingFocusManager context={context}>
           <aside
             ref={refs.setFloating}
