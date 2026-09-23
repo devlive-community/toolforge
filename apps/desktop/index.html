@@ -4,16 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ToolForge</title>
-    <script>
-      // 首帧防闪：在样式加载前根据缓存的主题设置 .dark
-      ;(function () {
-        try {
-          var t = localStorage.getItem('tf.theme') || 'system'
-          var dark = t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)
-          if (dark) document.documentElement.classList.add('dark')
-        } catch (e) {}
-      })()
-    </script>
   </head>
   <body>
     <div id="root"></div>
