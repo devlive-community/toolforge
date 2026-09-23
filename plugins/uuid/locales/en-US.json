@@ -1,0 +1,77 @@
+{
+  "name": "UUID Generator",
+  "description": "Generate UUIDs (v1/v3/v4/v5/v7), ULIDs and NanoIDs, and inspect existing identifiers",
+  "help": [
+    "v4 is random; v7 starts with a timestamp and sorts naturally, great for database keys; v1 embeds time (with a random node ID instead of your MAC address).",
+    "v3 / v5 are derived from a namespace and a name; the same input always yields the same UUID.",
+    "ULID and NanoID are shorter and URL friendly; NanoID supports custom length and alphabet.",
+    "Inspect accepts UUIDs (with braces, uppercase or without hyphens) and ULIDs and reveals embedded timestamps."
+  ],
+  "kinds": {
+    "v4": "UUID v4 (random)",
+    "v7": "UUID v7 (time ordered)",
+    "v1": "UUID v1 (time)",
+    "v5": "UUID v5 (SHA-1 name)",
+    "v3": "UUID v3 (MD5 name)",
+    "ulid": "ULID",
+    "nanoid": "NanoID"
+  },
+  "namespaces": {
+    "dns": "DNS",
+    "url": "URL",
+    "oid": "OID",
+    "x500": "X.500",
+    "custom": "Custom UUID"
+  },
+  "variants": {
+    "rfc4122": "RFC 4122 / 9562",
+    "ncs": "NCS (reserved)",
+    "microsoft": "Microsoft (reserved)",
+    "future": "Reserved for future"
+  },
+  "settings": {
+    "title": "Options",
+    "kind": "Type",
+    "count": "Count",
+    "decrease": "Decrease",
+    "increase": "Increase",
+    "namespace": "Namespace",
+    "name": "Name",
+    "nameHint": "The same namespace and name always produce the same UUID",
+    "size": "Length",
+    "alphabet": "Alphabet",
+    "alphabetHint": "Leave empty for the default URL-safe alphabet (A-Za-z0-9_-)",
+    "uppercase": "Uppercase",
+    "hyphens": "Hyphens",
+    "braces": "Braces",
+    "regenerate": "Regenerate"
+  },
+  "result": {
+    "title": "Results",
+    "copyAll": "Copy all",
+    "empty": "No results",
+    "count": "{{count}} items",
+    "deterministic": "Deterministic",
+    "elapsed": "{{ms}} ms"
+  },
+  "inspect": {
+    "title": "Inspect",
+    "placeholder": "Paste a UUID or ULID…",
+    "hint": "Paste a UUID or ULID to see its version and time",
+    "kind": "Type",
+    "canonical": "Canonical",
+    "variant": "Variant",
+    "local": "Local time",
+    "utc": "UTC",
+    "unixMs": "Unix ms",
+    "hex": "Hex"
+  },
+  "errors": {
+    "uuid.invalid_count": "Count must be between 1 and {{max}}",
+    "uuid.invalid_namespace": "The custom namespace is not a valid UUID",
+    "uuid.invalid_size": "Length must be between 1 and {{max}}",
+    "uuid.invalid_alphabet": "The alphabet needs at least 2 characters",
+    "uuid.invalid": "Not a valid UUID or ULID",
+    "uuid.empty": "Enter something to inspect"
+  }
+}

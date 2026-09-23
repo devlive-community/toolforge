@@ -11,5 +11,6 @@ pub fn builtin() -> PluginRegistry {
     let mut registry = PluginRegistry::new();
     registry.register(Arc::new(tfp_json_formatter::JsonFormatter::default()));
     registry.register(Arc::new(tfp_hash::Hash::default()));
+    registry.register(Arc::new(tfp_uuid::UuidTool::default()));
     registry
 }

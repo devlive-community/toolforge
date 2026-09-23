@@ -1,0 +1,77 @@
+{
+  "name": "UUID 生成",
+  "description": "生成 UUID（v1/v3/v4/v5/v7）、ULID 与 NanoID，并解析已有标识的版本与时间",
+  "help": [
+    "v4 为随机 UUID；v7 以时间戳开头、天然有序，适合作为数据库主键；v1 包含时间（节点 ID 使用随机值，不暴露网卡地址）。",
+    "v3 / v5 由「命名空间 + 名称」计算得到，相同输入总是得到相同结果。",
+    "ULID 与 NanoID 更短、URL 友好；NanoID 可自定义长度与字符集。",
+    "解析支持 UUID（含花括号、大写、无连字符）与 ULID，可读出其中包含的时间。"
+  ],
+  "kinds": {
+    "v4": "UUID v4（随机）",
+    "v7": "UUID v7（时间有序）",
+    "v1": "UUID v1（时间）",
+    "v5": "UUID v5（SHA-1 命名）",
+    "v3": "UUID v3（MD5 命名）",
+    "ulid": "ULID",
+    "nanoid": "NanoID"
+  },
+  "namespaces": {
+    "dns": "DNS",
+    "url": "URL",
+    "oid": "OID",
+    "x500": "X.500",
+    "custom": "自定义 UUID"
+  },
+  "variants": {
+    "rfc4122": "RFC 4122 / 9562",
+    "ncs": "NCS（保留）",
+    "microsoft": "Microsoft（保留）",
+    "future": "未来保留"
+  },
+  "settings": {
+    "title": "生成设置",
+    "kind": "类型",
+    "count": "数量",
+    "decrease": "减少",
+    "increase": "增加",
+    "namespace": "命名空间",
+    "name": "名称",
+    "nameHint": "相同的命名空间与名称总是生成相同的 UUID",
+    "size": "长度",
+    "alphabet": "字符集",
+    "alphabetHint": "留空使用默认 URL 安全字符集（A-Za-z0-9_-）",
+    "uppercase": "大写",
+    "hyphens": "连字符",
+    "braces": "花括号",
+    "regenerate": "重新生成"
+  },
+  "result": {
+    "title": "生成结果",
+    "copyAll": "复制全部",
+    "empty": "暂无结果",
+    "count": "共 {{count}} 个",
+    "deterministic": "确定性结果",
+    "elapsed": "耗时 {{ms}}ms"
+  },
+  "inspect": {
+    "title": "解析",
+    "placeholder": "粘贴 UUID 或 ULID…",
+    "hint": "粘贴 UUID 或 ULID 查看版本与时间",
+    "kind": "类型",
+    "canonical": "标准格式",
+    "variant": "变体",
+    "local": "本地时间",
+    "utc": "UTC 时间",
+    "unixMs": "Unix 毫秒",
+    "hex": "十六进制"
+  },
+  "errors": {
+    "uuid.invalid_count": "数量需在 1 到 {{max}} 之间",
+    "uuid.invalid_namespace": "自定义命名空间不是合法的 UUID",
+    "uuid.invalid_size": "长度需在 1 到 {{max}} 之间",
+    "uuid.invalid_alphabet": "字符集至少需要 2 个字符",
+    "uuid.invalid": "不是合法的 UUID 或 ULID",
+    "uuid.empty": "请输入要解析的内容"
+  }
+}
