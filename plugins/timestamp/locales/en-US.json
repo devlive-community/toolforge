@@ -1,0 +1,71 @@
+{
+  "name": "Timestamp",
+  "description": "Convert between Unix timestamps and dates in seconds, milliseconds, microseconds or nanoseconds across time zones",
+  "help": [
+    "The unit is detected from the number of digits (10 s, 13 ms, 16 μs, 19 ns) or can be chosen manually.",
+    "Shows local time, UTC and a comparison zone together with ISO 8601, RFC 2822, weekday, day of year and ISO week.",
+    "Dates accept RFC 3339, RFC 2822, bracketed zones and common forms such as 2024-02-29 12:00:00 or 2024/2/29; inputs without a zone use the selected zone.",
+    "Everything runs in local Rust with a bundled time zone database."
+  ],
+  "units": {
+    "auto": "Auto",
+    "s": "Seconds",
+    "ms": "Milliseconds",
+    "us": "Microseconds",
+    "ns": "Nanoseconds"
+  },
+  "weekdays": {
+    "1": "Monday",
+    "2": "Tuesday",
+    "3": "Wednesday",
+    "4": "Thursday",
+    "5": "Friday",
+    "6": "Saturday",
+    "7": "Sunday"
+  },
+  "formats": {
+    "rfc3339": "RFC 3339",
+    "zoned": "Zoned (RFC 9557)",
+    "rfc2822": "RFC 2822",
+    "datetime": "Date time",
+    "date": "Date"
+  },
+  "now": {
+    "unix": "Current Unix timestamp (s)",
+    "millis": "Milliseconds",
+    "local": "Local",
+    "utc": "UTC",
+    "use": "Convert this moment",
+    "pause": "Pause",
+    "resume": "Resume"
+  },
+  "toDate": {
+    "title": "Timestamp → Date",
+    "input": "Timestamp",
+    "unit": "Unit",
+    "now": "Now",
+    "compare": "Compare zone",
+    "empty": "Enter a timestamp to see its date",
+    "local": "Local time",
+    "relative": "Relative",
+    "detected": "Detected: {{unit}}",
+    "dayOfYear": "Day {{day}}",
+    "isoWeek": "Week {{week}}"
+  },
+  "toTimestamp": {
+    "title": "Date → Timestamp",
+    "input": "Date time",
+    "timezone": "Input zone",
+    "localZone": "Local ({{zone}})",
+    "empty": "Enter a date to see its timestamp",
+    "formats": "Supported formats (click to use)"
+  },
+  "errors": {
+    "time.empty": "Enter a value",
+    "time.not_a_number": "A timestamp may only contain digits",
+    "time.out_of_range": "The timestamp is out of range",
+    "time.invalid_timezone": "Invalid time zone: {{timezone}}",
+    "time.unrecognized": "Unrecognized date format",
+    "time.invalid_date": "This time does not exist in the selected zone"
+  }
+}

@@ -12,5 +12,6 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_json_formatter::JsonFormatter::default()));
     registry.register(Arc::new(tfp_hash::Hash::default()));
     registry.register(Arc::new(tfp_uuid::UuidTool::default()));
+    registry.register(Arc::new(tfp_timestamp::Timestamp::default()));
     registry
 }

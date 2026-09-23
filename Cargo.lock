@@ -4294,6 +4294,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-timestamp"
+version = "0.1.0"
+dependencies = [
+ "jiff",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-uuid"
 version = "0.1.0"
 dependencies = [
@@ -4579,6 +4589,7 @@ dependencies = [
  "tf-plugin-api",
  "tfp-hash",
  "tfp-json-formatter",
+ "tfp-timestamp",
  "tfp-uuid",
 ]
 

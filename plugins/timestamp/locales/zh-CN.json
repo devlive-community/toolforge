@@ -1,0 +1,71 @@
+{
+  "name": "时间戳转换",
+  "description": "Unix 时间戳与日期互转，支持秒 / 毫秒 / 微秒 / 纳秒与全球时区",
+  "help": [
+    "时间戳会按位数自动识别单位（10 位秒、13 位毫秒、16 位微秒、19 位纳秒），也可以手动指定。",
+    "同时展示本地时间、UTC 与一个对比时区，并给出 ISO 8601、RFC 2822、星期、第几天与 ISO 周。",
+    "日期转时间戳支持 RFC 3339、RFC 2822、带 [时区] 的格式以及 2024-02-29 12:00:00、2024/2/29 等常见写法；不带时区的输入按所选时区解释。",
+    "所有计算在本地 Rust 完成，时区数据随应用内置。"
+  ],
+  "units": {
+    "auto": "自动",
+    "s": "秒",
+    "ms": "毫秒",
+    "us": "微秒",
+    "ns": "纳秒"
+  },
+  "weekdays": {
+    "1": "星期一",
+    "2": "星期二",
+    "3": "星期三",
+    "4": "星期四",
+    "5": "星期五",
+    "6": "星期六",
+    "7": "星期日"
+  },
+  "formats": {
+    "rfc3339": "RFC 3339",
+    "zoned": "带时区（RFC 9557）",
+    "rfc2822": "RFC 2822",
+    "datetime": "日期时间",
+    "date": "日期"
+  },
+  "now": {
+    "unix": "当前 Unix 时间戳（秒）",
+    "millis": "毫秒",
+    "local": "本地时间",
+    "utc": "UTC",
+    "use": "转换此时刻",
+    "pause": "暂停",
+    "resume": "继续"
+  },
+  "toDate": {
+    "title": "时间戳 → 日期",
+    "input": "时间戳",
+    "unit": "单位",
+    "now": "现在",
+    "compare": "对比时区",
+    "empty": "输入时间戳查看对应日期",
+    "local": "本地时间",
+    "relative": "相对现在",
+    "detected": "识别为{{unit}}",
+    "dayOfYear": "第 {{day}} 天",
+    "isoWeek": "第 {{week}} 周"
+  },
+  "toTimestamp": {
+    "title": "日期 → 时间戳",
+    "input": "日期时间",
+    "timezone": "输入时区",
+    "localZone": "本地（{{zone}}）",
+    "empty": "输入日期时间查看时间戳",
+    "formats": "支持的格式（点击填入）"
+  },
+  "errors": {
+    "time.empty": "请输入内容",
+    "time.not_a_number": "时间戳只能包含数字",
+    "time.out_of_range": "时间戳超出可表示的范围",
+    "time.invalid_timezone": "无效的时区：{{timezone}}",
+    "time.unrecognized": "无法识别的日期格式",
+    "time.invalid_date": "该时区中不存在这个时间"
+  }
+}
