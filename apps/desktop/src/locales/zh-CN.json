@@ -1,4 +1,92 @@
 {
+  "app": {
+    "titlebar": {
+      "search": "搜索工具…",
+      "toggleTheme": "切换主题"
+    },
+    "window": {
+      "minimize": "最小化",
+      "maximize": "最大化",
+      "close": "关闭"
+    },
+    "nav": {
+      "home": "首页",
+      "favorites": "收藏夹",
+      "recent": "最近使用",
+      "history": "历史记录",
+      "settings": "设置"
+    },
+    "category": {
+      "dev": "开发工具",
+      "text": "文本工具",
+      "encode": "编码/加密",
+      "convert": "格式转换",
+      "image": "图像工具",
+      "network": "网络工具",
+      "system": "系统工具",
+      "calc": "计算工具",
+      "other": "其他工具"
+    },
+    "sidebar": {
+      "emptyCategory": "暂无工具"
+    },
+    "palette": {
+      "placeholder": "搜索工具或命令…",
+      "noResults": "没有匹配的结果",
+      "navigate": "选择",
+      "open": "打开",
+      "darkTheme": "切换到暗色主题",
+      "lightTheme": "切换到亮色主题"
+    },
+    "home": {
+      "title": "欢迎使用 ToolForge",
+      "subtitle": "快速、安全、轻量的开发者工具箱，所有数据都在本地处理。",
+      "allTools": "全部工具（{{count}}）",
+      "noPlugins": "还没有可用的插件",
+      "noPluginsHint": "插件安装后会出现在这里。"
+    },
+    "favorites": {
+      "subtitle": "常用的工具，一键直达。",
+      "empty": "还没有收藏的工具",
+      "emptyHint": "在工具页点击「加入收藏」即可添加到这里。"
+    },
+    "recent": {
+      "subtitle": "最近打开过的工具。",
+      "empty": "还没有使用记录",
+      "emptyHint": "打开任意工具后会出现在这里。"
+    },
+    "history": {
+      "subtitle": "工具的处理记录。",
+      "hint": "历史记录功能将在后续版本提供，敏感工具默认不记录。"
+    },
+    "settings": {
+      "appearance": "外观",
+      "theme": "主题",
+      "themeHint": "选择「跟随系统」会随系统外观自动切换。",
+      "light": "亮色",
+      "dark": "暗色",
+      "system": "跟随系统",
+      "language": "语言",
+      "about": "关于",
+      "version": "版本",
+      "storage": "本地存储",
+      "storageHint": "偏好设置、收藏与使用记录均保存在本机 SQLite 数据库中。"
+    },
+    "tool": {
+      "favorite": "加入收藏",
+      "unfavorite": "已收藏",
+      "help": "使用说明",
+      "more": "更多",
+      "reload": "重新加载工具",
+      "about": "关于插件",
+      "pluginId": "插件 ID",
+      "version": "版本",
+      "category": "分类",
+      "notFound": "插件不存在或已被卸载",
+      "noUi": "该插件没有界面",
+      "crashed": "工具运行出错"
+    }
+  },
   "common": {
     "ok": "确定",
     "cancel": "取消",

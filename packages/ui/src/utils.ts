@@ -7,7 +7,7 @@ const twMerge = extendTailwindMerge({
     theme: {
       color: [
         'bg', 'surface', 'surface-2', 'sidebar', 'elevated', 'overlay',
-        'fg', 'fg-muted', 'fg-subtle', 'fg-on-primary',
+        'fg', 'fg-muted', 'fg-subtle', 'fg-on-primary', 'on-tile',
         'border', 'border-strong', 'ring', 'hover', 'active',
         'primary', 'primary-hover', 'primary-soft', 'primary-fg',
         'success', 'success-soft', 'warning', 'warning-soft',

@@ -1,15 +1,22 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { getCurrentWindow } from '@tauri-apps/api/window'
+import { invoke } from '@tauri-apps/api/core'
+import { App } from './App'
+import { initI18n } from './i18n'
+import { registerPluginLocales } from './plugins/modules'
+import { initialLocale } from './stores/prefs'
 import './styles.css'
+
+// 未捕获的前端错误转发到 Rust 终端输出
+const report = (message: string) => invoke('app_log', { level: 'error', message }).catch(() => {})
+window.addEventListener('error', (event) => report(`${event.message} @ ${event.filename}:${event.lineno}`))
+window.addEventListener('unhandledrejection', (event) => report(`unhandled rejection: ${String(event.reason)}`))
+
+await initI18n(initialLocale())
+registerPluginLocales()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <div className="flex h-full items-center justify-center">ToolForge</div>
+    <App />
   </StrictMode>,
 )
-
-// 窗口由 Rust 以隐藏状态创建，首帧渲染后再显示，避免白屏闪烁
-requestAnimationFrame(() => {
-  getCurrentWindow().show().catch(() => {})
-})

@@ -26,6 +26,12 @@ pub fn app_info(app: tauri::AppHandle) -> AppInfo {
     }
 }
 
+/// 前端日志转发到终端（开发期排查 WebView 内的错误）
+#[tauri::command]
+pub fn app_log(level: String, message: String) {
+    eprintln!("[webview:{level}] {message}");
+}
+
 #[tauri::command]
 pub fn prefs_get(state: State<'_, AppState>) -> AppResult<Value> {
     Ok(state.store.kv_get(PREFS_KEY)?.unwrap_or_default())

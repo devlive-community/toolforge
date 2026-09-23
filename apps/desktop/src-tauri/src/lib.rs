@@ -28,6 +28,7 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             commands::app_info,
+            commands::app_log,
             commands::prefs_get,
             commands::prefs_set,
             commands::favorites_list,

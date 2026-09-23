@@ -1,7 +1,6 @@
 @import "tailwindcss";
+@import "@toolforge/ui/tokens.css";
 
-html,
-body,
-#root {
-  height: 100%;
-}
+/* 组件库与插件 UI 位于独立 workspace 包，需显式加入扫描范围 */
+@source "../../../packages/ui/src";
+@source "../../../plugins";

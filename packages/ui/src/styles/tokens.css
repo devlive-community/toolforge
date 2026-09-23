@@ -52,7 +52,8 @@
   --tf-editor-selection: rgb(28 154 79 / 0.18);
   --tf-editor-error-line: rgb(220 38 38 / 0.1);
 
-  /* 工具图标底色（渐变两端） */
+  /* 工具图标底色（渐变两端）及其上的图标色 */
+  --tf-on-tile: #ffffff;
   --tf-tile-violet-from: #8b5cf6;
   --tf-tile-violet-to: #6d28d9;
   --tf-tile-blue-from: #3b82f6;
@@ -144,6 +145,7 @@
   --color-fg-muted: var(--tf-fg-muted);
   --color-fg-subtle: var(--tf-fg-subtle);
   --color-fg-on-primary: var(--tf-fg-on-primary);
+  --color-on-tile: var(--tf-on-tile);
   --color-border: var(--tf-border);
   --color-border-strong: var(--tf-border-strong);
   --color-ring: var(--tf-ring);

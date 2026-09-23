@@ -1,4 +1,92 @@
 {
+  "app": {
+    "titlebar": {
+      "search": "Search tools…",
+      "toggleTheme": "Toggle theme"
+    },
+    "window": {
+      "minimize": "Minimize",
+      "maximize": "Maximize",
+      "close": "Close"
+    },
+    "nav": {
+      "home": "Home",
+      "favorites": "Favorites",
+      "recent": "Recent",
+      "history": "History",
+      "settings": "Settings"
+    },
+    "category": {
+      "dev": "Developer",
+      "text": "Text",
+      "encode": "Encode / Crypto",
+      "convert": "Converters",
+      "image": "Image",
+      "network": "Network",
+      "system": "System",
+      "calc": "Calculators",
+      "other": "Others"
+    },
+    "sidebar": {
+      "emptyCategory": "No tools yet"
+    },
+    "palette": {
+      "placeholder": "Search tools or commands…",
+      "noResults": "No matching results",
+      "navigate": "Navigate",
+      "open": "Open",
+      "darkTheme": "Switch to dark theme",
+      "lightTheme": "Switch to light theme"
+    },
+    "home": {
+      "title": "Welcome to ToolForge",
+      "subtitle": "A fast, secure and lightweight toolbox. All data is processed locally.",
+      "allTools": "All tools ({{count}})",
+      "noPlugins": "No plugins available yet",
+      "noPluginsHint": "Installed plugins will show up here."
+    },
+    "favorites": {
+      "subtitle": "Your favorite tools, one click away.",
+      "empty": "No favorites yet",
+      "emptyHint": "Click “Favorite” on a tool page to add it here."
+    },
+    "recent": {
+      "subtitle": "Tools you opened recently.",
+      "empty": "Nothing here yet",
+      "emptyHint": "Tools you open will show up here."
+    },
+    "history": {
+      "subtitle": "Processing history of your tools.",
+      "hint": "History is coming in a later release; sensitive tools are never recorded."
+    },
+    "settings": {
+      "appearance": "Appearance",
+      "theme": "Theme",
+      "themeHint": "“System” follows your OS appearance automatically.",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System",
+      "language": "Language",
+      "about": "About",
+      "version": "Version",
+      "storage": "Local storage",
+      "storageHint": "Preferences, favorites and usage are stored in a local SQLite database."
+    },
+    "tool": {
+      "favorite": "Favorite",
+      "unfavorite": "Favorited",
+      "help": "Help",
+      "more": "More",
+      "reload": "Reload tool",
+      "about": "About plugin",
+      "pluginId": "Plugin ID",
+      "version": "Version",
+      "category": "Category",
+      "notFound": "Plugin not found or uninstalled",
+      "noUi": "This plugin has no UI",
+      "crashed": "The tool crashed"
+    }
+  },
   "common": {
     "ok": "OK",
     "cancel": "Cancel",
