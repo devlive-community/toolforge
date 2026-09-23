@@ -2,7 +2,13 @@ export { cn } from './utils'
 export { Badge, type BadgeProps } from './components/Badge'
 export { Button, buttonVariants, type ButtonProps } from './components/Button'
 export { Checkbox, type CheckboxProps } from './components/Checkbox'
-export { CodeEditor, type CodeEditorHandle, type CodeEditorProps, type CursorPosition } from './components/CodeEditor'
+export {
+  CodeEditor,
+  type CodeEditorHandle,
+  type CodeEditorProps,
+  type CursorPosition,
+  type EditorMark,
+} from './components/CodeEditor'
 export { Drawer, type DrawerProps } from './components/Drawer'
 export { DropdownMenu, type DropdownMenuProps, type MenuItem } from './components/DropdownMenu'
 export { Empty, type EmptyProps } from './components/Empty'

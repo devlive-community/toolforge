@@ -29,6 +29,13 @@ const theme = EditorView.theme({
   '.cm-placeholder': { color: 'var(--tf-fg-subtle)' },
   '.cm-foldGutter .cm-gutterElement': { color: 'var(--tf-fg-subtle)' },
   '.cm-tf-error-line': { backgroundColor: 'var(--tf-editor-error-line)' },
+  '.cm-tf-mark': { backgroundColor: 'var(--tf-editor-match)', borderRadius: '3px' },
+  '.cm-tf-mark-alt': { backgroundColor: 'var(--tf-editor-match-alt)', borderRadius: '3px' },
+  '.cm-tf-mark-active': {
+    backgroundColor: 'var(--tf-editor-match-active)',
+    borderRadius: '3px',
+    outline: '1px solid var(--tf-primary)',
+  },
   '.cm-matchingBracket': { backgroundColor: 'var(--tf-primary-soft)', outline: 'none' },
 })
 
@@ -45,6 +52,18 @@ const highlight = syntaxHighlighting(
 )
 
 const errorLineMark = Decoration.line({ class: 'cm-tf-error-line' })
+const markDecorations = {
+  primary: Decoration.mark({ class: 'cm-tf-mark' }),
+  alt: Decoration.mark({ class: 'cm-tf-mark-alt' }),
+  active: Decoration.mark({ class: 'cm-tf-mark-active' }),
+}
+
+/** 文本高亮区间（UTF-16 偏移，与 JS 字符串下标一致） */
+export interface EditorMark {
+  from: number
+  to: number
+  tone?: keyof typeof markDecorations
+}
 
 export interface CursorPosition {
   line: number
@@ -54,6 +73,8 @@ export interface CursorPosition {
 export interface CodeEditorHandle {
   focus: () => void
   gotoLine: (line: number, column?: number) => void
+  /** 选中并滚动到指定区间（UTF-16 偏移） */
+  selectRange: (from: number, to: number) => void
 }
 
 export interface CodeEditorProps {
@@ -65,13 +86,15 @@ export interface CodeEditorProps {
   placeholder?: string
   /** 需要标红的行（从 1 开始） */
   errorLine?: number | null
+  /** 高亮区间，需按 from 升序 */
+  marks?: EditorMark[]
   onCursorChange?: (position: CursorPosition) => void
   className?: string
   'aria-label'?: string
 }
 
 export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function CodeEditor(
-  { value, onChange, language = 'json', readOnly, lineWrapping, placeholder, errorLine, onCursorChange, className, ...aria },
+  { value, onChange, language = 'json', readOnly, lineWrapping, placeholder, errorLine, marks, onCursorChange, className, ...aria },
   ref,
 ) {
   const cm = useRef<ReactCodeMirrorRef>(null)
@@ -85,6 +108,15 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function
       const pos = Math.min(target.from + Math.max(column - 1, 0), target.to)
       view.dispatch({ selection: EditorSelection.cursor(pos), scrollIntoView: true })
       view.focus()
+    },
+    selectRange: (from, to) => {
+      const view = cm.current?.view
+      if (!view) return
+      const length = view.state.doc.length
+      view.dispatch({
+        selection: EditorSelection.range(Math.min(from, length), Math.min(to, length)),
+        scrollIntoView: true,
+      })
     },
   }))
 
@@ -100,8 +132,20 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function
         }),
       )
     }
+    if (marks && marks.length > 0) {
+      list.push(
+        EditorView.decorations.compute(['doc'], (state) => {
+          // 编辑过程中高亮可能对应旧文本：超出文档的区间截断或跳过
+          const length = state.doc.length
+          const ranges = marks
+            .filter((mark) => mark.from < length && mark.to > mark.from)
+            .map((mark) => markDecorations[mark.tone ?? 'primary'].range(mark.from, Math.min(mark.to, length)))
+          return Decoration.set(ranges, true)
+        }),
+      )
+    }
     return list
-  }, [language, lineWrapping, errorLine])
+  }, [language, lineWrapping, errorLine, marks])
 
   return (
     <CodeMirror
