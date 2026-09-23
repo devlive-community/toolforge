@@ -1,6 +1,6 @@
 [package]
-name = "tf-core"
-description = "ToolForge core services"
+name = "tf-plugin-api"
+description = "Contract between the ToolForge host and its plugins"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -9,6 +9,4 @@ authors.workspace = true
 [dependencies]
 serde.workspace = true
 serde_json.workspace = true
-tf-plugin-api.workspace = true
-indexmap = "2"
-rusqlite = { version = "0.40", features = ["bundled"] }
+indexmap = { version = "2", features = ["serde"] }

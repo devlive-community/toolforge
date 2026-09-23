@@ -1,7 +1,8 @@
 use serde::Serialize;
 use serde_json::Value;
 use tauri::State;
-use tf_core::AppResult;
+use tf_core::{AppError, AppResult};
+use tf_plugin_api::Manifest;
 
 use crate::AppState;
 
@@ -53,4 +54,23 @@ pub fn recent_list(state: State<'_, AppState>) -> AppResult<Vec<String>> {
 #[tauri::command]
 pub fn recent_touch(state: State<'_, AppState>, plugin_id: String) -> AppResult<()> {
     state.store.touch_recent(&plugin_id)
+}
+
+#[tauri::command]
+pub fn plugin_list(state: State<'_, AppState>) -> Vec<Manifest> {
+    state.plugins.manifests()
+}
+
+/// 调用插件函数。在阻塞线程池中执行，避免数据处理阻塞 IPC 主循环。
+#[tauri::command]
+pub async fn plugin_call(
+    state: State<'_, AppState>,
+    plugin_id: String,
+    function: String,
+    args: Value,
+) -> AppResult<Value> {
+    let registry = state.plugins.clone();
+    tauri::async_runtime::spawn_blocking(move || registry.call(&plugin_id, &function, args))
+        .await
+        .map_err(|e| AppError::new("plugin.crashed").with("detail", e.to_string()))?
 }

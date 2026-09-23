@@ -1,5 +1,6 @@
 use serde::Serialize;
 use serde_json::{Map, Value};
+use tf_plugin_api::PluginError;
 
 /// 返回给前端的错误：只有错误码和参数，文案由前端 i18n 翻译。
 #[derive(Debug, Clone, Serialize, PartialEq)]
@@ -32,6 +33,15 @@ impl std::fmt::Display for AppError {
 }
 
 impl std::error::Error for AppError {}
+
+impl From<PluginError> for AppError {
+    fn from(err: PluginError) -> Self {
+        Self {
+            code: err.code,
+            params: err.params,
+        }
+    }
+}
 
 impl From<rusqlite::Error> for AppError {
     fn from(err: rusqlite::Error) -> Self {

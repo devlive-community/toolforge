@@ -1,11 +1,15 @@
 mod commands;
+mod plugins;
 mod window;
 
+use std::sync::Arc;
+
 use tauri::Manager;
-use tf_core::Store;
+use tf_core::{PluginRegistry, Store};
 
 pub struct AppState {
     pub store: Store,
+    pub plugins: Arc<PluginRegistry>,
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -16,7 +20,10 @@ pub fn run() {
             let store = Store::open(&data_dir.join("toolforge.db"))?;
             let prefs = store.kv_get(commands::PREFS_KEY)?.unwrap_or_default();
             window::create_main(app.handle(), &prefs)?;
-            app.manage(AppState { store });
+            app.manage(AppState {
+                store,
+                plugins: Arc::new(plugins::builtin()),
+            });
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -27,6 +34,8 @@ pub fn run() {
             commands::favorite_toggle,
             commands::recent_list,
             commands::recent_touch,
+            commands::plugin_list,
+            commands::plugin_call,
         ])
         .run(tauri::generate_context!())
         .expect("error while running ToolForge");

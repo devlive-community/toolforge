@@ -3353,7 +3353,18 @@ dependencies = [
 name = "tf-core"
 version = "0.1.0"
 dependencies = [
+ "indexmap 2.14.2",
  "rusqlite",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
+name = "tf-plugin-api"
+version = "0.1.0"
+dependencies = [
+ "indexmap 2.14.2",
  "serde",
  "serde_json",
 ]
@@ -3600,6 +3611,7 @@ dependencies = [
  "tauri",
  "tauri-build",
  "tf-core",
+ "tf-plugin-api",
 ]
 
 [[package]]
