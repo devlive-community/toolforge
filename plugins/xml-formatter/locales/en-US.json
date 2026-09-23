@@ -1,0 +1,36 @@
+{
+  "name": "XML Formatter",
+  "description": "Format, minify and validate XML while keeping comments and CDATA, with precise error positions",
+  "help": [
+    "Works with well-formed XML, SVG and XHTML; comments, CDATA, declarations, DOCTYPE and processing instructions are kept.",
+    "Validation checks tag pairs, unclosed elements, multiple roots and text outside the root, and points to the line and column.",
+    "Formatting removes insignificant whitespace between elements; text content is left unchanged."
+  ],
+  "modes": {
+    "format": "Format",
+    "minify": "Minify",
+    "validate": "Validate"
+  },
+  "output": {
+    "format": "Output (formatted)",
+    "minify": "Output (minified)",
+    "validate": "Validated document"
+  },
+  "input": "Input (XML)",
+  "placeholder": "Paste or type XML here…",
+  "indent": "Indent",
+  "indent2": "2 spaces",
+  "indent4": "4 spaces",
+  "indentTab": "Tab",
+  "summary": "{{elements}} elements · {{attributes}} attributes · depth {{depth}}",
+  "errors": {
+    "xml.empty": "Input is empty",
+    "xml.syntax": "Syntax error near line {{line}}, column {{column}}",
+    "xml.unclosed": "<{{tag}}> on line {{line}} is never closed",
+    "xml.multiple_roots": "A second root element starts on line {{line}}",
+    "xml.text_outside_root": "Text on line {{line}} is outside the root element",
+    "xml.no_root": "The document has no root element",
+    "xml.too_large": "Input is too large (over {{limit}})",
+    "xml.serialize_failed": "Failed to produce output"
+  }
+}

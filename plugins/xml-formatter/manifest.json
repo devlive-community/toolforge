@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.xml-formatter",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["xml", "format", "pretty", "minify", "validate", "html", "svg", "格式化", "压缩", "校验"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],
+  "functions": {
+    "format": {},
+    "minify": {},
+    "validate": {}
+  },
+  "sensitive": false
+}

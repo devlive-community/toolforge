@@ -1,0 +1,36 @@
+{
+  "name": "XML 格式化",
+  "description": "格式化、压缩与校验 XML，保留注释与 CDATA，错误精确到行列",
+  "help": [
+    "支持 XML、SVG、XHTML 等良构文档；注释、CDATA、XML 声明、DOCTYPE 与处理指令都会保留。",
+    "校验会检查标签配对、未闭合元素、多个根元素与根元素之外的文本，并定位到出错的行列。",
+    "格式化时会去除元素之间多余的空白；文本内容保持不变。"
+  ],
+  "modes": {
+    "format": "格式化",
+    "minify": "压缩",
+    "validate": "校验"
+  },
+  "output": {
+    "format": "输出（已格式化）",
+    "minify": "输出（已压缩）",
+    "validate": "校验通过的文档"
+  },
+  "input": "输入（XML）",
+  "placeholder": "在此粘贴或输入 XML…",
+  "indent": "缩进",
+  "indent2": "2 空格",
+  "indent4": "4 空格",
+  "indentTab": "Tab",
+  "summary": "{{elements}} 个元素 · {{attributes}} 个属性 · 深度 {{depth}}",
+  "errors": {
+    "xml.empty": "输入为空",
+    "xml.syntax": "第 {{line}} 行第 {{column}} 列附近存在语法错误",
+    "xml.unclosed": "第 {{line}} 行的 <{{tag}}> 没有闭合",
+    "xml.multiple_roots": "第 {{line}} 行出现了第二个根元素",
+    "xml.text_outside_root": "第 {{line}} 行的文本位于根元素之外",
+    "xml.no_root": "缺少根元素",
+    "xml.too_large": "内容过大（超过 {{limit}}）",
+    "xml.serialize_failed": "生成输出失败"
+  }
+}

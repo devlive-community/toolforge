@@ -25,6 +25,7 @@ tfp-json-formatter = { path = "plugins/json-formatter/backend" }
 tfp-regex = { path = "plugins/regex/backend" }
 tfp-timestamp = { path = "plugins/timestamp/backend" }
 tfp-uuid = { path = "plugins/uuid/backend" }
+tfp-xml-formatter = { path = "plugins/xml-formatter/backend" }
 
 [profile.release]
 codegen-units = 1
