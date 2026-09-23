@@ -3,4 +3,5 @@
 
 /* 组件库与插件 UI 位于独立 workspace 包，需显式加入扫描范围 */
 @source "../../../packages/ui/src";
+@source "../../../packages/plugin-ui-sdk/src";
 @source "../../../plugins";
