@@ -81,6 +81,9 @@ importers:
       '@tauri-apps/plugin-dialog':
         specifier: 2.7.3
         version: 2.7.3
+      '@toolforge/ui':
+        specifier: workspace:*
+        version: link:../ui
       i18next:
         specifier: 26.4.2
         version: 26.4.2(typescript@5.9.3)

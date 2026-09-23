@@ -16,6 +16,7 @@
     "@tauri-apps/api": "2.11.1",
     "@tauri-apps/plugin-clipboard-manager": "2.3.3",
     "@tauri-apps/plugin-dialog": "2.7.3",
+    "@toolforge/ui": "workspace:*",
     "i18next": "26.4.2",
     "react-i18next": "17.0.15"
   },

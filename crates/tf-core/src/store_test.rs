@@ -45,3 +45,49 @@ fn migrations_are_idempotent() {
     );
     std::fs::remove_dir_all(dir).ok();
 }
+
+fn record(id: &str, started_at: i64) -> TaskRecord {
+    TaskRecord {
+        id: id.into(),
+        plugin_id: "p".into(),
+        function: "f".into(),
+        status: "running".into(),
+        started_at,
+        finished_at: None,
+        elapsed_ms: None,
+        error_code: None,
+    }
+}
+
+#[test]
+fn task_lifecycle_is_persisted() {
+    let store = Store::open_in_memory().unwrap();
+    store.task_insert(&record("t1", 1)).unwrap();
+    store
+        .task_finish("t1", "failed", 42, Some("fs.not_found"))
+        .unwrap();
+    let tasks = store.tasks(10).unwrap();
+    assert_eq!(tasks[0].status, "failed");
+    assert_eq!(tasks[0].elapsed_ms, Some(42));
+    assert_eq!(tasks[0].error_code.as_deref(), Some("fs.not_found"));
+}
+
+#[test]
+fn running_tasks_become_interrupted() {
+    let store = Store::open_in_memory().unwrap();
+    store.task_insert(&record("t1", 1)).unwrap();
+    assert_eq!(store.tasks_mark_interrupted().unwrap(), 1);
+    assert_eq!(store.tasks(10).unwrap()[0].status, "interrupted");
+}
+
+#[test]
+fn prune_keeps_latest_tasks() {
+    let store = Store::open_in_memory().unwrap();
+    for i in 0..5 {
+        store.task_insert(&record(&format!("t{i}"), i)).unwrap();
+    }
+    let removed = store.tasks_prune(2).unwrap();
+    assert_eq!(removed.len(), 3);
+    let left: Vec<String> = store.tasks(10).unwrap().into_iter().map(|t| t.id).collect();
+    assert_eq!(left, vec!["t4", "t3"]);
+}

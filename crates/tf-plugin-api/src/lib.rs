@@ -85,12 +85,46 @@ impl Manifest {
     }
 }
 
+/// 任务日志级别
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum LogLevel {
+    Debug,
+    Info,
+    Warn,
+    Error,
+}
+
+/// 耗时任务的运行上下文，由宿主提供。
+///
+/// 日志只携带错误码风格的 `code` 与参数，文案由前端按语言翻译；
+/// 文件只能通过宿主打开，便于后续在沙箱中做权限控制。
+pub trait TaskContext: Send + Sync {
+    fn log(&self, level: LogLevel, code: &str, params: Value);
+    fn progress(&self, done: u64, total: u64);
+    fn stage(&self, code: &str);
+    fn is_cancelled(&self) -> bool;
+    fn open_file(&self, path: &str) -> PluginResult<Box<dyn std::io::Read + Send>>;
+    fn file_size(&self, path: &str) -> PluginResult<u64>;
+}
+
 /// 插件后端需要实现的接口。
 pub trait ToolPlugin: Send + Sync {
     fn manifest(&self) -> &Manifest;
 
     /// 调用插件函数，参数与返回值均为 JSON。
     fn call(&self, function: &str, args: Value) -> PluginResult<Value>;
+
+    /// 以任务方式运行 manifest 中声明为 `task` 的函数；默认退化为普通调用。
+    fn run_task(&self, function: &str, args: Value, ctx: &dyn TaskContext) -> PluginResult<Value> {
+        let _ = ctx;
+        self.call(function, args)
+    }
+}
+
+/// 任务被用户取消时返回的错误
+pub fn cancelled() -> PluginError {
+    PluginError::new("task.cancelled")
 }
 
 /// 把 JSON 参数反序列化为强类型结构。

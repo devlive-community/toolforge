@@ -11,7 +11,7 @@ impl ToolPlugin for Echo {
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
         match function {
-            "echo" | "hidden" => Ok(args),
+            "echo" | "hidden" | "long" => Ok(args),
             other => Err(unknown_function(other)),
         }
     }
@@ -20,7 +20,7 @@ impl ToolPlugin for Echo {
 fn registry() -> PluginRegistry {
     let manifest = Manifest::from_static(
         r#"{"id":"echo","version":"1.0.0","name":"i18n:name","description":"i18n:d",
-            "category":"dev","functions":{"echo":{}}}"#,
+            "category":"dev","functions":{"echo":{},"long":{"task":true}}}"#,
     );
     let mut registry = PluginRegistry::new();
     registry.register(Arc::new(Echo(manifest)));
@@ -43,4 +43,19 @@ fn rejects_undeclared_function() {
 fn rejects_unknown_plugin() {
     let err = registry().call("missing", "echo", json!(null)).unwrap_err();
     assert_eq!(err.code, "plugin.not_found");
+}
+
+#[test]
+fn task_functions_cannot_be_called_directly() {
+    let err = registry().call("echo", "long", json!(null)).unwrap_err();
+    assert_eq!(err.code, "plugin.requires_task");
+}
+
+#[test]
+fn only_task_functions_can_run_as_tasks() {
+    assert!(registry().ensure_task("echo", "long").is_ok());
+    assert_eq!(
+        registry().ensure_task("echo", "echo").unwrap_err().code,
+        "plugin.not_a_task"
+    );
 }

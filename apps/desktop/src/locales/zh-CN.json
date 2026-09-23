@@ -108,6 +108,24 @@
       "downloadingUnknown": "正在下载 {{done}}",
       "installing": "正在安装…",
       "ready": "更新已安装，重启后生效"
+    },
+    "tasks": {
+      "title": "任务",
+      "empty": "暂无任务",
+      "emptyHint": "耗时操作（如批量计算文件哈希）会在这里显示实时进度与日志。",
+      "cancel": "取消",
+      "elapsed": "耗时 {{ms}}ms",
+      "noLogs": "暂无日志",
+      "jumpLatest": "跳到最新",
+      "done": "任务已完成",
+      "failed": "任务执行失败",
+      "status": {
+        "running": "运行中",
+        "succeeded": "已完成",
+        "failed": "失败",
+        "cancelled": "已取消",
+        "interrupted": "已中断"
+      }
     }
   },
   "common": {
@@ -138,7 +156,20 @@
       "fs.not_utf8": "文件不是 UTF-8 编码的文本",
       "update.check_failed": "检查更新失败，请检查网络后重试",
       "update.install_failed": "更新安装失败",
-      "update.none": "没有可安装的更新"
+      "update.none": "没有可安装的更新",
+      "task.panicked": "插件执行时崩溃",
+      "task.not_found": "任务不存在",
+      "task.spawn_failed": "无法启动任务",
+      "plugin.requires_task": "该操作需要以任务方式运行",
+      "plugin.not_a_task": "该操作不是耗时任务"
+    },
+    "logs": {
+      "task": {
+        "started": "任务开始",
+        "succeeded": "任务完成，耗时 {{elapsedMs}}ms",
+        "cancelled": "任务已取消，耗时 {{elapsedMs}}ms",
+        "failed": "任务失败：{{code}}"
+      }
     }
   }
 }

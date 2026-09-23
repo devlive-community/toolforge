@@ -108,6 +108,24 @@
       "downloadingUnknown": "Downloading {{done}}",
       "installing": "Installing…",
       "ready": "Update installed; restart to apply"
+    },
+    "tasks": {
+      "title": "Tasks",
+      "empty": "No tasks yet",
+      "emptyHint": "Long running work such as hashing files shows live progress and logs here.",
+      "cancel": "Cancel",
+      "elapsed": "{{ms}} ms",
+      "noLogs": "No logs",
+      "jumpLatest": "Jump to latest",
+      "done": "Task completed",
+      "failed": "Task failed",
+      "status": {
+        "running": "Running",
+        "succeeded": "Completed",
+        "failed": "Failed",
+        "cancelled": "Cancelled",
+        "interrupted": "Interrupted"
+      }
     }
   },
   "common": {
@@ -138,7 +156,20 @@
       "fs.not_utf8": "The file is not UTF-8 encoded text",
       "update.check_failed": "Failed to check for updates; check your network and try again",
       "update.install_failed": "Failed to install the update",
-      "update.none": "No update to install"
+      "update.none": "No update to install",
+      "task.panicked": "The plugin crashed while running",
+      "task.not_found": "Task not found",
+      "task.spawn_failed": "Failed to start the task",
+      "plugin.requires_task": "This operation must run as a task",
+      "plugin.not_a_task": "This operation is not a task"
+    },
+    "logs": {
+      "task": {
+        "started": "Task started",
+        "succeeded": "Task completed in {{elapsedMs}} ms",
+        "cancelled": "Task cancelled after {{elapsedMs}} ms",
+        "failed": "Task failed: {{code}}"
+      }
     }
   }
 }

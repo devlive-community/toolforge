@@ -22,3 +22,50 @@ fn manifest_defaults_optional_fields() {
     assert!(manifest.functions.is_empty());
     assert!(!manifest.sensitive);
 }
+
+struct Noop;
+
+impl TaskContext for Noop {
+    fn log(&self, _: LogLevel, _: &str, _: Value) {}
+    fn progress(&self, _: u64, _: u64) {}
+    fn stage(&self, _: &str) {}
+    fn is_cancelled(&self) -> bool {
+        false
+    }
+    fn open_file(&self, _: &str) -> PluginResult<Box<dyn std::io::Read + Send>> {
+        Err(PluginError::new("fs.not_found"))
+    }
+    fn file_size(&self, _: &str) -> PluginResult<u64> {
+        Ok(0)
+    }
+}
+
+struct Upper(Manifest);
+
+impl ToolPlugin for Upper {
+    fn manifest(&self) -> &Manifest {
+        &self.0
+    }
+
+    fn call(&self, _: &str, args: Value) -> PluginResult<Value> {
+        Ok(Value::String(
+            args.as_str().unwrap_or_default().to_uppercase(),
+        ))
+    }
+}
+
+#[test]
+fn run_task_defaults_to_call() {
+    let manifest = Manifest::from_static(
+        r#"{"id":"a","version":"1.0.0","name":"n","description":"d","category":"dev"}"#,
+    );
+    let out = Upper(manifest)
+        .run_task("x", Value::from("ab"), &Noop)
+        .unwrap();
+    assert_eq!(out, "AB");
+}
+
+#[test]
+fn log_level_serializes_lowercase() {
+    assert_eq!(serde_json::to_value(LogLevel::Warn).unwrap(), "warn");
+}

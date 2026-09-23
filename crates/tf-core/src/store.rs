@@ -5,12 +5,14 @@ use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use rusqlite::{Connection, OptionalExtension, params};
+use serde::Serialize;
 use serde_json::Value;
 
 use crate::AppResult;
 
 /// 迁移脚本，按顺序执行；`user_version` 记录已执行到的版本。
-const MIGRATIONS: &[&str] = &[r#"
+const MIGRATIONS: &[&str] = &[
+    r#"
     CREATE TABLE kv (
         key        TEXT PRIMARY KEY,
         value      TEXT NOT NULL,
@@ -24,13 +26,41 @@ const MIGRATIONS: &[&str] = &[r#"
         plugin_id TEXT PRIMARY KEY,
         opened_at INTEGER NOT NULL
     );
-"#];
+"#,
+    r#"
+    CREATE TABLE tasks (
+        id          TEXT PRIMARY KEY,
+        plugin_id   TEXT NOT NULL,
+        function    TEXT NOT NULL,
+        status      TEXT NOT NULL,
+        started_at  INTEGER NOT NULL,
+        finished_at INTEGER,
+        elapsed_ms  INTEGER,
+        error_code  TEXT
+    );
+    CREATE INDEX tasks_started_at ON tasks (started_at DESC);
+"#,
+];
 
 pub struct Store {
     conn: Mutex<Connection>,
 }
 
-fn now_millis() -> i64 {
+/// 任务记录（任务中心与历史）
+#[derive(Debug, Clone, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct TaskRecord {
+    pub id: String,
+    pub plugin_id: String,
+    pub function: String,
+    pub status: String,
+    pub started_at: i64,
+    pub finished_at: Option<i64>,
+    pub elapsed_ms: Option<i64>,
+    pub error_code: Option<String>,
+}
+
+pub fn now_millis() -> i64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map(|d| d.as_millis() as i64)
@@ -115,6 +145,71 @@ impl Store {
             conn.prepare("SELECT plugin_id FROM recent ORDER BY opened_at DESC LIMIT ?1")?;
         let rows = stmt.query_map([limit as i64], |row| row.get(0))?;
         Ok(rows.collect::<Result<_, _>>()?)
+    }
+
+    pub fn task_insert(&self, record: &TaskRecord) -> AppResult<()> {
+        self.conn().execute(
+            "INSERT INTO tasks (id, plugin_id, function, status, started_at) VALUES (?1, ?2, ?3, ?4, ?5)",
+            params![record.id, record.plugin_id, record.function, record.status, record.started_at],
+        )?;
+        Ok(())
+    }
+
+    pub fn task_finish(
+        &self,
+        id: &str,
+        status: &str,
+        elapsed_ms: i64,
+        error_code: Option<&str>,
+    ) -> AppResult<()> {
+        self.conn().execute(
+            "UPDATE tasks SET status = ?2, finished_at = ?3, elapsed_ms = ?4, error_code = ?5 WHERE id = ?1",
+            params![id, status, now_millis(), elapsed_ms, error_code],
+        )?;
+        Ok(())
+    }
+
+    pub fn tasks(&self, limit: usize) -> AppResult<Vec<TaskRecord>> {
+        let conn = self.conn();
+        let mut stmt = conn.prepare(
+            "SELECT id, plugin_id, function, status, started_at, finished_at, elapsed_ms, error_code
+             FROM tasks ORDER BY started_at DESC LIMIT ?1",
+        )?;
+        let rows = stmt.query_map([limit as i64], |row| {
+            Ok(TaskRecord {
+                id: row.get(0)?,
+                plugin_id: row.get(1)?,
+                function: row.get(2)?,
+                status: row.get(3)?,
+                started_at: row.get(4)?,
+                finished_at: row.get(5)?,
+                elapsed_ms: row.get(6)?,
+                error_code: row.get(7)?,
+            })
+        })?;
+        Ok(rows.collect::<Result<_, _>>()?)
+    }
+
+    /// 应用上次退出时仍在运行的任务标记为已中断
+    pub fn tasks_mark_interrupted(&self) -> AppResult<usize> {
+        Ok(self.conn().execute(
+            "UPDATE tasks SET status = 'interrupted' WHERE status = 'running'",
+            [],
+        )?)
+    }
+
+    /// 只保留最近 `keep` 条任务记录，返回被删除的任务 id（用于清理日志文件）
+    pub fn tasks_prune(&self, keep: usize) -> AppResult<Vec<String>> {
+        let conn = self.conn();
+        let mut stmt =
+            conn.prepare("SELECT id FROM tasks ORDER BY started_at DESC LIMIT -1 OFFSET ?1")?;
+        let ids: Vec<String> = stmt
+            .query_map([keep as i64], |row| row.get(0))?
+            .collect::<Result<_, _>>()?;
+        for id in &ids {
+            conn.execute("DELETE FROM tasks WHERE id = ?1", [id])?;
+        }
+        Ok(ids)
     }
 
     pub fn touch_recent(&self, plugin_id: &str) -> AppResult<()> {

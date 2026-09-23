@@ -1,10 +1,11 @@
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { Badge, Button, Kbd, Tooltip, cn } from '@toolforge/ui'
-import { ArrowUpCircle, History, Maximize2, Minus, Moon, Search, Settings, Star, Sun, X } from 'lucide-react'
+import { ArrowUpCircle, History, ListChecks, Maximize2, Minus, Moon, Search, Settings, Star, Sun, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { isMac } from '../lib/boot'
 import { useApp } from '../stores/app'
 import { useIsDark, usePrefs } from '../stores/prefs'
+import { useTasks, useRunningCount } from '../stores/tasks'
 import { useUpdate } from '../stores/update'
 import { Logo } from './Logo'
 
@@ -17,6 +18,8 @@ export function TitleBar() {
   const version = useApp((s) => s.info?.version)
   const newVersion = useUpdate((s) => (s.status !== 'idle' && s.status !== 'latest' && s.status !== 'checking' ? s.info?.version : undefined))
   const openUpdate = useUpdate((s) => s.setDialogOpen)
+  const running = useRunningCount()
+  const openTasks = useTasks((s) => s.setOpen)
 
   return (
     <header
@@ -62,6 +65,15 @@ export function TitleBar() {
           </Button>
         </Tooltip>
         <span className="mx-1 h-5 w-px bg-border" />
+        <Button variant="ghost" onClick={() => openTasks(true)} className="relative">
+          <ListChecks />
+          {t('tasks.title')}
+          {running > 0 && (
+            <span className="ml-0.5 min-w-4 rounded-full bg-primary px-1 text-[10px] leading-4 font-semibold text-fg-on-primary">
+              {running}
+            </span>
+          )}
+        </Button>
         <Button variant="ghost" onClick={() => navigate({ view: 'history' })}>
           <History />
           {t('nav.history')}

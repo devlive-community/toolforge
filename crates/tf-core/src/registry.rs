@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use indexmap::IndexMap;
 use serde_json::Value;
-use tf_plugin_api::{Manifest, ToolPlugin};
+use tf_plugin_api::{Manifest, TaskContext, ToolPlugin};
 
 use crate::{AppError, AppResult};
 
@@ -36,13 +36,44 @@ impl PluginRegistry {
             .ok_or_else(|| AppError::new("plugin.not_found").with("plugin", plugin_id))
     }
 
-    /// 调用插件函数；只允许调用 manifest 中声明过的函数。
-    pub fn call(&self, plugin_id: &str, function: &str, args: Value) -> AppResult<Value> {
+    /// 查找插件并确认函数已在 manifest 中声明，返回插件与该函数是否为任务
+    fn resolve(&self, plugin_id: &str, function: &str) -> AppResult<(Arc<dyn ToolPlugin>, bool)> {
         let plugin = self.get(plugin_id)?;
-        if !plugin.manifest().functions.contains_key(function) {
-            return Err(AppError::new("plugin.function_not_found").with("function", function));
+        let spec =
+            plugin.manifest().functions.get(function).ok_or_else(|| {
+                AppError::new("plugin.function_not_found").with("function", function)
+            })?;
+        let task = spec.task;
+        Ok((plugin, task))
+    }
+
+    /// 普通调用；声明为任务的函数必须通过 [`Self::run_task`] 运行
+    pub fn call(&self, plugin_id: &str, function: &str, args: Value) -> AppResult<Value> {
+        let (plugin, task) = self.resolve(plugin_id, function)?;
+        if task {
+            return Err(AppError::new("plugin.requires_task").with("function", function));
         }
         Ok(plugin.call(function, args)?)
+    }
+
+    /// 确认函数可以作为任务运行（在启动任务线程前同步校验）
+    pub fn ensure_task(&self, plugin_id: &str, function: &str) -> AppResult<()> {
+        match self.resolve(plugin_id, function)? {
+            (_, true) => Ok(()),
+            _ => Err(AppError::new("plugin.not_a_task").with("function", function)),
+        }
+    }
+
+    pub fn run_task(
+        &self,
+        plugin_id: &str,
+        function: &str,
+        args: Value,
+        ctx: &dyn TaskContext,
+    ) -> AppResult<Value> {
+        self.ensure_task(plugin_id, function)?;
+        let (plugin, _) = self.resolve(plugin_id, function)?;
+        Ok(plugin.run_task(function, args, ctx)?)
     }
 }
 

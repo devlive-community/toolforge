@@ -1,12 +1,15 @@
 import { useEffect } from 'react'
 import { invoke } from '@tauri-apps/api/core'
-import { Spinner, Toaster } from '@toolforge/ui'
+import { useTranslation } from 'react-i18next'
+import { Spinner, Toaster, toast } from '@toolforge/ui'
 import { CommandPalette } from './layout/CommandPalette'
 import { Sidebar } from './layout/Sidebar'
+import { TaskCenter } from './layout/TaskCenter'
 import { TitleBar } from './layout/TitleBar'
 import { UpdateDialog } from './layout/UpdateDialog'
 import { useApp } from './stores/app'
 import { usePrefs } from './stores/prefs'
+import { subscribeTasks, useTasks } from './stores/tasks'
 import { useUpdate } from './stores/update'
 import { Collection } from './views/Collection'
 import { History } from './views/History'
@@ -33,8 +36,20 @@ function Content() {
 }
 
 export function App() {
+  const { t } = useTranslation()
   const ready = useApp((s) => s.ready)
   const load = useApp((s) => s.load)
+
+  useEffect(() => {
+    useTasks.getState().load().catch(() => {})
+    const unlisten = subscribeTasks((event) => {
+      if (event.status === 'succeeded') toast.success(t('tasks.done'))
+      else if (event.status === 'failed') toast.error(t('tasks.failed'))
+    })
+    return () => {
+      unlisten.then((off) => off())
+    }
+  }, [t])
 
   useEffect(() => {
     // 启动后稍等片刻再静默检查更新，避免与首屏加载争抢资源
@@ -66,6 +81,7 @@ export function App() {
       </div>
       <CommandPalette />
       <UpdateDialog />
+      <TaskCenter />
       <Toaster />
     </div>
   )
