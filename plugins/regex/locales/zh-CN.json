@@ -1,0 +1,66 @@
+{
+  "name": "正则测试",
+  "description": "实时测试正则表达式：高亮匹配、查看分组、预览替换，支持断言与反向引用",
+  "help": [
+    "匹配在本地 Rust 引擎（fancy-regex）中执行，支持先行 / 后行断言、反向引用与命名分组 (?P<name>…)。",
+    "标志：i 忽略大小写、m 多行（^ $ 匹配每行）、s 点号匹配换行、x 忽略空白与 # 注释。",
+    "点击右侧的匹配项可在左侧定位；替换支持 $0、$1 与 ${name}。",
+    "为防止卡死，过于复杂的回溯会被自动中止并提示。"
+  ],
+  "pattern": {
+    "label": "正则表达式",
+    "placeholder": "输入正则表达式，例如 \\d+"
+  },
+  "flags": {
+    "label": "标志",
+    "caseInsensitive": "i：忽略大小写",
+    "multiLine": "m：多行模式",
+    "dotAll": "s：点号匹配换行",
+    "extended": "x：忽略空白与注释"
+  },
+  "presets": {
+    "label": "常用正则",
+    "email": "邮箱地址",
+    "url": "网址",
+    "ipv4": "IPv4 地址",
+    "phoneCn": "手机号（中国大陆）",
+    "idCardCn": "身份证号（18 位）",
+    "date": "日期（YYYY-MM-DD，命名分组）",
+    "time": "时间（HH:MM[:SS]）",
+    "hexColor": "十六进制颜色",
+    "chinese": "中文字符",
+    "number": "数字（含小数）"
+  },
+  "input": {
+    "title": "测试文本",
+    "placeholder": "输入要匹配的文本…"
+  },
+  "status": {
+    "count": "匹配 {{count}} 处",
+    "truncated": "仅显示前 {{shown}} 处",
+    "elapsed": "耗时 {{ms}}ms"
+  },
+  "matches": {
+    "title": "匹配结果（{{count}}）",
+    "none": "没有匹配",
+    "range": "位置 {{start}}–{{end}}",
+    "empty": "（空匹配）",
+    "unmatched": "未参与匹配"
+  },
+  "replace": {
+    "title": "替换",
+    "label": "替换为",
+    "placeholder": "替换内容，支持 $1、${name}",
+    "hint": "$0 表示整个匹配，$1 / ${name} 表示分组；$$ 表示字面量 $",
+    "output": "替换结果",
+    "copy": "复制结果",
+    "count": "已替换 {{count}} 处"
+  },
+  "errors": {
+    "regex.empty": "请输入正则表达式",
+    "regex.invalid": "正则表达式有误",
+    "regex.backtrack_limit": "表达式回溯过多，已中止（请简化嵌套的量词）",
+    "regex.runtime": "匹配时出错",
+    "regex.input_too_large": "文本过大（超过 {{limit}}）"
+  }
+}

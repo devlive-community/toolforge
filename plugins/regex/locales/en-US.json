@@ -1,0 +1,66 @@
+{
+  "name": "Regex Tester",
+  "description": "Test regular expressions live: highlight matches, inspect groups and preview replacements, with lookaround and backreferences",
+  "help": [
+    "Matching runs in the local Rust engine (fancy-regex) with lookahead / lookbehind, backreferences and named groups (?P<name>…).",
+    "Flags: i ignore case, m multi-line (^ $ per line), s dot matches newline, x ignore whitespace and # comments.",
+    "Click a match on the right to locate it; replacements support $0, $1 and ${name}.",
+    "Runaway backtracking is stopped automatically so the app never hangs."
+  ],
+  "pattern": {
+    "label": "Regular expression",
+    "placeholder": "Enter a pattern, e.g. \\d+"
+  },
+  "flags": {
+    "label": "Flags",
+    "caseInsensitive": "i: ignore case",
+    "multiLine": "m: multi-line",
+    "dotAll": "s: dot matches newline",
+    "extended": "x: ignore whitespace and comments"
+  },
+  "presets": {
+    "label": "Presets",
+    "email": "Email address",
+    "url": "URL",
+    "ipv4": "IPv4 address",
+    "phoneCn": "Mobile number (China)",
+    "idCardCn": "ID card number (China)",
+    "date": "Date (YYYY-MM-DD, named groups)",
+    "time": "Time (HH:MM[:SS])",
+    "hexColor": "Hex color",
+    "chinese": "Chinese characters",
+    "number": "Number (with decimals)"
+  },
+  "input": {
+    "title": "Test text",
+    "placeholder": "Enter text to match…"
+  },
+  "status": {
+    "count": "{{count}} matches",
+    "truncated": "showing the first {{shown}}",
+    "elapsed": "{{ms}} ms"
+  },
+  "matches": {
+    "title": "Matches ({{count}})",
+    "none": "No matches",
+    "range": "at {{start}}–{{end}}",
+    "empty": "(empty match)",
+    "unmatched": "did not participate"
+  },
+  "replace": {
+    "title": "Replace",
+    "label": "Replace with",
+    "placeholder": "Replacement, supports $1 and ${name}",
+    "hint": "$0 is the whole match, $1 / ${name} are groups, $$ is a literal $",
+    "output": "Result",
+    "copy": "Copy result",
+    "count": "{{count}} replacements"
+  },
+  "errors": {
+    "regex.empty": "Enter a regular expression",
+    "regex.invalid": "Invalid regular expression",
+    "regex.backtrack_limit": "Too much backtracking, stopped (simplify nested quantifiers)",
+    "regex.runtime": "Matching failed",
+    "regex.input_too_large": "Text is too large (over {{limit}})"
+  }
+}

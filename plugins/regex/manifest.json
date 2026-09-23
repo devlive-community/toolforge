@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.regex",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["regex", "regexp", "regular expression", "match", "replace", "正则", "正则表达式", "匹配", "替换"],
+  "accent": "pink",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "test": {},
+    "replace": {}
+  },
+  "sensitive": false
+}
