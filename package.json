@@ -1,0 +1,23 @@
+{
+  "name": "toolforge",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@10.33.4",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @toolforge/desktop tauri dev",
+    "build": "pnpm --filter @toolforge/desktop tauri build",
+    "web:dev": "pnpm --filter @toolforge/desktop dev",
+    "web:build": "pnpm --filter @toolforge/desktop build",
+    "typecheck": "pnpm -r --parallel typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check": "cargo xtask check"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}
