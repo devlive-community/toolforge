@@ -53,7 +53,7 @@ export function Modal({
   return (
     <FloatingPortal>
       <FloatingOverlay
-        lockScroll
+        // 不使用 lockScroll：页面本身不滚动，切换 body overflow 会让 WebView 闪现滚动条。
         // floating-ui 默认 overflow: auto，弹出动画会短暂溢出而闪现滚动条
         style={{ overflow: 'hidden' }}
         className={cn(

@@ -266,10 +266,12 @@
 }
 
 @layer base {
+  /* 页面本身从不滚动（滚动都发生在面板内部），避免 WebView 闪现页面级滚动条 */
   html,
   body,
   #root {
     height: 100%;
+    overflow: hidden;
   }
 
   body {

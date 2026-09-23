@@ -33,7 +33,7 @@ export function Drawer({ open, onOpenChange, title, actions, children, className
   return (
     <FloatingPortal>
       <FloatingOverlay
-        lockScroll
+        // 不使用 lockScroll：页面本身不滚动，切换 body overflow 会让 WebView 闪现滚动条。
         // floating-ui 默认 overflow: auto，滑入动画会短暂溢出而闪现滚动条
         style={{ overflow: 'hidden' }}
         className="z-modal flex animate-fade-in justify-end bg-overlay"
@@ -56,7 +56,7 @@ export function Drawer({ open, onOpenChange, title, actions, children, className
                 </Button>
               </div>
             </header>
-            <div className="min-h-0 flex-1 overflow-auto">{children}</div>
+            <div className="min-h-0 flex-1 overflow-auto [scrollbar-gutter:stable]">{children}</div>
           </aside>
         </FloatingFocusManager>
       </FloatingOverlay>
