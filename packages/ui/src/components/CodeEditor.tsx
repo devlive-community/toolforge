@@ -1,0 +1,133 @@
+import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react'
+import CodeMirror, { type ReactCodeMirrorRef } from '@uiw/react-codemirror'
+import { json } from '@codemirror/lang-json'
+import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
+import { EditorSelection } from '@codemirror/state'
+import { Decoration, EditorView } from '@codemirror/view'
+import { tags } from '@lezer/highlight'
+import { cn } from '../utils'
+
+// 编辑器只负责展示与输入，语法高亮属于渲染层；数据处理全部在 Rust 侧
+const theme = EditorView.theme({
+  '&': { height: '100%', backgroundColor: 'transparent', color: 'var(--tf-fg)', fontSize: '13px' },
+  '&.cm-focused': { outline: 'none' },
+  '.cm-scroller': { fontFamily: 'var(--font-mono)', lineHeight: '1.65' },
+  '.cm-content': { padding: '8px 0', caretColor: 'var(--tf-primary)' },
+  '.cm-gutters': {
+    backgroundColor: 'var(--tf-surface-2)',
+    color: 'var(--tf-fg-subtle)',
+    border: 'none',
+    borderRight: '1px solid var(--tf-border)',
+  },
+  '.cm-lineNumbers .cm-gutterElement': { padding: '0 10px 0 14px', minWidth: '40px' },
+  '.cm-activeLine': { backgroundColor: 'var(--tf-editor-active-line)' },
+  '.cm-activeLineGutter': { backgroundColor: 'transparent', color: 'var(--tf-fg-muted)' },
+  '.cm-selectionBackground, &.cm-focused .cm-selectionBackground, ::selection': {
+    backgroundColor: 'var(--tf-editor-selection) !important',
+  },
+  '.cm-cursor': { borderLeftColor: 'var(--tf-primary)', borderLeftWidth: '2px' },
+  '.cm-placeholder': { color: 'var(--tf-fg-subtle)' },
+  '.cm-foldGutter .cm-gutterElement': { color: 'var(--tf-fg-subtle)' },
+  '.cm-tf-error-line': { backgroundColor: 'var(--tf-editor-error-line)' },
+  '.cm-matchingBracket': { backgroundColor: 'var(--tf-primary-soft)', outline: 'none' },
+})
+
+const highlight = syntaxHighlighting(
+  HighlightStyle.define([
+    { tag: tags.propertyName, color: 'var(--tf-syntax-key)' },
+    { tag: tags.string, color: 'var(--tf-syntax-string)' },
+    { tag: tags.number, color: 'var(--tf-syntax-number)' },
+    { tag: tags.bool, color: 'var(--tf-syntax-bool)' },
+    { tag: tags.null, color: 'var(--tf-syntax-null)' },
+    { tag: [tags.punctuation, tags.separator, tags.brace, tags.squareBracket], color: 'var(--tf-syntax-punct)' },
+    { tag: tags.comment, color: 'var(--tf-fg-subtle)', fontStyle: 'italic' },
+  ]),
+)
+
+const errorLineMark = Decoration.line({ class: 'cm-tf-error-line' })
+
+export interface CursorPosition {
+  line: number
+  column: number
+}
+
+export interface CodeEditorHandle {
+  focus: () => void
+  gotoLine: (line: number, column?: number) => void
+}
+
+export interface CodeEditorProps {
+  value: string
+  onChange?: (value: string) => void
+  language?: 'json' | 'text'
+  readOnly?: boolean
+  lineWrapping?: boolean
+  placeholder?: string
+  /** 需要标红的行（从 1 开始） */
+  errorLine?: number | null
+  onCursorChange?: (position: CursorPosition) => void
+  className?: string
+  'aria-label'?: string
+}
+
+export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function CodeEditor(
+  { value, onChange, language = 'json', readOnly, lineWrapping, placeholder, errorLine, onCursorChange, className, ...aria },
+  ref,
+) {
+  const cm = useRef<ReactCodeMirrorRef>(null)
+
+  useImperativeHandle(ref, () => ({
+    focus: () => cm.current?.view?.focus(),
+    gotoLine: (line, column = 1) => {
+      const view = cm.current?.view
+      if (!view) return
+      const target = view.state.doc.line(Math.min(Math.max(line, 1), view.state.doc.lines))
+      const pos = Math.min(target.from + Math.max(column - 1, 0), target.to)
+      view.dispatch({ selection: EditorSelection.cursor(pos), scrollIntoView: true })
+      view.focus()
+    },
+  }))
+
+  const extensions = useMemo(() => {
+    const list = [theme, highlight]
+    if (language === 'json') list.push(json())
+    if (lineWrapping) list.push(EditorView.lineWrapping)
+    if (errorLine && errorLine > 0) {
+      list.push(
+        EditorView.decorations.compute(['doc'], (state) => {
+          if (errorLine > state.doc.lines) return Decoration.none
+          return Decoration.set([errorLineMark.range(state.doc.line(errorLine).from)])
+        }),
+      )
+    }
+    return list
+  }, [language, lineWrapping, errorLine])
+
+  return (
+    <CodeMirror
+      ref={cm}
+      value={value}
+      onChange={onChange}
+      readOnly={readOnly}
+      placeholder={placeholder}
+      extensions={extensions}
+      theme="none"
+      basicSetup={{
+        highlightActiveLine: !readOnly,
+        highlightActiveLineGutter: true,
+        foldGutter: true,
+        autocompletion: false,
+        searchKeymap: true,
+        lintKeymap: false,
+      }}
+      onUpdate={(update) => {
+        if (!onCursorChange || !(update.selectionSet || update.docChanged)) return
+        const head = update.state.selection.main.head
+        const line = update.state.doc.lineAt(head)
+        onCursorChange({ line: line.number, column: head - line.from + 1 })
+      }}
+      className={cn('h-full min-h-0 overflow-hidden', className)}
+      {...aria}
+    />
+  )
+})

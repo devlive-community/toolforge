@@ -1,0 +1,286 @@
+/*
+ * ToolForge 设计 Token
+ * 业务代码只能使用下方 @theme 映射出的语义类名（bg-surface、text-fg-muted…），
+ * 颜色原始值只允许出现在本文件中。
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light;
+
+  --tf-bg: #f7f9f8;
+  --tf-surface: #ffffff;
+  --tf-surface-2: #f5f8f6;
+  --tf-sidebar: #eff6f1;
+  --tf-elevated: #ffffff;
+  --tf-overlay: rgb(15 23 20 / 0.42);
+
+  --tf-fg: #17201b;
+  --tf-fg-muted: #5a665f;
+  --tf-fg-subtle: #97a19b;
+  --tf-fg-on-primary: #ffffff;
+
+  --tf-border: #e4eae6;
+  --tf-border-strong: #d2dad5;
+  --tf-ring: rgb(28 154 79 / 0.4);
+
+  --tf-hover: #edf3ef;
+  --tf-active: #e2ebe5;
+
+  --tf-primary: #1c9a4f;
+  --tf-primary-hover: #168243;
+  --tf-primary-soft: #e2f4e8;
+  --tf-primary-fg: #147a3c;
+
+  --tf-success: #16a34a;
+  --tf-success-soft: #dcfce7;
+  --tf-warning: #d97706;
+  --tf-warning-soft: #fef3c7;
+  --tf-danger: #dc2626;
+  --tf-danger-soft: #fee2e2;
+  --tf-info: #2563eb;
+  --tf-info-soft: #dbeafe;
+
+  /* 代码语法高亮 */
+  --tf-syntax-key: #1e3a8a;
+  --tf-syntax-string: #c2352b;
+  --tf-syntax-number: #0e7490;
+  --tf-syntax-bool: #7c3aed;
+  --tf-syntax-null: #9333ea;
+  --tf-syntax-punct: #5a665f;
+  --tf-editor-active-line: rgb(28 154 79 / 0.06);
+  --tf-editor-selection: rgb(28 154 79 / 0.18);
+  --tf-editor-error-line: rgb(220 38 38 / 0.1);
+
+  /* 工具图标底色（渐变两端） */
+  --tf-tile-violet-from: #8b5cf6;
+  --tf-tile-violet-to: #6d28d9;
+  --tf-tile-blue-from: #3b82f6;
+  --tf-tile-blue-to: #1d4ed8;
+  --tf-tile-green-from: #22c55e;
+  --tf-tile-green-to: #15803d;
+  --tf-tile-orange-from: #fb923c;
+  --tf-tile-orange-to: #ea580c;
+  --tf-tile-pink-from: #f472b6;
+  --tf-tile-pink-to: #db2777;
+  --tf-tile-cyan-from: #22d3ee;
+  --tf-tile-cyan-to: #0891b2;
+
+  --tf-radius-control: 7px;
+  --tf-radius-popover: 10px;
+  --tf-radius-card: 12px;
+  --tf-radius-tile: 14px;
+
+  --tf-shadow-card: 0 1px 2px rgb(16 24 20 / 0.04);
+  --tf-shadow-popover: 0 10px 28px rgb(16 24 20 / 0.12), 0 0 0 1px var(--tf-border);
+  --tf-shadow-modal: 0 24px 64px rgb(16 24 20 / 0.22), 0 0 0 1px var(--tf-border);
+  --tf-shadow-tile: 0 6px 16px rgb(109 40 217 / 0.25);
+}
+
+.dark {
+  color-scheme: dark;
+
+  --tf-bg: #0f1311;
+  --tf-surface: #161b18;
+  --tf-surface-2: #1b211d;
+  --tf-sidebar: #131815;
+  --tf-elevated: #1e2521;
+  --tf-overlay: rgb(0 0 0 / 0.6);
+
+  --tf-fg: #e6ece8;
+  --tf-fg-muted: #a2ada6;
+  --tf-fg-subtle: #6c7870;
+  --tf-fg-on-primary: #04120a;
+
+  --tf-border: #262e29;
+  --tf-border-strong: #35403a;
+  --tf-ring: rgb(52 196 109 / 0.45);
+
+  --tf-hover: #212923;
+  --tf-active: #29332c;
+
+  --tf-primary: #34c46d;
+  --tf-primary-hover: #4cd181;
+  --tf-primary-soft: #16301f;
+  --tf-primary-fg: #5ed991;
+
+  --tf-success: #34c46d;
+  --tf-success-soft: #16301f;
+  --tf-warning: #f59e0b;
+  --tf-warning-soft: #332611;
+  --tf-danger: #f05252;
+  --tf-danger-soft: #3a1717;
+  --tf-info: #60a5fa;
+  --tf-info-soft: #172640;
+
+  --tf-syntax-key: #93c5fd;
+  --tf-syntax-string: #f59a8f;
+  --tf-syntax-number: #5eead4;
+  --tf-syntax-bool: #c4b5fd;
+  --tf-syntax-null: #d8b4fe;
+  --tf-syntax-punct: #a2ada6;
+  --tf-editor-active-line: rgb(52 196 109 / 0.07);
+  --tf-editor-selection: rgb(52 196 109 / 0.22);
+  --tf-editor-error-line: rgb(240 82 82 / 0.14);
+
+  --tf-shadow-card: 0 1px 2px rgb(0 0 0 / 0.3);
+  --tf-shadow-popover: 0 10px 28px rgb(0 0 0 / 0.5), 0 0 0 1px var(--tf-border);
+  --tf-shadow-modal: 0 24px 64px rgb(0 0 0 / 0.6), 0 0 0 1px var(--tf-border);
+  --tf-shadow-tile: 0 6px 16px rgb(0 0 0 / 0.4);
+}
+
+@theme inline {
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  --color-bg: var(--tf-bg);
+  --color-surface: var(--tf-surface);
+  --color-surface-2: var(--tf-surface-2);
+  --color-sidebar: var(--tf-sidebar);
+  --color-elevated: var(--tf-elevated);
+  --color-overlay: var(--tf-overlay);
+  --color-fg: var(--tf-fg);
+  --color-fg-muted: var(--tf-fg-muted);
+  --color-fg-subtle: var(--tf-fg-subtle);
+  --color-fg-on-primary: var(--tf-fg-on-primary);
+  --color-border: var(--tf-border);
+  --color-border-strong: var(--tf-border-strong);
+  --color-ring: var(--tf-ring);
+  --color-hover: var(--tf-hover);
+  --color-active: var(--tf-active);
+  --color-primary: var(--tf-primary);
+  --color-primary-hover: var(--tf-primary-hover);
+  --color-primary-soft: var(--tf-primary-soft);
+  --color-primary-fg: var(--tf-primary-fg);
+  --color-success: var(--tf-success);
+  --color-success-soft: var(--tf-success-soft);
+  --color-warning: var(--tf-warning);
+  --color-warning-soft: var(--tf-warning-soft);
+  --color-danger: var(--tf-danger);
+  --color-danger-soft: var(--tf-danger-soft);
+  --color-info: var(--tf-info);
+  --color-info-soft: var(--tf-info-soft);
+  --color-syntax-key: var(--tf-syntax-key);
+  --color-syntax-string: var(--tf-syntax-string);
+  --color-syntax-number: var(--tf-syntax-number);
+  --color-syntax-bool: var(--tf-syntax-bool);
+  --color-syntax-null: var(--tf-syntax-null);
+  --color-syntax-punct: var(--tf-syntax-punct);
+
+  --radius-control: var(--tf-radius-control);
+  --radius-popover: var(--tf-radius-popover);
+  --radius-card: var(--tf-radius-card);
+  --radius-tile: var(--tf-radius-tile);
+
+  --shadow-card: var(--tf-shadow-card);
+  --shadow-popover: var(--tf-shadow-popover);
+  --shadow-modal: var(--tf-shadow-modal);
+  --shadow-tile: var(--tf-shadow-tile);
+
+  --spacing-control-sm: 1.75rem;
+  --spacing-control-md: 2rem;
+  --spacing-control-lg: 2.25rem;
+
+  --animate-fade-in: tf-fade-in 150ms ease-out;
+  --animate-pop-in: tf-pop-in 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slide-up: tf-slide-up 200ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  @keyframes tf-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes tf-pop-in {
+    from {
+      opacity: 0;
+      transform: scale(0.97) translateY(-4px);
+    }
+  }
+  @keyframes tf-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+}
+
+@utility z-dropdown {
+  z-index: 40;
+}
+@utility z-modal {
+  z-index: 50;
+}
+@utility z-toast {
+  z-index: 60;
+}
+@utility z-tooltip {
+  z-index: 70;
+}
+
+/* 工具图标底色：tile-violet / tile-blue … */
+@utility tile-violet {
+  background-image: linear-gradient(135deg, var(--tf-tile-violet-from), var(--tf-tile-violet-to));
+}
+@utility tile-blue {
+  background-image: linear-gradient(135deg, var(--tf-tile-blue-from), var(--tf-tile-blue-to));
+}
+@utility tile-green {
+  background-image: linear-gradient(135deg, var(--tf-tile-green-from), var(--tf-tile-green-to));
+}
+@utility tile-orange {
+  background-image: linear-gradient(135deg, var(--tf-tile-orange-from), var(--tf-tile-orange-to));
+}
+@utility tile-pink {
+  background-image: linear-gradient(135deg, var(--tf-tile-pink-from), var(--tf-tile-pink-to));
+}
+@utility tile-cyan {
+  background-image: linear-gradient(135deg, var(--tf-tile-cyan-from), var(--tf-tile-cyan-to));
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    font-size: 14px;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: default;
+  }
+
+  input,
+  textarea,
+  .cm-editor,
+  [data-selectable] {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  ::selection {
+    background: var(--tf-editor-selection);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--tf-border-strong) transparent;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--tf-ring);
+    outline-offset: 1px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
