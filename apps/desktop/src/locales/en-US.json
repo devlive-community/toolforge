@@ -171,6 +171,17 @@
         "cancelled": "Task cancelled after {{elapsedMs}} ms",
         "failed": "Task failed: {{code}}"
       }
+    },
+    "formatter": {
+      "sample": "Sample",
+      "open": "Open file",
+      "chars": "{{count}} chars",
+      "lines": "{{count}} lines",
+      "elapsed": "{{ms}} ms",
+      "wrap": "Wrap",
+      "waiting": "Results appear here once you enter some input",
+      "errorTitle": "Could not process the input",
+      "locate": "Go to error"
     }
   }
 }

@@ -171,6 +171,17 @@
         "cancelled": "任务已取消，耗时 {{elapsedMs}}ms",
         "failed": "任务失败：{{code}}"
       }
+    },
+    "formatter": {
+      "sample": "示例",
+      "open": "打开文件",
+      "chars": "{{count}} 字符",
+      "lines": "{{count}} 行",
+      "elapsed": "耗时 {{ms}}ms",
+      "wrap": "自动换行",
+      "waiting": "在左侧输入内容后，这里会显示结果",
+      "errorTitle": "处理失败",
+      "locate": "定位到错误"
     }
   }
 }
