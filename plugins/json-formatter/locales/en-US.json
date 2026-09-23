@@ -1,0 +1,114 @@
+{
+  "name": "JSON Formatter",
+  "description": "Format, minify, validate and visualize JSON. Handles large files and runs entirely on your machine",
+  "help": [
+    "Input is processed in real time by the local Rust engine; your data never leaves this machine.",
+    "Format / Minify / Validate support strict JSON as well as relaxed JSON5 (comments, trailing commas, single quotes).",
+    "Errors highlight the offending line; click “Go to error” to jump there.",
+    "The tree view loads nodes on demand so large files stay smooth; stats show type counts and nesting depth.",
+    "Compare performs a structural diff and lists added, removed and changed paths."
+  ],
+  "tabs": {
+    "format": "Format",
+    "minify": "Minify",
+    "validate": "Validate",
+    "escape": "Escape",
+    "tree": "Tree",
+    "diff": "Compare"
+  },
+  "side": {
+    "stats": "Stats"
+  },
+  "input": {
+    "title": "Input (JSON)",
+    "text": "Input (text)",
+    "left": "Left JSON",
+    "right": "Right JSON",
+    "samples": "Samples",
+    "open": "Open file",
+    "placeholder": "Paste or type JSON here…"
+  },
+  "samples": {
+    "basic": "Basic object",
+    "array": "Array of objects",
+    "nested": "Deeply nested",
+    "json5": "JSON5 (relaxed)",
+    "invalid": "Invalid example"
+  },
+  "output": {
+    "formatted": "Output (formatted)",
+    "minified": "Output (minified)",
+    "validated": "Validation",
+    "escape": "Output (escaped)",
+    "unescape": "Output (unescaped)",
+    "escapeShort": "Escape",
+    "unescapeShort": "Unescape",
+    "sortKeys": "Sort keys",
+    "expand": "Maximize",
+    "collapse": "Restore",
+    "waiting": "Results appear here once you enter some input"
+  },
+  "status": {
+    "cursor": "Ln {{line}}, Col {{column}}",
+    "chars": "{{count}} chars",
+    "elapsed": "{{ms}} ms",
+    "wrap": "Wrap",
+    "mode": "Parse mode",
+    "indent": "Indent",
+    "indent2": "2 spaces",
+    "indent4": "4 spaces",
+    "indentTab": "Tab"
+  },
+  "validate": {
+    "ok": "Valid JSON",
+    "elapsed": "Parsed in {{ms}} ms"
+  },
+  "tree": {
+    "empty": "Nothing to show yet",
+    "emptyHint": "Enter valid JSON to see its structure",
+    "more": "Load more ({{count}} left)"
+  },
+  "stats": {
+    "empty": "No statistics yet",
+    "objects": "Objects",
+    "arrays": "Arrays",
+    "keys": "Keys",
+    "strings": "Strings",
+    "numbers": "Numbers",
+    "booleans": "Booleans",
+    "nulls": "Nulls",
+    "maxDepth": "Max depth",
+    "lines": "Output lines",
+    "chars": "Output chars",
+    "bytes": "Output bytes"
+  },
+  "diff": {
+    "title": "Differences",
+    "empty": "Waiting to compare",
+    "emptyHint": "Enter JSON on both sides to compare automatically",
+    "same": "Both documents are identical",
+    "added": "{{count}} added",
+    "removed": "{{count}} removed",
+    "changed": "{{count}} changed",
+    "truncated": "Too many differences; showing the first 2000",
+    "kind": {
+      "added": "Added",
+      "removed": "Removed",
+      "changed": "Changed"
+    }
+  },
+  "error": {
+    "title": "Invalid JSON",
+    "locate": "Go to error"
+  },
+  "errors": {
+    "json.empty": "Input is empty",
+    "json.syntax": "Syntax error near line {{line}}, column {{column}}",
+    "json.eof": "Unexpected end of input at line {{line}}, column {{column}}",
+    "json.data": "Invalid data at line {{line}}, column {{column}}",
+    "json.unescape_failed": "Cannot unescape: invalid escape sequence near column {{column}}",
+    "json.serialize_failed": "Failed to produce output",
+    "json.doc_expired": "The document expired; please process it again",
+    "json.path_not_found": "Node path not found"
+  }
+}

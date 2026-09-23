@@ -1,0 +1,114 @@
+{
+  "name": "JSON 格式化",
+  "description": "格式化、压缩、校验、可视化 JSON 数据，支持大文件，完全在本地运行",
+  "help": [
+    "输入框中的内容会实时交给本地 Rust 引擎处理，数据不会离开本机。",
+    "格式化 / 压缩 / 校验：支持严格 JSON 与宽松的 JSON5（注释、尾逗号、单引号）。",
+    "出错时会标红错误所在行，点击「定位到错误」可跳转。",
+    "树形视图按需加载节点，大文件也能流畅浏览；统计信息展示各类型数量与嵌套深度。",
+    "对比：结构化比较两份 JSON，列出新增、删除与修改的路径。"
+  ],
+  "tabs": {
+    "format": "格式化",
+    "minify": "压缩",
+    "validate": "校验",
+    "escape": "转义/反转义",
+    "tree": "树形视图",
+    "diff": "对比"
+  },
+  "side": {
+    "stats": "统计信息"
+  },
+  "input": {
+    "title": "输入 (JSON)",
+    "text": "输入 (文本)",
+    "left": "左侧 JSON",
+    "right": "右侧 JSON",
+    "samples": "示例",
+    "open": "打开文件",
+    "placeholder": "在此粘贴或输入 JSON…"
+  },
+  "samples": {
+    "basic": "基础对象",
+    "array": "对象数组",
+    "nested": "多层嵌套",
+    "json5": "JSON5（宽松语法）",
+    "invalid": "错误示例"
+  },
+  "output": {
+    "formatted": "输出 (已格式化)",
+    "minified": "输出 (已压缩)",
+    "validated": "校验结果",
+    "escape": "输出 (已转义)",
+    "unescape": "输出 (已反转义)",
+    "escapeShort": "转义",
+    "unescapeShort": "反转义",
+    "sortKeys": "按键名排序",
+    "expand": "最大化",
+    "collapse": "还原",
+    "waiting": "在左侧输入内容后，这里会显示结果"
+  },
+  "status": {
+    "cursor": "行 {{line}}, 列 {{column}}",
+    "chars": "{{count}} 字符",
+    "elapsed": "耗时 {{ms}}ms",
+    "wrap": "自动换行",
+    "mode": "解析模式",
+    "indent": "缩进",
+    "indent2": "2 空格",
+    "indent4": "4 空格",
+    "indentTab": "Tab"
+  },
+  "validate": {
+    "ok": "JSON 格式正确",
+    "elapsed": "解析耗时 {{ms}}ms"
+  },
+  "tree": {
+    "empty": "暂无可展示的结构",
+    "emptyHint": "输入合法的 JSON 后会在这里显示树形结构",
+    "more": "加载更多（剩余 {{count}} 项）"
+  },
+  "stats": {
+    "empty": "暂无统计信息",
+    "objects": "对象",
+    "arrays": "数组",
+    "keys": "键",
+    "strings": "字符串",
+    "numbers": "数字",
+    "booleans": "布尔值",
+    "nulls": "null",
+    "maxDepth": "最大深度",
+    "lines": "输出行数",
+    "chars": "输出字符数",
+    "bytes": "输出字节数"
+  },
+  "diff": {
+    "title": "差异",
+    "empty": "等待对比",
+    "emptyHint": "在左右两侧输入 JSON 后自动对比",
+    "same": "两份 JSON 完全一致",
+    "added": "新增 {{count}}",
+    "removed": "删除 {{count}}",
+    "changed": "修改 {{count}}",
+    "truncated": "差异过多，仅显示前 2000 项",
+    "kind": {
+      "added": "新增",
+      "removed": "删除",
+      "changed": "修改"
+    }
+  },
+  "error": {
+    "title": "JSON 格式错误",
+    "locate": "定位到错误"
+  },
+  "errors": {
+    "json.empty": "输入为空",
+    "json.syntax": "第 {{line}} 行第 {{column}} 列附近存在语法错误",
+    "json.eof": "内容不完整：在第 {{line}} 行第 {{column}} 列意外结束",
+    "json.data": "第 {{line}} 行第 {{column}} 列的数据无效",
+    "json.unescape_failed": "无法反转义：第 {{column}} 列附近存在非法转义序列",
+    "json.serialize_failed": "生成输出失败",
+    "json.doc_expired": "文档已过期，请重新处理",
+    "json.path_not_found": "节点路径不存在"
+  }
+}

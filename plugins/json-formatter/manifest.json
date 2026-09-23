@@ -1,0 +1,21 @@
+{
+  "id": "org.devlive.toolforge.json-formatter",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["json", "format", "pretty", "minify", "validate", "json5", "格式化", "压缩", "校验"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],
+  "functions": {
+    "format": {},
+    "minify": {},
+    "validate": {},
+    "escape": {},
+    "unescape": {},
+    "tree_children": {},
+    "diff": {}
+  },
+  "sensitive": false
+}
