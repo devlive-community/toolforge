@@ -1,6 +1,7 @@
 name: Release
 
-# 推送 v* 标签（cargo xtask release <version> 创建）时构建并发布。
+# 推送 v* 标签（scripts/release.sh 创建）时构建并发布。
+# 发布说明取自附注标签的内容（该版本的提交历史），缺失时回退到 cargo xtask notes。
 # 暂不做系统代码签名（macOS 公证 / Windows 签名），仅使用更新器密钥签名更新包。
 on:
   push:
@@ -30,15 +31,21 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           key: xtask
-      - name: Generate notes from conventional commits
+      - name: Read release notes from the tag
         id: notes
         run: |
+          # checkout 可能只拿到轻量引用，显式获取附注标签对象
+          git fetch --force origin "refs/tags/${GITHUB_REF_NAME}:refs/tags/${GITHUB_REF_NAME}"
+          body="$(git tag -l --format='%(contents)' "${GITHUB_REF_NAME}")"
+          if [ -z "$(printf '%s' "$body" | tr -d '[:space:]')" ] || [ "$body" = "${GITHUB_REF_NAME}" ]; then
+            body="$(cargo xtask notes "${GITHUB_REF_NAME}" "${GITHUB_REF_NAME}")"
+          fi
           {
             echo 'body<<TOOLFORGE_NOTES_EOF'
-            cargo xtask notes "${GITHUB_REF_NAME}"
+            printf '%s\n' "$body"
             echo 'TOOLFORGE_NOTES_EOF'
           } >> "$GITHUB_OUTPUT"
-          cargo xtask notes "${GITHUB_REF_NAME}" >> "$GITHUB_STEP_SUMMARY"
+          printf '%s\n' "$body" >> "$GITHUB_STEP_SUMMARY"
 
   build:
     name: Build (${{ matrix.name }})

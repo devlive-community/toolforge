@@ -26,6 +26,8 @@ jobs:
           key: xtask
       - name: Scan conventions
         run: cargo xtask check rules
+      - name: Lint shell scripts
+        run: shellcheck scripts/*.sh
 
   rust:
     name: Rust (${{ matrix.os }})

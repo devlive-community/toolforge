@@ -4,7 +4,6 @@
 
 mod check;
 mod notes;
-mod release;
 mod rules;
 mod version;
 
@@ -17,9 +16,11 @@ Commands:
   check [part] [--fast]   Run the checks CI runs; part = rules | rust | web (default: all)
                           --fast skips the web build
   rules                   Scan the repository for convention violations only
+  version                 Print the current app version
   bump <version>          Set the app version in package.json files and Cargo.toml
-  notes [ref]             Print release notes for ref (default HEAD) since the previous tag
-  release <version>       Check, bump, commit and tag a release (push is left to you)
+                          (releases are published with scripts/release.sh)
+  notes [ref] [tag]       Print release notes (commit history since the previous v* tag) for ref
+                          (default HEAD); tag names the release for the compare link
   help                    Show this message
 ";
 
@@ -42,16 +43,19 @@ fn main() -> ExitCode {
             }
         }
         Some("rules") => rules::run(&check::workspace_root()),
+        Some("version") => {
+            version::current_version(&check::workspace_root()).map(|v| println!("{v}"))
+        }
         Some("bump") => match args.get(1) {
             Some(v) => version::bump(&check::workspace_root(), v),
             None => Err(format!("missing version\n\n{HELP}")),
         },
-        Some("notes") => notes::run(&check::workspace_root(), args.get(1).map(String::as_str))
-            .map(|notes| print!("{notes}")),
-        Some("release") => match args.get(1) {
-            Some(v) => release::run(&check::workspace_root(), v),
-            None => Err(format!("missing version\n\n{HELP}")),
-        },
+        Some("notes") => notes::run(
+            &check::workspace_root(),
+            args.get(1).map(String::as_str),
+            args.get(2).map(String::as_str),
+        )
+        .map(|notes| print!("{notes}")),
         Some("help") | None => {
             print!("{HELP}");
             Ok(())

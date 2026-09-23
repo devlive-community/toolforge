@@ -15,7 +15,8 @@
     "typecheck": "pnpm -r --parallel typecheck",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
-    "check": "cargo xtask check"
+    "check": "cargo xtask check",
+    "release": "scripts/release.sh"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
