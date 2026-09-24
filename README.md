@@ -59,6 +59,10 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **System Monitor** | Live CPU, memory, disk, network and temperature readings plus a searchable process list |
 | **Unit Converter** | 14 categories including length, weight, temperature, area, volume, data size and rate, pressure, energy and power, plus traditional Chinese units |
 | **Image Converter** | Batch convert PNG / JPEG / WebP / GIF / BMP / ICO / TIFF, resize by percent or bounding box, JPEG quality; runs as a task with live logs and never overwrites files |
+| **Cron Expression** | Explain 5 / 6 / 7-field cron expressions field by field, preview upcoming runs in any time zone, with `L`, `W`, `#` and aliases such as `@daily` |
+| **JSON to Code** | Generate TypeScript, Rust (serde), Go, Java records, Kotlin, Python (pydantic) and C# models from JSON samples, merging arrays and detecting optional and nullable fields |
+| **Image Info** | Format, dimensions, color type, EXIF camera settings and GPS location with a map link, dominant colors; strip EXIF / XMP / IPTC from JPEG and PNG losslessly |
+| **Markdown Editor** | GitHub Flavored Markdown with live preview rendered in Rust, outline, word count, formatting toolbar and shortcuts; drafts are saved automatically; export standalone HTML |
 
 More tools are on the way.
 
