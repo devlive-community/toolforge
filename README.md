@@ -53,9 +53,12 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Password Generator** | Cryptographically secure passwords with per-type options and exclusions, plus a local strength and crack-time check |
 | **QR Code** | Generate QR codes as PNG / SVG with error correction, size and colors; read QR codes from images |
 | **Background Remover** | Remove image backgrounds with a local AI model (U²-Net lite or IS-Net) running in Rust; models download on first use with resume and SHA-256 verification; transparent PNG or a solid color |
+| **IP Calculator** | IPv4 / IPv6 subnets: network, broadcast, host range, counts, address type and reverse DNS; subnet splitting, membership check and range to CIDR |
+| **HTTP Client** | Send requests with params, headers and JSON / text / form bodies; status, timing, headers and pretty-printed JSON; save responses and copy as cURL |
+| **System Monitor** | Live CPU, memory, disk, network and temperature readings plus a searchable process list |
 | **Image Converter** | Batch convert PNG / JPEG / WebP / GIF / BMP / ICO / TIFF, resize by percent or bounding box, JPEG quality; runs as a task with live logs and never overwrites files |
 
-More tools (more image tools, networking, system and unit conversion) are on the way.
+More tools (unit conversion, DNS lookup, more image tools and more) are on the way.
 
 ## 📦 Download
 
@@ -117,6 +120,7 @@ toolforge/
 │   ├── hash/  encoder/  jwt/
 │   ├── text-tools/  text-diff/  format-converter/
 │   ├── base-converter/  color/  password/  qrcode/
+│   ├── ip-calculator/  http-client/  system-monitor/
 │   └── image-converter/  background-remover/
 └── scripts/release.sh     # release script
 ```
