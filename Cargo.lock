@@ -6040,6 +6040,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-json-to-code"
+version = "0.1.0"
+dependencies = [
+ "indexmap 2.14.2",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-jwt"
 version = "0.1.0"
 dependencies = [
@@ -6469,6 +6479,7 @@ dependencies = [
  "tfp-image-converter",
  "tfp-ip-calculator",
  "tfp-json-formatter",
+ "tfp-json-to-code",
  "tfp-jwt",
  "tfp-password",
  "tfp-qrcode",

@@ -35,6 +35,7 @@ tfp-http-client.workspace = true
 tfp-image-converter.workspace = true
 tfp-ip-calculator.workspace = true
 tfp-json-formatter.workspace = true
+tfp-json-to-code.workspace = true
 tfp-jwt.workspace = true
 tfp-password.workspace = true
 tfp-qrcode.workspace = true

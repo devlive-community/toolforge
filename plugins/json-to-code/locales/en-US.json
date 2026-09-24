@@ -1,0 +1,31 @@
+{
+  "name": "JSON to Code",
+  "description": "Generate TypeScript, Rust, Go, Java, Kotlin, Python and C# types from a JSON sample",
+  "help": [
+    "Paste a JSON sample; nested objects become named types and array items are merged into one type.",
+    "Fields missing from some array items become optional; null values make a field nullable; mixed values fall back to the language's “any” type.",
+    "Field names follow each language's conventions, with rename annotations (serde, JSON tags, Jackson, kotlinx, pydantic, System.Text.Json) wherever the JSON key differs.",
+    "Everything is generated locally in Rust."
+  ],
+  "functions": {
+    "generate": "Generate code",
+    "languages": "List languages"
+  },
+  "language": "Language",
+  "root": "Root type",
+  "input": {
+    "title": "JSON",
+    "placeholder": "Paste a JSON sample…"
+  },
+  "output": {
+    "title": "Code",
+    "types_one": "{{count}} type",
+    "types_other": "{{count}} types",
+    "save": "Save"
+  },
+  "errors": {
+    "code.empty": "Paste a JSON sample",
+    "code.too_large": "The JSON is larger than {{limit}}",
+    "code.invalid_json": "Invalid JSON at line {{line}}, column {{column}}"
+  }
+}

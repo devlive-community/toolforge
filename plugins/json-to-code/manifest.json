@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.json-to-code",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "convert",
+  "keywords": ["json", "typescript", "interface", "rust", "struct", "go", "java", "kotlin", "python", "pydantic", "csharp", "types", "model", "类型", "实体类", "生成代码"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write", "fs:user-selected"],
+  "functions": {
+    "generate": {},
+    "languages": {}
+  },
+  "sensitive": false
+}

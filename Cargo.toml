@@ -32,6 +32,7 @@ tfp-http-client = { path = "plugins/http-client/backend" }
 tfp-image-converter = { path = "plugins/image-converter/backend" }
 tfp-ip-calculator = { path = "plugins/ip-calculator/backend" }
 tfp-json-formatter = { path = "plugins/json-formatter/backend" }
+tfp-json-to-code = { path = "plugins/json-to-code/backend" }
 tfp-jwt = { path = "plugins/jwt/backend" }
 tfp-password = { path = "plugins/password/backend" }
 tfp-qrcode = { path = "plugins/qrcode/backend" }

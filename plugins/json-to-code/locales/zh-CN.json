@@ -1,0 +1,31 @@
+{
+  "name": "JSON 转代码",
+  "description": "根据 JSON 样例生成 TypeScript、Rust、Go、Java、Kotlin、Python、C# 类型定义",
+  "help": [
+    "粘贴 JSON 样例：嵌套对象会生成具名类型，数组元素会合并为同一个类型。",
+    "部分数组元素缺少的字段标记为可选；出现 null 的字段标记为可空；类型不一致时使用该语言的通用类型。",
+    "字段名遵循各语言的命名习惯，与 JSON 键不同时自动加上重命名注解（serde、JSON tag、Jackson、kotlinx、pydantic、System.Text.Json）。",
+    "全部在本地 Rust 中生成。"
+  ],
+  "functions": {
+    "generate": "生成代码",
+    "languages": "语言列表"
+  },
+  "language": "语言",
+  "root": "根类型名",
+  "input": {
+    "title": "JSON",
+    "placeholder": "粘贴 JSON 样例…"
+  },
+  "output": {
+    "title": "代码",
+    "types_one": "{{count}} 个类型",
+    "types_other": "{{count}} 个类型",
+    "save": "保存"
+  },
+  "errors": {
+    "code.empty": "请粘贴 JSON 样例",
+    "code.too_large": "JSON 超过 {{limit}}",
+    "code.invalid_json": "JSON 在第 {{line}} 行第 {{column}} 列有误"
+  }
+}
