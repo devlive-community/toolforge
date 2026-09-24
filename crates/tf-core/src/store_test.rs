@@ -14,6 +14,32 @@ fn kv_roundtrip_and_overwrite() {
 }
 
 #[test]
+fn plugin_state_is_scoped_and_validated() {
+    let store = Store::open_in_memory().unwrap();
+    store.plugin_state_set("a", "draft", &json!("hi")).unwrap();
+    assert_eq!(
+        store.plugin_state_get("a", "draft").unwrap(),
+        Some(json!("hi"))
+    );
+    assert_eq!(store.plugin_state_get("b", "draft").unwrap(), None);
+    // null 删除
+    store.plugin_state_set("a", "draft", &Value::Null).unwrap();
+    assert_eq!(store.plugin_state_get("a", "draft").unwrap(), None);
+
+    for bad in ["", "a:b", "../x", &"k".repeat(65)] {
+        assert_eq!(
+            store.plugin_state_get("a", bad).unwrap_err().code,
+            "state.invalid_key"
+        );
+    }
+    let big = json!("x".repeat(PLUGIN_STATE_LIMIT));
+    assert_eq!(
+        store.plugin_state_set("a", "big", &big).unwrap_err().code,
+        "state.too_large"
+    );
+}
+
+#[test]
 fn favorite_toggles() {
     let store = Store::open_in_memory().unwrap();
     assert!(store.toggle_favorite("a").unwrap());

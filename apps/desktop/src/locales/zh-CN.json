@@ -196,6 +196,8 @@
       "plugin.invalid_args": "参数错误",
       "plugin.serialize_failed": "结果序列化失败",
       "plugin.crashed": "插件执行异常",
+      "state.invalid_key": "无效的存储键：{{key}}",
+      "state.too_large": "数据过大，无法保存（超过 {{limit}}）",
       "fs.not_utf8": "文件不是 UTF-8 编码的文本",
       "update.check_failed": "检查更新失败，请检查网络后重试",
       "update.install_failed": "更新安装失败",

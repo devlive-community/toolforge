@@ -103,6 +103,29 @@ pub fn plugin_list(state: State<'_, AppState>) -> Vec<Manifest> {
     state.plugins.manifests()
 }
 
+/// 读取插件私有状态（例如编辑器草稿），不存在时返回 null
+#[tauri::command]
+pub fn plugin_state_get(
+    state: State<'_, AppState>,
+    plugin_id: String,
+    key: String,
+) -> AppResult<Option<Value>> {
+    state.plugins.get(&plugin_id)?;
+    state.store.plugin_state_get(&plugin_id, &key)
+}
+
+/// 写入插件私有状态；值为 null 时删除
+#[tauri::command]
+pub fn plugin_state_set(
+    state: State<'_, AppState>,
+    plugin_id: String,
+    key: String,
+    value: Value,
+) -> AppResult<()> {
+    state.plugins.get(&plugin_id)?;
+    state.store.plugin_state_set(&plugin_id, &key, &value)
+}
+
 /// 调用插件函数。在阻塞线程池中执行，避免数据处理阻塞 IPC 主循环。
 #[tauri::command]
 pub async fn plugin_call(

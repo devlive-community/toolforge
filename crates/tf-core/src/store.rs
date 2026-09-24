@@ -8,7 +8,10 @@ use rusqlite::{Connection, OptionalExtension, params};
 use serde::Serialize;
 use serde_json::Value;
 
-use crate::AppResult;
+use crate::{AppError, AppResult};
+
+/// 单条插件状态序列化后的大小上限
+pub const PLUGIN_STATE_LIMIT: usize = 2 * 1024 * 1024;
 
 /// 迁移脚本，按顺序执行；`user_version` 记录已执行到的版本。
 const MIGRATIONS: &[&str] = &[
@@ -116,6 +119,41 @@ impl Store {
             params![key, value.to_string(), now_millis()],
         )?;
         Ok(())
+    }
+
+    pub fn kv_delete(&self, key: &str) -> AppResult<()> {
+        self.conn()
+            .execute("DELETE FROM kv WHERE key = ?1", [key])?;
+        Ok(())
+    }
+
+    /// 插件私有状态的存储键：`plugin:<插件 id>:<键>`，键只允许字母、数字与 `._-`
+    fn plugin_state_key(plugin_id: &str, key: &str) -> AppResult<String> {
+        let valid = !key.is_empty()
+            && key.len() <= 64
+            && key
+                .bytes()
+                .all(|b| b.is_ascii_alphanumeric() || b"._-".contains(&b));
+        if !valid {
+            return Err(AppError::new("state.invalid_key").with("key", key));
+        }
+        Ok(format!("plugin:{plugin_id}:{key}"))
+    }
+
+    pub fn plugin_state_get(&self, plugin_id: &str, key: &str) -> AppResult<Option<Value>> {
+        self.kv_get(&Self::plugin_state_key(plugin_id, key)?)
+    }
+
+    /// 写入插件状态；值为 null 时删除
+    pub fn plugin_state_set(&self, plugin_id: &str, key: &str, value: &Value) -> AppResult<()> {
+        let key = Self::plugin_state_key(plugin_id, key)?;
+        if value.is_null() {
+            return self.kv_delete(&key);
+        }
+        if value.to_string().len() > PLUGIN_STATE_LIMIT {
+            return Err(AppError::new("state.too_large").with("limit", "2 MB"));
+        }
+        self.kv_set(&key, value)
     }
 
     pub fn favorites(&self) -> AppResult<Vec<String>> {

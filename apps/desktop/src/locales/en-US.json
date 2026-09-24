@@ -196,6 +196,8 @@
       "plugin.invalid_args": "Invalid arguments",
       "plugin.serialize_failed": "Failed to serialize the result",
       "plugin.crashed": "The plugin crashed",
+      "state.invalid_key": "Invalid storage key: {{key}}",
+      "state.too_large": "The data is too large to save (over {{limit}})",
       "fs.not_utf8": "The file is not UTF-8 encoded text",
       "update.check_failed": "Failed to check for updates; check your network and try again",
       "update.install_failed": "Failed to install the update",
