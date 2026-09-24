@@ -5170,6 +5170,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-base-converter"
+version = "0.1.0"
+dependencies = [
+ "num-bigint",
+ "num-traits",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-encoder"
 version = "0.1.0"
 dependencies = [
@@ -5595,6 +5606,7 @@ dependencies = [
  "tauri-plugin-updater",
  "tf-core",
  "tf-plugin-api",
+ "tfp-base-converter",
  "tfp-encoder",
  "tfp-format-converter",
  "tfp-hash",

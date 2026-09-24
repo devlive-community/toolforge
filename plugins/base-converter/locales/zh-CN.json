@@ -1,0 +1,58 @@
+{
+  "name": "进制转换",
+  "description": "任意大小整数在 2–36 进制间转换，附补码表与可编辑的位视图",
+  "help": [
+    "自动识别 0x、0o、0b 前缀，忽略空格、下划线和逗号分隔符。",
+    "支持任意精度；补码表列出数值能容纳的全部位宽。",
+    "在 64 位视图中点击任意一位即可翻转。",
+    "所有转换都在本地 Rust 引擎中完成。"
+  ],
+  "functions": {
+    "convert": "转换"
+  },
+  "input": {
+    "label": "数字",
+    "placeholder": "输入数字，例如 255、0xff、-0b1010",
+    "from": "输入进制",
+    "auto": "自动（按前缀）",
+    "base": "{{base}} 进制",
+    "examples": "示例"
+  },
+  "options": {
+    "uppercase": "大写",
+    "group": "数字分组"
+  },
+  "results": {
+    "title": "转换结果",
+    "empty": "输入数字开始转换",
+    "size": "{{bits}} 位 · {{bytes}} 字节",
+    "binary": "二进制",
+    "octal": "八进制",
+    "decimal": "十进制",
+    "hex": "十六进制",
+    "custom": "自定义进制"
+  },
+  "bits": {
+    "title": "64 位视图",
+    "hint": "点击翻转",
+    "toggle": "翻转第 {{bit}} 位",
+    "outOfRange": "数值超出 64 位范围"
+  },
+  "widths": {
+    "title": "补码",
+    "none": "数值超过 128 位",
+    "bits": "位宽",
+    "width": "{{bits}} 位",
+    "hex": "十六进制",
+    "unsigned": "无符号",
+    "signed": "有符号"
+  },
+  "errors": {
+    "base.empty": "请输入数字",
+    "base.invalid_digit": "第 {{position}} 个字符“{{char}}”不是合法的 {{base}} 进制数字",
+    "base.invalid_base": "不支持 {{base}} 进制（2–36）",
+    "base.too_long": "数字超过 {{limit}} 位",
+    "base.invalid_bit": "第 {{bit}} 位超出范围",
+    "base.out_of_range": "数值超出 64 位范围"
+  }
+}

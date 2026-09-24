@@ -23,6 +23,7 @@ serde.workspace = true
 serde_json.workspace = true
 tf-core.workspace = true
 tf-plugin-api.workspace = true
+tfp-base-converter.workspace = true
 tfp-encoder.workspace = true
 tfp-format-converter.workspace = true
 tfp-hash.workspace = true

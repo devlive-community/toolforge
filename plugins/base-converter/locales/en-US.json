@@ -1,0 +1,58 @@
+{
+  "name": "Base Converter",
+  "description": "Convert integers of any size between bases 2–36, with two's complement and an editable bit view",
+  "help": [
+    "Prefixes 0x, 0o and 0b are detected automatically; spaces, underscores and commas are ignored.",
+    "Numbers have arbitrary precision; the two's complement table lists every width the value fits in.",
+    "Click a bit in the 64-bit view to flip it.",
+    "All conversions run in the local Rust engine."
+  ],
+  "functions": {
+    "convert": "Convert"
+  },
+  "input": {
+    "label": "Number",
+    "placeholder": "Enter a number, e.g. 255, 0xff, -0b1010",
+    "from": "Input base",
+    "auto": "Auto (prefix)",
+    "base": "Base {{base}}",
+    "examples": "Examples"
+  },
+  "options": {
+    "uppercase": "Uppercase",
+    "group": "Group digits"
+  },
+  "results": {
+    "title": "Conversions",
+    "empty": "Enter a number to convert",
+    "size": "{{bits}} bits · {{bytes}} bytes",
+    "binary": "Binary",
+    "octal": "Octal",
+    "decimal": "Decimal",
+    "hex": "Hex",
+    "custom": "Custom base"
+  },
+  "bits": {
+    "title": "64-bit view",
+    "hint": "Click to flip",
+    "toggle": "Flip bit {{bit}}",
+    "outOfRange": "The value does not fit in 64 bits"
+  },
+  "widths": {
+    "title": "Two's complement",
+    "none": "The value is wider than 128 bits",
+    "bits": "Width",
+    "width": "{{bits}}-bit",
+    "hex": "Hex",
+    "unsigned": "Unsigned",
+    "signed": "Signed"
+  },
+  "errors": {
+    "base.empty": "Enter a number",
+    "base.invalid_digit": "“{{char}}” at position {{position}} is not a valid base-{{base}} digit",
+    "base.invalid_base": "Base {{base}} is not supported (2–36)",
+    "base.too_long": "The number is longer than {{limit}} digits",
+    "base.invalid_bit": "Bit {{bit}} is out of range",
+    "base.out_of_range": "The value does not fit in 64 bits"
+  }
+}

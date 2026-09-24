@@ -1,0 +1,15 @@
+{
+  "id": "org.devlive.toolforge.base-converter",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "calc",
+  "keywords": ["base", "radix", "binary", "octal", "decimal", "hex", "hexadecimal", "two's complement", "bits", "进制", "二进制", "八进制", "十六进制", "补码"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "convert": {}
+  },
+  "sensitive": false
+}
