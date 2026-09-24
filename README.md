@@ -62,6 +62,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Cron Expression** | Explain 5 / 6 / 7-field cron expressions field by field, preview upcoming runs in any time zone, with `L`, `W`, `#` and aliases such as `@daily` |
 | **JSON to Code** | Generate TypeScript, Rust (serde), Go, Java records, Kotlin, Python (pydantic) and C# models from JSON samples, merging arrays and detecting optional and nullable fields |
 | **cURL to Code** | Convert curl commands (including browser “Copy as cURL” in bash or cmd format) into JavaScript fetch, Python requests, Go, Rust reqwest, Java HttpClient, PHP and C# code, listing anything that cannot be converted |
+| **CSV Viewer** | Open CSV / TSV files up to 1 GB (a million rows in under a second) with automatic encoding, delimiter and header detection; sort, search, filter, column statistics and export to CSV / TSV / JSON / Markdown |
 | **Image Info** | Format, dimensions, color type, EXIF camera settings and GPS location with a map link, dominant colors; strip EXIF / XMP / IPTC from JPEG and PNG losslessly |
 | **Markdown Editor** | GitHub Flavored Markdown with live preview rendered in Rust, outline, word count, formatting toolbar and shortcuts; drafts are saved automatically; export standalone HTML |
 
