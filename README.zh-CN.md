@@ -44,8 +44,11 @@
 | **哈希计算** | MD5、SHA-1、SHA-2、SHA3、SM3、CRC32；文本实时计算；文件拖入批量计算，任务化运行并显示实时日志 |
 | **编解码** | Base64 / Base64URL / Base32 / Hex、URL（组件、完整 URL、表单）、HTML 实体、Unicode 转义双向转换；文件转 Base64 / Data URI |
 | **JWT 解析** | 解析 Header 与 Payload、判断过期、校验 HS / RS / PS / ES / EdDSA 签名并签发新令牌 |
+| **文本处理** | 13 种命名风格与大小写转换；去空白、去重、排序（自然排序、按长度）、打乱与行号；字符、词数、中日韩字数与阅读时长统计 |
+| **文本对比** | 按行 / 按词 / 按字符对比，左右并排高亮，可忽略大小写与空白，导出 unified 补丁 |
+| **格式转换** | JSON ⇄ YAML ⇄ TOML ⇄ CSV，自动识别输入格式、保持键顺序，支持 CSV 分隔符、表头与类型推断 |
 
-更多工具（文本处理、格式转换、图像、网络等）持续开发中。
+更多工具（图像、网络、系统、计算等）持续开发中。
 
 ## 📦 下载安装
 
@@ -104,7 +107,8 @@ toolforge/
 ├── plugins/               # 官方插件（每个插件独立版本）
 │   ├── json-formatter/  xml-formatter/  sql-formatter/
 │   ├── regex/  timestamp/  uuid/
-│   └── hash/  encoder/  jwt/
+│   ├── hash/  encoder/  jwt/
+│   └── text-tools/  text-diff/  format-converter/
 └── scripts/release.sh     # 发布脚本
 ```
 
