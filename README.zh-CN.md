@@ -42,7 +42,7 @@
 | **正则测试** | 实时高亮匹配与分组、替换预览；支持断言、反向引用与命名分组；常用正则预设 |
 | **时间戳转换** | 秒 / 毫秒 / 微秒 / 纳秒自动识别；多时区对照；日期字符串转时间戳；实时时钟 |
 | **UUID 生成** | UUID v1 / v3 / v4 / v5 / v7、ULID、NanoID 批量生成；解析版本与内含时间 |
-| **哈希计算** | MD5、SHA-1、SHA-2、SHA3、SM3、CRC32；文本实时计算；文件拖入批量计算，任务化运行并显示实时日志 |
+| **哈希计算** | MD5、SHA-1、SHA-2、SHA3、SM3、CRC32；文本实时计算与 HMAC 校验；文件拖入批量计算，任务化运行并显示实时日志 |
 | **编解码** | Base64 / Base64URL / Base32 / Hex、URL（组件、完整 URL、表单）、HTML 实体、Unicode 转义双向转换；文件转 Base64 / Data URI |
 | **JWT 解析** | 解析 Header 与 Payload、判断过期、校验 HS / RS / PS / ES / EdDSA 签名并签发新令牌 |
 | **文本处理** | 13 种命名风格与大小写转换；去空白、去重、排序（自然排序、按长度）、打乱与行号；字符、词数、中日韩字数与阅读时长统计 |
@@ -55,10 +55,12 @@
 | **去除背景** | 使用本地 AI 模型（U²-Net 轻量版或 IS-Net）在 Rust 中抠图；模型首次使用时下载，支持续传与 SHA-256 校验；输出透明 PNG 或纯色背景 |
 | **IP 计算器** | IPv4 / IPv6 子网：网络与广播地址、主机范围、地址数量、地址类型与反向解析；子网拆分、归属检查与地址段转 CIDR |
 | **HTTP 请求** | 发送带参数、请求头与 JSON / 文本 / 表单请求体的请求；查看状态、耗时、响应头与格式化的 JSON；保存响应、复制为 cURL |
+| **DNS 查询** | 通过系统解析器或公共 DNS 查询 A / AAAA / CNAME / MX / TXT / NS / SOA / SRV / CAA / PTR 记录，并排对比结果与耗时；识别代理的 fake-ip |
 | **系统监控** | 实时查看 CPU、内存、磁盘、网络与温度，以及可搜索的进程列表 |
+| **单位换算** | 长度、重量、温度、面积、体积、数据大小与速率、压强、能量、功率等 14 类单位，含市制单位 |
 | **图片转换** | PNG / JPEG / WebP / GIF / BMP / ICO / TIFF 批量互转，按比例或限定宽高缩放，JPEG 质量可调；以任务运行并输出实时日志，不覆盖已有文件 |
 
-更多工具（单位换算、DNS 查询、更多图像工具等）持续开发中。
+更多工具持续开发中。
 
 ## 📦 下载安装
 
@@ -120,7 +122,7 @@ toolforge/
 │   ├── hash/  encoder/  jwt/
 │   ├── text-tools/  text-diff/  format-converter/
 │   ├── base-converter/  color/  password/  qrcode/
-│   ├── ip-calculator/  http-client/  system-monitor/
+│   ├── ip-calculator/  http-client/  dns-lookup/  system-monitor/  unit-converter/
 │   └── image-converter/  background-remover/
 └── scripts/release.sh     # 发布脚本
 ```

@@ -42,7 +42,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Regex Tester** | Live match and group highlighting with replacement preview; lookaround, backreferences and named groups; common pattern presets |
 | **Timestamp** | Seconds / milliseconds / microseconds / nanoseconds detected automatically; multiple time zones side by side; date strings to timestamps; live clock |
 | **UUID Generator** | Batch generate UUID v1 / v3 / v4 / v5 / v7, ULID and NanoID; inspect versions and embedded timestamps |
-| **Hash** | MD5, SHA-1, SHA-2, SHA3, SM3 and CRC32; live text hashing; drop files to hash them in a background task with live logs |
+| **Hash** | MD5, SHA-1, SHA-2, SHA3, SM3 and CRC32; live text hashing and HMAC with verification; drop files to hash them in a background task with live logs |
 | **Encoder** | Base64 / Base64URL / Base32 / Hex, URL (component, full, form), HTML entities and Unicode escapes in both directions; files to Base64 or Data URIs |
 | **JWT Decoder** | Decode headers and payloads, check expiry, verify HS / RS / PS / ES / EdDSA signatures and sign new tokens |
 | **Text Tools** | 13 naming styles and letter cases; trim, dedupe, sort (natural, by length), shuffle and number lines; character, word, CJK and reading-time statistics |
@@ -55,10 +55,12 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Background Remover** | Remove image backgrounds with a local AI model (U²-Net lite or IS-Net) running in Rust; models download on first use with resume and SHA-256 verification; transparent PNG or a solid color |
 | **IP Calculator** | IPv4 / IPv6 subnets: network, broadcast, host range, counts, address type and reverse DNS; subnet splitting, membership check and range to CIDR |
 | **HTTP Client** | Send requests with params, headers and JSON / text / form bodies; status, timing, headers and pretty-printed JSON; save responses and copy as cURL |
+| **DNS Lookup** | A / AAAA / CNAME / MX / TXT / NS / SOA / SRV / CAA / PTR records from the system resolver or public DNS, compared side by side with timings; flags proxy fake IPs |
 | **System Monitor** | Live CPU, memory, disk, network and temperature readings plus a searchable process list |
+| **Unit Converter** | 14 categories including length, weight, temperature, area, volume, data size and rate, pressure, energy and power, plus traditional Chinese units |
 | **Image Converter** | Batch convert PNG / JPEG / WebP / GIF / BMP / ICO / TIFF, resize by percent or bounding box, JPEG quality; runs as a task with live logs and never overwrites files |
 
-More tools (unit conversion, DNS lookup, more image tools and more) are on the way.
+More tools are on the way.
 
 ## 📦 Download
 
@@ -120,7 +122,7 @@ toolforge/
 │   ├── hash/  encoder/  jwt/
 │   ├── text-tools/  text-diff/  format-converter/
 │   ├── base-converter/  color/  password/  qrcode/
-│   ├── ip-calculator/  http-client/  system-monitor/
+│   ├── ip-calculator/  http-client/  dns-lookup/  system-monitor/  unit-converter/
 │   └── image-converter/  background-remover/
 └── scripts/release.sh     # release script
 ```
