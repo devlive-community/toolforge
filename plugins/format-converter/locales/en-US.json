@@ -1,0 +1,57 @@
+{
+  "name": "Format Converter",
+  "description": "Convert between JSON, YAML, TOML and CSV with automatic input detection and preserved key order",
+  "help": [
+    "Choose “Auto detect” to paste any format; the detected format appears below the input.",
+    "Multi-document YAML (---) becomes an array; TOML date-times are kept as strings.",
+    "TOML has no null and needs a table at the top level; the exact path is reported when that happens.",
+    "For CSV pick the delimiter, whether the first row is a header and whether to infer numbers / booleans; nested objects become a.b columns when converting to CSV."
+  ],
+  "formats": {
+    "auto": "Auto detect",
+    "json": "JSON",
+    "yaml": "YAML",
+    "toml": "TOML",
+    "csv": "CSV"
+  },
+  "from": "Input format",
+  "to": "Output format",
+  "swap": "Swap input and output",
+  "options": {
+    "indent": "Indent",
+    "indent2": "2 spaces",
+    "indent4": "4 spaces",
+    "minify": "Minify",
+    "delimiter": "Delimiter",
+    "header": "Header row",
+    "inferTypes": "Infer types"
+  },
+  "delimiters": {
+    "comma": "Comma ,",
+    "semicolon": "Semicolon ;",
+    "tab": "Tab",
+    "pipe": "Pipe |"
+  },
+  "input": "Input",
+  "output": "Output ({{format}})",
+  "sample": "Sample",
+  "open": "Open file",
+  "placeholder": "Paste JSON, YAML, TOML or CSV…",
+  "detected": "Detected {{format}}",
+  "records": "{{count}} records",
+  "elapsed": "{{ms}} ms",
+  "waiting": "The converted result appears here once you enter some input",
+  "errors": {
+    "format.empty": "Input is empty",
+    "format.too_large": "Input is too large (over {{limit}})",
+    "format.json_invalid": "JSON syntax error near line {{line}}, column {{column}}",
+    "format.yaml_invalid": "YAML syntax error near line {{line}}, column {{column}}",
+    "format.toml_invalid": "TOML syntax error near line {{line}}, column {{column}}",
+    "format.csv_invalid": "Could not parse the CSV",
+    "format.toml_null": "TOML cannot represent null (at {{path}})",
+    "format.toml_number": "TOML cannot represent the number at {{path}}",
+    "format.toml_root": "The top level must be an object to convert to TOML",
+    "format.csv_shape": "CSV output needs an array of objects or rows",
+    "format.serialize_failed": "Failed to produce output"
+  }
+}

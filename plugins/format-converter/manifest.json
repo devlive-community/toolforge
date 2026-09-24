@@ -1,0 +1,15 @@
+{
+  "id": "org.devlive.toolforge.format-converter",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "convert",
+  "keywords": ["json", "yaml", "yml", "toml", "csv", "convert", "converter", "格式转换", "互转"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],
+  "functions": {
+    "convert": {}
+  },
+  "sensitive": false
+}

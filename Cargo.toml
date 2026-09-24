@@ -21,6 +21,7 @@ thiserror = "2"
 tf-core = { path = "crates/tf-core" }
 tf-plugin-api = { path = "crates/tf-plugin-api" }
 tfp-encoder = { path = "plugins/encoder/backend" }
+tfp-format-converter = { path = "plugins/format-converter/backend" }
 tfp-hash = { path = "plugins/hash/backend" }
 tfp-json-formatter = { path = "plugins/json-formatter/backend" }
 tfp-jwt = { path = "plugins/jwt/backend" }

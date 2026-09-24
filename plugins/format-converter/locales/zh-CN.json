@@ -1,0 +1,57 @@
+{
+  "name": "格式转换",
+  "description": "JSON、YAML、TOML 与 CSV 互相转换，自动识别输入格式并保持键的顺序",
+  "help": [
+    "输入格式选择「自动识别」即可直接粘贴任意格式，识别结果显示在输入框底部。",
+    "YAML 多文档（---）会转为数组；TOML 中的日期时间保留为字符串。",
+    "TOML 无法表示 null，也要求顶层必须是表，遇到时会指出具体路径。",
+    "CSV 可选择分隔符、是否含表头与是否推断数字 / 布尔类型；转为 CSV 时嵌套对象会展开为 a.b 列。"
+  ],
+  "formats": {
+    "auto": "自动识别",
+    "json": "JSON",
+    "yaml": "YAML",
+    "toml": "TOML",
+    "csv": "CSV"
+  },
+  "from": "输入格式",
+  "to": "输出格式",
+  "swap": "交换输入与输出",
+  "options": {
+    "indent": "缩进",
+    "indent2": "2 空格",
+    "indent4": "4 空格",
+    "minify": "压缩",
+    "delimiter": "分隔符",
+    "header": "首行为表头",
+    "inferTypes": "推断类型"
+  },
+  "delimiters": {
+    "comma": "逗号 ,",
+    "semicolon": "分号 ;",
+    "tab": "制表符",
+    "pipe": "竖线 |"
+  },
+  "input": "输入",
+  "output": "输出（{{format}}）",
+  "sample": "示例",
+  "open": "打开文件",
+  "placeholder": "粘贴 JSON、YAML、TOML 或 CSV…",
+  "detected": "识别为 {{format}}",
+  "records": "{{count}} 条记录",
+  "elapsed": "耗时 {{ms}}ms",
+  "waiting": "在左侧输入内容后，这里会显示转换结果",
+  "errors": {
+    "format.empty": "输入为空",
+    "format.too_large": "内容过大（超过 {{limit}}）",
+    "format.json_invalid": "JSON 第 {{line}} 行第 {{column}} 列附近有语法错误",
+    "format.yaml_invalid": "YAML 第 {{line}} 行第 {{column}} 列附近有语法错误",
+    "format.toml_invalid": "TOML 第 {{line}} 行第 {{column}} 列附近有语法错误",
+    "format.csv_invalid": "CSV 解析失败",
+    "format.toml_null": "TOML 不支持 null（位于 {{path}}）",
+    "format.toml_number": "TOML 无法表示 {{path}} 处的数字",
+    "format.toml_root": "转换为 TOML 时顶层必须是对象",
+    "format.csv_shape": "转换为 CSV 需要对象数组或二维数组",
+    "format.serialize_failed": "生成输出失败"
+  }
+}
