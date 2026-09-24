@@ -29,5 +29,14 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(
         tfp_background_remover::BackgroundRemover::default(),
     ));
+    registry.register(Arc::new(tfp_ip_calculator::IpCalculator::default()));
+    registry.register(Arc::new(tfp_http_client::HttpClient::default()));
+    registry.register(Arc::new(tfp_dns_lookup::DnsLookup::default()));
+    registry.register(Arc::new(tfp_system_monitor::SystemMonitor::default()));
+    registry.register(Arc::new(tfp_unit_converter::UnitConverter::default()));
     registry
 }
+
+#[cfg(test)]
+#[path = "plugins_test.rs"]
+mod tests;
