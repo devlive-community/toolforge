@@ -24,5 +24,6 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_image_converter::ImageConverter::default()));
     registry.register(Arc::new(tfp_base_converter::BaseConverter::default()));
     registry.register(Arc::new(tfp_color::ColorTool::default()));
+    registry.register(Arc::new(tfp_password::Password::default()));
     registry
 }

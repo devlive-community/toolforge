@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.password",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "encode",
+  "keywords": ["password", "generator", "random", "strength", "entropy", "passphrase", "密码", "随机", "强度", "生成"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "generate": {},
+    "analyze": {}
+  },
+  "sensitive": true
+}

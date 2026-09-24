@@ -1,0 +1,85 @@
+{
+  "name": "Password Generator",
+  "description": "Generate strong random passwords and check how hard a password is to crack",
+  "help": [
+    "Passwords come from the operating system's cryptographically secure random number generator in Rust.",
+    "Entropy is length × log2(character pool); 80+ bits is very strong.",
+    "The strength check penalizes common passwords, repeats and keyboard or alphabet sequences; nothing is sent anywhere or stored.",
+    "Crack time assumes an offline attacker making 10 billion guesses per second."
+  ],
+  "functions": {
+    "generate": "Generate passwords",
+    "analyze": "Check strength"
+  },
+  "options": {
+    "title": "Options",
+    "length": "Length",
+    "upper": "Uppercase A–Z",
+    "lower": "Lowercase a–z",
+    "digits": "Digits 0–9",
+    "symbols": "Symbols !@#…",
+    "excludeAmbiguous": "Exclude look-alikes (0 O 1 l I)",
+    "requireEach": "Use every selected type",
+    "exclude": "Exclude characters",
+    "excludePlaceholder": "Characters never to use",
+    "count": "How many",
+    "regenerate": "Regenerate"
+  },
+  "result": {
+    "title": "Passwords",
+    "empty": "No passwords",
+    "copyAll": "Copy all",
+    "entropy": "{{bits}} bits · pool {{pool}}",
+    "check": "Check strength"
+  },
+  "strength": {
+    "title": "Strength check",
+    "label": "Password to check",
+    "placeholder": "Type or paste a password to check",
+    "hint": "Checked locally in Rust; the password is never stored.",
+    "show": "Show password",
+    "hide": "Hide password",
+    "entropy": "{{bits}} bits of entropy",
+    "length_one": "{{count}} character",
+    "length_other": "{{count}} characters",
+    "crack": "Cracked in {{time}}",
+    "score": {
+      "0": "Very weak",
+      "1": "Weak",
+      "2": "Fair",
+      "3": "Strong",
+      "4": "Very strong"
+    },
+    "units": {
+      "forever": "longer than a million centuries",
+      "instant": "less than a second",
+      "seconds_one": "{{count}} second",
+      "seconds_other": "{{count}} seconds",
+      "minutes_one": "{{count}} minute",
+      "minutes_other": "{{count}} minutes",
+      "hours_one": "{{count}} hour",
+      "hours_other": "{{count}} hours",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
+      "years_one": "{{count}} year",
+      "years_other": "{{count}} years",
+      "centuries_one": "{{count, number}} century",
+      "centuries_other": "{{count, number}} centuries"
+    },
+    "warnings": {
+      "common": "This is one of the most common passwords",
+      "short": "Use at least 12 characters",
+      "repeated": "Avoid repeated characters like “aaa”",
+      "sequence": "Avoid sequences like “abc”, “123” or “qwe”",
+      "single_class": "Mix letters, digits and symbols"
+    }
+  },
+  "errors": {
+    "password.invalid_length": "Length must be between 1 and {{max}}",
+    "password.invalid_count": "Count must be between 1 and {{max}}",
+    "password.no_charset": "Select at least one character type with usable characters",
+    "password.too_short_for_classes": "Length must be at least {{min}} to include every selected type",
+    "password.empty": "Enter a password",
+    "password.too_long": "The password is longer than {{limit}} characters"
+  }
+}

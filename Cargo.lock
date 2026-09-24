@@ -5284,6 +5284,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-password"
+version = "0.1.0"
+dependencies = [
+ "rand 0.10.3",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-regex"
 version = "0.1.0"
 dependencies = [
@@ -5638,6 +5648,7 @@ dependencies = [
  "tfp-image-converter",
  "tfp-json-formatter",
  "tfp-jwt",
+ "tfp-password",
  "tfp-regex",
  "tfp-sql-formatter",
  "tfp-text-diff",

@@ -1,0 +1,85 @@
+{
+  "name": "密码生成",
+  "description": "生成高强度随机密码，并评估密码被破解的难度",
+  "help": [
+    "密码由 Rust 使用操作系统的密码学安全随机数生成。",
+    "熵 = 长度 × log2(字符池大小)，80 位以上为很强。",
+    "强度检查会识别常见密码、重复字符以及键盘或字母序列；密码不会发送到任何地方，也不会被记录。",
+    "破解时间按离线攻击每秒 100 亿次猜测估算。"
+  ],
+  "functions": {
+    "generate": "生成密码",
+    "analyze": "检查强度"
+  },
+  "options": {
+    "title": "选项",
+    "length": "长度",
+    "upper": "大写字母 A–Z",
+    "lower": "小写字母 a–z",
+    "digits": "数字 0–9",
+    "symbols": "符号 !@#…",
+    "excludeAmbiguous": "排除易混淆字符（0 O 1 l I）",
+    "requireEach": "每种类型至少出现一次",
+    "exclude": "排除字符",
+    "excludePlaceholder": "不使用的字符",
+    "count": "数量",
+    "regenerate": "重新生成"
+  },
+  "result": {
+    "title": "密码",
+    "empty": "暂无密码",
+    "copyAll": "全部复制",
+    "entropy": "{{bits}} 位熵 · 字符池 {{pool}}",
+    "check": "检查强度"
+  },
+  "strength": {
+    "title": "强度检查",
+    "label": "待检查的密码",
+    "placeholder": "输入或粘贴要检查的密码",
+    "hint": "在本地 Rust 中检查，密码不会被保存。",
+    "show": "显示密码",
+    "hide": "隐藏密码",
+    "entropy": "{{bits}} 位熵",
+    "length_one": "{{count}} 个字符",
+    "length_other": "{{count}} 个字符",
+    "crack": "约 {{time}} 可破解",
+    "score": {
+      "0": "极弱",
+      "1": "弱",
+      "2": "一般",
+      "3": "强",
+      "4": "很强"
+    },
+    "units": {
+      "forever": "超过一百万个世纪",
+      "instant": "不到 1 秒",
+      "seconds_one": "{{count}} 秒",
+      "seconds_other": "{{count}} 秒",
+      "minutes_one": "{{count}} 分钟",
+      "minutes_other": "{{count}} 分钟",
+      "hours_one": "{{count}} 小时",
+      "hours_other": "{{count}} 小时",
+      "days_one": "{{count}} 天",
+      "days_other": "{{count}} 天",
+      "years_one": "{{count}} 年",
+      "years_other": "{{count}} 年",
+      "centuries_one": "{{count, number}} 个世纪",
+      "centuries_other": "{{count, number}} 个世纪"
+    },
+    "warnings": {
+      "common": "这是最常见的密码之一",
+      "short": "建议至少 12 个字符",
+      "repeated": "避免“aaa”这样的重复字符",
+      "sequence": "避免“abc”“123”“qwe”这样的序列",
+      "single_class": "混合使用字母、数字和符号"
+    }
+  },
+  "errors": {
+    "password.invalid_length": "长度需在 1 到 {{max}} 之间",
+    "password.invalid_count": "数量需在 1 到 {{max}} 之间",
+    "password.no_charset": "请至少选择一种有可用字符的类型",
+    "password.too_short_for_classes": "要包含所有选中的类型，长度至少为 {{min}}",
+    "password.empty": "请输入密码",
+    "password.too_long": "密码超过 {{limit}} 个字符"
+  }
+}
