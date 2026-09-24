@@ -53,6 +53,7 @@
   --tf-editor-error-line: rgb(220 38 38 / 0.1);
   --tf-editor-match: rgb(28 154 79 / 0.2);
   --tf-editor-match-alt: rgb(37 99 235 / 0.16);
+  --tf-editor-match-warn: rgb(217 119 6 / 0.18);
   --tf-editor-match-active: rgb(28 154 79 / 0.38);
 
   /* 滚动条 */
@@ -133,6 +134,7 @@
   --tf-editor-error-line: rgb(240 82 82 / 0.14);
   --tf-editor-match: rgb(52 196 109 / 0.24);
   --tf-editor-match-alt: rgb(96 165 250 / 0.22);
+  --tf-editor-match-warn: rgb(245 158 11 / 0.22);
   --tf-editor-match-active: rgb(52 196 109 / 0.45);
 
   --tf-scrollbar: rgb(255 255 255 / 0.14);

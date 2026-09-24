@@ -33,6 +33,7 @@ const theme = EditorView.theme({
   '.cm-tf-error-line': { backgroundColor: 'var(--tf-editor-error-line)' },
   '.cm-tf-mark': { backgroundColor: 'var(--tf-editor-match)', borderRadius: '3px' },
   '.cm-tf-mark-alt': { backgroundColor: 'var(--tf-editor-match-alt)', borderRadius: '3px' },
+  '.cm-tf-mark-warn': { backgroundColor: 'var(--tf-editor-match-warn)', borderRadius: '3px' },
   '.cm-tf-mark-active': {
     backgroundColor: 'var(--tf-editor-match-active)',
     borderRadius: '3px',
@@ -64,6 +65,7 @@ const errorLineMark = Decoration.line({ class: 'cm-tf-error-line' })
 const markDecorations = {
   primary: Decoration.mark({ class: 'cm-tf-mark' }),
   alt: Decoration.mark({ class: 'cm-tf-mark-alt' }),
+  warn: Decoration.mark({ class: 'cm-tf-mark-warn' }),
   active: Decoration.mark({ class: 'cm-tf-mark-active' }),
 }
 
