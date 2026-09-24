@@ -28,6 +28,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 - **Live feedback for long tasks**: heavy work such as hashing large files runs as a background task with live progress and logs, and can be cancelled at any time. The task center keeps the history and logs.
 - **Modern interface**: semantic design tokens, light / dark themes, custom components and window controls, a ⌘K command palette, favorites and recently used tools.
 - **Internationalized**: Simplified Chinese and English; plugins ship their own translations, and Rust only returns error codes that the UI translates.
+- **On-demand resources**: large assets such as AI models are downloaded only when a tool needs them, from verified sources with resume support, and can be removed at any time.
 - **In-app updates**: delivered through GitHub Releases with signed update packages; versions can be skipped and automatic checks turned off.
 - **SQLite only for local storage**: preferences, favorites, usage and task history are stored in a local database.
 
@@ -51,6 +52,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Color Converter** | HEX / RGB / HSL / HSV / HWB / CMYK / Lab / OKLCH, WCAG contrast checks, tints, shades and harmonies |
 | **Password Generator** | Cryptographically secure passwords with per-type options and exclusions, plus a local strength and crack-time check |
 | **QR Code** | Generate QR codes as PNG / SVG with error correction, size and colors; read QR codes from images |
+| **Background Remover** | Remove image backgrounds with a local AI model (U²-Net lite or IS-Net) running in Rust; models download on first use with resume and SHA-256 verification; transparent PNG or a solid color |
 | **Image Converter** | Batch convert PNG / JPEG / WebP / GIF / BMP / ICO / TIFF, resize by percent or bounding box, JPEG quality; runs as a task with live logs and never overwrites files |
 
 More tools (more image tools, networking, system and unit conversion) are on the way.
@@ -115,7 +117,7 @@ toolforge/
 │   ├── hash/  encoder/  jwt/
 │   ├── text-tools/  text-diff/  format-converter/
 │   ├── base-converter/  color/  password/  qrcode/
-│   └── image-converter/
+│   └── image-converter/  background-remover/
 └── scripts/release.sh     # release script
 ```
 
