@@ -1,0 +1,70 @@
+{
+  "name": "系统监控",
+  "description": "实时查看本机 CPU、内存、磁盘、网络与进程信息",
+  "help": [
+    "所有数据都由 Rust 在本地每 2 秒采样一次，不会上传。",
+    "进程 CPU 占用按整机比例显示；进程列表只在打开该页签时刷新。",
+    "操作系统提供传感器数据时会显示温度。"
+  ],
+  "functions": {
+    "snapshot": "刷新"
+  },
+  "tabs": {
+    "overview": "概览",
+    "processes": "进程"
+  },
+  "refresh": "每 {{seconds}} 秒刷新",
+  "os": {
+    "title": "系统",
+    "hostname": "主机名",
+    "system": "操作系统",
+    "kernel": "内核",
+    "arch": "架构",
+    "uptime": "运行时间",
+    "uptimeValue": "{{days}} 天 {{hours}} 小时 {{minutes}} 分钟",
+    "boot": "启动时间"
+  },
+  "cpu": {
+    "title": "CPU",
+    "summary": "{{brand}} · {{physical}} 核 / {{logical}} 线程 · {{ghz}} GHz",
+    "core": "核心 {{index}}：{{usage}}%",
+    "load": "平均负载 {{one}} / {{five}} / {{fifteen}}"
+  },
+  "memory": {
+    "title": "内存",
+    "used": "已使用",
+    "swap": "交换空间",
+    "available": "可用 {{size}}"
+  },
+  "disks": {
+    "title": "磁盘",
+    "empty": "未发现磁盘",
+    "removable": "可移动",
+    "usage": "已用 {{used}} / {{total}} · 剩余 {{free}}"
+  },
+  "network": {
+    "title": "网络"
+  },
+  "sensors": {
+    "title": "温度"
+  },
+  "processes": {
+    "title": "进程",
+    "count": "{{matched}} / {{total}}",
+    "search": "搜索名称或 PID",
+    "sort": "排序",
+    "sortBy": {
+      "cpu": "CPU",
+      "memory": "内存",
+      "name": "名称",
+      "pid": "PID"
+    },
+    "pid": "PID",
+    "name": "名称",
+    "cpu": "CPU",
+    "memory": "内存",
+    "user": "用户",
+    "status": "状态",
+    "empty": "没有匹配的进程"
+  }
+}

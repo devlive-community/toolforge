@@ -1,0 +1,70 @@
+{
+  "name": "System Monitor",
+  "description": "Live CPU, memory, disk, network and process information for this computer",
+  "help": [
+    "Everything is sampled locally by Rust every 2 seconds; nothing is uploaded.",
+    "Process CPU is shown as a share of the whole machine; the process list only refreshes while its tab is open.",
+    "Temperatures appear when the operating system exposes sensor data."
+  ],
+  "functions": {
+    "snapshot": "Refresh"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "processes": "Processes"
+  },
+  "refresh": "Refreshes every {{seconds}} s",
+  "os": {
+    "title": "System",
+    "hostname": "Host name",
+    "system": "Operating system",
+    "kernel": "Kernel",
+    "arch": "Architecture",
+    "uptime": "Uptime",
+    "uptimeValue": "{{days}} d {{hours}} h {{minutes}} min",
+    "boot": "Booted at"
+  },
+  "cpu": {
+    "title": "CPU",
+    "summary": "{{brand}} · {{physical}} cores / {{logical}} threads · {{ghz}} GHz",
+    "core": "Core {{index}}: {{usage}}%",
+    "load": "Load average {{one}} / {{five}} / {{fifteen}}"
+  },
+  "memory": {
+    "title": "Memory",
+    "used": "Used",
+    "swap": "Swap",
+    "available": "{{size}} available"
+  },
+  "disks": {
+    "title": "Disks",
+    "empty": "No disks found",
+    "removable": "Removable",
+    "usage": "{{used}} of {{total}} used · {{free}} free"
+  },
+  "network": {
+    "title": "Network"
+  },
+  "sensors": {
+    "title": "Temperatures"
+  },
+  "processes": {
+    "title": "Processes",
+    "count": "{{matched}} / {{total}}",
+    "search": "Search name or PID",
+    "sort": "Sort by",
+    "sortBy": {
+      "cpu": "CPU",
+      "memory": "Memory",
+      "name": "Name",
+      "pid": "PID"
+    },
+    "pid": "PID",
+    "name": "Name",
+    "cpu": "CPU",
+    "memory": "Memory",
+    "user": "User",
+    "status": "Status",
+    "empty": "No matching processes"
+  }
+}

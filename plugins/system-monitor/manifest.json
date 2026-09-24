@@ -1,0 +1,15 @@
+{
+  "id": "org.devlive.toolforge.system-monitor",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "system",
+  "keywords": ["system", "monitor", "cpu", "memory", "ram", "disk", "network", "process", "task manager", "temperature", "系统", "监控", "内存", "磁盘", "进程", "网卡"],
+  "accent": "green",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["system:read"],
+  "functions": {
+    "snapshot": {}
+  },
+  "sensitive": false
+}

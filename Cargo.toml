@@ -35,6 +35,7 @@ tfp-password = { path = "plugins/password/backend" }
 tfp-qrcode = { path = "plugins/qrcode/backend" }
 tfp-regex = { path = "plugins/regex/backend" }
 tfp-sql-formatter = { path = "plugins/sql-formatter/backend" }
+tfp-system-monitor = { path = "plugins/system-monitor/backend" }
 tfp-text-diff = { path = "plugins/text-diff/backend" }
 tfp-text-tools = { path = "plugins/text-tools/backend" }
 tfp-timestamp = { path = "plugins/timestamp/backend" }

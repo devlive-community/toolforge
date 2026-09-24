@@ -1,0 +1,13 @@
+[package]
+name = "tfp-system-monitor"
+description = "ToolForge plugin: system monitor"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+sysinfo = { version = "0.39", default-features = false, features = ["component", "disk", "network", "system", "user"] }
