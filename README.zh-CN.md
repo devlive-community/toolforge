@@ -102,31 +102,6 @@ pnpm lint             # ESLint（零警告）
 
 `cargo xtask check` 依次执行：约定扫描 → rustfmt → clippy → Rust 测试 → TypeScript 类型检查 → ESLint → 前端构建。
 
-### 项目结构
-
-```
-toolforge/
-├── apps/desktop/          # 桌面应用
-│   ├── src/               # React 外壳：标题栏、侧边栏、命令面板、任务中心、设置…
-│   └── src-tauri/         # Tauri 入口：窗口、命令、更新、任务
-├── crates/
-│   ├── tf-plugin-api/     # 宿主与插件的契约（Manifest、ToolPlugin、TaskContext）
-│   ├── tf-core/           # 错误码、SQLite 存储、插件注册表、任务管理
-│   └── xtask/             # 仓库自动化（check / bump / notes / version）
-├── packages/
-│   ├── ui/                # @toolforge/ui：设计 Token 与组件库
-│   └── plugin-ui-sdk/     # @toolforge/plugin-ui-sdk：插件前端 SDK
-├── plugins/               # 官方插件（每个插件独立版本）
-│   ├── json-formatter/  xml-formatter/  sql-formatter/
-│   ├── regex/  timestamp/  uuid/
-│   ├── hash/  encoder/  jwt/
-│   ├── text-tools/  text-diff/  format-converter/
-│   ├── base-converter/  color/  password/  qrcode/
-│   ├── ip-calculator/  http-client/  dns-lookup/  system-monitor/  unit-converter/
-│   └── image-converter/  background-remover/
-└── scripts/release.sh     # 发布脚本
-```
-
 ### 插件结构
 
 ```

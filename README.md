@@ -102,31 +102,6 @@ pnpm lint             # ESLint (zero warnings)
 
 `cargo xtask check` runs, in order: convention rules → rustfmt → clippy → Rust tests → TypeScript type checking → ESLint → frontend build.
 
-### Project structure
-
-```
-toolforge/
-├── apps/desktop/          # desktop app
-│   ├── src/               # React shell: title bar, sidebar, command palette, task center, settings…
-│   └── src-tauri/         # Tauri entry: window, commands, updater, tasks
-├── crates/
-│   ├── tf-plugin-api/     # host ↔ plugin contract (Manifest, ToolPlugin, TaskContext)
-│   ├── tf-core/           # error codes, SQLite store, plugin registry, task manager
-│   └── xtask/             # repository automation (check / bump / notes / version)
-├── packages/
-│   ├── ui/                # @toolforge/ui: design tokens and component library
-│   └── plugin-ui-sdk/     # @toolforge/plugin-ui-sdk: plugin frontend SDK
-├── plugins/               # official plugins (each versioned independently)
-│   ├── json-formatter/  xml-formatter/  sql-formatter/
-│   ├── regex/  timestamp/  uuid/
-│   ├── hash/  encoder/  jwt/
-│   ├── text-tools/  text-diff/  format-converter/
-│   ├── base-converter/  color/  password/  qrcode/
-│   ├── ip-calculator/  http-client/  dns-lookup/  system-monitor/  unit-converter/
-│   └── image-converter/  background-remover/
-└── scripts/release.sh     # release script
-```
-
 ### Plugin layout
 
 ```
