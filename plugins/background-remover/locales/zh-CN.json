@@ -1,0 +1,87 @@
+{
+  "name": "去除背景",
+  "description": "使用本地 AI 模型一键抠图，无需上传图片",
+  "help": [
+    "分割模型完全在本机的 Rust 中运行，图片不会离开你的电脑。",
+    "首次使用需下载模型：快速模型 4.4 MB，高质量模型 170 MB；下载中断可续传，并用 SHA-256 校验。",
+    "结果保持原图分辨率，保存为透明 PNG，也可以合成到指定颜色的背景上。",
+    "主体清晰的图片效果最好，例如人像、商品和动物。"
+  ],
+  "functions": {
+    "remove": "去除背景"
+  },
+  "resources": {
+    "u2netp": {
+      "name": "快速（U²-Net 轻量版）",
+      "description": "体积小、速度快，适合大多数照片"
+    },
+    "isnet-general-use": {
+      "name": "高质量（IS-Net）",
+      "description": "边缘与发丝更精细，速度较慢"
+    }
+  },
+  "model": {
+    "title": "模型",
+    "hint": "模型下载后即可离线使用。",
+    "required": "请先下载所选模型"
+  },
+  "options": {
+    "title": "选项",
+    "background": "背景",
+    "transparent": "透明",
+    "white": "白色",
+    "custom": "自定义",
+    "format": "输出格式",
+    "output": "输出目录",
+    "sameDir": "与源文件相同",
+    "resetDir": "改回源文件目录"
+  },
+  "files": {
+    "title": "图片",
+    "add": "添加图片",
+    "filter": "图片",
+    "remove": "移除",
+    "drop": "拖入图片或点击添加",
+    "dropHint": "支持 PNG、JPEG、WebP、BMP、GIF、TIFF",
+    "start": "开始抠图",
+    "cancel": "取消",
+    "progress": "{{done}} / {{total}} 张"
+  },
+  "results": {
+    "title": "结果",
+    "summary": "完成 {{count}} / {{total}} 张 · {{ms}} ms",
+    "back": "返回列表",
+    "reveal": "在文件夹中显示",
+    "meta": "{{width}}×{{height}} · {{size}} · {{ms}} ms"
+  },
+  "stages": {
+    "bg": {
+      "load_model": "正在加载模型…",
+      "process": "正在去除背景…"
+    }
+  },
+  "logs": {
+    "title": "实时日志",
+    "empty": "开始处理后，日志会实时显示在这里",
+    "jumpLatest": "跳到最新",
+    "bg": {
+      "model_loaded": "模型 {{model}} 加载完成，耗时 {{ms}} ms",
+      "model_reused": "复用已加载的模型 {{model}}",
+      "file_start": "[{{index}}/{{count}}] 正在处理 {{file}}",
+      "file_done": "{{file}} → {{output}}（{{width}}×{{height}}），耗时 {{ms}} ms",
+      "file_failed": "已跳过 {{file}}：{{code}}"
+    }
+  },
+  "errors": {
+    "bg.no_files": "请先添加图片",
+    "bg.output_dir_missing": "输出目录不存在：{{path}}",
+    "bg.invalid_color": "“{{value}}”不是有效的十六进制颜色",
+    "bg.model_invalid": "无法加载模型文件：{{detail}}",
+    "bg.inference_failed": "模型运行失败：{{detail}}",
+    "bg.unsupported": "不支持的图片格式",
+    "bg.decode_failed": "图片解码失败：{{detail}}",
+    "bg.encode_failed": "结果编码失败：{{detail}}",
+    "bg.file_too_large": "图片超过 {{limit}}",
+    "bg.too_many_pixels": "图片尺寸过大（{{width}}×{{height}}）"
+  }
+}

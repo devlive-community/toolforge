@@ -1,0 +1,87 @@
+{
+  "name": "Background Remover",
+  "description": "Remove image backgrounds with a local AI model, no upload required",
+  "help": [
+    "Runs a segmentation model entirely on your machine in Rust; images never leave your computer.",
+    "Download a model once: the fast model is 4.4 MB, the high-quality model 170 MB. Downloads resume if interrupted and are verified with SHA-256.",
+    "Results keep the original resolution and are saved as transparent PNGs, or composited onto a color you choose.",
+    "Works best with a clear subject such as a person, product or animal."
+  ],
+  "functions": {
+    "remove": "Remove background"
+  },
+  "resources": {
+    "u2netp": {
+      "name": "Fast (U²-Net lite)",
+      "description": "Small and quick, good for most photos"
+    },
+    "isnet-general-use": {
+      "name": "High quality (IS-Net)",
+      "description": "Finer edges and hair, slower"
+    }
+  },
+  "model": {
+    "title": "Model",
+    "hint": "Models run offline once downloaded.",
+    "required": "Download the selected model first"
+  },
+  "options": {
+    "title": "Options",
+    "background": "Background",
+    "transparent": "Transparent",
+    "white": "White",
+    "custom": "Color",
+    "format": "Output format",
+    "output": "Output folder",
+    "sameDir": "Same as source",
+    "resetDir": "Use source folder"
+  },
+  "files": {
+    "title": "Images",
+    "add": "Add images",
+    "filter": "Images",
+    "remove": "Remove",
+    "drop": "Drop images or click to add",
+    "dropHint": "PNG, JPEG, WebP, BMP, GIF and TIFF",
+    "start": "Remove background",
+    "cancel": "Cancel",
+    "progress": "{{done}} / {{total}} images"
+  },
+  "results": {
+    "title": "Results",
+    "summary": "{{count}} / {{total}} done · {{ms}} ms",
+    "back": "Back to list",
+    "reveal": "Show in folder",
+    "meta": "{{width}}×{{height}} · {{size}} · {{ms}} ms"
+  },
+  "stages": {
+    "bg": {
+      "load_model": "Loading model…",
+      "process": "Removing backgrounds…"
+    }
+  },
+  "logs": {
+    "title": "Live logs",
+    "empty": "Logs appear here in real time once processing starts",
+    "jumpLatest": "Jump to latest",
+    "bg": {
+      "model_loaded": "Loaded model {{model}} in {{ms}} ms",
+      "model_reused": "Using loaded model {{model}}",
+      "file_start": "[{{index}}/{{count}}] Processing {{file}}",
+      "file_done": "{{file}} → {{output}} ({{width}}×{{height}}) in {{ms}} ms",
+      "file_failed": "Skipped {{file}}: {{code}}"
+    }
+  },
+  "errors": {
+    "bg.no_files": "Add some images first",
+    "bg.output_dir_missing": "The output folder does not exist: {{path}}",
+    "bg.invalid_color": "“{{value}}” is not a valid hex color",
+    "bg.model_invalid": "The model file could not be loaded: {{detail}}",
+    "bg.inference_failed": "The model failed to run: {{detail}}",
+    "bg.unsupported": "Not a supported image format",
+    "bg.decode_failed": "The image could not be decoded: {{detail}}",
+    "bg.encode_failed": "The result could not be encoded: {{detail}}",
+    "bg.file_too_large": "The image is larger than {{limit}}",
+    "bg.too_many_pixels": "The image is too large ({{width}}×{{height}})"
+  }
+}

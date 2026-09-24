@@ -26,5 +26,8 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_color::ColorTool::default()));
     registry.register(Arc::new(tfp_password::Password::default()));
     registry.register(Arc::new(tfp_qrcode::QrCodeTool::default()));
+    registry.register(Arc::new(
+        tfp_background_remover::BackgroundRemover::default(),
+    ));
     registry
 }

@@ -20,6 +20,7 @@ serde_json = { version = "1", features = ["preserve_order", "arbitrary_precision
 thiserror = "2"
 tf-core = { path = "crates/tf-core" }
 tf-plugin-api = { path = "crates/tf-plugin-api" }
+tfp-background-remover = { path = "plugins/background-remover/backend" }
 tfp-base-converter = { path = "plugins/base-converter/backend" }
 tfp-color = { path = "plugins/color/backend" }
 tfp-encoder = { path = "plugins/encoder/backend" }
@@ -44,3 +45,53 @@ lto = true
 opt-level = "s"
 panic = "abort"
 strip = true
+
+# 模型推理与图像编解码是热点：开发构建也要优化，发布构建不按体积优化这些 crate
+[profile.dev.package.tract-core]
+opt-level = 3
+[profile.dev.package.tract-data]
+opt-level = 3
+[profile.dev.package.tract-hir]
+opt-level = 3
+[profile.dev.package.tract-linalg]
+opt-level = 3
+[profile.dev.package.tract-nnef]
+opt-level = 3
+[profile.dev.package.tract-onnx]
+opt-level = 3
+[profile.dev.package.tract-onnx-opl]
+opt-level = 3
+[profile.dev.package.image]
+opt-level = 3
+[profile.dev.package.png]
+opt-level = 3
+[profile.dev.package.fdeflate]
+opt-level = 3
+[profile.dev.package.miniz_oxide]
+opt-level = 3
+[profile.dev.package.zune-jpeg]
+opt-level = 3
+[profile.release.package.tract-core]
+opt-level = 3
+[profile.release.package.tract-data]
+opt-level = 3
+[profile.release.package.tract-hir]
+opt-level = 3
+[profile.release.package.tract-linalg]
+opt-level = 3
+[profile.release.package.tract-nnef]
+opt-level = 3
+[profile.release.package.tract-onnx]
+opt-level = 3
+[profile.release.package.tract-onnx-opl]
+opt-level = 3
+[profile.release.package.image]
+opt-level = 3
+[profile.release.package.png]
+opt-level = 3
+[profile.release.package.fdeflate]
+opt-level = 3
+[profile.release.package.miniz_oxide]
+opt-level = 3
+[profile.release.package.zune-jpeg]
+opt-level = 3

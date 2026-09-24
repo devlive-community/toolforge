@@ -1,0 +1,31 @@
+{
+  "id": "org.devlive.toolforge.background-remover",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": ["background", "remove background", "remove bg", "cutout", "matting", "transparent", "ai", "u2net", "isnet", "抠图", "去背景", "去除背景", "透明背景", "人像"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected", "network:resources"],
+  "functions": {
+    "remove": { "task": true }
+  },
+  "sensitive": false,
+  "resources": [
+    {
+      "id": "u2netp",
+      "urls": ["https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2netp.onnx"],
+      "sha256": "309c8469258dda742793dce0ebea8e6dd393174f89934733ecc8b14c76f4ddd8",
+      "size": 4574861,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "isnet-general-use",
+      "urls": ["https://github.com/danielgatis/rembg/releases/download/v0.0.0/isnet-general-use.onnx"],
+      "sha256": "60920e99c45464f2ba57bee2ad08c919a52bbf852739e96947fbb4358c0d964a",
+      "size": 178648008,
+      "license": "Apache-2.0"
+    }
+  ]
+}
