@@ -1,0 +1,81 @@
+{
+  "name": "Markdown 编辑器",
+  "description": "实时预览、目录与字数统计的 Markdown 编辑器，可导出 HTML",
+  "help": [
+    "支持 GitHub 风格 Markdown：表格、任务列表、脚注、删除线，以及 > [!NOTE] 等提示块。",
+    "预览由 Rust 渲染：原始 HTML 按文本显示，不安全的链接会被移除，打开任何来源的文档都是安全的。",
+    "草稿会自动保存，下次打开工具时自动恢复。",
+    "快捷键：⌘/Ctrl+S 保存，⌘/Ctrl+B 加粗，⌘/Ctrl+I 斜体，⌘/Ctrl+K 链接。把 .md 文件拖入窗口即可打开。"
+  ],
+  "functions": {
+    "render": "渲染 Markdown",
+    "export_html": "导出 HTML"
+  },
+  "sample": "# 欢迎使用 Markdown 编辑器\n\n在左侧输入，右侧会实时预览。草稿会**自动保存**。\n\n## 功能\n\n- [x] GitHub 风格 Markdown\n- [x] 目录、字数与阅读时长\n- [ ] 导出为独立的 HTML 文件\n\n| 快捷键 | 作用 |\n| --- | --- |\n| ⌘/Ctrl + S | 保存 |\n| ⌘/Ctrl + B | 加粗 |\n\n> [!TIP]\n> 点击目录中的标题即可跳转。\n\n```rust\nfn main() {\n    println!(\"Hello, ToolForge!\");\n}\n```\n",
+  "file": {
+    "new": "新建",
+    "open": "打开",
+    "save": "保存",
+    "saveAs": "另存为…",
+    "export": "导出 HTML",
+    "copyHtml": "复制 HTML",
+    "filter": "Markdown",
+    "htmlFilter": "HTML",
+    "untitled": "未命名",
+    "unsaved": "有未保存的修改",
+    "saved": "已保存 {{name}}",
+    "exported": "已导出 {{name}}",
+    "reveal": "在文件夹中显示",
+    "more": "更多"
+  },
+  "discard": {
+    "title": "放弃未保存的修改？",
+    "description": "“{{name}}”有尚未保存到磁盘的修改。",
+    "confirm": "放弃",
+    "cancel": "取消"
+  },
+  "format": {
+    "heading": "标题",
+    "bold": "加粗",
+    "italic": "斜体",
+    "strike": "删除线",
+    "code": "行内代码",
+    "link": "链接",
+    "image": "图片",
+    "quote": "引用",
+    "bullet": "无序列表",
+    "ordered": "有序列表",
+    "task": "任务列表",
+    "codeBlock": "代码块",
+    "table": "表格",
+    "rule": "分隔线",
+    "linkText": "文字",
+    "imageAlt": "描述",
+    "tableHead": "| 列 | 列 |\n| --- | --- |\n| 单元格 | 单元格 |"
+  },
+  "view": {
+    "label": "视图",
+    "edit": "编辑",
+    "split": "分栏",
+    "preview": "预览",
+    "outline": "目录"
+  },
+  "outline": {
+    "title": "目录",
+    "empty": "标题会显示在这里"
+  },
+  "stats": {
+    "words": "{{count}} 字",
+    "chars": "{{count}} 字符",
+    "lines": "{{count}} 行",
+    "reading": "约 {{count}} 分钟",
+    "tasks": "任务 {{done}}/{{total}}",
+    "cursor": "第 {{line}} 行，第 {{column}} 列"
+  },
+  "preview": {
+    "empty": "暂无可预览的内容"
+  },
+  "errors": {
+    "md.too_large": "文档超过 {{limit}}"
+  }
+}

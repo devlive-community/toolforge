@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.markdown-editor",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "text",
+  "keywords": ["markdown", "md", "editor", "preview", "gfm", "readme", "html", "export", "outline", "Markdown 编辑器", "预览", "文档", "导出"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "functions": {
+    "render": {},
+    "export_html": {}
+  },
+  "sensitive": false
+}

@@ -4176,8 +4176,15 @@ checksum = "e9f068eba8e7071c5f9511831b44f32c740d5adf574e990f946ddb53db2f314e"
 dependencies = [
  "bitflags 2.13.2",
  "memchr",
+ "pulldown-cmark-escape",
  "unicase",
 ]
+
+[[package]]
+name = "pulldown-cmark-escape"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "007d8adb5ddab6f8e3f491ac63566a7d5002cc7ed73901f72057943fa71ae1ae"
 
 [[package]]
 name = "pxfm"
@@ -6093,6 +6100,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-markdown-editor"
+version = "0.1.0"
+dependencies = [
+ "pulldown-cmark",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-password"
 version = "0.1.0"
 dependencies = [
@@ -6509,6 +6526,7 @@ dependencies = [
  "tfp-json-formatter",
  "tfp-json-to-code",
  "tfp-jwt",
+ "tfp-markdown-editor",
  "tfp-password",
  "tfp-qrcode",
  "tfp-regex",

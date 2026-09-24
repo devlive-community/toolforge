@@ -1,0 +1,81 @@
+{
+  "name": "Markdown Editor",
+  "description": "Write Markdown with live preview, outline and word count, and export to HTML",
+  "help": [
+    "Supports GitHub Flavored Markdown: tables, task lists, footnotes, strikethrough and alerts such as > [!NOTE].",
+    "The preview is rendered in Rust. Raw HTML is shown as text and unsafe links are removed, so documents from anywhere are safe to open.",
+    "Your draft is saved automatically and restored the next time you open the tool.",
+    "Shortcuts: ⌘/Ctrl+S save, ⌘/Ctrl+B bold, ⌘/Ctrl+I italic, ⌘/Ctrl+K link. Drop a .md file onto the window to open it."
+  ],
+  "functions": {
+    "render": "Render Markdown",
+    "export_html": "Export HTML"
+  },
+  "sample": "# Welcome to the Markdown Editor\n\nType on the left and the preview updates as you write. Your draft is **saved automatically**.\n\n## Features\n\n- [x] GitHub Flavored Markdown\n- [x] Outline, word count and reading time\n- [ ] Export to a standalone HTML file\n\n| Shortcut | Action |\n| --- | --- |\n| ⌘/Ctrl + S | Save |\n| ⌘/Ctrl + B | Bold |\n\n> [!TIP]\n> Click a heading in the outline to jump to it.\n\n```rust\nfn main() {\n    println!(\"Hello, ToolForge!\");\n}\n```\n",
+  "file": {
+    "new": "New",
+    "open": "Open",
+    "save": "Save",
+    "saveAs": "Save as…",
+    "export": "Export HTML",
+    "copyHtml": "Copy HTML",
+    "filter": "Markdown",
+    "htmlFilter": "HTML",
+    "untitled": "Untitled",
+    "unsaved": "Unsaved changes",
+    "saved": "Saved {{name}}",
+    "exported": "Exported {{name}}",
+    "reveal": "Show in folder",
+    "more": "More"
+  },
+  "discard": {
+    "title": "Discard unsaved changes?",
+    "description": "“{{name}}” has changes that have not been saved to disk.",
+    "confirm": "Discard",
+    "cancel": "Cancel"
+  },
+  "format": {
+    "heading": "Heading",
+    "bold": "Bold",
+    "italic": "Italic",
+    "strike": "Strikethrough",
+    "code": "Inline code",
+    "link": "Link",
+    "image": "Image",
+    "quote": "Quote",
+    "bullet": "Bulleted list",
+    "ordered": "Numbered list",
+    "task": "Task list",
+    "codeBlock": "Code block",
+    "table": "Table",
+    "rule": "Divider",
+    "linkText": "text",
+    "imageAlt": "description",
+    "tableHead": "| Column | Column |\n| --- | --- |\n| Cell | Cell |"
+  },
+  "view": {
+    "label": "View",
+    "edit": "Edit",
+    "split": "Split",
+    "preview": "Preview",
+    "outline": "Outline"
+  },
+  "outline": {
+    "title": "Outline",
+    "empty": "Headings appear here"
+  },
+  "stats": {
+    "words": "{{count}} words",
+    "chars": "{{count}} characters",
+    "lines": "{{count}} lines",
+    "reading": "{{count}} min read",
+    "tasks": "{{done}}/{{total}} tasks",
+    "cursor": "Ln {{line}}, Col {{column}}"
+  },
+  "preview": {
+    "empty": "Nothing to preview yet"
+  },
+  "errors": {
+    "md.too_large": "The document is larger than {{limit}}"
+  }
+}
