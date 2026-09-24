@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import { Button, CodeEditor, Panel, Progress, SegmentedControl, Spinner, Tooltip, cn, toast } from '@toolforge/ui'
-import { CopyButton, host, useDebouncedCall, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
-import { ArrowUpDown, FileText, FileUp, Info, Terminal, X } from 'lucide-react'
+import { CopyButton, host, useCopy, useDebouncedCall, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
+import { ArrowUpDown, Check, Copy, Download, FileText, FileUp, Info, Terminal, X } from 'lucide-react'
 import { CodecOptions } from './CodecOptions'
 import { GROUPS, type Codec, type Direction, type FileFormat, type FileResult, type Options, type TransformResult } from './types'
 
 const BASE64_CODECS: Codec[] = ['base64']
 
 export function EncoderTool() {
-  const { t, errorMessage } = usePlugin()
+  const { t, call, errorMessage } = usePlugin()
+  const { copy, copied } = useCopy()
   const [codec, setCodec] = useState<Codec>('base64')
   const [direction, setDirection] = useState<Direction>('encode')
   const [input, setInput] = useState('ToolForge 工具箱 🔧 https://toolforge.dev/?q=a b&lang=zh')
@@ -33,7 +34,7 @@ export function EncoderTool() {
   )
 
   const fileMode = showFile && task.status !== 'idle'
-  const output = fileMode ? (task.result?.output ?? '') : error ? '' : (result?.output ?? '')
+  const output = fileMode ? (task.result?.preview ?? '') : error ? '' : (result?.output ?? '')
 
   const swap = () => {
     if (!result || error || !result.text) return
@@ -47,6 +48,30 @@ export function EncoderTool() {
       if (!path) return
       setShowFile(true)
       await task.start('encode_file', { path, format: fileFormat, wrap: false })
+    } catch (reason) {
+      toast.error(errorMessage(reason))
+    }
+  }
+
+  const file = fileMode ? task.result : null
+
+  const copyFile = async () => {
+    if (!file) return
+    try {
+      const { output: full } = await call<{ output: string }>('file_output', { id: file.id })
+      await copy(full)
+    } catch (reason) {
+      toast.error(errorMessage(reason))
+    }
+  }
+
+  const saveFile = async () => {
+    if (!file) return
+    try {
+      const path = await host.dialog.saveFile(`${file.name}.${fileFormat === 'dataUri' ? 'datauri' : 'b64'}.txt`)
+      if (!path) return
+      await call('save_output', { id: file.id, path })
+      toast.success(t('common:saved'))
     } catch (reason) {
       toast.error(errorMessage(reason))
     }
@@ -151,12 +176,25 @@ export function EncoderTool() {
                     </Button>
                   </Tooltip>
                 )}
-                <CopyButton text={output} label={t('common:copy')} variant="outline" disabled={!output} />
+                {file ? (
+                  <>
+                    <Button size="sm" variant="outline" onClick={saveFile}>
+                      <Download />
+                      {t('common:download')}
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={copyFile}>
+                      {copied ? <Check className="text-success" /> : <Copy />}
+                      {t('common:copy')}
+                    </Button>
+                  </>
+                ) : (
+                  <CopyButton text={output} label={t('common:copy')} variant="outline" disabled={!output} />
+                )}
               </>
             }
             footer={
               fileMode
-                ? task.result && <span>{t('file.summary', { bytes: task.result.bytes, chars: task.result.output.length, mime: task.result.mime })}</span>
+                ? task.result && <span>{t('file.summary', { bytes: task.result.bytes, chars: task.result.chars, mime: task.result.mime })}</span>
                 : result &&
                   !error && (
                     <>
@@ -185,6 +223,12 @@ export function EncoderTool() {
                   <p className="flex shrink-0 items-center gap-2 border-b border-border bg-warning-soft/60 px-3 py-2 text-xs text-warning">
                     <Info className="size-3.5" />
                     {t('binaryNotice')}
+                  </p>
+                )}
+                {file?.truncated && (
+                  <p className="flex shrink-0 items-center gap-2 border-b border-border bg-warning-soft/60 px-3 py-2 text-xs text-warning">
+                    <Info className="size-3.5" />
+                    {t('file.truncated', { shown: file.preview.length, total: file.chars })}
                   </p>
                 )}
                 <div className="min-h-0 flex-1">

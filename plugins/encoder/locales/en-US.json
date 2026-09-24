@@ -87,7 +87,8 @@
     "title": "File: {{name}}",
     "close": "Back to text result",
     "reading": "Reading the file…",
-    "summary": "{{bytes, number}} bytes → {{chars, number}} chars · {{mime}}"
+    "summary": "{{bytes, number}} bytes → {{chars, number}} chars · {{mime}}",
+    "truncated": "Showing the first {{shown, number}} of {{total, number}} characters. Copy or download to get the full result"
   },
   "logs": {
     "encode": {
@@ -96,6 +97,7 @@
     }
   },
   "errors": {
+    "encode.result_expired": "The result has expired, encode the file again",
     "encode.invalid_input": "The input is not valid {{codec}}",
     "encode.invalid_escape": "Invalid escape sequence at character {{position}}",
     "encode.too_large": "Input is too large (over {{limit}})",

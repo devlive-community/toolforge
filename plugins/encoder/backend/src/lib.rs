@@ -13,12 +13,14 @@ const MANIFEST: &str = include_str!("../../manifest.json");
 
 pub struct Encoder {
     manifest: Manifest,
+    results: file::Results,
 }
 
 impl Default for Encoder {
     fn default() -> Self {
         Self {
             manifest: Manifest::from_static(MANIFEST),
+            results: file::Results::default(),
         }
     }
 }
@@ -31,13 +33,18 @@ impl ToolPlugin for Encoder {
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
         match function {
             "transform" => to_value(codec::transform(parse_args(args)?)?),
+            "file_output" => to_value(self.results.full(parse_args(args)?)?),
+            "save_output" => to_value(self.results.save(parse_args(args)?)?),
             other => Err(unknown_function(other)),
         }
     }
 
     fn run_task(&self, function: &str, args: Value, ctx: &dyn TaskContext) -> PluginResult<Value> {
         match function {
-            "encode_file" => to_value(file::encode(parse_args(args)?, ctx)?),
+            "encode_file" => {
+                let output = file::encode(parse_args(args)?, ctx)?;
+                to_value(self.results.store(output))
+            }
             _ => self.call(function, args),
         }
     }

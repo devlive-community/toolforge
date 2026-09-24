@@ -95,3 +95,61 @@ fn missing_file_fails() {
     .unwrap_err();
     assert_eq!(err.code, "fs.not_found");
 }
+
+fn output(len: usize) -> Output {
+    Output {
+        output: "A".repeat(len),
+        name: "big.bin".into(),
+        mime: "application/octet-stream".into(),
+        bytes: len as u64,
+    }
+}
+
+#[test]
+fn large_results_return_a_bounded_preview() {
+    let results = Results::default();
+    let summary = results.store(output(PREVIEW * 3));
+    assert!(summary.truncated);
+    assert_eq!(summary.preview.len(), PREVIEW);
+    assert_eq!(summary.chars, PREVIEW * 3);
+
+    let full = results.full(ResultArgs { id: summary.id }).unwrap();
+    assert_eq!(full.output.len(), PREVIEW * 3);
+
+    let small = results.store(output(10));
+    assert!(!small.truncated);
+    assert_eq!(small.preview.len(), 10);
+}
+
+#[test]
+fn older_results_expire() {
+    let results = Results::default();
+    let first = results.store(output(4));
+    let second = results.store(output(8));
+    assert_eq!(
+        results.full(ResultArgs { id: first.id }).unwrap_err().code,
+        "encode.result_expired"
+    );
+    assert_eq!(
+        results
+            .full(ResultArgs { id: second.id })
+            .unwrap()
+            .output
+            .len(),
+        8
+    );
+}
+
+#[test]
+fn saves_full_output_to_disk() {
+    let results = Results::default();
+    let summary = results.store(output(PREVIEW + 1));
+    let path = temp("saved.txt", b"");
+    results
+        .save(SaveArgs {
+            id: summary.id,
+            path: path.clone(),
+        })
+        .unwrap();
+    assert_eq!(std::fs::read(&path).unwrap().len(), PREVIEW + 1);
+}

@@ -87,7 +87,8 @@
     "title": "文件：{{name}}",
     "close": "返回文本结果",
     "reading": "正在读取文件…",
-    "summary": "{{bytes, number}} 字节 → {{chars, number}} 字符 · {{mime}}"
+    "summary": "{{bytes, number}} 字节 → {{chars, number}} 字符 · {{mime}}",
+    "truncated": "仅显示前 {{shown, number}} 个字符（共 {{total, number}} 个），完整结果请复制或下载"
   },
   "logs": {
     "encode": {
@@ -96,6 +97,7 @@
     }
   },
   "errors": {
+    "encode.result_expired": "结果已失效，请重新编码文件",
     "encode.invalid_input": "输入不是合法的 {{codec}} 编码",
     "encode.invalid_escape": "第 {{position}} 个字符处的转义序列无效",
     "encode.too_large": "内容过大（超过 {{limit}}）",

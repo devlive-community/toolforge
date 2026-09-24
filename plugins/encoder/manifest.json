@@ -10,7 +10,9 @@
   "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],
   "functions": {
     "transform": {},
-    "encode_file": { "task": true }
+    "encode_file": { "task": true },
+    "file_output": {},
+    "save_output": {}
   },
   "sensitive": false
 }
