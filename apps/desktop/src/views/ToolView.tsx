@@ -1,4 +1,4 @@
-import { Component, Suspense, useState, type ErrorInfo, type ReactNode } from 'react'
+import { Component, Suspense, useMemo, useState, type ErrorInfo, type ReactNode } from 'react'
 import { Button, DropdownMenu, Empty, Modal, Spinner, cn } from '@toolforge/ui'
 import { PluginProvider, type Manifest } from '@toolforge/plugin-ui-sdk'
 import { CircleHelp, Ellipsis, Info, PackageX, RotateCw, Star, TriangleAlert } from 'lucide-react'
@@ -101,6 +101,12 @@ export function ToolView({ pluginId }: { pluginId: string }) {
   const { t } = useTranslation()
   const manifest = useApp((s) => pluginById(s.plugins, pluginId))
   const [reloadKey, setReloadKey] = useState(0)
+  const launchSeq = useApp((s) => (s.launch?.pluginId === pluginId ? s.launch.seq : 0))
+  const takeLaunch = useApp((s) => s.takeLaunch)
+  const launch = useMemo(
+    () => (launchSeq ? { seq: launchSeq, take: () => takeLaunch(pluginId) } : undefined),
+    [launchSeq, takeLaunch, pluginId],
+  )
 
   if (!manifest) {
     return <Empty icon={<PackageX />} title={t('tool.notFound')} />
@@ -136,7 +142,7 @@ export function ToolView({ pluginId }: { pluginId: string }) {
                 </div>
               }
             >
-              <PluginProvider manifest={manifest}>
+              <PluginProvider manifest={manifest} launch={launch}>
                 {/* eslint-disable-next-line react-hooks/static-components -- 组件来自模块级缓存 */}
                 <PluginUI />
               </PluginProvider>

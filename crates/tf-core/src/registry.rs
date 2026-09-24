@@ -1,10 +1,55 @@
 use std::sync::Arc;
 
 use indexmap::IndexMap;
+use serde::Serialize;
 use serde_json::Value;
-use tf_plugin_api::{Manifest, TaskContext, ToolPlugin};
+use tf_plugin_api::{DETECT_LIMIT, Detection, Manifest, TaskContext, ToolPlugin};
 
 use crate::{AppError, AppResult};
+
+/// 按剪贴板内容推荐的工具
+#[derive(Debug, Clone, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct Suggestion {
+    pub plugin_id: String,
+    #[serde(flatten)]
+    pub detection: Detection,
+}
+
+/// 单行预览：合并空白、截断到 max 个字符
+pub fn preview(text: &str, max: usize) -> String {
+    let mut out = String::new();
+    let mut count = 0;
+    for word in text.split_whitespace() {
+        if count >= max {
+            break;
+        }
+        if !out.is_empty() {
+            out.push(' ');
+            count += 1;
+        }
+        for c in word.chars().filter(|c| !c.is_control()) {
+            if count >= max {
+                break;
+            }
+            out.push(c);
+            count += 1;
+        }
+    }
+    if count >= max
+        && text
+            .split_whitespace()
+            .map(|w| w.chars().count() + 1)
+            .sum::<usize>()
+            > max + 1
+    {
+        out.push('…');
+    }
+    out
+}
+
+/// 推荐的最低分数，低于它的识别结果不展示
+const MIN_SCORE: u8 = 30;
 
 /// 已加载插件的注册表。宿主只通过这里访问插件，不直接依赖任何具体工具。
 #[derive(Default)]
@@ -45,6 +90,30 @@ impl PluginRegistry {
             })?;
         let task = spec.task;
         Ok((plugin, task))
+    }
+
+    /// 询问每个插件能否处理这段文本，按分数从高到低返回
+    pub fn detect(&self, text: &str) -> Vec<Suggestion> {
+        let text = text.trim();
+        if text.is_empty() || text.len() > DETECT_LIMIT {
+            return Vec::new();
+        }
+        let mut suggestions: Vec<Suggestion> = self
+            .plugins
+            .iter()
+            .filter_map(|(id, plugin)| {
+                plugin
+                    .detect(text)
+                    .filter(|d| d.score >= MIN_SCORE)
+                    .map(|detection| Suggestion {
+                        plugin_id: id.clone(),
+                        detection,
+                    })
+            })
+            .collect();
+        // 稳定排序：同分时保持注册顺序
+        suggestions.sort_by_key(|s| std::cmp::Reverse(s.detection.score));
+        suggestions
     }
 
     /// 普通调用；声明为任务的函数必须通过 [`Self::run_task`] 运行

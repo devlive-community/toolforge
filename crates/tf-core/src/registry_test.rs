@@ -59,3 +59,61 @@ fn only_task_functions_can_run_as_tasks() {
         "plugin.not_a_task"
     );
 }
+
+struct Picky(Manifest, &'static str, u8);
+
+impl ToolPlugin for Picky {
+    fn manifest(&self) -> &Manifest {
+        &self.0
+    }
+
+    fn call(&self, function: &str, _: Value) -> PluginResult<Value> {
+        Err(unknown_function(function))
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        text.contains(self.1)
+            .then(|| tf_plugin_api::Detection::new(self.2, "hit").with("len", text.len()))
+    }
+}
+
+fn picky(id: &str, needle: &'static str, score: u8) -> Arc<dyn ToolPlugin> {
+    let manifest = Manifest::from_static(&format!(
+        r#"{{"id":"{id}","version":"1.0.0","name":"n","description":"d","category":"dev","functions":{{}}}}"#
+    ));
+    Arc::new(Picky(manifest, needle, score))
+}
+
+#[test]
+fn ranks_detections_and_drops_weak_ones() {
+    let mut registry = registry();
+    registry.register(picky("low", "a", 20));
+    registry.register(picky("mid", "a", 60));
+    registry.register(picky("high", "ab", 90));
+    registry.register(picky("tie", "a", 60));
+    let ids: Vec<String> = registry
+        .detect("  ab  ")
+        .into_iter()
+        .map(|s| s.plugin_id)
+        .collect();
+    assert_eq!(ids, vec!["high", "mid", "tie"]);
+    let first = &registry.detect("ab")[0];
+    assert_eq!(
+        serde_json::to_value(first).unwrap(),
+        json!({"pluginId": "high", "score": 90, "label": "hit", "params": {"len": 2}})
+    );
+    assert!(registry.detect("   ").is_empty());
+    assert!(
+        registry
+            .detect(&"a".repeat(tf_plugin_api::DETECT_LIMIT + 1))
+            .is_empty()
+    );
+}
+
+#[test]
+fn previews_text_on_one_line() {
+    assert_eq!(preview("  a\n\tb   c ", 10), "a b c");
+    assert_eq!(preview("abcdef", 3), "abc…");
+    assert_eq!(preview("abc", 3), "abc");
+    assert_eq!(preview("ab cd", 4), "ab c…");
+}

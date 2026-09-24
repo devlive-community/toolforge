@@ -28,12 +28,16 @@ interface AppState {
   recent: string[]
   route: Route
   paletteOpen: boolean
+  /** 待交给工具的内容（带着内容打开工具时） */
+  launch: { pluginId: string; text: string; seq: number } | null
   /** 退出确认框（Rust 请求的序号，0 表示未打开） */
   quitRequest: number
   setQuitRequest: (seq: number) => void
   load: () => Promise<void>
   navigate: (route: Route) => void
   openTool: (pluginId: string) => void
+  openToolWith: (pluginId: string, text: string) => void
+  takeLaunch: (pluginId: string) => string | null
   toggleFavorite: (pluginId: string) => Promise<void>
   setPaletteOpen: (open: boolean) => void
 }
@@ -46,6 +50,7 @@ export const useApp = create<AppState>((set, get) => ({
   recent: [],
   route: { view: 'home' },
   paletteOpen: false,
+  launch: null,
   quitRequest: 0,
   setQuitRequest: (quitRequest) => set({ quitRequest }),
 
@@ -68,6 +73,18 @@ export const useApp = create<AppState>((set, get) => ({
       recent: [pluginId, ...state.recent.filter((id) => id !== pluginId)].slice(0, 12),
     }))
     invoke('recent_touch', { pluginId }).catch(() => {})
+  },
+
+  openToolWith: (pluginId, text) => {
+    set((state) => ({ launch: { pluginId, text, seq: (state.launch?.seq ?? 0) + 1 } }))
+    get().openTool(pluginId)
+  },
+
+  takeLaunch: (pluginId) => {
+    const launch = get().launch
+    if (launch?.pluginId !== pluginId) return null
+    set({ launch: null })
+    return launch.text
   },
 
   toggleFavorite: async (pluginId) => {

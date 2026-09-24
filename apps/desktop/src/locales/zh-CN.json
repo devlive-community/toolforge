@@ -37,7 +37,9 @@
       "navigate": "选择",
       "open": "打开",
       "darkTheme": "切换到暗色主题",
-      "lightTheme": "切换到亮色主题"
+      "lightTheme": "切换到亮色主题",
+      "clipboard": "来自剪贴板",
+      "tools": "工具"
     },
     "home": {
       "title": "欢迎使用 ToolForge",
@@ -74,7 +76,9 @@
       "storageHint": "偏好设置、收藏与使用记录均保存在本机 SQLite 数据库中。",
       "general": "通用",
       "confirmQuit": "退出前确认",
-      "confirmQuitHint": "关闭窗口或退出应用时先弹出确认"
+      "confirmQuitHint": "关闭窗口或退出应用时先弹出确认",
+      "clipboardSuggest": "按剪贴板内容推荐工具",
+      "clipboardSuggestHint": "打开 ⌘K 时在本地识别剪贴板中的文本，并优先列出能处理它的工具"
     },
     "tool": {
       "favorite": "加入收藏",

@@ -11,6 +11,7 @@ interface PrefsState extends Prefs {
   setAutoUpdate: (value: boolean) => void
   skipVersion: (version: string | null) => void
   setConfirmQuit: (value: boolean) => void
+  setClipboardSuggest: (value: boolean) => void
 }
 
 const systemDark = matchMedia('(prefers-color-scheme: dark)')
@@ -37,6 +38,7 @@ const snapshot = (state: PrefsState): Prefs => ({
   autoUpdate: state.autoUpdate,
   skippedVersion: state.skippedVersion,
   confirmQuit: state.confirmQuit,
+  clipboardSuggest: state.clipboardSuggest,
 })
 
 export const usePrefs = create<PrefsState>((set, get) => ({
@@ -46,6 +48,7 @@ export const usePrefs = create<PrefsState>((set, get) => ({
   autoUpdate: boot.prefs.autoUpdate ?? true,
   skippedVersion: boot.prefs.skippedVersion ?? null,
   confirmQuit: boot.prefs.confirmQuit ?? true,
+  clipboardSuggest: boot.prefs.clipboardSuggest ?? true,
   systemDark: systemDark.matches,
   setTheme: (theme) => {
     applyTheme(theme)
@@ -67,6 +70,10 @@ export const usePrefs = create<PrefsState>((set, get) => ({
   },
   skipVersion: (skippedVersion) => {
     set({ skippedVersion })
+    persist(snapshot(get()))
+  },
+  setClipboardSuggest: (clipboardSuggest) => {
+    set({ clipboardSuggest })
     persist(snapshot(get()))
   },
   setConfirmQuit: (confirmQuit) => {

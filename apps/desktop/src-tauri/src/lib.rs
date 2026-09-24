@@ -74,6 +74,7 @@ pub fn run() {
             commands::recent_touch,
             commands::plugin_list,
             commands::plugin_call,
+            commands::clipboard_suggestions,
             commands::plugin_state_get,
             commands::plugin_state_set,
             commands::fs_read_text,

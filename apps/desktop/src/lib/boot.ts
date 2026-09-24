@@ -13,6 +13,8 @@ export interface Prefs {
   skippedVersion: string | null
   /** 退出前弹出确认（Rust 侧也会读取该值） */
   confirmQuit: boolean
+  /** 打开命令面板时按剪贴板内容推荐工具 */
+  clipboardSuggest: boolean
 }
 
 interface BootData {

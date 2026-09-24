@@ -141,9 +141,44 @@ pub trait TaskContext: Send + Sync {
     }
 }
 
+/// 插件识别出的剪贴板内容：用于在命令面板中推荐工具。
+#[derive(Debug, Clone, Serialize, PartialEq)]
+pub struct Detection {
+    /// 0–100，越高越确定
+    pub score: u8,
+    /// 说明文案的键，由插件在 `detect.<label>` 下翻译
+    pub label: String,
+    #[serde(skip_serializing_if = "Map::is_empty")]
+    pub params: Map<String, Value>,
+}
+
+impl Detection {
+    pub fn new(score: u8, label: impl Into<String>) -> Self {
+        Self {
+            score: score.min(100),
+            label: label.into(),
+            params: Map::new(),
+        }
+    }
+
+    pub fn with(mut self, key: &str, value: impl Into<Value>) -> Self {
+        self.params.insert(key.to_owned(), value.into());
+        self
+    }
+}
+
+/// 识别时传给插件的最大文本长度
+pub const DETECT_LIMIT: usize = 256 * 1024;
+
 /// 插件后端需要实现的接口。
 pub trait ToolPlugin: Send + Sync {
     fn manifest(&self) -> &Manifest;
+
+    /// 判断一段文本（通常来自剪贴板）是否适合用本工具处理；需要快速返回，默认不识别。
+    fn detect(&self, text: &str) -> Option<Detection> {
+        let _ = text;
+        None
+    }
 
     /// 调用插件函数，参数与返回值均为 JSON。
     fn call(&self, function: &str, args: Value) -> PluginResult<Value>;

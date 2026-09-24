@@ -37,7 +37,9 @@
       "navigate": "Navigate",
       "open": "Open",
       "darkTheme": "Switch to dark theme",
-      "lightTheme": "Switch to light theme"
+      "lightTheme": "Switch to light theme",
+      "clipboard": "From clipboard",
+      "tools": "Tools"
     },
     "home": {
       "title": "Welcome to ToolForge",
@@ -74,7 +76,9 @@
       "storageHint": "Preferences, favorites and usage are stored in a local SQLite database.",
       "general": "General",
       "confirmQuit": "Confirm before quitting",
-      "confirmQuitHint": "Ask before closing the window or quitting the app"
+      "confirmQuitHint": "Ask before closing the window or quitting the app",
+      "clipboardSuggest": "Suggest tools for clipboard content",
+      "clipboardSuggestHint": "When you open ⌘K, the clipboard text is checked locally and matching tools are listed first"
     },
     "tool": {
       "favorite": "Favorite",

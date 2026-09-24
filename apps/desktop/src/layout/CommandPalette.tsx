@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { invoke } from '@tauri-apps/api/core'
 import { Empty, Input, Kbd, Modal, cn } from '@toolforge/ui'
-import { CornerDownLeft, Moon, Search, Settings, Star, Sun } from 'lucide-react'
+import { ClipboardList, CornerDownLeft, Moon, Search, Settings, Star, Sun } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ToolTile } from '../plugins/ToolIcon'
@@ -11,6 +12,8 @@ import { useIsDark, usePrefs } from '../stores/prefs'
 
 interface Entry {
   key: string
+  /** 分组：剪贴板推荐排在最前 */
+  group: 'clipboard' | 'tools'
   icon: ReactNode
   title: string
   subtitle?: string
@@ -18,6 +21,15 @@ interface Entry {
   terms: string
   run: () => void
 }
+
+interface ClipboardSuggestions {
+  text: string | null
+  preview: string
+  suggestions: { pluginId: string; score: number; label: string; params?: Record<string, unknown> }[]
+}
+
+/** 剪贴板推荐最多展示的条数 */
+const MAX_SUGGESTIONS = 4
 
 export function CommandPalette() {
   const open = useApp((s) => s.paletteOpen)
@@ -48,6 +60,9 @@ function PaletteContent() {
   const setOpen = useApp((s) => s.setPaletteOpen)
   const plugins = useApp((s) => s.plugins)
   const openTool = useApp((s) => s.openTool)
+  const openToolWith = useApp((s) => s.openToolWith)
+  const clipboardSuggest = usePrefs((s) => s.clipboardSuggest)
+  const [clip, setClip] = useState<ClipboardSuggestions | null>(null)
   const navigate = useApp((s) => s.navigate)
   const setTheme = usePrefs((s) => s.setTheme)
   const isDark = useIsDark()
@@ -55,12 +70,46 @@ function PaletteContent() {
   const [active, setActive] = useState(0)
   const listRef = useRef<HTMLDivElement>(null)
 
+  // 打开面板时在 Rust 侧读取剪贴板并识别内容
+  useEffect(() => {
+    if (!clipboardSuggest) return
+    let alive = true
+    invoke<ClipboardSuggestions>('clipboard_suggestions')
+      .then((result) => alive && setClip(result))
+      .catch(() => {})
+    return () => {
+      alive = false
+    }
+  }, [clipboardSuggest])
+
+  const suggestions = useMemo<Entry[]>(() => {
+    const content = clip?.text
+    if (!content) return []
+    return clip.suggestions.slice(0, MAX_SUGGESTIONS).flatMap((suggestion) => {
+      const manifest = plugins.find((p) => p.id === suggestion.pluginId)
+      if (!manifest) return []
+      const detail = t(`detect.${suggestion.label}`, { ns: manifest.id, ...suggestion.params, defaultValue: '' })
+      return [
+        {
+          key: `clipboard.${manifest.id}`,
+          group: 'clipboard' as const,
+          icon: <ToolTile manifest={manifest} size="sm" />,
+          title: text(manifest, manifest.name),
+          subtitle: detail || text(manifest, manifest.description),
+          terms: '',
+          run: () => openToolWith(manifest.id, content),
+        },
+      ]
+    })
+  }, [clip, plugins, t, text, openToolWith])
+
   const entries = useMemo<Entry[]>(() => {
     const tools = plugins.map((manifest) => {
       const title = text(manifest, manifest.name)
       const subtitle = text(manifest, manifest.description)
       return {
         key: manifest.id,
+        group: 'tools' as const,
         icon: <ToolTile manifest={manifest} size="sm" />,
         title,
         subtitle,
@@ -71,6 +120,7 @@ function PaletteContent() {
     const actions: Entry[] = [
       {
         key: 'action.theme',
+        group: 'tools',
         icon: isDark ? <Sun /> : <Moon />,
         title: t(isDark ? 'palette.lightTheme' : 'palette.darkTheme'),
         terms: 'theme dark light 主题 暗色 亮色',
@@ -81,6 +131,7 @@ function PaletteContent() {
       },
       {
         key: 'action.favorites',
+        group: 'tools',
         icon: <Star />,
         title: t('nav.favorites'),
         terms: 'favorites 收藏',
@@ -88,6 +139,7 @@ function PaletteContent() {
       },
       {
         key: 'action.settings',
+        group: 'tools',
         icon: <Settings />,
         title: t('nav.settings'),
         terms: 'settings preferences 设置',
@@ -98,7 +150,7 @@ function PaletteContent() {
   }, [plugins, text, t, isDark, openTool, navigate, setTheme, setOpen])
 
   const needle = query.trim().toLowerCase()
-  const results = needle ? entries.filter((e) => e.terms.toLowerCase().includes(needle)) : entries
+  const results = needle ? entries.filter((e) => e.terms.toLowerCase().includes(needle)) : [...suggestions, ...entries]
 
   useEffect(() => {
     listRef.current?.querySelector(`[data-index="${active}"]`)?.scrollIntoView({ block: 'nearest' })
@@ -132,25 +184,41 @@ function PaletteContent() {
       <div ref={listRef} className="max-h-[50vh] overflow-y-auto p-2" role="listbox">
         {results.length === 0 && <Empty icon={<Search />} title={t('palette.noResults')} />}
         {results.map((entry, index) => (
-          <div
-            key={entry.key}
-            data-index={index}
-            role="option"
-            aria-selected={index === active}
-            onMouseMove={() => setActive(index)}
-            onClick={entry.run}
-            className={cn(
-              'flex cursor-pointer items-center gap-3 rounded-control px-3 py-2',
-              index === active ? 'bg-hover' : '',
+          <Fragment key={entry.key}>
+            {suggestions.length > 0 && !needle && (index === 0 || results[index - 1].group !== entry.group) && (
+              <div className="flex items-center gap-2 px-3 pt-2 pb-1 text-[11px] font-semibold text-fg-subtle">
+                {entry.group === 'clipboard' ? (
+                  <>
+                    <ClipboardList className="size-3.5" />
+                    {t('palette.clipboard')}
+                    <span className="min-w-0 flex-1 truncate font-mono font-normal" data-selectable>
+                      {clip?.preview}
+                    </span>
+                  </>
+                ) : (
+                  t('palette.tools')
+                )}
+              </div>
             )}
-          >
-            <span className="flex size-8 items-center justify-center text-fg-muted [&_svg]:size-4">{entry.icon}</span>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-[13px] font-medium text-fg">{entry.title}</p>
-              {entry.subtitle && <p className="truncate text-xs text-fg-muted">{entry.subtitle}</p>}
+            <div
+              data-index={index}
+              role="option"
+              aria-selected={index === active}
+              onMouseMove={() => setActive(index)}
+              onClick={entry.run}
+              className={cn(
+                'flex cursor-pointer items-center gap-3 rounded-control px-3 py-2',
+                index === active ? 'bg-hover' : '',
+              )}
+            >
+              <span className="flex size-8 items-center justify-center text-fg-muted [&_svg]:size-4">{entry.icon}</span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[13px] font-medium text-fg">{entry.title}</p>
+                {entry.subtitle && <p className="truncate text-xs text-fg-muted">{entry.subtitle}</p>}
+              </div>
+              {index === active && <CornerDownLeft className="size-4 text-fg-subtle" />}
             </div>
-            {index === active && <CornerDownLeft className="size-4 text-fg-subtle" />}
-          </div>
+          </Fragment>
         ))}
       </div>
       <div className="flex items-center gap-4 border-t border-border px-4 py-2 text-xs text-fg-subtle">

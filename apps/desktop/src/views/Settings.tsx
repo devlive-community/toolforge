@@ -33,6 +33,8 @@ export function Settings() {
   const info = useApp((s) => s.info)
   const confirmQuit = usePrefs((s) => s.confirmQuit)
   const setConfirmQuit = usePrefs((s) => s.setConfirmQuit)
+  const clipboardSuggest = usePrefs((s) => s.clipboardSuggest)
+  const setClipboardSuggest = usePrefs((s) => s.setClipboardSuggest)
   const navigate = useApp((s) => s.navigate)
   const autoUpdate = usePrefs((s) => s.autoUpdate)
   const setAutoUpdate = usePrefs((s) => s.setAutoUpdate)
@@ -88,6 +90,9 @@ export function Settings() {
         <div className="divide-y divide-border rounded-card border border-border bg-surface shadow-card">
           <Row label={t('settings.confirmQuit')} hint={t('settings.confirmQuitHint')}>
             <Switch checked={confirmQuit} onCheckedChange={setConfirmQuit} aria-label={t('settings.confirmQuit')} />
+          </Row>
+          <Row label={t('settings.clipboardSuggest')} hint={t('settings.clipboardSuggestHint')}>
+            <Switch checked={clipboardSuggest} onCheckedChange={setClipboardSuggest} aria-label={t('settings.clipboardSuggest')} />
           </Row>
         </div>
       </Section>

@@ -126,6 +126,37 @@ pub fn plugin_state_set(
     state.store.plugin_state_set(&plugin_id, &key, &value)
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ClipboardSuggestions {
+    /// 剪贴板文本；没有推荐时为空，避免无谓地把内容传给界面
+    text: Option<String>,
+    preview: String,
+    suggestions: Vec<tf_core::Suggestion>,
+}
+
+/// 读取剪贴板文本并询问各插件能否处理，用于命令面板的「来自剪贴板」推荐
+#[tauri::command]
+pub async fn clipboard_suggestions(
+    app: tauri::AppHandle,
+    state: State<'_, AppState>,
+) -> AppResult<ClipboardSuggestions> {
+    use tauri_plugin_clipboard_manager::ClipboardExt;
+    // 剪贴板里没有文本（例如图片）时视为空
+    let text = app.clipboard().read_text().unwrap_or_default();
+    let registry = state.plugins.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        let suggestions = registry.detect(&text);
+        ClipboardSuggestions {
+            preview: tf_core::preview(&text, 80),
+            text: (!suggestions.is_empty()).then(|| text.trim().to_owned()),
+            suggestions,
+        }
+    })
+    .await
+    .map_err(|e| AppError::new("plugin.crashed").with("detail", e.to_string()))
+}
+
 /// 调用插件函数。在阻塞线程池中执行，避免数据处理阻塞 IPC 主循环。
 #[tauri::command]
 pub async fn plugin_call(
