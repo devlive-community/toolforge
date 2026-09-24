@@ -5965,6 +5965,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-curl-converter"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-dns-lookup"
 version = "0.1.0"
 dependencies = [
@@ -6515,6 +6525,7 @@ dependencies = [
  "tfp-base-converter",
  "tfp-color",
  "tfp-cron",
+ "tfp-curl-converter",
  "tfp-dns-lookup",
  "tfp-encoder",
  "tfp-format-converter",

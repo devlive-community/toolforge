@@ -1,0 +1,61 @@
+{
+  "name": "cURL to Code",
+  "description": "Convert curl commands into fetch, Python, Go, Rust, Java, PHP and C# code",
+  "help": [
+    "Paste a curl command, including the ones copied from browser DevTools with “Copy as cURL” in bash or cmd format.",
+    "Headers, methods, -d / --data-raw / --data-binary / --data-urlencode / --json bodies, -F multipart forms, -G, -u, -b, -k, -L, -m, -x and --compressed are converted.",
+    "JSON bodies are pretty-printed into readable literals; every other body is kept byte for byte.",
+    "Options that cannot be converted are listed below the command so nothing is dropped silently."
+  ],
+  "functions": {
+    "convert": "Convert command"
+  },
+  "language": "Language",
+  "input": {
+    "title": "curl command",
+    "placeholder": "curl https://api.example.com -H 'Accept: application/json'",
+    "paste": "Paste"
+  },
+  "output": {
+    "title": "Code",
+    "save": "Save"
+  },
+  "request": {
+    "title": "Request",
+    "headers": "Headers",
+    "body": "Body",
+    "noHeaders": "No headers",
+    "kinds": {
+      "none": "No body",
+      "text": "Text · {{count}} characters",
+      "file": "From file {{path}}",
+      "multipart": "Multipart · {{count}} fields"
+    },
+    "flags": {
+      "insecure": "Skip TLS verification",
+      "follow": "Follow redirects",
+      "compressed": "Compressed",
+      "timeout": "Timeout {{seconds}} s",
+      "proxy": "Proxy {{proxy}}"
+    }
+  },
+  "warnings": {
+    "title": "Not converted",
+    "curl.unknown_option": "Ignored unsupported option {{option}}",
+    "curl.upload_unsupported": "Uploading a file with -T ({{path}}) is not converted",
+    "curl.cookie_file": "Reading cookies from the file {{path}} is not converted",
+    "curl.multiple_urls": "The command has {{count}} URLs; only the first one is used",
+    "curl.data_and_form": "-d and -F cannot be combined; the -d data was dropped",
+    "curl.data_file_mixed": "@{{path}} is sent as literal text because it is combined with other -d data",
+    "curl.urlencode_file": "--data-urlencode {{value}} reads a file and is not converted",
+    "curl.invalid_form": "Invalid -F value: {{value}}"
+  },
+  "errors": {
+    "curl.empty": "Enter a curl command",
+    "curl.no_url": "The command has no URL",
+    "curl.unterminated_quote": "A quote is not closed",
+    "curl.missing_value": "{{option}} needs a value",
+    "curl.unknown_language": "Unsupported language: {{language}}",
+    "curl.too_large": "The command is larger than {{limit}}"
+  }
+}

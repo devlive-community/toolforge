@@ -1,0 +1,61 @@
+{
+  "name": "cURL 转代码",
+  "description": "把 curl 命令转换为 fetch、Python、Go、Rust、Java、PHP 与 C# 代码",
+  "help": [
+    "粘贴 curl 命令即可，包括在浏览器开发者工具中「复制为 cURL」得到的 bash 或 cmd 格式。",
+    "支持请求头、请求方法、-d / --data-raw / --data-binary / --data-urlencode / --json 请求体、-F 表单上传，以及 -G、-u、-b、-k、-L、-m、-x、--compressed。",
+    "JSON 请求体会格式化为易读的字面量，其他请求体按原样逐字节保留。",
+    "无法转换的选项会列在命令下方，不会被悄悄丢弃。"
+  ],
+  "functions": {
+    "convert": "转换命令"
+  },
+  "language": "语言",
+  "input": {
+    "title": "curl 命令",
+    "placeholder": "curl https://api.example.com -H 'Accept: application/json'",
+    "paste": "粘贴"
+  },
+  "output": {
+    "title": "代码",
+    "save": "保存"
+  },
+  "request": {
+    "title": "请求",
+    "headers": "请求头",
+    "body": "请求体",
+    "noHeaders": "没有请求头",
+    "kinds": {
+      "none": "无请求体",
+      "text": "文本 · {{count}} 个字符",
+      "file": "来自文件 {{path}}",
+      "multipart": "表单上传 · {{count}} 个字段"
+    },
+    "flags": {
+      "insecure": "跳过 TLS 校验",
+      "follow": "跟随重定向",
+      "compressed": "压缩传输",
+      "timeout": "超时 {{seconds}} 秒",
+      "proxy": "代理 {{proxy}}"
+    }
+  },
+  "warnings": {
+    "title": "未转换",
+    "curl.unknown_option": "已忽略不支持的选项 {{option}}",
+    "curl.upload_unsupported": "未转换 -T 上传文件（{{path}}）",
+    "curl.cookie_file": "未转换从文件 {{path}} 读取 Cookie",
+    "curl.multiple_urls": "命令中有 {{count}} 个地址，只使用第一个",
+    "curl.data_and_form": "-d 与 -F 不能同时使用，已丢弃 -d 的数据",
+    "curl.data_file_mixed": "@{{path}} 与其他 -d 数据混用，按原文发送",
+    "curl.urlencode_file": "--data-urlencode {{value}} 需要读取文件，未转换",
+    "curl.invalid_form": "无效的 -F 参数：{{value}}"
+  },
+  "errors": {
+    "curl.empty": "请输入 curl 命令",
+    "curl.no_url": "命令中没有请求地址",
+    "curl.unterminated_quote": "引号没有闭合",
+    "curl.missing_value": "{{option}} 缺少参数值",
+    "curl.unknown_language": "不支持的语言：{{language}}",
+    "curl.too_large": "命令超过 {{limit}}"
+  }
+}

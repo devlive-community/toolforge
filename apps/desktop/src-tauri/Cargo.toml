@@ -27,6 +27,7 @@ tfp-background-remover.workspace = true
 tfp-base-converter.workspace = true
 tfp-color.workspace = true
 tfp-cron.workspace = true
+tfp-curl-converter.workspace = true
 tfp-dns-lookup.workspace = true
 tfp-encoder.workspace = true
 tfp-format-converter.workspace = true
