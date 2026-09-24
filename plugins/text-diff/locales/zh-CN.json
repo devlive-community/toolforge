@@ -1,0 +1,33 @@
+{
+  "name": "文本对比",
+  "description": "按行、按词或按字符对比两段文本，左右并排高亮差异并导出补丁",
+  "help": [
+    "按行对比以左右并排显示，修改过的行会进一步标出具体改动的词。",
+    "按词 / 按字符对比适合比较一段话或一个配置值的细微差别。",
+    "忽略大小写与空白只影响比较，显示的仍是原文。",
+    "「复制补丁」得到标准 unified diff，可直接用于 git apply 或代码评审。"
+  ],
+  "mode": {
+    "label": "对比粒度",
+    "lines": "按行",
+    "words": "按词",
+    "chars": "按字符"
+  },
+  "options": {
+    "ignoreCase": "忽略大小写",
+    "ignoreWhitespace": "忽略空白",
+    "algorithm": "算法"
+  },
+  "swap": "交换左右",
+  "left": "原文本",
+  "right": "新文本",
+  "result": "对比结果",
+  "similarity": "相似度 {{value}}%",
+  "copyPatch": "复制补丁",
+  "identical": "两段文本完全一致",
+  "truncated": "差异过多，仅显示前 20000 行",
+  "elapsed": "耗时 {{ms}}ms",
+  "errors": {
+    "diff.too_large": "文本过大（超过 {{limit}}）"
+  }
+}

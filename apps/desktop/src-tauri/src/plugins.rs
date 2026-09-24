@@ -19,5 +19,6 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_encoder::Encoder::default()));
     registry.register(Arc::new(tfp_jwt::Jwt::default()));
     registry.register(Arc::new(tfp_text_tools::TextTools::default()));
+    registry.register(Arc::new(tfp_text_diff::TextDiff::default()));
     registry
 }

@@ -1,0 +1,33 @@
+{
+  "name": "Text Diff",
+  "description": "Compare two texts by line, word or character with side-by-side highlighting and patch export",
+  "help": [
+    "Line mode shows both sides next to each other and highlights the exact words that changed within modified lines.",
+    "Word and character modes are handy for spotting small differences in a sentence or a config value.",
+    "Ignoring case and whitespace only affects the comparison; the original text is still shown.",
+    "“Copy patch” produces a standard unified diff ready for git apply or code review."
+  ],
+  "mode": {
+    "label": "Granularity",
+    "lines": "Lines",
+    "words": "Words",
+    "chars": "Characters"
+  },
+  "options": {
+    "ignoreCase": "Ignore case",
+    "ignoreWhitespace": "Ignore whitespace",
+    "algorithm": "Algorithm"
+  },
+  "swap": "Swap sides",
+  "left": "Original",
+  "right": "Changed",
+  "result": "Differences",
+  "similarity": "{{value}}% similar",
+  "copyPatch": "Copy patch",
+  "identical": "The texts are identical",
+  "truncated": "Too many differences; showing the first 20,000 rows",
+  "elapsed": "{{ms}} ms",
+  "errors": {
+    "diff.too_large": "Text is too large (over {{limit}})"
+  }
+}

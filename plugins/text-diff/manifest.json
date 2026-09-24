@@ -1,0 +1,15 @@
+{
+  "id": "org.devlive.toolforge.text-diff",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "text",
+  "keywords": ["diff", "compare", "difference", "patch", "unified", "文本对比", "差异", "比较", "对比"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],
+  "functions": {
+    "diff": {}
+  },
+  "sensitive": false
+}
