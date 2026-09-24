@@ -744,6 +744,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "csscolorparser"
+version = "0.8.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "168dbdf4dced8f57fa4246ac9080598452b49d70bb2d0e46422142f113140dd8"
+dependencies = [
+ "num-traits",
+ "phf",
+ "serde",
+ "uncased",
+]
+
+[[package]]
 name = "cssparser"
 version = "0.36.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3335,6 +3347,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.119",
+ "uncased",
 ]
 
 [[package]]
@@ -3344,6 +3357,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e57fef6bc5981e38c2ce2d63bfa546861309f875b8a75f092d1d54ae2d64f266"
 dependencies = [
  "siphasher",
+ "uncased",
 ]
 
 [[package]]
@@ -5181,6 +5195,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-color"
+version = "0.1.0"
+dependencies = [
+ "csscolorparser",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-encoder"
 version = "0.1.0"
 dependencies = [
@@ -5607,6 +5631,7 @@ dependencies = [
  "tf-core",
  "tf-plugin-api",
  "tfp-base-converter",
+ "tfp-color",
  "tfp-encoder",
  "tfp-format-converter",
  "tfp-hash",
@@ -5774,6 +5799,15 @@ checksum = "947dde63b6d514cc5e044edad4e0ca7261afd1099d16c83d942cb2b2f348689c"
 dependencies = [
  "rand 0.10.3",
  "web-time",
+]
+
+[[package]]
+name = "uncased"
+version = "0.9.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e1b88fcfe09e89d3866a5c11019378088af2d24c3fbd4f0543f96b479ec90697"
+dependencies = [
+ "version_check",
 ]
 
 [[package]]

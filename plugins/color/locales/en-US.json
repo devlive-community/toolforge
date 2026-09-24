@@ -1,0 +1,61 @@
+{
+  "name": "Color Converter",
+  "description": "Convert colors between HEX, RGB, HSL, HSV, HWB, CMYK, Lab and OKLCH, check WCAG contrast and build palettes",
+  "help": [
+    "Accepts any CSS color: hex, named colors, rgb(), hsl(), hwb(), lab(), oklch(), plus 0xAARRGGBB.",
+    "Contrast ratios follow WCAG 2.x; large text is 18pt, or 14pt bold.",
+    "Tints, shades and harmonies are mixed in the perceptual OKLab / OKLCH spaces.",
+    "Click any swatch to use it."
+  ],
+  "functions": {
+    "convert": "Convert color"
+  },
+  "input": {
+    "label": "Color",
+    "placeholder": "e.g. #3b82f6, rgb(59 130 246), tomato"
+  },
+  "swatch": {
+    "empty": "Enter a color",
+    "unnamed": "No CSS name",
+    "alpha": "alpha {{value}}"
+  },
+  "formats": {
+    "title": "Formats",
+    "hex": "HEX",
+    "name": "CSS name",
+    "rgb": "RGB",
+    "rgbLegacy": "RGB (legacy)",
+    "hsl": "HSL",
+    "hsv": "HSV",
+    "hwb": "HWB",
+    "cmyk": "CMYK",
+    "lab": "Lab",
+    "lch": "LCH",
+    "oklab": "OKLab",
+    "oklch": "OKLCH",
+    "argb": "ARGB int",
+    "vec": "Float RGBA"
+  },
+  "contrast": {
+    "title": "WCAG contrast",
+    "onWhite": "On white",
+    "onBlack": "On black",
+    "compare": "Versus",
+    "comparePlaceholder": "Compare with another color",
+    "ratio": "{{ratio}}:1",
+    "large": "{{level}} large"
+  },
+  "palette": {
+    "title": "Palette",
+    "tints": "Tints",
+    "shades": "Shades",
+    "complementary": "Complementary",
+    "analogous": "Analogous",
+    "triadic": "Triadic",
+    "tetradic": "Tetradic"
+  },
+  "errors": {
+    "color.empty": "Enter a color",
+    "color.invalid": "“{{input}}” is not a recognized color"
+  }
+}

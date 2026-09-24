@@ -1,0 +1,61 @@
+{
+  "name": "颜色转换",
+  "description": "HEX、RGB、HSL、HSV、HWB、CMYK、Lab、OKLCH 互转，检查 WCAG 对比度并生成配色",
+  "help": [
+    "支持任意 CSS 颜色写法：十六进制、颜色名、rgb()、hsl()、hwb()、lab()、oklch()，以及 0xAARRGGBB。",
+    "对比度按 WCAG 2.x 计算；大号文本指 18pt 或 14pt 粗体。",
+    "明暗色阶与配色在感知均匀的 OKLab / OKLCH 空间中计算。",
+    "点击任意色块即可使用该颜色。"
+  ],
+  "functions": {
+    "convert": "转换颜色"
+  },
+  "input": {
+    "label": "颜色",
+    "placeholder": "例如 #3b82f6、rgb(59 130 246)、tomato"
+  },
+  "swatch": {
+    "empty": "请输入颜色",
+    "unnamed": "无 CSS 名称",
+    "alpha": "透明度 {{value}}"
+  },
+  "formats": {
+    "title": "格式",
+    "hex": "HEX",
+    "name": "CSS 名称",
+    "rgb": "RGB",
+    "rgbLegacy": "RGB（旧语法）",
+    "hsl": "HSL",
+    "hsv": "HSV",
+    "hwb": "HWB",
+    "cmyk": "CMYK",
+    "lab": "Lab",
+    "lch": "LCH",
+    "oklab": "OKLab",
+    "oklch": "OKLCH",
+    "argb": "ARGB 整数",
+    "vec": "浮点 RGBA"
+  },
+  "contrast": {
+    "title": "WCAG 对比度",
+    "onWhite": "白色背景",
+    "onBlack": "黑色背景",
+    "compare": "对比色",
+    "comparePlaceholder": "与另一个颜色比较",
+    "ratio": "{{ratio}}:1",
+    "large": "{{level}} 大字"
+  },
+  "palette": {
+    "title": "配色",
+    "tints": "浅色阶",
+    "shades": "深色阶",
+    "complementary": "互补色",
+    "analogous": "邻近色",
+    "triadic": "三角色",
+    "tetradic": "四角色"
+  },
+  "errors": {
+    "color.empty": "请输入颜色",
+    "color.invalid": "无法识别的颜色：“{{input}}”"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "org.devlive.toolforge.color",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "convert",
+  "keywords": ["color", "colour", "hex", "rgb", "hsl", "hsv", "hwb", "cmyk", "lab", "oklch", "contrast", "wcag", "palette", "颜色", "色值", "对比度", "配色"],
+  "accent": "pink",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "convert": {}
+  },
+  "sensitive": false
+}
