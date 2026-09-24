@@ -148,6 +148,12 @@ export interface CodeEditorHandle {
   gotoLine: (line: number, column?: number) => void
   /** 选中并滚动到指定区间（UTF-16 偏移） */
   selectRange: (from: number, to: number) => void
+  /** 用前后缀包裹选区；选区已被包裹时取消包裹，无选区时插入前后缀并把光标放在中间 */
+  wrapSelection: (before: string, after?: string) => void
+  /** 为选区所在的每一行切换行首前缀；`replace` 匹配到的已有前缀会被替换 */
+  toggleLinePrefix: (prefix: string, replace?: RegExp) => void
+  /** 用文本替换选区，光标移到插入内容之后 */
+  insertText: (text: string) => void
 }
 
 export interface CodeEditorProps {
@@ -190,6 +196,45 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function
         selection: EditorSelection.range(Math.min(from, length), Math.min(to, length)),
         scrollIntoView: true,
       })
+    },
+    wrapSelection: (before, after = before) => {
+      const view = cm.current?.view
+      if (!view) return
+      view.dispatch(
+        view.state.changeByRange((range) => {
+          const text = view.state.sliceDoc(range.from, range.to)
+          const wrapped = text.length >= before.length + after.length && text.startsWith(before) && text.endsWith(after)
+          const inner = wrapped ? text.slice(before.length, text.length - after.length) : before + text + after
+          const start = range.empty ? range.from + before.length : range.from
+          const end = range.empty ? start : range.from + inner.length
+          return { changes: { from: range.from, to: range.to, insert: inner }, range: EditorSelection.range(start, end) }
+        }),
+      )
+      view.focus()
+    },
+    toggleLinePrefix: (prefix, replace) => {
+      const view = cm.current?.view
+      if (!view) return
+      const { state } = view
+      const lines = new Map<number, ReturnType<typeof state.doc.line>>()
+      for (const range of state.selection.ranges) {
+        for (let n = state.doc.lineAt(range.from).number; n <= state.doc.lineAt(range.to).number; n++) lines.set(n, state.doc.line(n))
+      }
+      const all = [...lines.values()]
+      const remove = all.every((line) => line.text.startsWith(prefix))
+      const changes = all.map((line) => {
+        if (remove) return { from: line.from, to: line.from + prefix.length, insert: '' }
+        const existing = replace ? (line.text.match(replace)?.[0] ?? '') : ''
+        return { from: line.from, to: line.from + existing.length, insert: prefix }
+      })
+      view.dispatch({ changes })
+      view.focus()
+    },
+    insertText: (text) => {
+      const view = cm.current?.view
+      if (!view) return
+      view.dispatch(view.state.replaceSelection(text), { scrollIntoView: true })
+      view.focus()
     },
   }))
 
