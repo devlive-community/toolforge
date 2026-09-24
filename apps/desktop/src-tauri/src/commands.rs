@@ -39,6 +39,18 @@ pub fn app_open_url(app: tauri::AppHandle, url: String) -> AppResult<()> {
         .map_err(|e| AppError::new("app.open_failed").with("detail", e.to_string()))
 }
 
+/// 在系统文件管理器中显示文件
+#[tauri::command]
+pub fn app_reveal_path(app: tauri::AppHandle, path: String) -> AppResult<()> {
+    use tauri_plugin_opener::OpenerExt;
+    if !std::path::Path::new(&path).exists() {
+        return Err(AppError::new("fs.not_found").with("path", path));
+    }
+    app.opener()
+        .reveal_item_in_dir(&path)
+        .map_err(|e| AppError::new("app.open_failed").with("detail", e.to_string()))
+}
+
 /// 前端日志转发到终端（开发期排查 WebView 内的错误）
 #[tauri::command]
 pub fn app_log(level: String, message: String) {

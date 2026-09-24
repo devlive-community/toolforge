@@ -47,6 +47,7 @@ pub fn run() {
             commands::app_info,
             commands::app_log,
             commands::app_open_url,
+            commands::app_reveal_path,
             commands::prefs_get,
             commands::prefs_set,
             commands::favorites_list,
