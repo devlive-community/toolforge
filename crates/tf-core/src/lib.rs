@@ -1,6 +1,7 @@
-//! ToolForge 核心服务：错误码、SQLite 存储、插件注册表、耗时任务。
+//! ToolForge 核心服务：错误码、SQLite 存储、插件注册表、耗时任务、Markdown 解析。
 
 pub mod error;
+pub mod markdown;
 pub mod registry;
 pub mod store;
 pub mod task;

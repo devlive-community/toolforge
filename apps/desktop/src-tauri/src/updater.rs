@@ -7,6 +7,7 @@ use serde::Serialize;
 use tauri::ipc::Channel;
 use tauri::{AppHandle, State};
 use tauri_plugin_updater::{Update, UpdaterExt};
+use tf_core::markdown::{self, Block};
 use tf_core::{AppError, AppResult};
 
 /// 进度事件的最小推送间隔，避免高频 IPC
@@ -22,7 +23,8 @@ pub struct UpdateInfo {
     version: String,
     current_version: String,
     date: Option<String>,
-    notes: Option<String>,
+    /// 发布说明（Markdown 已在 Rust 侧解析为结构化块）
+    notes: Vec<Block>,
 }
 
 #[derive(Clone, Serialize)]
@@ -56,7 +58,7 @@ pub async fn update_check(
         version: u.version.clone(),
         current_version: u.current_version.clone(),
         date: u.date.map(|d| d.to_string()),
-        notes: u.body.clone(),
+        notes: u.body.as_deref().map(markdown::parse).unwrap_or_default(),
     });
     *pending.0.lock().unwrap_or_else(|e| e.into_inner()) = update;
     Ok(info)

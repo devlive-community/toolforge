@@ -22,6 +22,8 @@ const wrap = async <T,>(promise: Promise<T>): Promise<T> => {
  * 也让插件在后续迁移到沙箱运行时无需改动。
  */
 export const host = {
+  /** 用系统浏览器打开 http(s) 链接 */
+  openUrl: (url: string) => wrap(invoke<void>('app_open_url', { url })),
   clipboard: {
     readText: () => wrap(readText()),
     writeText: (text: string) => wrap(writeText(text)),

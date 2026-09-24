@@ -1,5 +1,5 @@
-import { Button, Modal, Progress } from '@toolforge/ui'
-import { useErrorMessage } from '@toolforge/plugin-ui-sdk'
+import { Button, Markdown, Modal, Progress, toast } from '@toolforge/ui'
+import { host, useErrorMessage } from '@toolforge/plugin-ui-sdk'
 import { Download, RotateCw } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { usePrefs } from '../stores/prefs'
@@ -56,12 +56,10 @@ export function UpdateDialog() {
       }
     >
       <div className="space-y-4 px-5 pb-5">
-        {info.notes && (
-          <div className="max-h-64 overflow-auto rounded-control border border-border bg-surface-2 p-3">
-            <p className="text-xs font-medium text-fg-muted">{t('update.notes')}</p>
-            <p className="mt-1.5 text-[13px] leading-relaxed whitespace-pre-wrap text-fg" data-selectable>
-              {info.notes}
-            </p>
+        {info.notes.length > 0 && (
+          <div className="max-h-72 overflow-auto rounded-control border border-border bg-surface-2 p-3">
+            <p className="mb-2 text-xs font-medium text-fg-muted">{t('update.notes')}</p>
+            <Markdown blocks={info.notes} onOpenLink={(href) => host.openUrl(href).catch((reason) => toast.error(errorMessage(reason)))} />
           </div>
         )}
         {(busy || status === 'ready') && (

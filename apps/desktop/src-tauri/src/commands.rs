@@ -26,6 +26,19 @@ pub fn app_info(app: tauri::AppHandle) -> AppInfo {
     }
 }
 
+/// 用系统浏览器打开外部链接；只允许 http(s)，避免借此打开本地文件或任意协议
+#[tauri::command]
+pub fn app_open_url(app: tauri::AppHandle, url: String) -> AppResult<()> {
+    use tauri_plugin_opener::OpenerExt;
+    let lower = url.to_ascii_lowercase();
+    if !(lower.starts_with("https://") || lower.starts_with("http://")) {
+        return Err(AppError::new("app.invalid_url").with("url", url));
+    }
+    app.opener()
+        .open_url(&url, None::<&str>)
+        .map_err(|e| AppError::new("app.open_failed").with("detail", e.to_string()))
+}
+
 /// 前端日志转发到终端（开发期排查 WebView 内的错误）
 #[tauri::command]
 pub fn app_log(level: String, message: String) {

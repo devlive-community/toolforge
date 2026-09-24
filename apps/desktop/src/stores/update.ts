@@ -1,13 +1,14 @@
 import { Channel, invoke } from '@tauri-apps/api/core'
 import { create } from 'zustand'
 import { toAppError, type AppError } from '@toolforge/plugin-ui-sdk'
+import type { MarkdownBlock } from '@toolforge/ui'
 import { usePrefs } from './prefs'
 
 export interface UpdateInfo {
   version: string
   currentVersion: string
   date: string | null
-  notes: string | null
+  notes: MarkdownBlock[]
 }
 
 type UpdateEvent =

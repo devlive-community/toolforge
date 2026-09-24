@@ -143,6 +143,8 @@
     "loading": "Loading…",
     "comingSoon": "Coming soon",
     "errors": {
+      "app.invalid_url": "Only web links can be opened: {{url}}",
+      "app.open_failed": "Failed to open the link: {{detail}}",
       "app.unknown": "Unexpected error: {{detail}}",
       "store.failed": "Failed to read or write local data",
       "fs.not_found": "File not found",

@@ -143,6 +143,8 @@
     "loading": "加载中…",
     "comingSoon": "即将推出",
     "errors": {
+      "app.invalid_url": "只能打开网页链接：{{url}}",
+      "app.open_failed": "打开链接失败：{{detail}}",
       "app.unknown": "发生未知错误：{{detail}}",
       "store.failed": "本地数据读写失败",
       "fs.not_found": "文件不存在",
