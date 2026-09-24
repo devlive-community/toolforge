@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.dns-lookup",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "network",
+  "keywords": ["dns", "lookup", "dig", "nslookup", "resolve", "domain", "a", "aaaa", "mx", "txt", "cname", "ns", "ptr", "域名", "解析"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["network", "clipboard:write"],
+  "functions": {
+    "lookup": {},
+    "servers": {}
+  },
+  "sensitive": false
+}

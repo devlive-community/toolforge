@@ -1,0 +1,52 @@
+{
+  "name": "DNS Lookup",
+  "description": "Query A, AAAA, MX, TXT, CNAME, NS and other records, and compare answers across DNS servers",
+  "help": [
+    "Queries run in Rust against the system resolver or public DNS servers, with caching disabled so you always see a fresh answer and timing.",
+    "Select several servers to compare their answers side by side, for example to check propagation.",
+    "For PTR (reverse) lookups, enter an IP address.",
+    "If a proxy in TUN / fake-ip mode is running, answers in 198.18.0.0/15 are placeholders from the proxy, not real addresses."
+  ],
+  "functions": {
+    "lookup": "Look up",
+    "servers": "List servers"
+  },
+  "input": {
+    "name": "Domain",
+    "placeholder": "Domain or URL, e.g. github.com",
+    "lookup": "Look up",
+    "type": "Record",
+    "servers": "Servers",
+    "custom": "Custom server IP",
+    "ptrHint": "Enter an IPv4 or IPv6 address for a reverse lookup."
+  },
+  "servers": {
+    "system": "System",
+    "cloudflare": "Cloudflare",
+    "google": "Google",
+    "quad9": "Quad9",
+    "alidns": "AliDNS",
+    "dnspod": "DNSPod",
+    "dns114": "114DNS"
+  },
+  "results": {
+    "empty": "No results yet",
+    "emptyHint": "Enter a domain, choose a record type and servers, then look it up",
+    "ms": "{{ms}} ms",
+    "ttl": "TTL {{ttl}}",
+    "fakeIp": "Some answers are in 198.18.0.0/15, which proxies in TUN / fake-ip mode return as placeholders. Disable the proxy to see real addresses."
+  },
+  "errors": {
+    "dns.empty": "Enter a domain",
+    "dns.invalid_name": "“{{name}}” is not a valid domain name",
+    "dns.ip_needs_ptr": "{{ip}} is an IP address; choose PTR for a reverse lookup",
+    "dns.unsupported_type": "Unsupported record type {{type}}",
+    "dns.invalid_server": "“{{server}}” is not a valid DNS server address",
+    "dns.no_servers": "Select at least one server",
+    "dns.nx_domain": "The domain does not exist (NXDOMAIN)",
+    "dns.no_records": "No records of this type",
+    "dns.timeout": "The server did not respond in time",
+    "dns.failed": "Lookup failed: {{detail}}",
+    "dns.system_config": "Could not read the system DNS configuration: {{detail}}"
+  }
+}

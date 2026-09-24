@@ -1,0 +1,52 @@
+{
+  "name": "DNS 查询",
+  "description": "查询 A、AAAA、MX、TXT、CNAME、NS 等记录，并对比不同 DNS 服务器的结果",
+  "help": [
+    "查询在 Rust 中通过系统解析器或公共 DNS 完成，并关闭缓存，每次都能看到最新结果与耗时。",
+    "同时选择多个服务器可以并排对比结果，例如检查解析是否已生效。",
+    "反向解析（PTR）请直接输入 IP 地址。",
+    "如果开启了 TUN / fake-ip 模式的代理，198.18.0.0/15 中的地址是代理返回的占位地址，并非真实地址。"
+  ],
+  "functions": {
+    "lookup": "查询",
+    "servers": "服务器列表"
+  },
+  "input": {
+    "name": "域名",
+    "placeholder": "域名或网址，例如 github.com",
+    "lookup": "查询",
+    "type": "记录类型",
+    "servers": "服务器",
+    "custom": "自定义服务器 IP",
+    "ptrHint": "反向解析请输入 IPv4 或 IPv6 地址。"
+  },
+  "servers": {
+    "system": "系统",
+    "cloudflare": "Cloudflare",
+    "google": "Google",
+    "quad9": "Quad9",
+    "alidns": "阿里 DNS",
+    "dnspod": "腾讯 DNSPod",
+    "dns114": "114DNS"
+  },
+  "results": {
+    "empty": "暂无结果",
+    "emptyHint": "输入域名、选择记录类型与服务器后开始查询",
+    "ms": "{{ms}} ms",
+    "ttl": "TTL {{ttl}}",
+    "fakeIp": "部分结果位于 198.18.0.0/15，这是 TUN / fake-ip 模式的代理返回的占位地址，关闭代理后可看到真实地址。"
+  },
+  "errors": {
+    "dns.empty": "请输入域名",
+    "dns.invalid_name": "“{{name}}”不是有效的域名",
+    "dns.ip_needs_ptr": "{{ip}} 是 IP 地址，反向解析请选择 PTR",
+    "dns.unsupported_type": "不支持的记录类型 {{type}}",
+    "dns.invalid_server": "“{{server}}”不是有效的 DNS 服务器地址",
+    "dns.no_servers": "请至少选择一个服务器",
+    "dns.nx_domain": "域名不存在（NXDOMAIN）",
+    "dns.no_records": "没有该类型的记录",
+    "dns.timeout": "服务器未及时响应",
+    "dns.failed": "查询失败：{{detail}}",
+    "dns.system_config": "无法读取系统 DNS 配置：{{detail}}"
+  }
+}
