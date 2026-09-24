@@ -1,0 +1,82 @@
+{
+  "name": "HTTP 请求",
+  "description": "发送 HTTP 请求并查看响应，支持请求头、JSON / 表单请求体与复制为 cURL",
+  "help": [
+    "请求由本地 Rust 引擎作为可取消的任务发送，不经过任何第三方服务。",
+    "JSON 响应会自动格式化；过大的响应只展示预览，可保存完整内容。",
+    "没有协议的地址默认使用 https，本机与内网地址使用 http；本机地址始终不走系统代理。",
+    "「cURL」可把当前请求复制为命令行。"
+  ],
+  "functions": {
+    "send": "发送请求",
+    "to_curl": "复制为 cURL",
+    "save_body": "保存响应"
+  },
+  "request": {
+    "title": "请求",
+    "method": "请求方法",
+    "url": "地址",
+    "urlPlaceholder": "https://api.example.com/users",
+    "send": "发送",
+    "cancel": "取消",
+    "curl": "cURL",
+    "params": "参数（{{count}}）",
+    "headers": "请求头（{{count}}）",
+    "body": "请求体",
+    "settings": "设置",
+    "paramKey": "参数名",
+    "headerKey": "请求头",
+    "fieldKey": "字段",
+    "value": "值",
+    "enabled": "启用",
+    "remove": "移除",
+    "noBody": "该请求没有请求体。"
+  },
+  "bodyKinds": {
+    "none": "无",
+    "text": "文本",
+    "form": "表单"
+  },
+  "settings": {
+    "timeout": "超时（秒）",
+    "redirects": "自动跟随重定向",
+    "proxy": "使用系统代理",
+    "proxyHint": "本机地址始终直连"
+  },
+  "response": {
+    "title": "响应",
+    "body": "响应体",
+    "headers": "响应头（{{count}}）",
+    "meta": "{{ms}} ms · {{size}}",
+    "save": "保存响应",
+    "redirects_one": "{{count}} 次重定向",
+    "redirects_other": "{{count}} 次重定向",
+    "waiting": "正在等待响应…",
+    "empty": "暂无响应",
+    "emptyHint": "输入地址后点击发送",
+    "binary": "二进制响应（{{size}}）",
+    "truncated": "仅显示前 1 MB（共 {{size}}），保存响应可获得完整内容。"
+  },
+  "logs": {
+    "http": {
+      "request": "{{method}} {{url}}",
+      "redirect": "重定向到 {{url}}",
+      "response": "HTTP {{status}}，耗时 {{ms}} ms",
+      "body": "接收 {{bytes, number}} 字节，耗时 {{ms}} ms"
+    }
+  },
+  "errors": {
+    "http.empty_url": "请输入地址",
+    "http.invalid_url": "地址无效：{{detail}}",
+    "http.unsupported_scheme": "只支持 http 与 https，不支持 {{scheme}}",
+    "http.invalid_method": "无效的请求方法“{{method}}”",
+    "http.invalid_header": "无效的请求头“{{name}}”",
+    "http.invalid_json_body": "JSON 请求体在第 {{line}} 行第 {{column}} 列有误",
+    "http.timeout": "请求超时",
+    "http.connect_failed": "无法连接：{{detail}}",
+    "http.too_many_redirects": "重定向次数过多",
+    "http.network": "网络错误：{{detail}}",
+    "http.body_too_large": "响应超过 {{limit}}",
+    "http.response_expired": "该响应已被替换，请重新发送请求"
+  }
+}

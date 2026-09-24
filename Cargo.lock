@@ -5664,6 +5664,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-http-client"
+version = "0.1.0"
+dependencies = [
+ "reqwest",
+ "rustls",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "url",
+]
+
+[[package]]
 name = "tfp-image-converter"
 version = "0.1.0"
 dependencies = [
@@ -6086,6 +6098,7 @@ dependencies = [
  "tfp-encoder",
  "tfp-format-converter",
  "tfp-hash",
+ "tfp-http-client",
  "tfp-image-converter",
  "tfp-ip-calculator",
  "tfp-json-formatter",

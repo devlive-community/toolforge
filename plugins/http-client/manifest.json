@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.http-client",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "network",
+  "keywords": ["http", "https", "request", "api", "rest", "curl", "postman", "get", "post", "header", "请求", "接口", "调试"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["network", "clipboard:write", "fs:user-selected"],
+  "functions": {
+    "send": { "task": true },
+    "to_curl": {},
+    "save_body": {}
+  },
+  "sensitive": false
+}

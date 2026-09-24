@@ -1,0 +1,82 @@
+{
+  "name": "HTTP Client",
+  "description": "Send HTTP requests and inspect responses, with headers, JSON / form bodies and copy as cURL",
+  "help": [
+    "Requests are sent by the local Rust engine as a cancellable task; nothing goes through a third-party service.",
+    "JSON responses are pretty-printed; large bodies show a preview and can be saved in full.",
+    "Addresses without a scheme use https, or http for localhost and private networks. Localhost always bypasses the system proxy.",
+    "Copy as cURL turns the current request into a shell command."
+  ],
+  "functions": {
+    "send": "Send request",
+    "to_curl": "Copy as cURL",
+    "save_body": "Save response"
+  },
+  "request": {
+    "title": "Request",
+    "method": "Method",
+    "url": "URL",
+    "urlPlaceholder": "https://api.example.com/users",
+    "send": "Send",
+    "cancel": "Cancel",
+    "curl": "cURL",
+    "params": "Params ({{count}})",
+    "headers": "Headers ({{count}})",
+    "body": "Body",
+    "settings": "Settings",
+    "paramKey": "Parameter",
+    "headerKey": "Header",
+    "fieldKey": "Field",
+    "value": "Value",
+    "enabled": "Enabled",
+    "remove": "Remove",
+    "noBody": "This request has no body."
+  },
+  "bodyKinds": {
+    "none": "None",
+    "text": "Text",
+    "form": "Form"
+  },
+  "settings": {
+    "timeout": "Timeout (seconds)",
+    "redirects": "Follow redirects",
+    "proxy": "Use system proxy",
+    "proxyHint": "Localhost is always connected directly"
+  },
+  "response": {
+    "title": "Response",
+    "body": "Body",
+    "headers": "Headers ({{count}})",
+    "meta": "{{ms}} ms · {{size}}",
+    "save": "Save response",
+    "redirects_one": "{{count}} redirect",
+    "redirects_other": "{{count}} redirects",
+    "waiting": "Waiting for response…",
+    "empty": "No response yet",
+    "emptyHint": "Enter a URL and click Send",
+    "binary": "Binary response ({{size}})",
+    "truncated": "Showing the first 1 MB of {{size}}. Save the response to get the full body."
+  },
+  "logs": {
+    "http": {
+      "request": "{{method}} {{url}}",
+      "redirect": "Redirected to {{url}}",
+      "response": "HTTP {{status}} after {{ms}} ms",
+      "body": "Received {{bytes, number}} bytes in {{ms}} ms"
+    }
+  },
+  "errors": {
+    "http.empty_url": "Enter a URL",
+    "http.invalid_url": "Invalid URL: {{detail}}",
+    "http.unsupported_scheme": "Only http and https are supported, not {{scheme}}",
+    "http.invalid_method": "Invalid method “{{method}}”",
+    "http.invalid_header": "Invalid header “{{name}}”",
+    "http.invalid_json_body": "The JSON body is invalid at line {{line}}, column {{column}}",
+    "http.timeout": "The request timed out",
+    "http.connect_failed": "Could not connect: {{detail}}",
+    "http.too_many_redirects": "Too many redirects",
+    "http.network": "Network error: {{detail}}",
+    "http.body_too_large": "The response is larger than {{limit}}",
+    "http.response_expired": "The response has been replaced; send the request again"
+  }
+}
