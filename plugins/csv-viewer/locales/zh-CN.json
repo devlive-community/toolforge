@@ -1,0 +1,118 @@
+{
+  "name": "CSV 查看器",
+  "description": "打开大型 CSV / TSV 文件，排序、搜索、筛选、查看列统计并导出",
+  "help": [
+    "支持最大 1 GB 的文件。行数据由 Rust 按页读取，百万行约一秒即可打开，滚动流畅。",
+    "自动识别编码（UTF-8、UTF-16、GBK/GB18030）、分隔符与表头；识别有误时可在工具栏中修改。",
+    "点击列标题排序；打开列详情可查看统计信息与最常见的值，并添加筛选条件。",
+    "可把当前视图（排序、筛选后）导出为 CSV、TSV、JSON 或 Markdown 表格；也可以直接粘贴从电子表格复制的内容。"
+  ],
+  "functions": {
+    "open": "打开文件",
+    "parse_text": "解析粘贴的表格",
+    "rows": "读取行",
+    "stats": "列统计",
+    "export": "导出"
+  },
+  "open": {
+    "drop": "拖入 CSV / TSV 文件，或点击打开",
+    "hint": "最大 1 GB · 支持 CSV、TSV 与 TXT",
+    "filter": "表格",
+    "paste": "粘贴表格",
+    "another": "打开",
+    "close": "关闭",
+    "pasted": "粘贴的表格",
+    "cancel": "取消"
+  },
+  "stages": {
+    "csv": {
+      "read": "正在读取文件…",
+      "parse": "正在解析…",
+      "export": "正在导出…"
+    }
+  },
+  "logs": {
+    "csv": {
+      "loaded": "已加载 {{rows}} 行 × {{columns}} 列（{{encoding}}，分隔符 {{delimiter}}），用时 {{ms}} 毫秒",
+      "exported": "已导出 {{rows}} 行到 {{path}}"
+    }
+  },
+  "options": {
+    "delimiter": "分隔符",
+    "encoding": "编码",
+    "header": "首行为表头",
+    "auto": "自动",
+    "comma": "逗号",
+    "tab": "制表符",
+    "semicolon": "分号",
+    "pipe": "竖线"
+  },
+  "table": {
+    "search": "搜索所有单元格",
+    "rows": "{{formatted}} 行",
+    "filtered": "{{shown}} / {{total}} 行",
+    "columns": "{{count}} 列",
+    "column": "第 {{n}} 列",
+    "empty": "没有匹配的行",
+    "loaded": "加载用时 {{ms}} 毫秒",
+    "details": "列详情",
+    "sortAsc": "升序",
+    "sortDesc": "降序"
+  },
+  "kinds": {
+    "empty": "空",
+    "integer": "整数",
+    "float": "数字",
+    "boolean": "布尔",
+    "date": "日期",
+    "text": "文本"
+  },
+  "filters": {
+    "add": "添加筛选",
+    "value": "值",
+    "clear": "清除筛选",
+    "remove": "移除筛选",
+    "ops": {
+      "contains": "包含",
+      "equals": "等于",
+      "notEquals": "不等于",
+      "greater": "大于",
+      "less": "小于",
+      "empty": "为空",
+      "notEmpty": "不为空"
+    }
+  },
+  "stats": {
+    "count": "行数",
+    "empty": "空值",
+    "distinct": "不同值",
+    "capped": "{{count}}+",
+    "min": "最小值",
+    "max": "最大值",
+    "mean": "平均值",
+    "sum": "合计",
+    "length": "长度",
+    "lengthRange": "{{min}} – {{max}} 个字符",
+    "top": "最常见的值",
+    "only": "只显示这个值",
+    "close": "关闭"
+  },
+  "export": {
+    "title": "导出",
+    "csv": "CSV",
+    "tsv": "TSV",
+    "json": "JSON",
+    "markdown": "Markdown 表格",
+    "done": "已导出 {{count}} 行"
+  },
+  "errors": {
+    "csv.unknown_encoding": "未知的编码：{{encoding}}",
+    "csv.invalid_delimiter": "分隔符必须是单个字符",
+    "csv.parse_failed": "无法解析文件：{{detail}}",
+    "csv.too_many_rows": "文件行数过多",
+    "csv.invalid_column": "第 {{column}} 列不存在",
+    "csv.table_expired": "为释放内存，该表格已关闭，请重新打开",
+    "csv.too_large": "数据超过 {{limit}}",
+    "csv.empty": "没有可解析的内容"
+  }
+}

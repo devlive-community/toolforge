@@ -24,6 +24,7 @@ tfp-background-remover = { path = "plugins/background-remover/backend" }
 tfp-base-converter = { path = "plugins/base-converter/backend" }
 tfp-color = { path = "plugins/color/backend" }
 tfp-cron = { path = "plugins/cron/backend" }
+tfp-csv-viewer = { path = "plugins/csv-viewer/backend" }
 tfp-curl-converter = { path = "plugins/curl-converter/backend" }
 tfp-dns-lookup = { path = "plugins/dns-lookup/backend" }
 tfp-encoder = { path = "plugins/encoder/backend" }

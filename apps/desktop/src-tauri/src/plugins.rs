@@ -39,6 +39,7 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_image_info::ImageInfo::default()));
     registry.register(Arc::new(tfp_markdown_editor::MarkdownEditor::default()));
     registry.register(Arc::new(tfp_curl_converter::CurlConverter::default()));
+    registry.register(Arc::new(tfp_csv_viewer::CsvViewer::default()));
     registry
 }
 

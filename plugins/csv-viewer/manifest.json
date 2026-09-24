@@ -1,0 +1,19 @@
+{
+  "id": "org.devlive.toolforge.csv-viewer",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["csv", "tsv", "excel", "table", "spreadsheet", "viewer", "filter", "sort", "export", "表格", "查看", "筛选", "排序", "导出"],
+  "accent": "green",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected", "clipboard:read", "clipboard:write"],
+  "functions": {
+    "open": { "task": true },
+    "parse_text": {},
+    "rows": {},
+    "stats": {},
+    "export": { "task": true }
+  },
+  "sensitive": false
+}

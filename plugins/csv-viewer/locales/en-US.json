@@ -1,0 +1,118 @@
+{
+  "name": "CSV Viewer",
+  "description": "Open large CSV and TSV files, then sort, search, filter, inspect columns and export",
+  "help": [
+    "Opens files up to 1 GB. A million rows load in about a second and scroll smoothly, because rows are read from Rust page by page.",
+    "Encoding (UTF-8, UTF-16, GBK/GB18030), delimiter and header row are detected automatically; change them in the toolbar if the guess is wrong.",
+    "Click a column header to sort. Open a column's details to see statistics and its most frequent values, and to add filters.",
+    "Export the current view, sorted and filtered, as CSV, TSV, JSON or a Markdown table. You can also paste a table copied from a spreadsheet."
+  ],
+  "functions": {
+    "open": "Open file",
+    "parse_text": "Parse pasted table",
+    "rows": "Read rows",
+    "stats": "Column statistics",
+    "export": "Export"
+  },
+  "open": {
+    "drop": "Drop a CSV or TSV file, or click to open",
+    "hint": "Up to 1 GB · CSV, TSV and TXT",
+    "filter": "Tables",
+    "paste": "Paste table",
+    "another": "Open",
+    "close": "Close",
+    "pasted": "Pasted table",
+    "cancel": "Cancel"
+  },
+  "stages": {
+    "csv": {
+      "read": "Reading file…",
+      "parse": "Parsing rows…",
+      "export": "Exporting…"
+    }
+  },
+  "logs": {
+    "csv": {
+      "loaded": "Loaded {{rows}} rows × {{columns}} columns ({{encoding}}, delimiter {{delimiter}}) in {{ms}} ms",
+      "exported": "Exported {{rows}} rows to {{path}}"
+    }
+  },
+  "options": {
+    "delimiter": "Delimiter",
+    "encoding": "Encoding",
+    "header": "Header row",
+    "auto": "Auto",
+    "comma": "Comma",
+    "tab": "Tab",
+    "semicolon": "Semicolon",
+    "pipe": "Pipe"
+  },
+  "table": {
+    "search": "Search all cells",
+    "rows": "{{formatted}} rows",
+    "filtered": "{{shown}} of {{total}} rows",
+    "columns": "{{count}} columns",
+    "column": "Column {{n}}",
+    "empty": "No rows match",
+    "loaded": "Loaded in {{ms}} ms",
+    "details": "Column details",
+    "sortAsc": "Sorted ascending",
+    "sortDesc": "Sorted descending"
+  },
+  "kinds": {
+    "empty": "Empty",
+    "integer": "Integer",
+    "float": "Number",
+    "boolean": "Boolean",
+    "date": "Date",
+    "text": "Text"
+  },
+  "filters": {
+    "add": "Add filter",
+    "value": "Value",
+    "clear": "Clear filters",
+    "remove": "Remove filter",
+    "ops": {
+      "contains": "contains",
+      "equals": "equals",
+      "notEquals": "does not equal",
+      "greater": "greater than",
+      "less": "less than",
+      "empty": "is empty",
+      "notEmpty": "is not empty"
+    }
+  },
+  "stats": {
+    "count": "Rows",
+    "empty": "Empty",
+    "distinct": "Distinct",
+    "capped": "{{count}}+",
+    "min": "Min",
+    "max": "Max",
+    "mean": "Mean",
+    "sum": "Sum",
+    "length": "Length",
+    "lengthRange": "{{min}} – {{max}} characters",
+    "top": "Most frequent",
+    "only": "Show only this value",
+    "close": "Close"
+  },
+  "export": {
+    "title": "Export",
+    "csv": "CSV",
+    "tsv": "TSV",
+    "json": "JSON",
+    "markdown": "Markdown table",
+    "done": "Exported {{count}} rows"
+  },
+  "errors": {
+    "csv.unknown_encoding": "Unknown encoding: {{encoding}}",
+    "csv.invalid_delimiter": "The delimiter must be a single character",
+    "csv.parse_failed": "The file could not be parsed: {{detail}}",
+    "csv.too_many_rows": "The file has too many rows",
+    "csv.invalid_column": "Column {{column}} does not exist",
+    "csv.table_expired": "This table was closed to free memory; open it again",
+    "csv.too_large": "The data is larger than {{limit}}",
+    "csv.empty": "There is nothing to parse"
+  }
+}
