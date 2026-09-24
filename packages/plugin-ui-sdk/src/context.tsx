@@ -8,8 +8,8 @@ import type { Manifest } from './types'
 export interface LaunchInput {
   /** 每次打开递增 */
   seq: number
-  /** 取出内容；只能取一次 */
-  take: () => string | null
+  /** 取出内容与识别结果的标签；只能取一次 */
+  take: () => { text: string; label: string | null } | null
 }
 
 interface PluginContextValue {
@@ -26,16 +26,16 @@ export function PluginProvider({ manifest, launch, children }: { manifest: Manif
 
 /**
  * 接收宿主传入的内容：工具被带着内容打开时调用 handler（每次打开只调用一次），
- * 插件在其中把内容填入自己的输入框。
+ * 插件在其中把内容填入自己的输入框。label 是插件 detect 返回的标签，可据此切换模式。
  */
-export function useLaunchInput(handler: (text: string) => void) {
+export function useLaunchInput(handler: (text: string, label: string | null) => void) {
   const launch = useContext(PluginContext)?.launch
   const seq = launch?.seq ?? 0
   const take = launch?.take
   const onInput = useEffectEvent(handler)
   useEffect(() => {
-    const text = take?.()
-    if (text != null) onInput(text)
+    const input = take?.()
+    if (input) onInput(input.text, input.label)
   }, [seq, take])
 }
 

@@ -97,7 +97,7 @@ function PaletteContent() {
           title: text(manifest, manifest.name),
           subtitle: detail || text(manifest, manifest.description),
           terms: '',
-          run: () => openToolWith(manifest.id, content),
+          run: () => openToolWith(manifest.id, content, suggestion.label),
         },
       ]
     })
