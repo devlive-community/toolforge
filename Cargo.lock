@@ -4822,6 +4822,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-text-tools"
+version = "0.1.0"
+dependencies = [
+ "fastrand",
+ "heck 0.5.0",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "unicode-segmentation",
+]
+
+[[package]]
 name = "tfp-timestamp"
 version = "0.1.0"
 dependencies = [
@@ -5131,6 +5143,7 @@ dependencies = [
  "tfp-jwt",
  "tfp-regex",
  "tfp-sql-formatter",
+ "tfp-text-tools",
  "tfp-timestamp",
  "tfp-uuid",
  "tfp-xml-formatter",

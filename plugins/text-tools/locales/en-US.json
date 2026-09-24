@@ -1,0 +1,109 @@
+{
+  "name": "Text Tools",
+  "description": "Convert naming styles and letter case, sort and dedupe lines, and count words and reading time",
+  "help": [
+    "All three tools share the input on the left; everything is processed locally in Rust.",
+    "Case conversion works line by line and shows 13 naming styles at once; click the end of a row to copy it.",
+    "Line options apply in order: trim → remove empty → dedupe → sort → reverse → shuffle → numbering and prefix / suffix.",
+    "CJK characters count as words and emoji as one character; reading time assumes 220 English words or 400 CJK characters per minute."
+  ],
+  "tabs": {
+    "cases": "Case",
+    "lines": "Lines",
+    "stats": "Statistics"
+  },
+  "input": "Input",
+  "placeholder": "Type or paste text here…",
+  "empty": "Enter text to see conversions",
+  "styles": {
+    "camel": {
+      "name": "Camel",
+      "example": "camelCase"
+    },
+    "pascal": {
+      "name": "Pascal",
+      "example": "PascalCase"
+    },
+    "snake": {
+      "name": "Snake",
+      "example": "snake_case"
+    },
+    "kebab": {
+      "name": "Kebab",
+      "example": "kebab-case"
+    },
+    "constant": {
+      "name": "Constant",
+      "example": "CONSTANT_CASE"
+    },
+    "train": {
+      "name": "Train",
+      "example": "Train-Case"
+    },
+    "dot": {
+      "name": "Dot",
+      "example": "dot.case"
+    },
+    "path": {
+      "name": "Path",
+      "example": "path/case"
+    },
+    "title": {
+      "name": "Title",
+      "example": "Title Case"
+    },
+    "sentence": {
+      "name": "Sentence",
+      "example": "Sentence case"
+    },
+    "lower": {
+      "name": "Lower",
+      "example": "lower case"
+    },
+    "upper": {
+      "name": "Upper",
+      "example": "UPPER CASE"
+    },
+    "swap": {
+      "name": "Swap",
+      "example": "sWAP cASE"
+    }
+  },
+  "lines": {
+    "trim": "Trim whitespace",
+    "removeEmpty": "Remove empty lines",
+    "dedupe": "Remove duplicates",
+    "ignoreCase": "Ignore case",
+    "reverse": "Reverse",
+    "shuffle": "Shuffle",
+    "number": "Number lines",
+    "sort": "Sort",
+    "prefix": "Prefix",
+    "suffix": "Suffix",
+    "reshuffle": "Shuffle again",
+    "summary": "{{before}} → {{after}} lines · {{duplicates}} duplicates · {{empty}} empty removed"
+  },
+  "sorts": {
+    "none": "No sorting",
+    "asc": "Ascending A→Z",
+    "desc": "Descending Z→A",
+    "natural": "Natural (file2 < file10)",
+    "length": "By length"
+  },
+  "stats": {
+    "characters": "Characters",
+    "charactersNoSpaces": "Characters (no spaces)",
+    "words": "Words",
+    "cjkCharacters": "CJK characters",
+    "latinWords": "English words",
+    "lines": "Lines",
+    "nonEmptyLines": "Non-empty lines",
+    "paragraphs": "Paragraphs",
+    "sentences": "Sentences",
+    "bytes": "Bytes (UTF-8)",
+    "reading": "Reading time",
+    "underMinute": "Under a minute",
+    "minutes": "About {{count}} min",
+    "topWords": "Top English words"
+  }
+}

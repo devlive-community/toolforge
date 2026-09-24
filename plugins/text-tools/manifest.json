@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.text-tools",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "text",
+  "keywords": ["text", "case", "camel", "snake", "kebab", "sort", "dedupe", "lines", "count", "words", "大小写", "命名", "排序", "去重", "字数", "统计"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:read", "clipboard:write"],
+  "functions": {
+    "cases": {},
+    "lines": {},
+    "stats": {}
+  },
+  "sensitive": false
+}

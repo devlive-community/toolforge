@@ -26,6 +26,7 @@ tfp-json-formatter = { path = "plugins/json-formatter/backend" }
 tfp-jwt = { path = "plugins/jwt/backend" }
 tfp-regex = { path = "plugins/regex/backend" }
 tfp-sql-formatter = { path = "plugins/sql-formatter/backend" }
+tfp-text-tools = { path = "plugins/text-tools/backend" }
 tfp-timestamp = { path = "plugins/timestamp/backend" }
 tfp-uuid = { path = "plugins/uuid/backend" }
 tfp-xml-formatter = { path = "plugins/xml-formatter/backend" }

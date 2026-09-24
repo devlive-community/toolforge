@@ -1,0 +1,109 @@
+{
+  "name": "文本处理",
+  "description": "命名风格与大小写转换、按行去重排序、字数与阅读时长统计",
+  "help": [
+    "三个功能共用左侧的输入文本；所有处理都在本地 Rust 中完成。",
+    "大小写转换按行处理，一次给出 13 种命名风格，点击行尾即可复制。",
+    "行处理的选项按顺序生效：去空白 → 删除空行 → 去重 → 排序 → 倒序 → 打乱 → 行号与前后缀。",
+    "统计中中日韩文字按字计词，emoji 计为 1 个字符；阅读时长按英文 220 词、中文 400 字每分钟估算。"
+  ],
+  "tabs": {
+    "cases": "大小写转换",
+    "lines": "行处理",
+    "stats": "文本统计"
+  },
+  "input": "输入文本",
+  "placeholder": "在此输入或粘贴文本…",
+  "empty": "输入文本查看转换结果",
+  "styles": {
+    "camel": {
+      "name": "小驼峰",
+      "example": "camelCase"
+    },
+    "pascal": {
+      "name": "大驼峰",
+      "example": "PascalCase"
+    },
+    "snake": {
+      "name": "下划线",
+      "example": "snake_case"
+    },
+    "kebab": {
+      "name": "短横线",
+      "example": "kebab-case"
+    },
+    "constant": {
+      "name": "常量",
+      "example": "CONSTANT_CASE"
+    },
+    "train": {
+      "name": "Train",
+      "example": "Train-Case"
+    },
+    "dot": {
+      "name": "点分隔",
+      "example": "dot.case"
+    },
+    "path": {
+      "name": "路径",
+      "example": "path/case"
+    },
+    "title": {
+      "name": "标题",
+      "example": "Title Case"
+    },
+    "sentence": {
+      "name": "句子",
+      "example": "Sentence case"
+    },
+    "lower": {
+      "name": "全小写",
+      "example": "lower case"
+    },
+    "upper": {
+      "name": "全大写",
+      "example": "UPPER CASE"
+    },
+    "swap": {
+      "name": "大小写互换",
+      "example": "sWAP cASE"
+    }
+  },
+  "lines": {
+    "trim": "去除首尾空白",
+    "removeEmpty": "删除空行",
+    "dedupe": "去重",
+    "ignoreCase": "忽略大小写",
+    "reverse": "倒序",
+    "shuffle": "随机打乱",
+    "number": "添加行号",
+    "sort": "排序",
+    "prefix": "行首添加",
+    "suffix": "行尾添加",
+    "reshuffle": "重新打乱",
+    "summary": "{{before}} 行 → {{after}} 行 · 移除重复 {{duplicates}} 行 · 移除空行 {{empty}} 行"
+  },
+  "sorts": {
+    "none": "不排序",
+    "asc": "升序 A→Z",
+    "desc": "降序 Z→A",
+    "natural": "自然排序（file2 < file10）",
+    "length": "按长度"
+  },
+  "stats": {
+    "characters": "字符",
+    "charactersNoSpaces": "字符（不含空白）",
+    "words": "词数",
+    "cjkCharacters": "中日韩文字",
+    "latinWords": "英文单词",
+    "lines": "行数",
+    "nonEmptyLines": "非空行",
+    "paragraphs": "段落",
+    "sentences": "句子",
+    "bytes": "字节（UTF-8）",
+    "reading": "阅读时长",
+    "underMinute": "不到 1 分钟",
+    "minutes": "约 {{count}} 分钟",
+    "topWords": "高频英文单词"
+  }
+}

@@ -18,5 +18,6 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_sql_formatter::SqlFormatter::default()));
     registry.register(Arc::new(tfp_encoder::Encoder::default()));
     registry.register(Arc::new(tfp_jwt::Jwt::default()));
+    registry.register(Arc::new(tfp_text_tools::TextTools::default()));
     registry
 }
