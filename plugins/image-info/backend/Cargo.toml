@@ -1,0 +1,15 @@
+[package]
+name = "tfp-image-info"
+description = "ToolForge plugin: image metadata, EXIF and palette"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+data-encoding = "2"
+image = { version = "0.25", default-features = false, features = ["bmp", "gif", "ico", "jpeg", "png", "tiff", "webp"] }
+kamadak-exif = "0.6"

@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.image-info",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": ["image", "exif", "metadata", "gps", "palette", "color", "camera", "privacy", "图片信息", "元数据", "拍摄参数", "主色", "去除元数据"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "functions": {
+    "inspect": {},
+    "strip_metadata": {}
+  },
+  "sensitive": false
+}

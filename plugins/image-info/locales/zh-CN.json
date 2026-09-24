@@ -1,0 +1,104 @@
+{
+  "name": "图片信息",
+  "description": "查看尺寸、EXIF、GPS 与主色，并无损移除元数据",
+  "help": [
+    "显示图片的格式、尺寸、宽高比、颜色类型，以及其中包含的全部 EXIF 标签。",
+    "汇总相机、镜头与曝光参数；带有 GPS 坐标时可直接在地图中打开。",
+    "在本地提取图片主色，点击色块即可复制十六进制色值。",
+    "移除元数据会删除 JPEG / PNG 中的 EXIF、XMP、IPTC 与文本块，不重新编码，像素完全不变；颜色配置文件会保留。"
+  ],
+  "functions": {
+    "inspect": "查看图片",
+    "strip_metadata": "移除元数据"
+  },
+  "open": {
+    "drop": "拖入图片或点击选择",
+    "hint": "支持 PNG、JPEG、WebP、BMP、GIF、TIFF 与 ICO",
+    "filter": "图片",
+    "another": "打开其他图片",
+    "loading": "正在读取图片…"
+  },
+  "file": {
+    "title": "文件",
+    "name": "名称",
+    "path": "路径",
+    "size": "大小",
+    "format": "格式",
+    "dimensions": "尺寸",
+    "aspect": "宽高比",
+    "megapixels": "像素数",
+    "megapixelsValue": "{{value}} 百万像素",
+    "color": "颜色类型",
+    "depth": "位深",
+    "alpha": "透明通道",
+    "yes": "有",
+    "no": "无",
+    "reveal": "在文件夹中显示"
+  },
+  "palette": {
+    "title": "颜色",
+    "average": "平均色",
+    "copy": "复制 {{hex}}",
+    "empty": "图片完全透明"
+  },
+  "camera": {
+    "title": "拍摄参数",
+    "none": "这张图片没有 EXIF 元数据",
+    "make": "厂商",
+    "model": "型号",
+    "lens": "镜头",
+    "takenAt": "拍摄时间",
+    "exposure": "快门",
+    "aperture": "光圈",
+    "iso": "ISO",
+    "focalLength": "焦距",
+    "flash": "闪光灯",
+    "software": "软件",
+    "orientation": "方向",
+    "orientations": {
+      "1": "正常",
+      "2": "水平翻转",
+      "3": "旋转 180°",
+      "4": "垂直翻转",
+      "5": "翻转并逆时针旋转 90°",
+      "6": "顺时针旋转 90°",
+      "7": "翻转并顺时针旋转 90°",
+      "8": "逆时针旋转 90°"
+    }
+  },
+  "gps": {
+    "title": "拍摄位置",
+    "latitude": "纬度",
+    "longitude": "经度",
+    "altitude": "海拔",
+    "altitudeValue": "{{value}} 米",
+    "map": "在地图中打开",
+    "warning": "这张照片会暴露拍摄地点，分享前建议移除元数据。"
+  },
+  "exif": {
+    "title": "全部标签",
+    "filter": "筛选标签",
+    "ifd": "分区",
+    "tag": "标签",
+    "value": "值",
+    "noMatch": "没有匹配的标签"
+  },
+  "strip": {
+    "title": "隐私",
+    "action": "移除元数据",
+    "hint": "在原图旁保存一份干净的副本，原图保持不变。",
+    "unsupported": "仅 JPEG 与 PNG 支持无损移除。",
+    "done": "已保存 {{name}}",
+    "removed": "已移除：{{list}}",
+    "nothing": "没有找到可移除的元数据",
+    "saved": "减小了 {{size}}",
+    "orientation": "原图在 EXIF 中记录了旋转方向，部分查看器中副本可能显示为未旋转。"
+  },
+  "errors": {
+    "info.too_large": "文件超过 {{limit}}",
+    "info.decode_failed": "无法读取图片：{{detail}}",
+    "info.unsupported": "不支持的图片格式",
+    "info.corrupt": "文件结构已损坏",
+    "info.strip_unsupported": "仅支持移除 JPEG 与 PNG 文件的元数据"
+  }
+}

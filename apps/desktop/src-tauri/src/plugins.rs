@@ -36,6 +36,7 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_unit_converter::UnitConverter::default()));
     registry.register(Arc::new(tfp_cron::CronTool::default()));
     registry.register(Arc::new(tfp_json_to_code::JsonToCode::default()));
+    registry.register(Arc::new(tfp_image_info::ImageInfo::default()));
     registry
 }
 

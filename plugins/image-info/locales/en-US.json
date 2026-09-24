@@ -1,0 +1,104 @@
+{
+  "name": "Image Info",
+  "description": "Inspect dimensions, EXIF, GPS and colors, and remove metadata losslessly",
+  "help": [
+    "Shows the format, dimensions, aspect ratio and color type of an image, plus every EXIF tag it carries.",
+    "Camera, lens and exposure settings are summarized; GPS coordinates can be opened in a map.",
+    "The dominant colors are extracted locally; click a swatch to copy its hex value.",
+    "Remove metadata deletes EXIF, XMP, IPTC and text chunks from JPEG and PNG files without re-encoding, so the pixels stay identical. The color profile is kept."
+  ],
+  "functions": {
+    "inspect": "Inspect image",
+    "strip_metadata": "Remove metadata"
+  },
+  "open": {
+    "drop": "Drop an image or click to choose",
+    "hint": "PNG, JPEG, WebP, BMP, GIF, TIFF and ICO",
+    "filter": "Images",
+    "another": "Open another",
+    "loading": "Reading image…"
+  },
+  "file": {
+    "title": "File",
+    "name": "Name",
+    "path": "Path",
+    "size": "Size",
+    "format": "Format",
+    "dimensions": "Dimensions",
+    "aspect": "Aspect ratio",
+    "megapixels": "Megapixels",
+    "megapixelsValue": "{{value}} MP",
+    "color": "Color type",
+    "depth": "Bits per pixel",
+    "alpha": "Transparency",
+    "yes": "Yes",
+    "no": "No",
+    "reveal": "Show in folder"
+  },
+  "palette": {
+    "title": "Colors",
+    "average": "Average",
+    "copy": "Copy {{hex}}",
+    "empty": "The image is fully transparent"
+  },
+  "camera": {
+    "title": "Camera",
+    "none": "This image has no EXIF metadata",
+    "make": "Make",
+    "model": "Model",
+    "lens": "Lens",
+    "takenAt": "Taken",
+    "exposure": "Exposure",
+    "aperture": "Aperture",
+    "iso": "ISO",
+    "focalLength": "Focal length",
+    "flash": "Flash",
+    "software": "Software",
+    "orientation": "Orientation",
+    "orientations": {
+      "1": "Normal",
+      "2": "Mirrored horizontally",
+      "3": "Rotated 180°",
+      "4": "Mirrored vertically",
+      "5": "Mirrored, rotated 90° counter-clockwise",
+      "6": "Rotated 90° clockwise",
+      "7": "Mirrored, rotated 90° clockwise",
+      "8": "Rotated 90° counter-clockwise"
+    }
+  },
+  "gps": {
+    "title": "Location",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "altitude": "Altitude",
+    "altitudeValue": "{{value}} m",
+    "map": "Open in map",
+    "warning": "This photo reveals where it was taken. Remove the metadata before sharing it."
+  },
+  "exif": {
+    "title": "All tags",
+    "filter": "Filter tags",
+    "ifd": "Section",
+    "tag": "Tag",
+    "value": "Value",
+    "noMatch": "No tags match"
+  },
+  "strip": {
+    "title": "Privacy",
+    "action": "Remove metadata",
+    "hint": "Saves a clean copy next to the original; the original is not changed.",
+    "unsupported": "Lossless removal is available for JPEG and PNG only.",
+    "done": "Saved {{name}}",
+    "removed": "Removed: {{list}}",
+    "nothing": "No metadata was found to remove",
+    "saved": "{{size}} smaller",
+    "orientation": "The original stored a rotation in EXIF. The clean copy may appear rotated in some viewers."
+  },
+  "errors": {
+    "info.too_large": "The file is larger than {{limit}}",
+    "info.decode_failed": "The image could not be read: {{detail}}",
+    "info.unsupported": "Not a supported image format",
+    "info.corrupt": "The file structure is damaged",
+    "info.strip_unsupported": "Metadata can only be removed from JPEG and PNG files"
+  }
+}
