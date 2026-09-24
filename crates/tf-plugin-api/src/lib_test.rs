@@ -21,6 +21,29 @@ fn manifest_defaults_optional_fields() {
     );
     assert!(manifest.functions.is_empty());
     assert!(!manifest.sensitive);
+    assert!(manifest.resources.is_empty());
+}
+
+#[test]
+fn manifest_parses_resources() {
+    let manifest = Manifest::from_static(
+        r#"{"id":"a","version":"1.0.0","name":"n","description":"d","category":"image",
+            "resources":[{"id":"u2netp","urls":["https://x/m.onnx"],"sha256":"ab","size":3}]}"#,
+    );
+    assert_eq!(manifest.resources[0].id, "u2netp");
+    assert_eq!(manifest.resources[0].size, 3);
+    assert!(manifest.resources[0].license.is_none());
+}
+
+#[test]
+fn resource_ids_are_path_safe() {
+    assert!(ResourceSpec::valid_id("isnet-general-use"));
+    assert!(ResourceSpec::valid_id("model_v1.2"));
+    assert!(!ResourceSpec::valid_id(""));
+    assert!(!ResourceSpec::valid_id("../x"));
+    assert!(!ResourceSpec::valid_id(".hidden"));
+    assert!(!ResourceSpec::valid_id("Upper"));
+    assert!(!ResourceSpec::valid_id("a/b"));
 }
 
 struct Noop;
@@ -68,4 +91,11 @@ fn run_task_defaults_to_call() {
 #[test]
 fn log_level_serializes_lowercase() {
     assert_eq!(serde_json::to_value(LogLevel::Warn).unwrap(), "warn");
+}
+
+#[test]
+fn resources_are_missing_by_default() {
+    let err = Noop.resource_path("u2netp").unwrap_err();
+    assert_eq!(err.code, "resource.missing");
+    assert_eq!(err.params["id"], "u2netp");
 }

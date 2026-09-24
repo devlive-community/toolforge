@@ -171,3 +171,34 @@ fn rejects_suspicious_task_ids_when_reading_logs() {
     );
     std::fs::remove_dir_all(dir).ok();
 }
+
+#[test]
+fn tasks_resolve_installed_resources() {
+    let (manager, dir) = manager();
+    let root = dir.join("resources");
+    let plugin = root.join("p");
+    std::fs::create_dir_all(&plugin).unwrap();
+    std::fs::write(plugin.join("model"), b"abc").unwrap();
+    std::fs::write(
+        plugin.join("model.json"),
+        r#"{"sha256":"x","size":3,"url":"u","installedAt":1}"#,
+    )
+    .unwrap();
+    let manager = manager.with_resources(Arc::new(Resources::new(root)));
+
+    let sink = Arc::new(Collector::default());
+    manager
+        .start("p", "f", sink.clone(), |ctx| {
+            let found = ctx.resource_path("model").map_err(AppError::from)?;
+            let missing = ctx.resource_path("other").unwrap_err();
+            Ok(json!({ "found": found.ends_with("p/model"), "missing": missing.code }))
+        })
+        .unwrap();
+    let (status, result, _) = sink.wait_finished();
+    assert_eq!(status, TaskStatus::Succeeded);
+    assert_eq!(
+        result,
+        Some(json!({ "found": true, "missing": "resource.missing" }))
+    );
+    std::fs::remove_dir_all(dir).ok();
+}

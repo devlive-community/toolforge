@@ -15,7 +15,7 @@ use serde_json::Value;
 use tf_plugin_api::{LogLevel, PluginError, PluginResult, TaskContext};
 
 use crate::store::{TaskRecord, now_millis};
-use crate::{AppError, AppResult, Store};
+use crate::{AppError, AppResult, Resources, Store};
 
 /// 日志批量推送的时间窗口与条数上限
 const FLUSH_INTERVAL: Duration = Duration::from_millis(50);
@@ -100,6 +100,8 @@ struct Throttle {
 /// 任务运行时上下文，实现插件侧的 [`TaskContext`]
 pub struct TaskRunner {
     task_id: String,
+    plugin_id: String,
+    resources: Option<Arc<Resources>>,
     sink: Arc<dyn EventSink>,
     cancel: Arc<AtomicBool>,
     buffer: Mutex<Vec<LogLine>>,
@@ -110,6 +112,8 @@ pub struct TaskRunner {
 impl TaskRunner {
     fn new(
         task_id: String,
+        plugin_id: String,
+        resources: Option<Arc<Resources>>,
         sink: Arc<dyn EventSink>,
         cancel: Arc<AtomicBool>,
         log_path: &Path,
@@ -117,6 +121,8 @@ impl TaskRunner {
         let file = File::create(log_path).ok().map(BufWriter::new);
         Self {
             task_id,
+            plugin_id,
+            resources,
             sink,
             cancel,
             buffer: Mutex::new(Vec::new()),
@@ -226,6 +232,13 @@ impl TaskContext for TaskRunner {
             .map(|m| m.len())
             .map_err(|e| io_error(e, path))
     }
+
+    fn resource_path(&self, id: &str) -> PluginResult<PathBuf> {
+        self.resources
+            .as_ref()
+            .and_then(|resources| resources.path(&self.plugin_id, id))
+            .ok_or_else(|| PluginError::new("resource.missing").with("id", id))
+    }
 }
 
 fn io_error(err: std::io::Error, path: &str) -> PluginError {
@@ -241,6 +254,7 @@ fn io_error(err: std::io::Error, path: &str) -> PluginError {
 
 pub struct TaskManager {
     store: Arc<Store>,
+    resources: Option<Arc<Resources>>,
     log_dir: PathBuf,
     running: Arc<Mutex<HashMap<String, Arc<AtomicBool>>>>,
     seq: AtomicU64,
@@ -256,10 +270,17 @@ impl TaskManager {
         }
         Ok(Self {
             store,
+            resources: None,
             log_dir,
             running: Arc::default(),
             seq: AtomicU64::new(0),
         })
+    }
+
+    /// 让任务能够通过 `resource_path` 访问已下载的插件资源
+    pub fn with_resources(mut self, resources: Arc<Resources>) -> Self {
+        self.resources = Some(resources);
+        self
     }
 
     fn log_path(&self, task_id: &str) -> PathBuf {
@@ -305,6 +326,8 @@ impl TaskManager {
 
         let runner = Arc::new(TaskRunner::new(
             task_id.clone(),
+            plugin_id.to_owned(),
+            self.resources.clone(),
             sink.clone(),
             cancel.clone(),
             &self.log_path(&task_id),

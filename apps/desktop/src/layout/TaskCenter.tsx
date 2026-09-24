@@ -56,7 +56,13 @@ function TaskItem({ task }: { task: TaskRecord }) {
   const [expanded, setExpanded] = useState(false)
   const running = task.status === 'running'
   const fnKey = `functions.${task.function}`
-  const fnLabel = manifest && i18n.exists(fnKey, { ns: manifest.id }) ? t(fnKey, { ns: manifest.id }) : task.function
+  const hostKey = `taskFunctions.${task.function}`
+  const fnLabel =
+    manifest && i18n.exists(fnKey, { ns: manifest.id })
+      ? t(fnKey, { ns: manifest.id })
+      : i18n.exists(hostKey, { ns: 'common' })
+        ? t(hostKey, { ns: 'common' })
+        : task.function
   const percent = live && live.total > 0 ? (live.done / live.total) * 100 : null
 
   return (

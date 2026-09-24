@@ -98,12 +98,13 @@ export function useTask<T = unknown>() {
     [format],
   )
 
-  const start = useCallback(
-    async (fn: string, args: object = {}) => {
+  /** 用自定义的启动函数运行任务（例如宿主提供的资源下载），事件处理与 start 相同 */
+  const startWith = useCallback(
+    async (launch: (onEvent: (event: TaskEvent) => void) => Promise<string>) => {
       current.current = null
       setState({ ...initial, status: 'running' })
       try {
-        const taskId = await startTask(manifest.id, fn, args, onEvent)
+        const taskId = await launch(onEvent)
         current.current = taskId
         setState((prev) => ({ ...prev, taskId }))
         return taskId
@@ -112,7 +113,12 @@ export function useTask<T = unknown>() {
         return null
       }
     },
-    [manifest.id, onEvent],
+    [onEvent],
+  )
+
+  const start = useCallback(
+    (fn: string, args: object = {}) => startWith((listener) => startTask(manifest.id, fn, args, listener)),
+    [manifest.id, startWith],
   )
 
   const cancel = useCallback(async () => {
@@ -124,5 +130,5 @@ export function useTask<T = unknown>() {
     setState(initial)
   }, [])
 
-  return { ...state, running: state.status === 'running', start, cancel, reset }
+  return { ...state, running: state.status === 'running', start, startWith, cancel, reset }
 }

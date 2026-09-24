@@ -3,10 +3,12 @@
 pub mod error;
 pub mod markdown;
 pub mod registry;
+pub mod resources;
 pub mod store;
 pub mod task;
 
 pub use error::{AppError, AppResult};
 pub use registry::PluginRegistry;
+pub use resources::{ResourceStatus, Resources};
 pub use store::{Store, TaskRecord};
 pub use task::{EventSink, LogLine, TaskEvent, TaskManager, TaskRunner, TaskStatus};

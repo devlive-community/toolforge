@@ -53,6 +53,32 @@ pub struct FunctionSpec {
     pub task: bool,
 }
 
+/// 需要按需下载的外部资源（例如模型文件），由宿主统一下载、校验与存放。
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ResourceSpec {
+    /// 插件内唯一，只允许小写字母、数字、`-`、`_`、`.`
+    pub id: String,
+    /// 下载地址，按顺序尝试（主地址 + 镜像）
+    pub urls: Vec<String>,
+    /// 小写十六进制 SHA-256，下载完成后必须一致
+    pub sha256: String,
+    /// 字节数
+    pub size: u64,
+    #[serde(default)]
+    pub license: Option<String>,
+}
+
+impl ResourceSpec {
+    pub fn valid_id(id: &str) -> bool {
+        !id.is_empty()
+            && !id.starts_with('.')
+            && id
+                .chars()
+                .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || "-_.".contains(c))
+    }
+}
+
 /// 插件清单，与插件目录中的 manifest.json 一一对应。
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -76,6 +102,8 @@ pub struct Manifest {
     pub functions: IndexMap<String, FunctionSpec>,
     #[serde(default)]
     pub sensitive: bool,
+    #[serde(default)]
+    pub resources: Vec<ResourceSpec>,
 }
 
 impl Manifest {
@@ -106,6 +134,11 @@ pub trait TaskContext: Send + Sync {
     fn is_cancelled(&self) -> bool;
     fn open_file(&self, path: &str) -> PluginResult<Box<dyn std::io::Read + Send>>;
     fn file_size(&self, path: &str) -> PluginResult<u64>;
+
+    /// 已下载资源的本地路径；未下载时返回 `resource.missing`
+    fn resource_path(&self, id: &str) -> PluginResult<std::path::PathBuf> {
+        Err(PluginError::new("resource.missing").with("id", id))
+    }
 }
 
 /// 插件后端需要实现的接口。

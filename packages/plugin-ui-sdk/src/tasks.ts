@@ -52,6 +52,13 @@ export function startTask(pluginId: string, fn: string, args: object, onEvent: (
   return wrap(invoke<string>('task_start', { pluginId, function: fn, args, onEvent: channel }))
 }
 
+/** 以任务方式下载插件资源，事件格式与普通任务一致 */
+export function startResourceDownload(pluginId: string, resourceId: string, onEvent: (event: TaskEvent) => void) {
+  const channel = new Channel<TaskEvent>()
+  channel.onmessage = onEvent
+  return wrap(invoke<string>('resource_download', { pluginId, resourceId, onEvent: channel }))
+}
+
 export const cancelTask = (taskId: string) => wrap(invoke<boolean>('task_cancel', { taskId }))
 export const listTasks = () => wrap(invoke<TaskRecord[]>('task_list'))
 export const taskLogs = (taskId: string) => wrap(invoke<LogLine[]>('task_logs', { taskId }))

@@ -164,7 +164,16 @@
       "task.not_found": "任务不存在",
       "task.spawn_failed": "无法启动任务",
       "plugin.requires_task": "该操作需要以任务方式运行",
-      "plugin.not_a_task": "该操作不是耗时任务"
+      "plugin.not_a_task": "该操作不是耗时任务",
+      "resource.missing": "资源“{{id}}”尚未下载",
+      "resource.unknown": "未知资源“{{id}}”",
+      "resource.invalid_id": "无效的资源 id“{{id}}”",
+      "resource.busy": "“{{id}}”正在下载中",
+      "resource.no_source": "“{{id}}”没有可用的下载源",
+      "resource.network": "连接 {{host}} 时网络错误：{{detail}}",
+      "resource.http_status": "{{host}} 返回 HTTP {{status}}",
+      "resource.size_mismatch": "下载中断（已下载 {{actual}} / {{expected}} 字节），重试即可继续",
+      "resource.checksum_mismatch": "“{{id}}”下载的文件校验失败，已丢弃"
     },
     "logs": {
       "task": {
@@ -172,6 +181,15 @@
         "succeeded": "任务完成，耗时 {{elapsedMs}}ms",
         "cancelled": "任务已取消，耗时 {{elapsedMs}}ms",
         "failed": "任务失败：{{code}}"
+      },
+      "resource": {
+        "already_installed": "{{id}} 已下载",
+        "download_start": "正在从 {{host}} 下载 {{id}}（{{size, number}} 字节，第 {{attempt}} 个源）",
+        "resumed": "从第 {{offset, number}} 字节继续下载 {{id}}",
+        "verified": "校验通过（sha256 {{sha256}}…）",
+        "installed": "{{id}} 已就绪（{{ms}} ms）",
+        "paused": "已暂停下载 {{id}}，下次将从当前位置继续",
+        "source_failed": "下载源 {{host}} 失败：{{code}}"
       }
     },
     "formatter": {
@@ -184,6 +202,19 @@
       "waiting": "在左侧输入内容后，这里会显示结果",
       "errorTitle": "处理失败",
       "locate": "定位到错误"
+    },
+    "resources": {
+      "download": "下载",
+      "resume": "继续下载",
+      "pause": "暂停",
+      "delete": "删除",
+      "confirmDelete": "再次点击删除",
+      "installed": "已下载",
+      "partial": "已下载 {{size}}，可继续",
+      "connecting": "正在连接…"
+    },
+    "taskFunctions": {
+      "download_resource": "下载资源"
     }
   }
 }

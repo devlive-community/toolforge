@@ -164,7 +164,16 @@
       "task.not_found": "Task not found",
       "task.spawn_failed": "Failed to start the task",
       "plugin.requires_task": "This operation must run as a task",
-      "plugin.not_a_task": "This operation is not a task"
+      "plugin.not_a_task": "This operation is not a task",
+      "resource.missing": "The resource “{{id}}” has not been downloaded yet",
+      "resource.unknown": "Unknown resource “{{id}}”",
+      "resource.invalid_id": "Invalid resource id “{{id}}”",
+      "resource.busy": "“{{id}}” is being downloaded",
+      "resource.no_source": "No download source for “{{id}}”",
+      "resource.network": "Network error while contacting {{host}}: {{detail}}",
+      "resource.http_status": "{{host}} responded with HTTP {{status}}",
+      "resource.size_mismatch": "The download stopped early ({{actual}} of {{expected}} bytes); try again to resume",
+      "resource.checksum_mismatch": "The downloaded file for “{{id}}” failed verification and was discarded"
     },
     "logs": {
       "task": {
@@ -172,6 +181,15 @@
         "succeeded": "Task completed in {{elapsedMs}} ms",
         "cancelled": "Task cancelled after {{elapsedMs}} ms",
         "failed": "Task failed: {{code}}"
+      },
+      "resource": {
+        "already_installed": "{{id}} is already downloaded",
+        "download_start": "Downloading {{id}} from {{host}} ({{size, number}} bytes, source {{attempt}})",
+        "resumed": "Resuming {{id}} from byte {{offset, number}}",
+        "verified": "Checksum verified (sha256 {{sha256}}…)",
+        "installed": "{{id}} is ready ({{ms}} ms)",
+        "paused": "Download of {{id}} paused; it will resume from here next time",
+        "source_failed": "Source {{host}} failed: {{code}}"
       }
     },
     "formatter": {
@@ -184,6 +202,19 @@
       "waiting": "Results appear here once you enter some input",
       "errorTitle": "Could not process the input",
       "locate": "Go to error"
+    },
+    "resources": {
+      "download": "Download",
+      "resume": "Resume",
+      "pause": "Pause",
+      "delete": "Delete",
+      "confirmDelete": "Click to delete",
+      "installed": "Downloaded",
+      "partial": "{{size}} downloaded, can resume",
+      "connecting": "Connecting…"
+    },
+    "taskFunctions": {
+      "download_resource": "Download resource"
     }
   }
 }

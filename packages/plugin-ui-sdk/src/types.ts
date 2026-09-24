@@ -9,6 +9,15 @@ export interface FunctionSpec {
 }
 
 /** 与 Rust `tf_plugin_api::Manifest` 对应 */
+/** 按需下载的资源（例如模型），由宿主下载、校验与存放 */
+export interface ResourceSpec {
+  id: string
+  urls: string[]
+  sha256: string
+  size: number
+  license?: string | null
+}
+
 export interface Manifest {
   id: string
   version: string
@@ -21,6 +30,7 @@ export interface Manifest {
   permissions: string[]
   functions: Record<string, FunctionSpec>
   sensitive: boolean
+  resources?: ResourceSpec[]
 }
 
 export function isAppError(value: unknown): value is AppError {

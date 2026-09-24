@@ -13,9 +13,15 @@ use crate::AppState;
 pub const TASK_EVENT: &str = "task://event";
 const TASK_LIST_LIMIT: usize = 100;
 
-struct TauriSink {
+pub struct TauriSink {
     channel: Channel<TaskEvent>,
     app: AppHandle,
+}
+
+impl TauriSink {
+    pub fn new(channel: Channel<TaskEvent>, app: AppHandle) -> Self {
+        Self { channel, app }
+    }
 }
 
 impl EventSink for TauriSink {
@@ -39,10 +45,7 @@ pub fn task_start(
     // 在启动线程前同步校验，错误直接返回给调用方
     state.plugins.ensure_task(&plugin_id, &function)?;
     let registry = state.plugins.clone();
-    let sink = Arc::new(TauriSink {
-        channel: on_event,
-        app,
-    });
+    let sink = Arc::new(TauriSink::new(on_event, app));
     let (pid, func) = (plugin_id.clone(), function.clone());
     state.tasks.start(&plugin_id, &function, sink, move |ctx| {
         registry.run_task(&pid, &func, args, ctx)
