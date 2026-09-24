@@ -42,8 +42,10 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Timestamp** | Seconds / milliseconds / microseconds / nanoseconds detected automatically; multiple time zones side by side; date strings to timestamps; live clock |
 | **UUID Generator** | Batch generate UUID v1 / v3 / v4 / v5 / v7, ULID and NanoID; inspect versions and embedded timestamps |
 | **Hash** | MD5, SHA-1, SHA-2, SHA3, SM3 and CRC32; live text hashing; drop files to hash them in a background task with live logs |
+| **Encoder** | Base64 / Base64URL / Base32 / Hex, URL (component, full, form), HTML entities and Unicode escapes in both directions; files to Base64 or Data URIs |
+| **JWT Decoder** | Decode headers and payloads, check expiry, verify HS / RS / PS / ES / EdDSA signatures and sign new tokens |
 
-More tools (encoding, text processing, images, networking and more) are on the way.
+More tools (text processing, format conversion, images, networking and more) are on the way.
 
 ## 📦 Download
 
@@ -102,7 +104,7 @@ toolforge/
 ├── plugins/               # official plugins (each versioned independently)
 │   ├── json-formatter/  xml-formatter/  sql-formatter/
 │   ├── regex/  timestamp/  uuid/
-│   └── hash/
+│   └── hash/  encoder/  jwt/
 └── scripts/release.sh     # release script
 ```
 

@@ -42,8 +42,10 @@
 | **时间戳转换** | 秒 / 毫秒 / 微秒 / 纳秒自动识别；多时区对照；日期字符串转时间戳；实时时钟 |
 | **UUID 生成** | UUID v1 / v3 / v4 / v5 / v7、ULID、NanoID 批量生成；解析版本与内含时间 |
 | **哈希计算** | MD5、SHA-1、SHA-2、SHA3、SM3、CRC32；文本实时计算；文件拖入批量计算，任务化运行并显示实时日志 |
+| **编解码** | Base64 / Base64URL / Base32 / Hex、URL（组件、完整 URL、表单）、HTML 实体、Unicode 转义双向转换；文件转 Base64 / Data URI |
+| **JWT 解析** | 解析 Header 与 Payload、判断过期、校验 HS / RS / PS / ES / EdDSA 签名并签发新令牌 |
 
-更多工具（编解码、文本处理、图像、网络等）持续开发中。
+更多工具（文本处理、格式转换、图像、网络等）持续开发中。
 
 ## 📦 下载安装
 
@@ -102,7 +104,7 @@ toolforge/
 ├── plugins/               # 官方插件（每个插件独立版本）
 │   ├── json-formatter/  xml-formatter/  sql-formatter/
 │   ├── regex/  timestamp/  uuid/
-│   └── hash/
+│   └── hash/  encoder/  jwt/
 └── scripts/release.sh     # 发布脚本
 ```
 
