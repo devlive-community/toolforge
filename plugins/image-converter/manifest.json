@@ -1,0 +1,15 @@
+{
+  "id": "org.devlive.toolforge.image-converter",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": ["image", "convert", "compress", "resize", "png", "jpeg", "jpg", "webp", "gif", "bmp", "ico", "tiff", "图片", "压缩", "转换", "缩放"],
+  "accent": "pink",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "convert": { "task": true }
+  },
+  "sensitive": false
+}

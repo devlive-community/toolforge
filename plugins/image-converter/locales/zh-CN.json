@@ -1,0 +1,80 @@
+{
+  "name": "图片转换",
+  "description": "批量转换、缩放与压缩 PNG、JPEG、WebP、GIF、BMP、ICO、TIFF 图片",
+  "help": [
+    "图片由本地 Rust 引擎解码、缩放并重新编码，以后台任务运行并输出实时日志。",
+    "照片会按 EXIF 方向自动摆正；重新编码会去除 EXIF 等元数据。",
+    "输出不会覆盖已有文件，重名时自动追加序号。",
+    "可以把图片直接拖到窗口中添加。"
+  ],
+  "functions": {
+    "convert": "转换图片"
+  },
+  "files": {
+    "title": "图片",
+    "add": "添加图片",
+    "filter": "图片",
+    "remove": "移除",
+    "drop": "拖入图片或点击添加",
+    "dropHint": "支持 PNG、JPEG、WebP、GIF、BMP、ICO、TIFF",
+    "start": "开始转换",
+    "cancel": "取消",
+    "progress": "{{done}} / {{total}} 张"
+  },
+  "options": {
+    "title": "选项",
+    "format": "输出格式",
+    "keep": "保持原格式",
+    "quality": "JPEG 质量",
+    "hint": {
+      "webp": "WebP 采用无损编码；照片想要最小体积请选 JPEG",
+      "png": "PNG 为无损格式，使用最高压缩级别"
+    },
+    "resize": "尺寸",
+    "output": "输出目录",
+    "sameDir": "与源文件相同",
+    "resetDir": "改回源文件目录",
+    "suffix": "文件名后缀"
+  },
+  "resize": {
+    "none": "原始尺寸",
+    "scale": "按比例",
+    "fit": "限制宽高",
+    "percent": "缩放比例（%）",
+    "maxWidth": "最大宽度（0 不限）",
+    "maxHeight": "最大高度（0 不限）"
+  },
+  "results": {
+    "title": "结果",
+    "running": "正在转换…",
+    "empty": "暂无结果",
+    "emptyHint": "添加图片、设置选项后点击“开始转换”",
+    "cancelled": "已取消",
+    "summary": "成功 {{count}} / {{total}} 张 · {{ms}} ms",
+    "saved": "体积减少 {{percent}}%",
+    "grew": "体积增加 {{percent}}%",
+    "reveal": "在文件夹中显示"
+  },
+  "logs": {
+    "title": "实时日志",
+    "empty": "开始转换后，日志会实时显示在这里",
+    "jumpLatest": "跳到最新",
+    "image": {
+      "file_start": "[{{index}}/{{count}}] 正在转换 {{file}}（{{size, number}} 字节）",
+      "file_done": "{{file}} → {{output}} {{width}}×{{height}}，{{before, number}} → {{after, number}} 字节，耗时 {{ms}} ms",
+      "file_failed": "已跳过 {{file}}：{{code}}",
+      "ico_fitted": "{{file}} 超出 ICO 的 {{max}}px 限制，已自动缩小"
+    }
+  },
+  "stages": {
+    "image.convert": "正在转换图片…"
+  },
+  "errors": {
+    "image.no_files": "请先添加图片",
+    "image.output_dir_missing": "输出目录不存在：{{path}}",
+    "image.too_large": "图片超过 {{limit}}",
+    "image.unsupported": "不支持的图片格式",
+    "image.decode_failed": "图片解码失败：{{detail}}",
+    "image.encode_failed": "图片编码失败：{{detail}}"
+  }
+}

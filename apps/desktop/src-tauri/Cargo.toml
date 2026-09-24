@@ -26,6 +26,7 @@ tf-plugin-api.workspace = true
 tfp-encoder.workspace = true
 tfp-format-converter.workspace = true
 tfp-hash.workspace = true
+tfp-image-converter.workspace = true
 tfp-json-formatter.workspace = true
 tfp-jwt.workspace = true
 tfp-regex.workspace = true

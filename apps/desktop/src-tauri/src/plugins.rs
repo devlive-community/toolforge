@@ -21,5 +21,6 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_text_tools::TextTools::default()));
     registry.register(Arc::new(tfp_text_diff::TextDiff::default()));
     registry.register(Arc::new(tfp_format_converter::FormatConverter::default()));
+    registry.register(Arc::new(tfp_image_converter::ImageConverter::default()));
     registry
 }

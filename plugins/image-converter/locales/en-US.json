@@ -1,0 +1,80 @@
+{
+  "name": "Image Converter",
+  "description": "Batch convert, resize and compress PNG, JPEG, WebP, GIF, BMP, ICO and TIFF images",
+  "help": [
+    "Images are decoded, resized and re-encoded by the local Rust engine as a background task with live logs.",
+    "Photos are rotated upright from their EXIF orientation; re-encoding drops EXIF and other metadata.",
+    "Output never overwrites existing files: a number is appended when a name is taken.",
+    "Drag images onto the window to add them."
+  ],
+  "functions": {
+    "convert": "Convert images"
+  },
+  "files": {
+    "title": "Images",
+    "add": "Add images",
+    "filter": "Images",
+    "remove": "Remove",
+    "drop": "Drop images or click to add",
+    "dropHint": "PNG, JPEG, WebP, GIF, BMP, ICO and TIFF",
+    "start": "Convert",
+    "cancel": "Cancel",
+    "progress": "{{done}} / {{total}} images"
+  },
+  "options": {
+    "title": "Options",
+    "format": "Output format",
+    "keep": "Keep original",
+    "quality": "JPEG quality",
+    "hint": {
+      "webp": "WebP is encoded losslessly; use JPEG for the smallest photos",
+      "png": "PNG is lossless and uses maximum compression"
+    },
+    "resize": "Resize",
+    "output": "Output folder",
+    "sameDir": "Same as source",
+    "resetDir": "Use source folder",
+    "suffix": "Name suffix"
+  },
+  "resize": {
+    "none": "Original",
+    "scale": "Percent",
+    "fit": "Fit within",
+    "percent": "Scale (%)",
+    "maxWidth": "Max width (0 = any)",
+    "maxHeight": "Max height (0 = any)"
+  },
+  "results": {
+    "title": "Results",
+    "running": "Converting…",
+    "empty": "No results yet",
+    "emptyHint": "Add images, choose options and click “Convert”",
+    "cancelled": "Cancelled",
+    "summary": "{{count}} / {{total}} converted · {{ms}} ms",
+    "saved": "{{percent}}% smaller",
+    "grew": "{{percent}}% larger",
+    "reveal": "Show in folder"
+  },
+  "logs": {
+    "title": "Live logs",
+    "empty": "Logs appear here in real time once conversion starts",
+    "jumpLatest": "Jump to latest",
+    "image": {
+      "file_start": "[{{index}}/{{count}}] Converting {{file}} ({{size, number}} bytes)",
+      "file_done": "{{file}} → {{output}} {{width}}×{{height}}, {{before, number}} → {{after, number}} bytes in {{ms}} ms",
+      "file_failed": "Skipped {{file}}: {{code}}",
+      "ico_fitted": "{{file}} was scaled down to fit ICO's {{max}}px limit"
+    }
+  },
+  "stages": {
+    "image.convert": "Converting images…"
+  },
+  "errors": {
+    "image.no_files": "Add some images first",
+    "image.output_dir_missing": "The output folder does not exist: {{path}}",
+    "image.too_large": "The image is larger than {{limit}}",
+    "image.unsupported": "Not a supported image format",
+    "image.decode_failed": "The image could not be decoded: {{detail}}",
+    "image.encode_failed": "The image could not be encoded: {{detail}}"
+  }
+}
