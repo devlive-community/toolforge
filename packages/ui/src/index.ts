@@ -6,6 +6,7 @@ export {
   CodeEditor,
   type CodeEditorHandle,
   type CodeEditorProps,
+  type CodeLanguage,
   type CursorPosition,
   type EditorMark,
 } from './components/CodeEditor'

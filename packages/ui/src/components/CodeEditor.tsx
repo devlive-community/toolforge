@@ -2,8 +2,15 @@ import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react'
 import CodeMirror, { type ReactCodeMirrorRef } from '@uiw/react-codemirror'
 import { json } from '@codemirror/lang-json'
 import { sql } from '@codemirror/lang-sql'
+import { markdown } from '@codemirror/lang-markdown'
 import { xml } from '@codemirror/lang-xml'
-import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
+import { HighlightStyle, StreamLanguage, syntaxHighlighting, type LanguageSupport } from '@codemirror/language'
+import { csharp, java, kotlin } from '@codemirror/legacy-modes/mode/clike'
+import { go } from '@codemirror/legacy-modes/mode/go'
+import { typescript } from '@codemirror/legacy-modes/mode/javascript'
+import { python } from '@codemirror/legacy-modes/mode/python'
+import { rust } from '@codemirror/legacy-modes/mode/rust'
+import type { Extension } from '@codemirror/state'
 import { EditorSelection } from '@codemirror/state'
 import { Decoration, EditorView } from '@codemirror/view'
 import { tags } from '@lezer/highlight'
@@ -58,6 +65,17 @@ const highlight = syntaxHighlighting(
     { tag: [tags.processingInstruction, tags.documentMeta], color: 'var(--tf-syntax-null)' },
     { tag: [tags.typeName, tags.standard(tags.name)], color: 'var(--tf-syntax-number)' },
     { tag: [tags.angleBracket, tags.operator], color: 'var(--tf-syntax-punct)' },
+    // 代码：注解、定义名
+    { tag: [tags.meta, tags.annotation], color: 'var(--tf-syntax-null)' },
+    { tag: [tags.definition(tags.variableName), tags.function(tags.variableName)], color: 'var(--tf-syntax-bool)' },
+    // Markdown
+    { tag: tags.heading, color: 'var(--tf-syntax-key)', fontWeight: '600' },
+    { tag: tags.strong, fontWeight: '600' },
+    { tag: tags.emphasis, fontStyle: 'italic' },
+    { tag: tags.strikethrough, textDecoration: 'line-through' },
+    { tag: [tags.link, tags.url], color: 'var(--tf-primary)' },
+    { tag: tags.monospace, color: 'var(--tf-syntax-string)' },
+    { tag: [tags.quote, tags.contentSeparator], color: 'var(--tf-fg-muted)' },
   ]),
 )
 
@@ -67,6 +85,50 @@ const markDecorations = {
   alt: Decoration.mark({ class: 'cm-tf-mark-alt' }),
   warn: Decoration.mark({ class: 'cm-tf-mark-warn' }),
   active: Decoration.mark({ class: 'cm-tf-mark-active' }),
+}
+
+export type CodeLanguage =
+  | 'json'
+  | 'xml'
+  | 'sql'
+  | 'markdown'
+  | 'typescript'
+  | 'rust'
+  | 'go'
+  | 'java'
+  | 'kotlin'
+  | 'python'
+  | 'csharp'
+  | 'text'
+
+/** 语言对应的语法高亮扩展（仅渲染用） */
+function languageSupport(language: CodeLanguage): Extension | LanguageSupport | null {
+  switch (language) {
+    case 'json':
+      return json()
+    case 'xml':
+      return xml()
+    case 'sql':
+      return sql()
+    case 'markdown':
+      return markdown()
+    case 'typescript':
+      return StreamLanguage.define(typescript)
+    case 'rust':
+      return StreamLanguage.define(rust)
+    case 'go':
+      return StreamLanguage.define(go)
+    case 'java':
+      return StreamLanguage.define(java)
+    case 'kotlin':
+      return StreamLanguage.define(kotlin)
+    case 'python':
+      return StreamLanguage.define(python)
+    case 'csharp':
+      return StreamLanguage.define(csharp)
+    default:
+      return null
+  }
 }
 
 /** 文本高亮区间（UTF-16 偏移，与 JS 字符串下标一致） */
@@ -91,7 +153,7 @@ export interface CodeEditorHandle {
 export interface CodeEditorProps {
   value: string
   onChange?: (value: string) => void
-  language?: 'json' | 'xml' | 'sql' | 'text'
+  language?: CodeLanguage
   readOnly?: boolean
   lineWrapping?: boolean
   placeholder?: string
@@ -133,9 +195,8 @@ export const CodeEditor = forwardRef<CodeEditorHandle, CodeEditorProps>(function
 
   const extensions = useMemo(() => {
     const list = [theme, highlight]
-    if (language === 'json') list.push(json())
-    else if (language === 'xml') list.push(xml())
-    else if (language === 'sql') list.push(sql())
+    const support = languageSupport(language)
+    if (support) list.push(support)
     if (lineWrapping) list.push(EditorView.lineWrapping)
     if (errorLine && errorLine > 0) {
       list.push(
