@@ -5879,6 +5879,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-unit-converter"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-uuid"
 version = "0.1.0"
 dependencies = [
@@ -6193,6 +6202,7 @@ dependencies = [
  "tfp-text-diff",
  "tfp-text-tools",
  "tfp-timestamp",
+ "tfp-unit-converter",
  "tfp-uuid",
  "tfp-xml-formatter",
 ]

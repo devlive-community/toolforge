@@ -39,6 +39,7 @@ tfp-system-monitor = { path = "plugins/system-monitor/backend" }
 tfp-text-diff = { path = "plugins/text-diff/backend" }
 tfp-text-tools = { path = "plugins/text-tools/backend" }
 tfp-timestamp = { path = "plugins/timestamp/backend" }
+tfp-unit-converter = { path = "plugins/unit-converter/backend" }
 tfp-uuid = { path = "plugins/uuid/backend" }
 tfp-xml-formatter = { path = "plugins/xml-formatter/backend" }
 

@@ -42,6 +42,7 @@ tfp-system-monitor.workspace = true
 tfp-text-diff.workspace = true
 tfp-text-tools.workspace = true
 tfp-timestamp.workspace = true
+tfp-unit-converter.workspace = true
 tfp-uuid.workspace = true
 tfp-xml-formatter.workspace = true
 

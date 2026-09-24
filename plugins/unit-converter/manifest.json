@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.unit-converter",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "calc",
+  "keywords": ["unit", "convert", "length", "weight", "mass", "temperature", "area", "volume", "speed", "data", "byte", "pressure", "energy", "单位", "换算", "长度", "重量", "温度", "面积", "体积"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "catalog": {},
+    "convert": {}
+  },
+  "sensitive": false
+}
