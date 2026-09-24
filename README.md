@@ -3,10 +3,10 @@
 
 <h1>ToolForge</h1>
 
-**快速 · 安全 · 轻量 · 插件化的开发者与效率工具桌面平台**
+**A fast, secure, lightweight and pluggable desktop toolbox for developers and power users**
 
-基于 Tauri 2 与 Rust 构建：所有数据都在本地由 Rust 处理，每个工具都是独立插件，
-现代化的界面，支持亮 / 暗主题、中英文与在线自动更新。
+Built with Tauri 2 and Rust: all data is processed locally in Rust, every tool is an independent plugin,
+and the modern interface supports light / dark themes, Chinese and English, and in-app updates.
 
 <p>
   <a href="https://github.com/devlive-community/toolforge/releases"><img alt="release" src="https://img.shields.io/github/v/release/devlive-community/toolforge?include_prereleases&label=release" /></a>
@@ -15,132 +15,134 @@
   <a href="https://github.com/devlive-community/toolforge/actions/workflows/ci.yml"><img alt="ci" src="https://github.com/devlive-community/toolforge/actions/workflows/ci.yml/badge.svg" /></a>
   <img alt="license" src="https://img.shields.io/badge/license-MIT-green" />
 </p>
+
+<p><strong>English</strong> · <a href="README.zh-CN.md">简体中文</a></p>
 </div>
 
 ---
 
-## ✨ 特性
+## ✨ Features
 
-- **数据只在本地处理**：解析、格式化、编解码、哈希、文件读写全部由 Rust 完成，前端只负责展示，数据不会离开本机。
-- **一切皆插件**：每个工具（包括内置工具）都是独立插件，拥有自己的 manifest、Rust 后端、React 界面与语言包，宿主不写死任何工具。
-- **耗时任务实时反馈**：大文件等耗时操作以后台任务运行，实时显示进度与日志，可随时取消；全局任务中心可查看历史与日志。
-- **现代化界面**：语义化设计 Token、亮 / 暗主题、自绘组件与窗口控件、⌘K 命令面板、收藏与最近使用。
-- **国际化**：简体中文与英文，插件自带语言包；Rust 只返回错误码，由界面翻译。
-- **在线自动更新**：基于 GitHub Releases，更新包经签名校验，可跳过版本或关闭自动检查。
-- **本地存储只用 SQLite**：偏好、收藏、使用记录与任务历史都保存在本机数据库。
+- **Your data stays local**: parsing, formatting, encoding, hashing and file I/O all run in Rust. The frontend only renders results, and nothing leaves your machine.
+- **Everything is a plugin**: every tool, built-in ones included, is an independent plugin with its own manifest, Rust backend, React UI and translations. The host hard-codes no tools.
+- **Live feedback for long tasks**: heavy work such as hashing large files runs as a background task with live progress and logs, and can be cancelled at any time. The task center keeps the history and logs.
+- **Modern interface**: semantic design tokens, light / dark themes, custom components and window controls, a ⌘K command palette, favorites and recently used tools.
+- **Internationalized**: Simplified Chinese and English; plugins ship their own translations, and Rust only returns error codes that the UI translates.
+- **In-app updates**: delivered through GitHub Releases with signed update packages; versions can be skipped and automatic checks turned off.
+- **SQLite only for local storage**: preferences, favorites, usage and task history are stored in a local database.
 
-## 🧰 内置工具
+## 🧰 Built-in tools
 
-| 工具 | 说明 |
-|------|------|
-| **JSON 格式化** | 格式化、压缩、校验、转义 / 反转义、树形视图、结构化对比；支持 JSON5；错误定位到行列；大文件树形视图按需加载 |
-| **XML 格式化** | 格式化、压缩、校验；保留注释、CDATA 与声明；未闭合、错配标签精确到行列 |
-| **SQL 格式化** | 美化与压缩；关键字大小写、缩进、紧凑模式；通用 SQL / PostgreSQL / SQL Server 方言 |
-| **正则测试** | 实时高亮匹配与分组、替换预览；支持断言、反向引用与命名分组；常用正则预设 |
-| **时间戳转换** | 秒 / 毫秒 / 微秒 / 纳秒自动识别；多时区对照；日期字符串转时间戳；实时时钟 |
-| **UUID 生成** | UUID v1 / v3 / v4 / v5 / v7、ULID、NanoID 批量生成；解析版本与内含时间 |
-| **哈希计算** | MD5、SHA-1、SHA-2、SHA3、SM3、CRC32；文本实时计算；文件拖入批量计算，任务化运行并显示实时日志 |
+| Tool | Description |
+|------|-------------|
+| **JSON Formatter** | Format, minify, validate, escape / unescape, tree view and structural diff; JSON5 support; errors pinpointed to line and column; tree view loads large documents on demand |
+| **XML Formatter** | Format, minify and validate; keeps comments, CDATA and declarations; unclosed or mismatched tags reported with line and column |
+| **SQL Formatter** | Beautify and minify; keyword casing, indentation and compact mode; generic SQL / PostgreSQL / SQL Server dialects |
+| **Regex Tester** | Live match and group highlighting with replacement preview; lookaround, backreferences and named groups; common pattern presets |
+| **Timestamp** | Seconds / milliseconds / microseconds / nanoseconds detected automatically; multiple time zones side by side; date strings to timestamps; live clock |
+| **UUID Generator** | Batch generate UUID v1 / v3 / v4 / v5 / v7, ULID and NanoID; inspect versions and embedded timestamps |
+| **Hash** | MD5, SHA-1, SHA-2, SHA3, SM3 and CRC32; live text hashing; drop files to hash them in a background task with live logs |
 
-更多工具（编解码、文本处理、图像、网络等）持续开发中。
+More tools (encoding, text processing, images, networking and more) are on the way.
 
-## 📦 下载安装
+## 📦 Download
 
-前往 [Releases](https://github.com/devlive-community/toolforge/releases) 下载对应平台的安装包：
+Grab the installer for your platform from [Releases](https://github.com/devlive-community/toolforge/releases):
 
-| 平台 | 安装包 |
-|------|--------|
-| macOS（Apple Silicon / Intel） | `.dmg` |
+| Platform | Installer |
+|----------|-----------|
+| macOS (Apple Silicon / Intel) | `.dmg` |
 | Windows | `.msi` / `-setup.exe` |
 | Linux | `.AppImage` / `.deb` / `.rpm` |
 
-> 当前版本尚未进行系统代码签名。macOS 首次打开如提示「已损坏」或「无法验证开发者」，可右键选择「打开」，或执行：
+> Builds are not code-signed yet. If macOS says the app is damaged or from an unidentified developer, right-click it and choose **Open**, or run:
 >
 > ```bash
 > xattr -cr /Applications/ToolForge.app
 > ```
 >
-> Windows 如出现 SmartScreen 提示，选择「更多信息 → 仍要运行」。应用内自动更新不受影响。
+> If Windows SmartScreen appears, choose **More info → Run anyway**. In-app updates are not affected.
 
-## 🛠 开发
+## 🛠 Development
 
-### 环境要求
+### Requirements
 
-- [Node.js](https://nodejs.org/) 22+ 与 [pnpm](https://pnpm.io/) 10+
-- [Rust](https://rustup.rs/) stable（edition 2024）
-- Tauri 2 的[系统依赖](https://tauri.app/start/prerequisites/)（Linux 需要 `libwebkit2gtk-4.1-dev` 等）
+- [Node.js](https://nodejs.org/) 22+ and [pnpm](https://pnpm.io/) 10+
+- [Rust](https://rustup.rs/) stable (edition 2024)
+- Tauri 2 [system prerequisites](https://tauri.app/start/prerequisites/) (Linux needs `libwebkit2gtk-4.1-dev` and friends)
 
-### 常用命令
+### Common commands
 
 ```bash
-pnpm install          # 安装前端依赖
-pnpm dev              # 启动桌面应用（开发模式，热更新）
-pnpm build            # 构建安装包
+pnpm install          # install frontend dependencies
+pnpm dev              # run the desktop app in development mode with hot reload
+pnpm build            # build installers
 
-cargo xtask check     # 运行与 CI 完全一致的全部检查
-cargo xtask check rust|web|rules   # 只运行其中一部分
-pnpm lint             # ESLint（零警告）
+cargo xtask check     # run exactly the checks CI runs
+cargo xtask check rust|web|rules   # run a subset
+pnpm lint             # ESLint (zero warnings)
 ```
 
-`cargo xtask check` 依次执行：约定扫描 → rustfmt → clippy → Rust 测试 → TypeScript 类型检查 → ESLint → 前端构建。
+`cargo xtask check` runs, in order: convention rules → rustfmt → clippy → Rust tests → TypeScript type checking → ESLint → frontend build.
 
-### 项目结构
+### Project structure
 
 ```
 toolforge/
-├── apps/desktop/          # 桌面应用
-│   ├── src/               # React 外壳：标题栏、侧边栏、命令面板、任务中心、设置…
-│   └── src-tauri/         # Tauri 入口：窗口、命令、更新、任务
+├── apps/desktop/          # desktop app
+│   ├── src/               # React shell: title bar, sidebar, command palette, task center, settings…
+│   └── src-tauri/         # Tauri entry: window, commands, updater, tasks
 ├── crates/
-│   ├── tf-plugin-api/     # 宿主与插件的契约（Manifest、ToolPlugin、TaskContext）
-│   ├── tf-core/           # 错误码、SQLite 存储、插件注册表、任务管理
-│   └── xtask/             # 仓库自动化（check / bump / notes / version）
+│   ├── tf-plugin-api/     # host ↔ plugin contract (Manifest, ToolPlugin, TaskContext)
+│   ├── tf-core/           # error codes, SQLite store, plugin registry, task manager
+│   └── xtask/             # repository automation (check / bump / notes / version)
 ├── packages/
-│   ├── ui/                # @toolforge/ui：设计 Token 与组件库
-│   └── plugin-ui-sdk/     # @toolforge/plugin-ui-sdk：插件前端 SDK
-├── plugins/               # 官方插件（每个插件独立版本）
+│   ├── ui/                # @toolforge/ui: design tokens and component library
+│   └── plugin-ui-sdk/     # @toolforge/plugin-ui-sdk: plugin frontend SDK
+├── plugins/               # official plugins (each versioned independently)
 │   ├── json-formatter/  xml-formatter/  sql-formatter/
 │   ├── regex/  timestamp/  uuid/
 │   └── hash/
-└── scripts/release.sh     # 发布脚本
+└── scripts/release.sh     # release script
 ```
 
-### 插件结构
+### Plugin layout
 
 ```
 plugins/<name>/
-├── manifest.json          # id（org.devlive.toolforge.<name>）、分类、函数声明、权限
+├── manifest.json          # id (org.devlive.toolforge.<name>), category, functions, permissions
 ├── icon.svg
-├── locales/zh-CN.json     # 插件文案、日志与错误码翻译
-├── backend/               # Rust：实现 ToolPlugin，所有数据处理在这里
-└── ui/                    # React：只负责展示，通过 usePlugin / useTask 调用后端
+├── locales/en-US.json     # UI text, log and error code translations
+├── backend/               # Rust: implements ToolPlugin; all data processing lives here
+└── ui/                    # React: presentation only, calls the backend through usePlugin / useTask
 ```
 
-- 普通函数通过 `call()` 调用，适合即时处理；manifest 中声明 `"task": true` 的函数必须以任务运行，通过 `TaskContext` 上报日志、进度并响应取消。
-- 界面只能使用 `@toolforge/ui` 组件与语义 Token；文件、剪贴板等能力通过 SDK 的 `host` 使用。
+- Regular functions are invoked with `call()` for instant results. Functions declared with `"task": true` in the manifest must run as tasks and report logs and progress, and honor cancellation, through `TaskContext`.
+- Plugin UIs may only use `@toolforge/ui` components and semantic tokens; files, clipboard and other capabilities go through the SDK's `host`.
 
-### 开发约定
+### Conventions
 
-- 数据处理必须在 Rust 侧完成；前端禁止引入数据处理库、禁止使用浏览器存储（由 ESLint 与约定扫描保证）。
-- 样式只使用语义 Token，不写原始色板与 `dark:`；不使用原生表单控件与对话框。
-- 界面文案全部走 i18n；Rust 只返回错误码与参数。
-- Rust 测试放在独立的 `xxx_test.rs` 文件中。
-- 提交遵循 [Conventional Commits](https://www.conventionalcommits.org/)，每个功能独立提交。
+- Data processing must happen in Rust. The frontend must not pull in data processing libraries or use browser storage (enforced by ESLint and the convention scanner).
+- Styles use semantic tokens only: no raw palette classes and no `dark:`. Native form controls and dialogs are not used.
+- All UI text goes through i18n; Rust returns only error codes and parameters.
+- Rust tests live in dedicated `xxx_test.rs` files.
+- Commits follow [Conventional Commits](https://www.conventionalcommits.org/), one commit per feature.
 
-## 🚀 发布
+## 🚀 Releasing
 
 ```bash
-scripts/release.sh --dry-run        # 预览发布计划与发布说明
-scripts/release.sh                  # 发布当前版本
-scripts/release.sh minor --wait     # 升级 minor 后发布，并等待 CI 完成
+scripts/release.sh --dry-run        # preview the release plan and notes
+scripts/release.sh                  # release the current version
+scripts/release.sh minor --wait     # bump the minor version, release and wait for CI
 scripts/release.sh 1.0.0 --next none
-scripts/release.sh --help           # 查看全部选项
+scripts/release.sh --help           # all options
 ```
 
-发布脚本会预检仓库状态、运行全部检查、创建附注标签（内容为该版本的提交历史）并推送；
-GitHub Actions 随后构建 macOS / Windows / Linux 安装包，全部成功后正式发布 Release 与自动更新清单，
-脚本最后把版本号更新为下一个开发版本并提交。
+The release script checks the repository state, runs every check, creates an annotated tag whose message is the version's commit history, and pushes it.
+GitHub Actions then builds the macOS / Windows / Linux installers and, once every platform succeeds, publishes the release together with the update manifest.
+Finally the script bumps the project to the next development version and commits it.
 
-发布前需在**仓库** Secrets 中配置更新器签名私钥 `TOOLFORGE_UPDATER_PRIVATE_KEY`（私钥文件内容，须与 `tauri.conf.json` 中的公钥配对），私钥设有密码时再配置 `TOOLFORGE_UPDATER_KEY_PASSWORD`。
+Before releasing, add the updater signing key to the **repository** secrets as `TOOLFORGE_UPDATER_PRIVATE_KEY` (the private key file content, paired with the public key in `tauri.conf.json`), plus `TOOLFORGE_UPDATER_KEY_PASSWORD` if the key has a password.
 
 ## 📄 License
 
