@@ -61,6 +61,7 @@
 | **图片转换** | PNG / JPEG / WebP / GIF / BMP / ICO / TIFF 批量互转，按比例或限定宽高缩放，JPEG 质量可调；以任务运行并输出实时日志，不覆盖已有文件 |
 | **Cron 表达式** | 逐字段解释 5 / 6 / 7 段 Cron 表达式，按任意时区预览后续执行时间，支持 `L`、`W`、`#` 与 `@daily` 等别名 |
 | **JSON 转代码** | 从 JSON 样例生成 TypeScript、Rust（serde）、Go、Java record、Kotlin、Python（pydantic）与 C# 模型，自动合并数组并识别可选与可空字段 |
+| **cURL 转代码** | 把 curl 命令（含浏览器「复制为 cURL」的 bash / cmd 格式）转换为 JavaScript fetch、Python requests、Go、Rust reqwest、Java HttpClient、PHP 与 C# 代码，无法转换的选项会逐条列出 |
 | **图片信息** | 格式、尺寸、颜色类型、EXIF 拍摄参数与 GPS 位置（可在地图中打开）、主色提取；无损移除 JPEG / PNG 中的 EXIF / XMP / IPTC |
 | **Markdown 编辑器** | GitHub 风格 Markdown，Rust 实时渲染预览，目录、字数统计、格式工具栏与快捷键；草稿自动保存，可导出独立 HTML |
 
