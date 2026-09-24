@@ -1,0 +1,104 @@
+{
+  "name": "编解码",
+  "description": "Base64、Base32、Hex、URL、HTML 实体与 Unicode 转义的编码与解码，支持文件转 Base64 / Data URI",
+  "help": [
+    "左侧选择编码类型，上方切换编码 / 解码；输入后实时得到结果。",
+    "解码结果若不是 UTF-8 文本（例如图片数据），会以十六进制显示并给出提示。",
+    "「交换」把输出放回输入并反转方向，方便验证能否还原。",
+    "文件转 Base64 以后台任务运行，最大 20 MB，可生成 Data URI 直接用于 HTML / CSS。"
+  ],
+  "functions": {
+    "encode_file": "文件转 Base64"
+  },
+  "groups": {
+    "binary": "Base 系列",
+    "url": "URL",
+    "text": "文本转义"
+  },
+  "codecs": {
+    "base64": {
+      "name": "Base64",
+      "hint": "标准 Base64（RFC 4648）"
+    },
+    "base64url": {
+      "name": "Base64URL",
+      "hint": "URL 安全，- 与 _ 替代 + /"
+    },
+    "base32": {
+      "name": "Base32",
+      "hint": "RFC 4648 Base32"
+    },
+    "hex": {
+      "name": "Hex",
+      "hint": "十六进制（UTF-8 字节）"
+    },
+    "urlComponent": {
+      "name": "URL 组件",
+      "hint": "encodeURIComponent"
+    },
+    "url": {
+      "name": "完整 URL",
+      "hint": "encodeURI，保留 : / ? & ="
+    },
+    "form": {
+      "name": "表单编码",
+      "hint": "application/x-www-form-urlencoded"
+    },
+    "html": {
+      "name": "HTML 实体",
+      "hint": "&lt; &amp; &#233; …"
+    },
+    "unicode": {
+      "name": "Unicode 转义",
+      "hint": "\\u4e2d、\\u{1F600}、U+4E2D"
+    }
+  },
+  "direction": {
+    "label": "方向",
+    "encode": "编码",
+    "decode": "解码"
+  },
+  "options": {
+    "padding": "补位 =",
+    "wrap": "每 76 字符换行",
+    "uppercase": "大写",
+    "htmlMode": "实体范围",
+    "htmlBasic": "仅特殊字符",
+    "htmlDecimal": "非 ASCII → 十进制",
+    "htmlHex": "非 ASCII → 十六进制",
+    "unicodeStyle": "转义格式",
+    "escapeAscii": "转义 ASCII"
+  },
+  "input": {
+    "plain": "原文",
+    "encoded": "待解码内容"
+  },
+  "output": {
+    "encoded": "编码结果",
+    "decoded": "解码结果"
+  },
+  "swap": "交换输入与输出",
+  "bytes": "{{count}} 字节",
+  "elapsed": "耗时 {{ms}}ms",
+  "binaryNotice": "解码结果不是 UTF-8 文本，已按字节以十六进制显示",
+  "file": {
+    "encode": "文件转 Base64",
+    "format": "输出格式",
+    "title": "文件：{{name}}",
+    "close": "返回文本结果",
+    "reading": "正在读取文件…",
+    "summary": "{{bytes, number}} 字节 → {{chars, number}} 字符 · {{mime}}"
+  },
+  "logs": {
+    "encode": {
+      "file_start": "读取 {{file}}（{{size, number}} 字节）",
+      "file_done": "完成 {{file}}，输出 {{chars, number}} 字符"
+    }
+  },
+  "errors": {
+    "encode.invalid_input": "输入不是合法的 {{codec}} 编码",
+    "encode.invalid_escape": "第 {{position}} 个字符处的转义序列无效",
+    "encode.too_large": "内容过大（超过 {{limit}}）",
+    "encode.file_too_large": "文件过大（超过 {{limit}}）"
+  }
+}

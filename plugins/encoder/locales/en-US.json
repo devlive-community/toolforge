@@ -1,0 +1,104 @@
+{
+  "name": "Encoder",
+  "description": "Encode and decode Base64, Base32, Hex, URL, HTML entities and Unicode escapes, and turn files into Base64 / Data URIs",
+  "help": [
+    "Pick an encoding on the left and switch between encode and decode above; results update as you type.",
+    "Decoded data that is not UTF-8 text (such as image bytes) is shown as hex with a notice.",
+    "“Swap” moves the output back to the input and flips the direction so you can verify a round trip.",
+    "File to Base64 runs as a background task (up to 20 MB) and can produce a Data URI ready for HTML / CSS."
+  ],
+  "functions": {
+    "encode_file": "File to Base64"
+  },
+  "groups": {
+    "binary": "Base encodings",
+    "url": "URL",
+    "text": "Text escapes"
+  },
+  "codecs": {
+    "base64": {
+      "name": "Base64",
+      "hint": "Standard Base64 (RFC 4648)"
+    },
+    "base64url": {
+      "name": "Base64URL",
+      "hint": "URL safe, - and _ instead of + /"
+    },
+    "base32": {
+      "name": "Base32",
+      "hint": "RFC 4648 Base32"
+    },
+    "hex": {
+      "name": "Hex",
+      "hint": "Hexadecimal (UTF-8 bytes)"
+    },
+    "urlComponent": {
+      "name": "URL component",
+      "hint": "encodeURIComponent"
+    },
+    "url": {
+      "name": "Full URL",
+      "hint": "encodeURI, keeps : / ? & ="
+    },
+    "form": {
+      "name": "Form encoding",
+      "hint": "application/x-www-form-urlencoded"
+    },
+    "html": {
+      "name": "HTML entities",
+      "hint": "&lt; &amp; &#233; …"
+    },
+    "unicode": {
+      "name": "Unicode escapes",
+      "hint": "\\u4e2d, \\u{1F600}, U+4E2D"
+    }
+  },
+  "direction": {
+    "label": "Direction",
+    "encode": "Encode",
+    "decode": "Decode"
+  },
+  "options": {
+    "padding": "Padding =",
+    "wrap": "Wrap at 76",
+    "uppercase": "Uppercase",
+    "htmlMode": "Entity scope",
+    "htmlBasic": "Special characters",
+    "htmlDecimal": "Non-ASCII → decimal",
+    "htmlHex": "Non-ASCII → hex",
+    "unicodeStyle": "Escape style",
+    "escapeAscii": "Escape ASCII"
+  },
+  "input": {
+    "plain": "Plain text",
+    "encoded": "Encoded input"
+  },
+  "output": {
+    "encoded": "Encoded",
+    "decoded": "Decoded"
+  },
+  "swap": "Swap input and output",
+  "bytes": "{{count}} bytes",
+  "elapsed": "{{ms}} ms",
+  "binaryNotice": "The decoded data is not UTF-8 text and is shown as hex bytes",
+  "file": {
+    "encode": "File to Base64",
+    "format": "Output format",
+    "title": "File: {{name}}",
+    "close": "Back to text result",
+    "reading": "Reading the file…",
+    "summary": "{{bytes, number}} bytes → {{chars, number}} chars · {{mime}}"
+  },
+  "logs": {
+    "encode": {
+      "file_start": "Reading {{file}} ({{size, number}} bytes)",
+      "file_done": "Finished {{file}}, {{chars, number}} characters"
+    }
+  },
+  "errors": {
+    "encode.invalid_input": "The input is not valid {{codec}}",
+    "encode.invalid_escape": "Invalid escape sequence at character {{position}}",
+    "encode.too_large": "Input is too large (over {{limit}})",
+    "encode.file_too_large": "File is too large (over {{limit}})"
+  }
+}
