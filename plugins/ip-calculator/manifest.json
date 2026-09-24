@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.ip-calculator",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "network",
+  "keywords": ["ip", "ipv4", "ipv6", "cidr", "subnet", "netmask", "mask", "network", "broadcast", "range", "子网", "掩码", "网段", "网络"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "calculate": {},
+    "range_to_cidrs": {}
+  },
+  "sensitive": false
+}

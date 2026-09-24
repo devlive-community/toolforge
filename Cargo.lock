@@ -5675,6 +5675,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-ip-calculator"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-json-formatter"
 version = "0.1.0"
 dependencies = [
@@ -6078,6 +6087,7 @@ dependencies = [
  "tfp-format-converter",
  "tfp-hash",
  "tfp-image-converter",
+ "tfp-ip-calculator",
  "tfp-json-formatter",
  "tfp-jwt",
  "tfp-password",

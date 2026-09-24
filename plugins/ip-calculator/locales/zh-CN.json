@@ -1,0 +1,87 @@
+{
+  "name": "IP 计算器",
+  "description": "IPv4 / IPv6 子网计算：网络地址、广播地址、主机范围、子网拆分与地址段转 CIDR",
+  "help": [
+    "可以输入带前缀的地址（192.168.1.10/24）、带掩码的地址（10.0.0.1 255.0.0.0），或只输入地址。",
+    "可将网段拆分为更小的子网、判断地址是否属于网段，或把任意地址段转换为最少的 CIDR 列表。",
+    "IPv4 的 /31、/32 按 RFC 3021 处理：所有地址都可用。",
+    "所有计算都在本地 Rust 中完成。"
+  ],
+  "functions": {
+    "calculate": "子网计算",
+    "range_to_cidrs": "地址段转 CIDR"
+  },
+  "tabs": {
+    "subnet": "子网计算",
+    "range": "地址段 → CIDR"
+  },
+  "input": {
+    "label": "地址",
+    "placeholder": "例如 192.168.1.10/24、10.0.0.1 255.0.0.0、2001:db8::1/64",
+    "examples": "示例"
+  },
+  "details": {
+    "title": "详细信息",
+    "empty": "输入 IP 地址或网段",
+    "version": "IPv{{version}}",
+    "class": "{{class}} 类",
+    "cidr": "CIDR",
+    "network": "网络地址",
+    "broadcast": "广播地址",
+    "netmask": "子网掩码",
+    "wildcard": "反掩码",
+    "hosts": "主机范围",
+    "total": "地址总数",
+    "usable": "可用主机",
+    "binary": "二进制",
+    "hex": "十六进制",
+    "integer": "整数",
+    "expanded": "完整写法",
+    "reverseDns": "反向解析"
+  },
+  "kinds": {
+    "private": "私有地址",
+    "loopback": "回环地址",
+    "link_local": "链路本地",
+    "multicast": "组播",
+    "documentation": "文档示例",
+    "shared": "运营商级 NAT",
+    "unspecified": "未指定",
+    "broadcast": "广播",
+    "reserved": "保留地址",
+    "unique_local": "唯一本地",
+    "global": "公网地址"
+  },
+  "contains": {
+    "title": "包含检查",
+    "placeholder": "检查某个地址是否属于该网段",
+    "inside": "{{address}} 属于 {{cidr}}",
+    "outside": "{{address}} 不属于 {{cidr}}"
+  },
+  "split": {
+    "title": "子网拆分",
+    "prefix": "新的前缀长度",
+    "hint": "开启后可按更长的前缀把网段拆分为多个子网。",
+    "count": "{{count}} 个子网",
+    "truncated": "仅显示前 {{shown}} 个子网"
+  },
+  "range": {
+    "start": "起始地址",
+    "end": "结束地址",
+    "hint": "把任意地址段转换为恰好覆盖它的最少 CIDR 块。",
+    "result": "CIDR 块",
+    "empty": "输入起始地址与结束地址",
+    "summary": "{{count}} 个块 · {{total}} 个地址",
+    "copyAll": "全部复制"
+  },
+  "errors": {
+    "ip.empty": "请输入 IP 地址",
+    "ip.invalid": "“{{input}}”不是有效的 IP 地址",
+    "ip.invalid_prefix": "“{{prefix}}”不是有效的前缀（0–{{max}}）或子网掩码",
+    "ip.invalid_mask": "“{{mask}}”不是连续的子网掩码",
+    "ip.invalid_split": "新的前缀需在 /{{min}} 到 /{{max}} 之间",
+    "ip.version_mismatch": "两个地址必须同为 IPv4 或同为 IPv6",
+    "ip.range_reversed": "起始地址不能大于结束地址",
+    "ip.too_many_cidrs": "该地址段需要超过 {{limit}} 个 CIDR 块"
+  }
+}

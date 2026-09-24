@@ -1,0 +1,87 @@
+{
+  "name": "IP Calculator",
+  "description": "IPv4 / IPv6 subnet calculator: network, broadcast, host range, subnetting and range to CIDR",
+  "help": [
+    "Enter an address with a prefix (192.168.1.10/24), a netmask (10.0.0.1 255.0.0.0) or just an address.",
+    "Split a network into smaller subnets, check whether an address belongs to it, or turn any address range into the minimal list of CIDR blocks.",
+    "/31 and /32 IPv4 networks follow RFC 3021: every address is usable.",
+    "All calculations run locally in Rust."
+  ],
+  "functions": {
+    "calculate": "Calculate subnet",
+    "range_to_cidrs": "Range to CIDR"
+  },
+  "tabs": {
+    "subnet": "Subnet",
+    "range": "Range → CIDR"
+  },
+  "input": {
+    "label": "Address",
+    "placeholder": "e.g. 192.168.1.10/24, 10.0.0.1 255.0.0.0, 2001:db8::1/64",
+    "examples": "Examples"
+  },
+  "details": {
+    "title": "Details",
+    "empty": "Enter an IP address or network",
+    "version": "IPv{{version}}",
+    "class": "Class {{class}}",
+    "cidr": "CIDR",
+    "network": "Network",
+    "broadcast": "Broadcast",
+    "netmask": "Netmask",
+    "wildcard": "Wildcard",
+    "hosts": "Host range",
+    "total": "Addresses",
+    "usable": "Usable hosts",
+    "binary": "Binary",
+    "hex": "Hex",
+    "integer": "Integer",
+    "expanded": "Expanded",
+    "reverseDns": "Reverse DNS"
+  },
+  "kinds": {
+    "private": "Private",
+    "loopback": "Loopback",
+    "link_local": "Link-local",
+    "multicast": "Multicast",
+    "documentation": "Documentation",
+    "shared": "Carrier-grade NAT",
+    "unspecified": "Unspecified",
+    "broadcast": "Broadcast",
+    "reserved": "Reserved",
+    "unique_local": "Unique local",
+    "global": "Public"
+  },
+  "contains": {
+    "title": "Contains address",
+    "placeholder": "Check whether an address is in this network",
+    "inside": "{{address}} is inside {{cidr}}",
+    "outside": "{{address}} is not inside {{cidr}}"
+  },
+  "split": {
+    "title": "Split into subnets",
+    "prefix": "New prefix length",
+    "hint": "Turn on to split the network into smaller subnets with a longer prefix.",
+    "count": "{{count}} subnets",
+    "truncated": "Showing the first {{shown}} subnets"
+  },
+  "range": {
+    "start": "First address",
+    "end": "Last address",
+    "hint": "Converts any address range into the smallest set of CIDR blocks that covers it exactly.",
+    "result": "CIDR blocks",
+    "empty": "Enter the first and last address",
+    "summary": "{{count}} blocks · {{total}} addresses",
+    "copyAll": "Copy all"
+  },
+  "errors": {
+    "ip.empty": "Enter an IP address",
+    "ip.invalid": "“{{input}}” is not a valid IP address",
+    "ip.invalid_prefix": "“{{prefix}}” is not a valid prefix (0–{{max}}) or netmask",
+    "ip.invalid_mask": "“{{mask}}” is not a contiguous netmask",
+    "ip.invalid_split": "The new prefix must be between /{{min}} and /{{max}}",
+    "ip.version_mismatch": "Both addresses must be IPv4 or both IPv6",
+    "ip.range_reversed": "The first address must not be greater than the last",
+    "ip.too_many_cidrs": "The range needs more than {{limit}} CIDR blocks"
+  }
+}
