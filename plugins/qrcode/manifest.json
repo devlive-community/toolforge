@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.qrcode",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "encode",
+  "keywords": ["qr", "qrcode", "qr code", "barcode", "scan", "decode", "二维码", "扫码", "识别"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write", "fs:user-selected"],
+  "functions": {
+    "generate": {},
+    "save": {},
+    "decode": {}
+  },
+  "sensitive": false
+}

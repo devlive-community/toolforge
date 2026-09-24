@@ -1,0 +1,69 @@
+{
+  "name": "QR Code",
+  "description": "Generate QR codes as PNG or SVG and read QR codes from images",
+  "help": [
+    "Codes are generated and decoded entirely in the local Rust engine.",
+    "Higher error correction survives more damage or a logo overlay but needs a larger code.",
+    "Keep enough contrast and a quiet zone of at least 4 modules so scanners can read the code.",
+    "Drop an image onto the window on the Read tab to decode every QR code in it."
+  ],
+  "functions": {
+    "generate": "Generate",
+    "save": "Save",
+    "decode": "Read QR code"
+  },
+  "tabs": {
+    "generate": "Generate",
+    "decode": "Read"
+  },
+  "generate": {
+    "content": "Content",
+    "placeholder": "Text, URL, Wi-Fi string…",
+    "bytes_one": "{{count}} byte",
+    "bytes_other": "{{count}} bytes",
+    "preview": "Preview",
+    "empty": "Enter content to generate a QR code",
+    "savePng": "Save PNG",
+    "saveSvg": "Save SVG",
+    "version": "Version {{version}} · {{modules}}×{{modules}} modules",
+    "pixels": "{{size}}×{{size}} px"
+  },
+  "options": {
+    "title": "Options",
+    "ecc": "Error correction",
+    "scale": "Module size (px)",
+    "margin": "Quiet zone",
+    "dark": "Foreground",
+    "light": "Background"
+  },
+  "ecc": {
+    "L": "L 7%",
+    "M": "M 15%",
+    "Q": "Q 25%",
+    "H": "H 30%"
+  },
+  "decode": {
+    "image": "Image",
+    "filter": "Images",
+    "drop": "Drop an image or click to choose",
+    "dropHint": "PNG, JPEG, WebP, GIF or BMP",
+    "another": "Choose another",
+    "results": "Decoded",
+    "found_one": "{{count}} code",
+    "found_other": "{{count}} codes",
+    "scanning": "Scanning…",
+    "empty": "Choose an image containing a QR code",
+    "meta": "Version {{version}} · error correction {{ecc}}"
+  },
+  "errors": {
+    "qr.empty": "Enter some content",
+    "qr.too_long": "The content ({{bytes}} bytes) is too long for a QR code at this error correction level",
+    "qr.invalid_scale": "Module size must be between 1 and {{max}}",
+    "qr.invalid_margin": "Quiet zone must be between 0 and {{max}}",
+    "qr.invalid_color": "“{{value}}” is not a valid hex color",
+    "qr.encode_failed": "Failed to render the QR code: {{detail}}",
+    "qr.decode_failed": "The image could not be read: {{detail}}",
+    "qr.not_found": "No QR code was found in the image",
+    "qr.file_too_large": "The image is larger than {{limit}}"
+  }
+}

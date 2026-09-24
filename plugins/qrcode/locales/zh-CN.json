@@ -1,0 +1,69 @@
+{
+  "name": "二维码",
+  "description": "生成 PNG / SVG 二维码，识别图片中的二维码",
+  "help": [
+    "二维码的生成与识别都在本地 Rust 引擎中完成。",
+    "纠错等级越高越能抵抗污损或覆盖 Logo，但码图会更大。",
+    "保持足够的颜色对比和至少 4 个模块的静区，扫码更可靠。",
+    "在“识别”页把图片拖进窗口，即可识别其中所有二维码。"
+  ],
+  "functions": {
+    "generate": "生成",
+    "save": "保存",
+    "decode": "识别二维码"
+  },
+  "tabs": {
+    "generate": "生成",
+    "decode": "识别"
+  },
+  "generate": {
+    "content": "内容",
+    "placeholder": "文本、网址、Wi-Fi 配置…",
+    "bytes_one": "{{count}} 字节",
+    "bytes_other": "{{count}} 字节",
+    "preview": "预览",
+    "empty": "输入内容生成二维码",
+    "savePng": "保存 PNG",
+    "saveSvg": "保存 SVG",
+    "version": "版本 {{version}} · {{modules}}×{{modules}} 模块",
+    "pixels": "{{size}}×{{size}} 像素"
+  },
+  "options": {
+    "title": "选项",
+    "ecc": "纠错等级",
+    "scale": "模块大小（像素）",
+    "margin": "静区",
+    "dark": "前景色",
+    "light": "背景色"
+  },
+  "ecc": {
+    "L": "L 7%",
+    "M": "M 15%",
+    "Q": "Q 25%",
+    "H": "H 30%"
+  },
+  "decode": {
+    "image": "图片",
+    "filter": "图片",
+    "drop": "拖入图片或点击选择",
+    "dropHint": "支持 PNG、JPEG、WebP、GIF、BMP",
+    "another": "换一张",
+    "results": "识别结果",
+    "found_one": "{{count}} 个二维码",
+    "found_other": "{{count}} 个二维码",
+    "scanning": "正在识别…",
+    "empty": "选择包含二维码的图片",
+    "meta": "版本 {{version}} · 纠错等级 {{ecc}}"
+  },
+  "errors": {
+    "qr.empty": "请输入内容",
+    "qr.too_long": "内容（{{bytes}} 字节）超出当前纠错等级下二维码的容量",
+    "qr.invalid_scale": "模块大小需在 1 到 {{max}} 之间",
+    "qr.invalid_margin": "静区需在 0 到 {{max}} 之间",
+    "qr.invalid_color": "“{{value}}”不是有效的十六进制颜色",
+    "qr.encode_failed": "二维码渲染失败：{{detail}}",
+    "qr.decode_failed": "无法读取图片：{{detail}}",
+    "qr.not_found": "图片中没有找到二维码",
+    "qr.file_too_large": "图片超过 {{limit}}"
+  }
+}

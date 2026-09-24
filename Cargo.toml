@@ -29,6 +29,7 @@ tfp-image-converter = { path = "plugins/image-converter/backend" }
 tfp-json-formatter = { path = "plugins/json-formatter/backend" }
 tfp-jwt = { path = "plugins/jwt/backend" }
 tfp-password = { path = "plugins/password/backend" }
+tfp-qrcode = { path = "plugins/qrcode/backend" }
 tfp-regex = { path = "plugins/regex/backend" }
 tfp-sql-formatter = { path = "plugins/sql-formatter/backend" }
 tfp-text-diff = { path = "plugins/text-diff/backend" }

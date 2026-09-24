@@ -32,6 +32,7 @@ tfp-image-converter.workspace = true
 tfp-json-formatter.workspace = true
 tfp-jwt.workspace = true
 tfp-password.workspace = true
+tfp-qrcode.workspace = true
 tfp-regex.workspace = true
 tfp-sql-formatter.workspace = true
 tfp-text-diff.workspace = true
