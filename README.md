@@ -47,9 +47,13 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Text Tools** | 13 naming styles and letter cases; trim, dedupe, sort (natural, by length), shuffle and number lines; character, word, CJK and reading-time statistics |
 | **Text Diff** | Line, word or character diff with side-by-side highlighting, ignore case / whitespace and unified patch export |
 | **Format Converter** | JSON ⇄ YAML ⇄ TOML ⇄ CSV with automatic detection, preserved key order and CSV delimiter / header / type options |
+| **Base Converter** | Arbitrary-precision integers in bases 2–36, prefix detection, two's complement for 8–128 bits and a clickable 64-bit view |
+| **Color Converter** | HEX / RGB / HSL / HSV / HWB / CMYK / Lab / OKLCH, WCAG contrast checks, tints, shades and harmonies |
+| **Password Generator** | Cryptographically secure passwords with per-type options and exclusions, plus a local strength and crack-time check |
+| **QR Code** | Generate QR codes as PNG / SVG with error correction, size and colors; read QR codes from images |
 | **Image Converter** | Batch convert PNG / JPEG / WebP / GIF / BMP / ICO / TIFF, resize by percent or bounding box, JPEG quality; runs as a task with live logs and never overwrites files |
 
-More tools (more image tools, networking, system and calculators) are on the way.
+More tools (more image tools, networking, system and unit conversion) are on the way.
 
 ## 📦 Download
 
@@ -110,6 +114,7 @@ toolforge/
 │   ├── regex/  timestamp/  uuid/
 │   ├── hash/  encoder/  jwt/
 │   ├── text-tools/  text-diff/  format-converter/
+│   ├── base-converter/  color/  password/  qrcode/
 │   └── image-converter/
 └── scripts/release.sh     # release script
 ```
