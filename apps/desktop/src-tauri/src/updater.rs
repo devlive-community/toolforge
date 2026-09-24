@@ -5,7 +5,7 @@ use std::time::{Duration, Instant};
 
 use serde::Serialize;
 use tauri::ipc::Channel;
-use tauri::{AppHandle, State};
+use tauri::{AppHandle, Manager, State};
 use tauri_plugin_updater::{Update, UpdaterExt};
 use tf_core::markdown::{self, Block};
 use tf_core::{AppError, AppResult};
@@ -103,5 +103,7 @@ pub async fn update_install(
 /// 安装完成后重启应用
 #[tauri::command]
 pub fn app_restart(app: AppHandle) {
+    // 安装更新后的重启不需要退出确认
+    app.state::<crate::lifecycle::QuitGuard>().confirm();
     app.restart();
 }

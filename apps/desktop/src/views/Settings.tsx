@@ -31,6 +31,8 @@ export function Settings() {
   const locale = usePrefs((s) => s.locale)
   const setLocale = usePrefs((s) => s.setLocale)
   const info = useApp((s) => s.info)
+  const confirmQuit = usePrefs((s) => s.confirmQuit)
+  const setConfirmQuit = usePrefs((s) => s.setConfirmQuit)
   const autoUpdate = usePrefs((s) => s.autoUpdate)
   const setAutoUpdate = usePrefs((s) => s.setAutoUpdate)
   const update = useUpdate()
@@ -78,6 +80,13 @@ export function Settings() {
               aria-label={t('settings.language')}
               options={SUPPORTED_LOCALES.map((value) => ({ value, label: LOCALE_LABELS[value] }))}
             />
+          </Row>
+        </div>
+      </Section>
+      <Section title={t('settings.general')}>
+        <div className="divide-y divide-border rounded-card border border-border bg-surface shadow-card">
+          <Row label={t('settings.confirmQuit')} hint={t('settings.confirmQuitHint')}>
+            <Switch checked={confirmQuit} onCheckedChange={setConfirmQuit} aria-label={t('settings.confirmQuit')} />
           </Row>
         </div>
       </Section>

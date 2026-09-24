@@ -1,4 +1,5 @@
 mod commands;
+mod lifecycle;
 mod plugins;
 mod resources;
 mod tasks;
@@ -7,7 +8,7 @@ mod window;
 
 use std::sync::Arc;
 
-use tauri::Manager;
+use tauri::{Manager, RunEvent};
 use tf_core::{PluginRegistry, Resources, Store, TaskManager};
 
 /// 保留的任务记录与日志数量
@@ -29,6 +30,7 @@ pub fn run() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(updater::PendingUpdate::default())
         .manage(resources::ActiveDownloads::default())
+        .manage(lifecycle::QuitGuard::default())
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             let store = Arc::new(Store::open(&data_dir.join("toolforge.db"))?);
@@ -53,6 +55,8 @@ pub fn run() {
             commands::app_info,
             commands::app_log,
             commands::app_open_url,
+            lifecycle::app_close_ack,
+            lifecycle::app_quit,
             commands::app_reveal_path,
             commands::prefs_get,
             commands::prefs_set,
@@ -75,6 +79,16 @@ pub fn run() {
             updater::update_install,
             updater::app_restart,
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running ToolForge");
+        .build(tauri::generate_context!())
+        .expect("error while building ToolForge")
+        .run(|app, event| {
+            // ⌘Q、菜单退出等（code 为空）先交给前端确认；app.exit() 带退出码直接放行
+            if let RunEvent::ExitRequested {
+                code: None, api, ..
+            } = event
+                && !lifecycle::request_quit(app)
+            {
+                api.prevent_exit();
+            }
+        });
 }

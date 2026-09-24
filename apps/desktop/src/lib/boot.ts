@@ -11,6 +11,8 @@ export interface Prefs {
   autoUpdate: boolean
   /** 用户选择跳过的版本 */
   skippedVersion: string | null
+  /** 退出前弹出确认（Rust 侧也会读取该值） */
+  confirmQuit: boolean
 }
 
 interface BootData {

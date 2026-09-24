@@ -24,6 +24,9 @@ interface AppState {
   recent: string[]
   route: Route
   paletteOpen: boolean
+  /** 退出确认框（Rust 请求的序号，0 表示未打开） */
+  quitRequest: number
+  setQuitRequest: (seq: number) => void
   load: () => Promise<void>
   navigate: (route: Route) => void
   openTool: (pluginId: string) => void
@@ -39,6 +42,8 @@ export const useApp = create<AppState>((set, get) => ({
   recent: [],
   route: { view: 'home' },
   paletteOpen: false,
+  quitRequest: 0,
+  setQuitRequest: (quitRequest) => set({ quitRequest }),
 
   load: async () => {
     const [info, plugins, favorites, recent] = await Promise.all([

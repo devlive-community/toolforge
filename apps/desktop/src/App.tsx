@@ -1,11 +1,13 @@
 import { useEffect } from 'react'
 import { invoke } from '@tauri-apps/api/core'
+import { listen } from '@tauri-apps/api/event'
 import { useTranslation } from 'react-i18next'
 import { Spinner, Toaster, toast } from '@toolforge/ui'
 import { CommandPalette } from './layout/CommandPalette'
 import { Sidebar } from './layout/Sidebar'
 import { TaskCenter } from './layout/TaskCenter'
 import { TitleBar } from './layout/TitleBar'
+import { QuitDialog } from './layout/QuitDialog'
 import { UpdateDialog } from './layout/UpdateDialog'
 import { useApp } from './stores/app'
 import { usePrefs } from './stores/prefs'
@@ -39,6 +41,17 @@ export function App() {
   const { t } = useTranslation()
   const ready = useApp((s) => s.ready)
   const load = useApp((s) => s.load)
+
+  useEffect(() => {
+    // 退出请求：先应答 Rust（否则超时后直接退出），再弹出确认框
+    const offQuit = listen<number>('app://close-requested', ({ payload }) => {
+      invoke('app_close_ack', { seq: payload }).catch(() => {})
+      useApp.getState().setQuitRequest(payload)
+    })
+    return () => {
+      offQuit.then((off) => off())
+    }
+  }, [])
 
   useEffect(() => {
     useTasks.getState().load().catch(() => {})
@@ -81,6 +94,7 @@ export function App() {
       </div>
       <CommandPalette />
       <UpdateDialog />
+      <QuitDialog />
       <TaskCenter />
       <Toaster />
     </div>

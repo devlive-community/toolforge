@@ -10,6 +10,7 @@ interface PrefsState extends Prefs {
   toggleCategory: (category: string) => void
   setAutoUpdate: (value: boolean) => void
   skipVersion: (version: string | null) => void
+  setConfirmQuit: (value: boolean) => void
 }
 
 const systemDark = matchMedia('(prefers-color-scheme: dark)')
@@ -35,6 +36,7 @@ const snapshot = (state: PrefsState): Prefs => ({
   collapsed: state.collapsed,
   autoUpdate: state.autoUpdate,
   skippedVersion: state.skippedVersion,
+  confirmQuit: state.confirmQuit,
 })
 
 export const usePrefs = create<PrefsState>((set, get) => ({
@@ -43,6 +45,7 @@ export const usePrefs = create<PrefsState>((set, get) => ({
   collapsed: boot.prefs.collapsed ?? {},
   autoUpdate: boot.prefs.autoUpdate ?? true,
   skippedVersion: boot.prefs.skippedVersion ?? null,
+  confirmQuit: boot.prefs.confirmQuit ?? true,
   systemDark: systemDark.matches,
   setTheme: (theme) => {
     applyTheme(theme)
@@ -65,6 +68,12 @@ export const usePrefs = create<PrefsState>((set, get) => ({
   skipVersion: (skippedVersion) => {
     set({ skippedVersion })
     persist(snapshot(get()))
+  },
+  setConfirmQuit: (confirmQuit) => {
+    set({ confirmQuit })
+    // 退出确认由 Rust 读取，需立即写入，避免刚修改就退出时仍按旧值处理
+    clearTimeout(saveTimer)
+    invoke('prefs_set', { prefs: snapshot(get()) }).catch(() => {})
   },
 }))
 

@@ -71,7 +71,10 @@
       "about": "About",
       "version": "Version",
       "storage": "Local storage",
-      "storageHint": "Preferences, favorites and usage are stored in a local SQLite database."
+      "storageHint": "Preferences, favorites and usage are stored in a local SQLite database.",
+      "general": "General",
+      "confirmQuit": "Confirm before quitting",
+      "confirmQuitHint": "Ask before closing the window or quitting the app"
     },
     "tool": {
       "favorite": "Favorite",
@@ -127,6 +130,15 @@
         "cancelled": "Cancelled",
         "interrupted": "Interrupted"
       }
+    },
+    "quit": {
+      "title": "Quit ToolForge?",
+      "description": "Are you sure you want to quit? You can also minimize the window and keep it running.",
+      "confirm": "Quit",
+      "minimize": "Minimize",
+      "dontAsk": "Don't ask again",
+      "running_one": "{{count}} task is still running and will be stopped.",
+      "running_other": "{{count}} tasks are still running and will be stopped."
     }
   },
   "common": {

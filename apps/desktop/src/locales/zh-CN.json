@@ -71,7 +71,10 @@
       "about": "关于",
       "version": "版本",
       "storage": "本地存储",
-      "storageHint": "偏好设置、收藏与使用记录均保存在本机 SQLite 数据库中。"
+      "storageHint": "偏好设置、收藏与使用记录均保存在本机 SQLite 数据库中。",
+      "general": "通用",
+      "confirmQuit": "退出前确认",
+      "confirmQuitHint": "关闭窗口或退出应用时先弹出确认"
     },
     "tool": {
       "favorite": "加入收藏",
@@ -127,6 +130,15 @@
         "cancelled": "已取消",
         "interrupted": "已中断"
       }
+    },
+    "quit": {
+      "title": "退出 ToolForge？",
+      "description": "确定要退出吗？也可以最小化窗口，让应用继续运行。",
+      "confirm": "退出",
+      "minimize": "最小化",
+      "dontAsk": "不再询问",
+      "running_one": "还有 {{count}} 个任务正在运行，退出后将被中断。",
+      "running_other": "还有 {{count}} 个任务正在运行，退出后将被中断。"
     }
   },
   "common": {

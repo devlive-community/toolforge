@@ -51,6 +51,16 @@ pub fn create_main(app: &AppHandle, prefs: &Value) -> tauri::Result<()> {
 
     let window = builder.build()?;
 
+    // 关闭窗口前先确认（自绘关闭按钮、⌘W 都会走到这里）
+    let app_handle = app.clone();
+    window.on_window_event(move |event| {
+        if let tauri::WindowEvent::CloseRequested { api, .. } = event
+            && !crate::lifecycle::request_quit(&app_handle)
+        {
+            api.prevent_close();
+        }
+    });
+
     #[cfg(target_os = "macos")]
     {
         macos::hide_window_buttons(&window);
