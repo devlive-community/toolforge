@@ -1,6 +1,6 @@
 import { Button, SegmentedControl, Select, Switch } from '@toolforge/ui'
 import { useErrorMessage } from '@toolforge/plugin-ui-sdk'
-import { RefreshCw } from 'lucide-react'
+import { ChevronRight, RefreshCw } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SUPPORTED_LOCALES, resolveLocale, type Locale } from '../i18n'
@@ -33,6 +33,7 @@ export function Settings() {
   const info = useApp((s) => s.info)
   const confirmQuit = usePrefs((s) => s.confirmQuit)
   const setConfirmQuit = usePrefs((s) => s.setConfirmQuit)
+  const navigate = useApp((s) => s.navigate)
   const autoUpdate = usePrefs((s) => s.autoUpdate)
   const setAutoUpdate = usePrefs((s) => s.setAutoUpdate)
   const update = useUpdate()
@@ -115,6 +116,12 @@ export function Settings() {
             <span className="text-[13px] text-fg-muted" data-selectable>
               {info?.version} · {info?.os} / {info?.arch}
             </span>
+          </Row>
+          <Row label={t('about.title')} hint={t('about.hint')}>
+            <Button variant="outline" onClick={() => navigate({ view: 'about' })}>
+              {t('about.open')}
+              <ChevronRight />
+            </Button>
           </Row>
           <Row label={t('settings.storage')} hint={t('settings.storageHint')}>
             <span className="text-[13px] text-fg-muted">SQLite</span>

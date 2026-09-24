@@ -139,6 +139,34 @@
       "dontAsk": "不再询问",
       "running_one": "还有 {{count}} 个任务正在运行，退出后将被中断。",
       "running_other": "还有 {{count}} 个任务正在运行，退出后将被中断。"
+    },
+    "about": {
+      "title": "关于 ToolForge",
+      "hint": "版本信息、相关链接与致谢",
+      "open": "查看",
+      "tagline": "快速、安全、轻量的开发者与效率工具箱。每个工具都是独立插件，所有数据都在本地由 Rust 处理。",
+      "tools_one": "{{count}} 个工具",
+      "tools_other": "{{count}} 个工具",
+      "info": "系统信息",
+      "version": "版本",
+      "platform": "平台",
+      "runtime": "运行时",
+      "dataDir": "数据目录",
+      "reveal": "打开",
+      "copyInfo": "复制系统信息",
+      "linksTitle": "链接",
+      "credits": "技术与致谢",
+      "copyright": "© {{year}} devlive-community · 基于 MIT 许可证发布",
+      "links": {
+        "repository": "源代码",
+        "repositoryHint": "在 GitHub 上关注、Fork 或参与贡献",
+        "releases": "更新日志",
+        "releasesHint": "各版本的发布说明",
+        "issues": "反馈问题",
+        "issuesHint": "提交 Bug 或功能建议",
+        "license": "MIT 许可证",
+        "licenseHint": "可自由使用、修改与分发"
+      }
     }
   },
   "common": {

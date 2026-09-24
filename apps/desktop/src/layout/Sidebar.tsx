@@ -115,10 +115,20 @@ export function Sidebar() {
         />
       </nav>
 
-      <footer className="flex h-14 shrink-0 items-center gap-2.5 border-t border-border px-5">
-        <Logo className="size-6" />
-        <span className="text-[13px] text-fg">ToolForge</span>
-        <span className="ml-auto text-xs text-fg-subtle">v{info?.version}</span>
+      <footer className="flex h-14 shrink-0 items-center border-t border-border px-3">
+        <button
+          type="button"
+          onClick={() => navigate({ view: 'about' })}
+          aria-current={is('about') ? 'page' : undefined}
+          className={cn(
+            'flex h-10 w-full items-center gap-2.5 rounded-control px-2 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring',
+            is('about') ? 'bg-hover' : 'hover:bg-hover',
+          )}
+        >
+          <Logo className="size-6" />
+          <span className="text-[13px] text-fg">ToolForge</span>
+          <span className="ml-auto text-xs text-fg-subtle">v{info?.version}</span>
+        </button>
       </footer>
     </aside>
   )

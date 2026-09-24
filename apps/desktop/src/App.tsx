@@ -13,6 +13,7 @@ import { useApp } from './stores/app'
 import { usePrefs } from './stores/prefs'
 import { subscribeTasks, useTasks } from './stores/tasks'
 import { useUpdate } from './stores/update'
+import { About } from './views/About'
 import { Collection } from './views/Collection'
 import { History } from './views/History'
 import { Home } from './views/Home'
@@ -32,13 +33,15 @@ function Content() {
       return <History />
     case 'settings':
       return <Settings />
+    case 'about':
+      return <About />
     default:
       return <Home />
   }
 }
 
 export function App() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const ready = useApp((s) => s.ready)
   const load = useApp((s) => s.load)
 
@@ -48,10 +51,19 @@ export function App() {
       invoke('app_close_ack', { seq: payload }).catch(() => {})
       useApp.getState().setQuitRequest(payload)
     })
+    // macOS 菜单中的「关于」「设置」
+    const offNavigate = listen<'about' | 'settings'>('app://navigate', ({ payload }) => {
+      useApp.getState().navigate({ view: payload })
+    })
     return () => {
       offQuit.then((off) => off())
+      offNavigate.then((off) => off())
     }
   }, [])
+
+  useEffect(() => {
+    invoke('app_menu_locale', { locale: i18n.language }).catch(() => {})
+  }, [i18n.language])
 
   useEffect(() => {
     useTasks.getState().load().catch(() => {})

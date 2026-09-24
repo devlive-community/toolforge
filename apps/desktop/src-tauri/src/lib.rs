@@ -1,5 +1,6 @@
 mod commands;
 mod lifecycle;
+mod menu;
 mod plugins;
 mod resources;
 mod tasks;
@@ -31,6 +32,7 @@ pub fn run() {
         .manage(updater::PendingUpdate::default())
         .manage(resources::ActiveDownloads::default())
         .manage(lifecycle::QuitGuard::default())
+        .on_menu_event(menu::on_event)
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             let store = Arc::new(Store::open(&data_dir.join("toolforge.db"))?);
@@ -43,6 +45,11 @@ pub fn run() {
             )?
             .with_resources(resources.clone());
             window::create_main(app.handle(), &prefs)?;
+            #[cfg(target_os = "macos")]
+            {
+                let locale = prefs.get("locale").and_then(|v| v.as_str()).unwrap_or("en");
+                app.set_menu(menu::build(app.handle(), locale)?)?;
+            }
             app.manage(AppState {
                 store,
                 plugins: Arc::new(plugins::builtin()),
@@ -57,6 +64,7 @@ pub fn run() {
             commands::app_open_url,
             lifecycle::app_close_ack,
             lifecycle::app_quit,
+            menu::app_menu_locale,
             commands::app_reveal_path,
             commands::prefs_get,
             commands::prefs_set,

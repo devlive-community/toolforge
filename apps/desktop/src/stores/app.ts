@@ -9,11 +9,15 @@ export type Route =
   | { view: 'recent' }
   | { view: 'history' }
   | { view: 'settings' }
+  | { view: 'about' }
 
-interface AppInfo {
+export interface AppInfo {
   version: string
   os: string
   arch: string
+  tauriVersion: string
+  webviewVersion: string | null
+  dataDir: string | null
 }
 
 interface AppState {

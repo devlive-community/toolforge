@@ -139,6 +139,34 @@
       "dontAsk": "Don't ask again",
       "running_one": "{{count}} task is still running and will be stopped.",
       "running_other": "{{count}} tasks are still running and will be stopped."
+    },
+    "about": {
+      "title": "About ToolForge",
+      "hint": "Version details, links and acknowledgements",
+      "open": "Open",
+      "tagline": "A fast, secure and lightweight toolbox for developers and power users. Every tool is a plugin, and all data is processed locally in Rust.",
+      "tools_one": "{{count}} tool",
+      "tools_other": "{{count}} tools",
+      "info": "System information",
+      "version": "Version",
+      "platform": "Platform",
+      "runtime": "Runtime",
+      "dataDir": "Data folder",
+      "reveal": "Show",
+      "copyInfo": "Copy system info",
+      "linksTitle": "Links",
+      "credits": "Built with",
+      "copyright": "© {{year}} devlive-community · Released under the MIT License",
+      "links": {
+        "repository": "Source code",
+        "repositoryHint": "Star, fork or contribute on GitHub",
+        "releases": "Release notes",
+        "releasesHint": "Every version and its changes",
+        "issues": "Report an issue",
+        "issuesHint": "Bugs and feature requests",
+        "license": "MIT License",
+        "licenseHint": "Free to use, modify and distribute"
+      }
     }
   },
   "common": {

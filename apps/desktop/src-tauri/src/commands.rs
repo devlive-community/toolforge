@@ -15,14 +15,25 @@ pub struct AppInfo {
     version: String,
     os: &'static str,
     arch: &'static str,
+    tauri_version: &'static str,
+    webview_version: Option<String>,
+    data_dir: Option<String>,
 }
 
 #[tauri::command]
 pub fn app_info(app: tauri::AppHandle) -> AppInfo {
+    use tauri::Manager;
     AppInfo {
         version: app.package_info().version.to_string(),
         os: std::env::consts::OS,
         arch: std::env::consts::ARCH,
+        tauri_version: tauri::VERSION,
+        webview_version: tauri::webview_version().ok(),
+        data_dir: app
+            .path()
+            .app_data_dir()
+            .ok()
+            .map(|p| p.to_string_lossy().into_owned()),
     }
 }
 
