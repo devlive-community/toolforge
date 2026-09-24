@@ -23,6 +23,7 @@ tf-plugin-api = { path = "crates/tf-plugin-api" }
 tfp-encoder = { path = "plugins/encoder/backend" }
 tfp-hash = { path = "plugins/hash/backend" }
 tfp-json-formatter = { path = "plugins/json-formatter/backend" }
+tfp-jwt = { path = "plugins/jwt/backend" }
 tfp-regex = { path = "plugins/regex/backend" }
 tfp-sql-formatter = { path = "plugins/sql-formatter/backend" }
 tfp-timestamp = { path = "plugins/timestamp/backend" }

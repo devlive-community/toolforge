@@ -1,0 +1,21 @@
+[package]
+name = "tfp-jwt"
+description = "ToolForge plugin: JWT decoder, verifier and signer"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+data-encoding = "2"
+jiff = "0.2"
+jsonwebtoken = { version = "11", default-features = false, features = ["rust_crypto", "use_pem"] }
+
+[dev-dependencies]
+ed25519-dalek = { version = "2", features = ["pkcs8", "pem", "rand_core"] }
+p256 = { version = "0.13", features = ["pem", "pkcs8"] }
+rand = "0.8"
+rsa = { version = "0.9", features = ["pem"] }

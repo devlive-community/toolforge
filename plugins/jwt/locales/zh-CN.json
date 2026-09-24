@@ -1,0 +1,72 @@
+{
+  "name": "JWT 解析",
+  "description": "解析 JWT 的 Header 与 Payload、查看过期时间、校验签名，并可签发新的令牌",
+  "help": [
+    "解析无需密钥；令牌中的三段分别以不同底色标出，支持带 Bearer 前缀的写法。",
+    "填写密钥（HS 系列）或 PEM 公钥（RS / PS / ES / EdDSA）即可实时校验签名；过期状态与签名结果分开显示。",
+    "签发支持 HS、RS、PS、ES 与 EdDSA，可附加 kid 等头部字段。",
+    "出于安全考虑，alg 为 none 的令牌不会被视为可校验；令牌与密钥只在本地处理，不会写入历史。"
+  ],
+  "tabs": {
+    "decode": "解析与校验",
+    "sign": "签发"
+  },
+  "decode": {
+    "token": "令牌",
+    "placeholder": "粘贴 JWT，支持 Bearer 前缀…",
+    "segmentHeader": "Header",
+    "segmentPayload": "Payload",
+    "segmentSignature": "Signature",
+    "empty": "粘贴 JWT 开始解析",
+    "emptyHint": "示例令牌来自 jwt.io，密钥为 your-256-bit-secret",
+    "header": "Header",
+    "payload": "Payload"
+  },
+  "status": {
+    "expired": "已过期",
+    "active": "有效期内",
+    "noExpiry": "未设置过期时间",
+    "notYetValid": "尚未生效"
+  },
+  "claims": {
+    "exp": "过期时间",
+    "nbf": "生效时间",
+    "iat": "签发时间"
+  },
+  "verify": {
+    "title": "签名校验",
+    "valid": "签名有效",
+    "invalid": "签名无效",
+    "encoding": "密钥格式",
+    "text": "文本",
+    "hintSecret": "输入签名密钥后自动校验",
+    "hintPublic": "粘贴 PEM 格式的公钥后自动校验",
+    "secretPlaceholder": "签名密钥（secret）",
+    "pemPlaceholder": "-----BEGIN PUBLIC KEY-----"
+  },
+  "sign": {
+    "algorithm": "算法",
+    "header": "附加 Header（可选，如 kid、typ）",
+    "payload": "Payload",
+    "secret": "签名密钥",
+    "privateKey": "私钥（PEM）",
+    "privatePlaceholder": "-----BEGIN PRIVATE KEY-----",
+    "result": "生成的令牌",
+    "open": "在解析中打开"
+  },
+  "errors": {
+    "jwt.empty": "请输入令牌",
+    "jwt.malformed": "令牌格式不正确，应为三段以 . 分隔的内容",
+    "jwt.invalid_base64": "{{part}} 不是合法的 Base64URL",
+    "jwt.invalid_json": "{{part}} 不是合法的 JSON",
+    "jwt.none_alg": "alg 为 none 的令牌没有签名，无法校验或签发",
+    "jwt.unsupported_alg": "不支持的算法：{{alg}}",
+    "jwt.key_required": "请提供密钥",
+    "jwt.invalid_key": "密钥格式不正确",
+    "jwt.bad_signature": "签名与密钥不匹配",
+    "jwt.algorithm_mismatch": "密钥类型与算法不匹配",
+    "jwt.verify_failed": "校验失败",
+    "jwt.payload_not_object": "Payload 必须是 JSON 对象",
+    "jwt.sign_failed": "签发失败"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "name": "JWT Decoder",
+  "description": "Decode JWT headers and payloads, check expiry, verify signatures and sign new tokens",
+  "help": [
+    "Decoding needs no key; the three token parts are highlighted in different colors and a Bearer prefix is accepted.",
+    "Enter the secret (HS) or a PEM public key (RS / PS / ES / EdDSA) to verify the signature live; expiry is reported separately from the signature.",
+    "Signing supports HS, RS, PS, ES and EdDSA and can add header fields such as kid.",
+    "Tokens with alg none are never treated as verifiable; tokens and keys stay local and are never written to history."
+  ],
+  "tabs": {
+    "decode": "Decode & verify",
+    "sign": "Sign"
+  },
+  "decode": {
+    "token": "Token",
+    "placeholder": "Paste a JWT, Bearer prefix allowed…",
+    "segmentHeader": "Header",
+    "segmentPayload": "Payload",
+    "segmentSignature": "Signature",
+    "empty": "Paste a JWT to decode it",
+    "emptyHint": "The sample token comes from jwt.io; its secret is your-256-bit-secret",
+    "header": "Header",
+    "payload": "Payload"
+  },
+  "status": {
+    "expired": "Expired",
+    "active": "Not expired",
+    "noExpiry": "No expiry",
+    "notYetValid": "Not yet valid"
+  },
+  "claims": {
+    "exp": "Expires",
+    "nbf": "Not before",
+    "iat": "Issued"
+  },
+  "verify": {
+    "title": "Signature",
+    "valid": "Signature valid",
+    "invalid": "Signature invalid",
+    "encoding": "Secret format",
+    "text": "Text",
+    "hintSecret": "Enter the signing secret to verify automatically",
+    "hintPublic": "Paste a PEM public key to verify automatically",
+    "secretPlaceholder": "Signing secret",
+    "pemPlaceholder": "-----BEGIN PUBLIC KEY-----"
+  },
+  "sign": {
+    "algorithm": "Algorithm",
+    "header": "Extra header (optional, e.g. kid, typ)",
+    "payload": "Payload",
+    "secret": "Signing secret",
+    "privateKey": "Private key (PEM)",
+    "privatePlaceholder": "-----BEGIN PRIVATE KEY-----",
+    "result": "Signed token",
+    "open": "Open in decoder"
+  },
+  "errors": {
+    "jwt.empty": "Enter a token",
+    "jwt.malformed": "Malformed token; expected three parts separated by dots",
+    "jwt.invalid_base64": "{{part}} is not valid Base64URL",
+    "jwt.invalid_json": "{{part}} is not valid JSON",
+    "jwt.none_alg": "Tokens with alg none are unsigned and cannot be verified or signed",
+    "jwt.unsupported_alg": "Unsupported algorithm: {{alg}}",
+    "jwt.key_required": "A key is required",
+    "jwt.invalid_key": "The key is not in a valid format",
+    "jwt.bad_signature": "The signature does not match the key",
+    "jwt.algorithm_mismatch": "The key type does not match the algorithm",
+    "jwt.verify_failed": "Verification failed",
+    "jwt.payload_not_object": "The payload must be a JSON object",
+    "jwt.sign_failed": "Signing failed"
+  }
+}
