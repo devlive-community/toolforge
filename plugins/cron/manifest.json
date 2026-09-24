@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.cron",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["cron", "crontab", "schedule", "quartz", "job", "timer", "定时任务", "表达式", "计划任务"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "evaluate": {},
+    "timezones": {}
+  },
+  "sensitive": false
+}

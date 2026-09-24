@@ -1,0 +1,136 @@
+{
+  "name": "Cron 表达式",
+  "description": "校验并解释 Cron 表达式，预览任意时区下的后续执行时间",
+  "help": [
+    "支持 5 段（分 时 日 月 周）、带秒的 6 段以及带年份的 7 段，也支持 @daily 等别名。",
+    "特殊字符：L（最后）、W（最近的工作日）、#（第几个星期几）以及月份、星期的英文缩写。",
+    "默认只要「日」或「星期」任一满足就执行（POSIX 规则）；开启「日与星期同时满足」则需两者都满足。",
+    "执行时间在 Rust 中按所选 IANA 时区计算。"
+  ],
+  "functions": {
+    "evaluate": "解析",
+    "timezones": "时区列表"
+  },
+  "input": {
+    "label": "Cron 表达式",
+    "placeholder": "例如 */5 * * * * 或 0 9 * * MON-FRI",
+    "timezone": "时区",
+    "systemZone": "系统时区",
+    "domAndDow": "日与星期同时满足",
+    "presets": "常用"
+  },
+  "fields": {
+    "second": "秒",
+    "minute": "分",
+    "hour": "时",
+    "dayOfMonth": "日",
+    "month": "月",
+    "dayOfWeek": "星期",
+    "year": "年"
+  },
+  "units": {
+    "second": "秒",
+    "minute": "分钟",
+    "hour": "小时",
+    "dayOfMonth": "天",
+    "month": "个月",
+    "dayOfWeek": "天",
+    "year": "年"
+  },
+  "parts": {
+    "separator": "，",
+    "any": "每{{unit}}",
+    "value": "{{value}}",
+    "range": "{{from}} 至 {{to}}",
+    "step": "每 {{step}} {{unit}}",
+    "stepFrom": "从 {{from}} 起每 {{step}} {{unit}}",
+    "stepRange": "{{from}} 至 {{to}} 每 {{step}} {{unit}}",
+    "lastDay": "每月最后一天",
+    "lastWeekday": "每月最后一个工作日",
+    "nearestWeekday": "离 {{day}} 日最近的工作日",
+    "lastOfMonth": "每月最后一个{{weekday}}",
+    "nth": "每月第 {{nth}} 个{{weekday}}"
+  },
+  "months": {
+    "1": "一月",
+    "2": "二月",
+    "3": "三月",
+    "4": "四月",
+    "5": "五月",
+    "6": "六月",
+    "7": "七月",
+    "8": "八月",
+    "9": "九月",
+    "10": "十月",
+    "11": "十一月",
+    "12": "十二月"
+  },
+  "weekdays": {
+    "0": "周日",
+    "1": "周一",
+    "2": "周二",
+    "3": "周三",
+    "4": "周四",
+    "5": "周五",
+    "6": "周六"
+  },
+  "runs": {
+    "title": "后续执行时间",
+    "copyAll": "全部复制",
+    "empty": "请输入 Cron 表达式",
+    "previous": "上一次执行",
+    "none": "没有找到更早的执行时间"
+  },
+  "span": {
+    "in": "{{span}}后",
+    "ago": "{{span}}前",
+    "dh": "{{d}} 天 {{h}} 小时",
+    "hm": "{{h}} 小时 {{m}} 分钟",
+    "ms": "{{m}} 分 {{s}} 秒",
+    "s": "{{s}} 秒"
+  },
+  "syntax": {
+    "title": "语法",
+    "star": {
+      "token": "*",
+      "text": "任意值"
+    },
+    "list": {
+      "token": "1,15",
+      "text": "多个值"
+    },
+    "range": {
+      "token": "1-5",
+      "text": "范围"
+    },
+    "step": {
+      "token": "*/10",
+      "text": "每 10 个单位（也可写 5/10、0-30/10）"
+    },
+    "last": {
+      "token": "L",
+      "text": "每月最后一天；5L 为最后一个周五"
+    },
+    "weekday": {
+      "token": "15W",
+      "text": "离 15 日最近的工作日；LW 为最后一个工作日"
+    },
+    "nth": {
+      "token": "1#2",
+      "text": "每月第二个周一"
+    },
+    "alias": {
+      "token": "@daily",
+      "text": "还支持 @yearly、@monthly、@weekly、@hourly"
+    },
+    "withSeconds": "第一段为秒。",
+    "fiveFields": "标准五段式表达式（精确到分钟）。"
+  },
+  "errors": {
+    "cron.empty": "请输入 Cron 表达式",
+    "cron.invalid": "表达式无效：{{detail}}",
+    "cron.field_count": "应为 5、6 或 7 段，实际为 {{count}} 段",
+    "cron.never": "该表达式永远不会执行（例如 2 月 30 日）",
+    "cron.unknown_timezone": "未知时区 {{timezone}}"
+  }
+}

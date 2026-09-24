@@ -1,0 +1,136 @@
+{
+  "name": "Cron Expression",
+  "description": "Validate and explain cron expressions and preview the next run times in any time zone",
+  "help": [
+    "Supports 5 fields (minute hour day month weekday), 6 fields with seconds, and 7 with a year; aliases such as @daily work too.",
+    "Special characters: L (last), W (nearest weekday), # (nth weekday) and month/weekday names.",
+    "By default a job runs when either the day of month or the weekday matches (POSIX); switch on “Match day and weekday” to require both.",
+    "Run times are computed in Rust for the chosen IANA time zone."
+  ],
+  "functions": {
+    "evaluate": "Evaluate",
+    "timezones": "List time zones"
+  },
+  "input": {
+    "label": "Cron expression",
+    "placeholder": "e.g. */5 * * * * or 0 9 * * MON-FRI",
+    "timezone": "Time zone",
+    "systemZone": "System time zone",
+    "domAndDow": "Match day and weekday",
+    "presets": "Presets"
+  },
+  "fields": {
+    "second": "Second",
+    "minute": "Minute",
+    "hour": "Hour",
+    "dayOfMonth": "Day",
+    "month": "Month",
+    "dayOfWeek": "Weekday",
+    "year": "Year"
+  },
+  "units": {
+    "second": "second",
+    "minute": "minute",
+    "hour": "hour",
+    "dayOfMonth": "day",
+    "month": "month",
+    "dayOfWeek": "weekday",
+    "year": "year"
+  },
+  "parts": {
+    "separator": ", ",
+    "any": "every {{unit}}",
+    "value": "{{value}}",
+    "range": "{{from}} to {{to}}",
+    "step": "every {{step}} {{unit}}s",
+    "stepFrom": "every {{step}} {{unit}}s from {{from}}",
+    "stepRange": "every {{step}} {{unit}}s from {{from}} to {{to}}",
+    "lastDay": "last day of the month",
+    "lastWeekday": "last weekday of the month",
+    "nearestWeekday": "weekday nearest day {{day}}",
+    "lastOfMonth": "last {{weekday}} of the month",
+    "nth": "{{weekday}} #{{nth}} of the month"
+  },
+  "months": {
+    "1": "January",
+    "2": "February",
+    "3": "March",
+    "4": "April",
+    "5": "May",
+    "6": "June",
+    "7": "July",
+    "8": "August",
+    "9": "September",
+    "10": "October",
+    "11": "November",
+    "12": "December"
+  },
+  "weekdays": {
+    "0": "Sunday",
+    "1": "Monday",
+    "2": "Tuesday",
+    "3": "Wednesday",
+    "4": "Thursday",
+    "5": "Friday",
+    "6": "Saturday"
+  },
+  "runs": {
+    "title": "Next runs",
+    "copyAll": "Copy all",
+    "empty": "Enter a cron expression",
+    "previous": "Previous run",
+    "none": "No earlier run found"
+  },
+  "span": {
+    "in": "in {{span}}",
+    "ago": "{{span}} ago",
+    "dh": "{{d}} d {{h}} h",
+    "hm": "{{h}} h {{m}} min",
+    "ms": "{{m}} min {{s}} s",
+    "s": "{{s}} s"
+  },
+  "syntax": {
+    "title": "Syntax",
+    "star": {
+      "token": "*",
+      "text": "any value"
+    },
+    "list": {
+      "token": "1,15",
+      "text": "list of values"
+    },
+    "range": {
+      "token": "1-5",
+      "text": "range of values"
+    },
+    "step": {
+      "token": "*/10",
+      "text": "every 10 units (also 5/10, 0-30/10)"
+    },
+    "last": {
+      "token": "L",
+      "text": "last day of month; 5L = last Friday"
+    },
+    "weekday": {
+      "token": "15W",
+      "text": "weekday nearest the 15th; LW = last weekday"
+    },
+    "nth": {
+      "token": "1#2",
+      "text": "second Monday of the month"
+    },
+    "alias": {
+      "token": "@daily",
+      "text": "also @yearly, @monthly, @weekly, @hourly"
+    },
+    "withSeconds": "The first field is seconds.",
+    "fiveFields": "Standard five-field expression (minute precision)."
+  },
+  "errors": {
+    "cron.empty": "Enter a cron expression",
+    "cron.invalid": "Invalid expression: {{detail}}",
+    "cron.field_count": "Expected 5, 6 or 7 fields but found {{count}}",
+    "cron.never": "This expression never runs (for example February 30)",
+    "cron.unknown_timezone": "Unknown time zone {{timezone}}"
+  }
+}

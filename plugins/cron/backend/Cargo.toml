@@ -1,0 +1,14 @@
+[package]
+name = "tfp-cron"
+description = "ToolForge plugin: cron expression explainer"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+croner = { version = "4", default-features = false, features = ["jiff"] }
+jiff = "0.2"
