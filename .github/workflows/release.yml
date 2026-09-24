@@ -100,7 +100,7 @@ jobs:
           # projectPath 下没有锁文件，tauri-action 会误用 npm；显式使用 pnpm
           tauriScript: pnpm tauri
           tagName: ${{ github.ref_name }}
-          releaseName: ToolForge ${{ github.ref_name }}
+          releaseName: ${{ github.ref_name }}
           releaseBody: ${{ needs.notes.outputs.body }}
           # 全部平台上传完成后再由 publish 任务正式发布，避免 latest.json 指向不完整的发布
           releaseDraft: true
