@@ -1,7 +1,8 @@
-//! 哈希计算插件后端：文本摘要实时计算，文件摘要以耗时任务运行并输出实时日志。
+//! 哈希计算插件后端：文本摘要与 HMAC 实时计算，文件摘要以耗时任务运行并输出实时日志。
 
 mod algo;
 mod files;
+mod hmac;
 
 use std::time::Instant;
 
@@ -78,6 +79,7 @@ impl ToolPlugin for Hash {
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
         match function {
             "hash_text" => to_value(hash_text(parse_args(args)?)?),
+            "hmac_text" => to_value(hmac::hmac_text(parse_args(args)?)?),
             other => Err(unknown_function(other)),
         }
     }

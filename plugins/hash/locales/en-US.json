@@ -1,19 +1,22 @@
 {
   "name": "Hash",
-  "description": "Compute MD5, SHA, SM3 and CRC32 digests of text and files; large files run as tasks with live logs",
+  "description": "Compute MD5, SHA, SM3 and CRC32 digests and HMACs of text and files; large files run as tasks with live logs",
   "help": [
-    "Text digests update as you type; file hashing runs as a background task you can cancel and review in the task center.",
+    "Text digests and HMACs update as you type; file hashing runs as a background task you can cancel and review in the task center.",
+    "HMAC keys can be entered as text, hex or Base64, and a pasted MAC is checked in constant time.",
     "Each file is read once while every selected algorithm is computed.",
     "Drag files onto the window to add them.",
     "Everything runs in the local Rust engine; file contents never leave your machine."
   ],
   "functions": {
     "hash_files": "Hash files",
-    "hash_text": "Hash text"
+    "hash_text": "Hash text",
+    "hmac_text": "HMAC"
   },
   "tabs": {
     "text": "Text",
-    "files": "Files"
+    "files": "Files",
+    "hmac": "HMAC"
   },
   "allAlgorithms": "All",
   "uppercase": "Uppercase",
@@ -59,6 +62,26 @@
   },
   "errors": {
     "hash.no_files": "Add some files first",
-    "hash.no_algorithms": "Select at least one algorithm"
+    "hash.no_algorithms": "Select at least one algorithm",
+    "hmac.invalid_key": "The key is not valid {{encoding}}"
+  },
+  "hmac": {
+    "key": "Secret key",
+    "keyPlaceholder": "HMAC secret",
+    "keyEncoding": "Key encoding",
+    "encodings": {
+      "text": "Text"
+    },
+    "keyBytes": "{{count}} key bytes",
+    "message": "Message",
+    "result": "HMAC",
+    "output": "Output encoding",
+    "noAlgorithms": "Select at least one algorithm other than CRC32",
+    "verify": "Verify",
+    "verifyPlaceholder": "Paste an expected HMAC (hex or Base64) to check it",
+    "match": "Matches",
+    "mismatch": "Does not match",
+    "verified": "Matches {{algorithm}}",
+    "notVerified": "No selected algorithm produces this value"
   }
 }

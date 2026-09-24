@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Checkbox, Switch, Tabs } from '@toolforge/ui'
 import { usePlugin } from '@toolforge/plugin-ui-sdk'
-import { Files, Type } from 'lucide-react'
+import { Files, KeyRound, Type } from 'lucide-react'
 import { FileHash } from './FileHash'
+import { HmacText } from './HmacText'
 import { TextHash } from './TextHash'
 import { ALGORITHMS, ALGORITHM_LABELS, type Algorithm } from './types'
 
@@ -10,7 +11,7 @@ const DEFAULT_ALGORITHMS: Algorithm[] = ['md5', 'sha1', 'sha256', 'sha512']
 
 export function HashTool() {
   const { t } = usePlugin()
-  const [tab, setTab] = useState<'text' | 'files'>('text')
+  const [tab, setTab] = useState<'text' | 'hmac' | 'files'>('text')
   const [selected, setSelected] = useState<Algorithm[]>(DEFAULT_ALGORITHMS)
   const [uppercase, setUppercase] = useState(false)
 
@@ -27,6 +28,7 @@ export function HashTool() {
           onValueChange={setTab}
           items={[
             { value: 'text', label: t('tabs.text'), icon: <Type /> },
+            { value: 'hmac', label: t('tabs.hmac'), icon: <KeyRound /> },
             { value: 'files', label: t('tabs.files'), icon: <Files /> },
           ]}
           aria-label={t('name')}
@@ -52,7 +54,9 @@ export function HashTool() {
         </div>
       </div>
       <div className="min-h-0 flex-1">
-        {tab === 'text' ? <TextHash algorithms={algorithms} uppercase={uppercase} /> : <FileHash algorithms={algorithms} uppercase={uppercase} />}
+        {tab === 'text' && <TextHash algorithms={algorithms} uppercase={uppercase} />}
+        {tab === 'hmac' && <HmacText algorithms={algorithms} uppercase={uppercase} />}
+        {tab === 'files' && <FileHash algorithms={algorithms} uppercase={uppercase} />}
       </div>
     </div>
   )

@@ -4,12 +4,13 @@
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "dev",
-  "keywords": ["hash", "md5", "sha1", "sha256", "sha512", "sha3", "sm3", "crc32", "checksum", "哈希", "摘要", "校验和"],
+  "keywords": ["hash", "md5", "sha1", "sha256", "sha512", "sha3", "sm3", "crc32", "checksum", "hmac", "mac", "signature", "哈希", "摘要", "校验和"],
   "accent": "orange",
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:write", "fs:user-selected"],
   "functions": {
     "hash_text": {},
+    "hmac_text": {},
     "hash_files": { "task": true }
   },
   "sensitive": false

@@ -35,3 +35,12 @@ export interface FilesReport {
   totalBytes: number
   elapsedMs: number
 }
+
+export type KeyEncoding = 'text' | 'hex' | 'base64'
+export type OutputEncoding = 'hex' | 'base64'
+
+export interface HmacReport {
+  results: { algorithm: Algorithm; mac: string; matches: boolean | null }[]
+  keyBytes: number
+  elapsedMs: number
+}

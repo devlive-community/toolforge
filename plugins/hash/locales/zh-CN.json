@@ -1,19 +1,22 @@
 {
   "name": "哈希计算",
-  "description": "计算文本与文件的 MD5、SHA、SM3、CRC32 等摘要，大文件以任务方式运行并实时显示日志",
+  "description": "计算文本与文件的 MD5、SHA、SM3、CRC32 等摘要与 HMAC，大文件以任务方式运行并实时显示日志",
   "help": [
-    "文本摘要随输入实时计算；文件摘要以后台任务运行，可随时取消，任务中心可查看历史与日志。",
+    "文本摘要与 HMAC 随输入实时计算；文件哈希作为后台任务运行，可随时取消并在任务中心查看。",
+    "HMAC 密钥支持文本、十六进制与 Base64，粘贴的 MAC 以常量时间比较校验。",
     "文件只读取一次即可同时计算所有选中的算法。",
     "可以把文件直接拖入窗口添加。",
     "所有计算都在本地 Rust 引擎完成，文件内容不会离开本机。"
   ],
   "functions": {
     "hash_files": "批量计算文件哈希",
-    "hash_text": "计算文本哈希"
+    "hash_text": "计算文本哈希",
+    "hmac_text": "HMAC"
   },
   "tabs": {
     "text": "文本",
-    "files": "文件"
+    "files": "文件",
+    "hmac": "HMAC"
   },
   "allAlgorithms": "全部",
   "uppercase": "大写",
@@ -59,6 +62,26 @@
   },
   "errors": {
     "hash.no_files": "请先添加文件",
-    "hash.no_algorithms": "请至少选择一种算法"
+    "hash.no_algorithms": "请至少选择一种算法",
+    "hmac.invalid_key": "密钥不是有效的 {{encoding}} 编码"
+  },
+  "hmac": {
+    "key": "密钥",
+    "keyPlaceholder": "HMAC 密钥",
+    "keyEncoding": "密钥编码",
+    "encodings": {
+      "text": "文本"
+    },
+    "keyBytes": "密钥 {{count}} 字节",
+    "message": "消息",
+    "result": "HMAC",
+    "output": "输出编码",
+    "noAlgorithms": "请至少选择一种 CRC32 以外的算法",
+    "verify": "校验",
+    "verifyPlaceholder": "粘贴期望的 HMAC（十六进制或 Base64）进行校验",
+    "match": "一致",
+    "mismatch": "不一致",
+    "verified": "与 {{algorithm}} 一致",
+    "notVerified": "所选算法都不能得到该值"
   }
 }
