@@ -47,8 +47,9 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Text Tools** | 13 naming styles and letter cases; trim, dedupe, sort (natural, by length), shuffle and number lines; character, word, CJK and reading-time statistics |
 | **Text Diff** | Line, word or character diff with side-by-side highlighting, ignore case / whitespace and unified patch export |
 | **Format Converter** | JSON ⇄ YAML ⇄ TOML ⇄ CSV with automatic detection, preserved key order and CSV delimiter / header / type options |
+| **Image Converter** | Batch convert PNG / JPEG / WebP / GIF / BMP / ICO / TIFF, resize by percent or bounding box, JPEG quality; runs as a task with live logs and never overwrites files |
 
-More tools (images, networking, system and calculators) are on the way.
+More tools (more image tools, networking, system and calculators) are on the way.
 
 ## 📦 Download
 
@@ -108,7 +109,8 @@ toolforge/
 │   ├── json-formatter/  xml-formatter/  sql-formatter/
 │   ├── regex/  timestamp/  uuid/
 │   ├── hash/  encoder/  jwt/
-│   └── text-tools/  text-diff/  format-converter/
+│   ├── text-tools/  text-diff/  format-converter/
+│   └── image-converter/
 └── scripts/release.sh     # release script
 ```
 

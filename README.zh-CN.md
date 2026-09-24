@@ -47,8 +47,9 @@
 | **文本处理** | 13 种命名风格与大小写转换；去空白、去重、排序（自然排序、按长度）、打乱与行号；字符、词数、中日韩字数与阅读时长统计 |
 | **文本对比** | 按行 / 按词 / 按字符对比，左右并排高亮，可忽略大小写与空白，导出 unified 补丁 |
 | **格式转换** | JSON ⇄ YAML ⇄ TOML ⇄ CSV，自动识别输入格式、保持键顺序，支持 CSV 分隔符、表头与类型推断 |
+| **图片转换** | PNG / JPEG / WebP / GIF / BMP / ICO / TIFF 批量互转，按比例或限定宽高缩放，JPEG 质量可调；以任务运行并输出实时日志，不覆盖已有文件 |
 
-更多工具（图像、网络、系统、计算等）持续开发中。
+更多工具（更多图像工具、网络、系统、计算等）持续开发中。
 
 ## 📦 下载安装
 
@@ -108,7 +109,8 @@ toolforge/
 │   ├── json-formatter/  xml-formatter/  sql-formatter/
 │   ├── regex/  timestamp/  uuid/
 │   ├── hash/  encoder/  jwt/
-│   └── text-tools/  text-diff/  format-converter/
+│   ├── text-tools/  text-diff/  format-converter/
+│   └── image-converter/
 └── scripts/release.sh     # 发布脚本
 ```
 
