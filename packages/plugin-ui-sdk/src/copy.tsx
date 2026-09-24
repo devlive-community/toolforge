@@ -55,7 +55,7 @@ export function ValueRow({ label, value, labelWidth = 'w-20' }: { label: ReactNo
   return (
     <div className="group flex items-center gap-3 rounded-control px-3 py-2 hover:bg-hover">
       <span className={cn('shrink-0 text-xs font-semibold text-fg-muted', labelWidth)}>{label}</span>
-      <code className="min-w-0 flex-1 font-mono text-[12.5px] break-all text-fg" data-selectable>
+      <code className="min-w-0 flex-1 font-mono text-[12.5px] break-all whitespace-pre-wrap text-fg" data-selectable>
         {value}
       </code>
       <CopyButton text={value} className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100" />
