@@ -96,6 +96,13 @@
       "file_done": "完成 {{file}}，输出 {{chars, number}} 字符"
     }
   },
+  "detect": {
+    "url": "解码 URL 编码",
+    "unicode": "解码 \\u 转义",
+    "html": "解码 HTML 实体",
+    "base64": "解码 Base64 文本",
+    "base64url": "解码 Base64URL 文本"
+  },
   "errors": {
     "encode.result_expired": "结果已失效，请重新编码文件",
     "encode.invalid_input": "输入不是合法的 {{codec}} 编码",

@@ -23,6 +23,9 @@
     "types_other": "{{count}} types",
     "save": "Save"
   },
+  "detect": {
+    "model": "Generate typed models from this JSON"
+  },
   "errors": {
     "code.empty": "Paste a JSON sample",
     "code.too_large": "The JSON is larger than {{limit}}",

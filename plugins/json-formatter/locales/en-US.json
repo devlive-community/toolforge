@@ -101,6 +101,11 @@
     "title": "Invalid JSON",
     "locate": "Go to error"
   },
+  "detect": {
+    "object": "Valid JSON object",
+    "array": "Valid JSON array",
+    "invalid": "Looks like JSON but has syntax errors"
+  },
   "errors": {
     "json.empty": "Input is empty",
     "json.syntax": "Syntax error near line {{line}}, column {{column}}",

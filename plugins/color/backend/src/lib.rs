@@ -1,6 +1,7 @@
 //! 颜色转换插件后端：解析任意 CSS 颜色写法，输出各种格式、WCAG 对比度与配色方案。
 
 mod color;
+mod detect;
 
 use serde_json::Value;
 use tf_plugin_api::{Manifest, PluginResult, ToolPlugin, parse_args, to_value, unknown_function};
@@ -22,6 +23,10 @@ impl Default for ColorTool {
 impl ToolPlugin for ColorTool {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

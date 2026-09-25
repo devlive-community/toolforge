@@ -1,6 +1,7 @@
 //! 进制转换插件后端：任意精度整数在 2-36 进制间转换，并给出各位宽补码与位视图。
 
 mod convert;
+mod detect;
 
 use serde_json::Value;
 use tf_plugin_api::{Manifest, PluginResult, ToolPlugin, parse_args, to_value, unknown_function};
@@ -22,6 +23,10 @@ impl Default for BaseConverter {
 impl ToolPlugin for BaseConverter {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

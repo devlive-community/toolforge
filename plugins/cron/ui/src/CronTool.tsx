@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Badge, Empty, Input, Panel, Select, Spinner, Switch, cn } from '@toolforge/ui'
-import { CopyButton, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
+import { CopyButton, useDebouncedCall, useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { CalendarClock, History, ListChecks, Timer } from 'lucide-react'
 import type { Field, FieldInfo, Part, Report, Run } from './types'
 
@@ -93,6 +93,7 @@ export function CronTool() {
   const [expression, setExpression] = useState('30 9 * * MON-FRI')
   const [timezone, setTimezone] = useState('')
   const [domAndDow, setDomAndDow] = useState(false)
+  useLaunchInput((text) => setExpression(text))
 
   const zones = useDebouncedCall<string[]>('timezones', {}, [])
   const trimmed = expression.trim()

@@ -65,6 +65,9 @@
       "body": "Received {{bytes, number}} bytes in {{ms}} ms"
     }
   },
+  "detect": {
+    "url": "Send a request to {{host}}"
+  },
   "errors": {
     "http.empty_url": "Enter a URL",
     "http.invalid_url": "Invalid URL: {{detail}}",

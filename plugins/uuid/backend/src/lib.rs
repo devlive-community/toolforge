@@ -1,5 +1,6 @@
 //! UUID 插件后端：生成 UUID（v1/v3/v4/v5/v7）、ULID、NanoID，并解析已有标识。
 
+mod detect;
 mod generate;
 mod inspect;
 
@@ -23,6 +24,10 @@ impl Default for UuidTool {
 impl ToolPlugin for UuidTool {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

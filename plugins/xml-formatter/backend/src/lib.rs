@@ -1,5 +1,6 @@
 //! XML 格式化插件后端：基于 quick-xml 的格式化、压缩与良构性校验。
 
+mod detect;
 mod xml;
 
 use serde_json::Value;
@@ -22,6 +23,10 @@ impl Default for XmlFormatter {
 impl ToolPlugin for XmlFormatter {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

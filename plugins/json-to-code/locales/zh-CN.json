@@ -23,6 +23,9 @@
     "types_other": "{{count}} 个类型",
     "save": "保存"
   },
+  "detect": {
+    "model": "根据这段 JSON 生成类型定义"
+  },
   "errors": {
     "code.empty": "请粘贴 JSON 样例",
     "code.too_large": "JSON 超过 {{limit}}",

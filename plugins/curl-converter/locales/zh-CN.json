@@ -50,6 +50,9 @@
     "curl.urlencode_file": "--data-urlencode {{value}} 需要读取文件，未转换",
     "curl.invalid_form": "无效的 -F 参数：{{value}}"
   },
+  "detect": {
+    "command": "把这条 curl 命令转换为代码"
+  },
   "errors": {
     "curl.empty": "请输入 curl 命令",
     "curl.no_url": "命令中没有请求地址",

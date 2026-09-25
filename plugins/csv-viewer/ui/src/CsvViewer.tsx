@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useEffectEvent, useState } from 'react'
 import { Badge, Button, DropdownMenu, Input, Progress, Select, Switch, cn, toast } from '@toolforge/ui'
-import { formatBytes, host, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
+import { formatBytes, host, useLaunchInput, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
 import { ClipboardPaste, Download, FolderOpen, Search, Square, Table2, Upload, X } from 'lucide-react'
 import { ColumnPanel } from './ColumnPanel'
 import { DataGrid } from './DataGrid'
@@ -85,6 +85,10 @@ export function CsvViewer() {
     if (exportTask.status === 'succeeded' && exportTask.result) toast.success(t('export.done', { count: exportTask.result.rows }))
     if (exportTask.status === 'failed' && exportTask.error && exportTask.error.code !== 'task.cancelled') toast.error(errorMessage(exportTask.error))
   }, [exportTask.status, exportTask.result, exportTask.error, errorMessage, t])
+
+  useLaunchInput((text) => {
+    load({ kind: 'text', text }, AUTO)
+  })
 
   const onDrop = useEffectEvent((paths: string[]) => {
     const path = paths.find(isTable)

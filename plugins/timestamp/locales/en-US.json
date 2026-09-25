@@ -60,6 +60,10 @@
     "empty": "Enter a date to see its timestamp",
     "formats": "Supported formats (click to use)"
   },
+  "detect": {
+    "timestamp": "Unix timestamp ({{unit}}) · {{utc}}",
+    "date": "Convert this date to a timestamp"
+  },
   "errors": {
     "time.empty": "Enter a value",
     "time.not_a_number": "A timestamp may only contain digits",

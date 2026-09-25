@@ -66,6 +66,10 @@
     "unixMs": "Unix ms",
     "hex": "Hex"
   },
+  "detect": {
+    "uuid": "UUID version {{version}}",
+    "ulid": "ULID"
+  },
   "errors": {
     "uuid.invalid_count": "Count must be between 1 and {{max}}",
     "uuid.invalid_namespace": "The custom namespace is not a valid UUID",

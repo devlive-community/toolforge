@@ -47,6 +47,9 @@
     "unsigned": "Unsigned",
     "signed": "Signed"
   },
+  "detect": {
+    "number": "Base-{{base}} number"
+  },
   "errors": {
     "base.empty": "Enter a number",
     "base.invalid_digit": "“{{char}}” at position {{position}} is not a valid base-{{base}} digit",

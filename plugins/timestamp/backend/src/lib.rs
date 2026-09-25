@@ -1,6 +1,7 @@
 //! 时间戳转换插件后端：时间戳与日期互转、多时区展示，基于 jiff（自带时区数据库）。
 
 mod convert;
+mod detect;
 mod parse;
 mod zone;
 
@@ -24,6 +25,10 @@ impl Default for Timestamp {
 impl ToolPlugin for Timestamp {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

@@ -2,6 +2,7 @@
 
 mod convert;
 mod csvfmt;
+mod detect;
 mod tomlfmt;
 
 use serde_json::Value;
@@ -24,6 +25,10 @@ impl Default for FormatConverter {
 impl ToolPlugin for FormatConverter {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

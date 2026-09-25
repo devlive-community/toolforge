@@ -74,6 +74,10 @@
     "summary": "{{count}} blocks · {{total}} addresses",
     "copyAll": "Copy all"
   },
+  "detect": {
+    "ip": "IP address {{input}}",
+    "cidr": "Subnet {{input}}"
+  },
   "errors": {
     "ip.empty": "Enter an IP address",
     "ip.invalid": "“{{input}}” is not a valid IP address",

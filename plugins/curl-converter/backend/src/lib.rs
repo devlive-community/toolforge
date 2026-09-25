@@ -1,5 +1,6 @@
 //! cURL 转代码插件后端：解析 curl 命令（bash / cmd 写法），生成多种语言的请求代码。
 
+mod detect;
 mod emit;
 mod parse;
 mod tokenize;
@@ -72,6 +73,10 @@ impl Default for CurlConverter {
 impl ToolPlugin for CurlConverter {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

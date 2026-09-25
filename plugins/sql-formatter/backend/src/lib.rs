@@ -1,5 +1,6 @@
 //! SQL 格式化插件后端：基于 sqlformat 的格式化，以及保留字符串内容的压缩。
 
+mod detect;
 mod format;
 mod scan;
 
@@ -23,6 +24,10 @@ impl Default for SqlFormatter {
 impl ToolPlugin for SqlFormatter {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

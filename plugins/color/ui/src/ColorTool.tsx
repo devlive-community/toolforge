@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Badge, Empty, Input, Panel, Spinner, Tooltip, cn } from '@toolforge/ui'
-import { ValueRow, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
+import { ValueRow, useDebouncedCall, useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { Blend, Contrast as ContrastIcon, Palette, Pipette } from 'lucide-react'
 import type { Contrast, Converted } from './types'
 
@@ -10,6 +10,7 @@ export function ColorTool() {
   const { t, errorMessage } = usePlugin()
   const [input, setInput] = useState('#16a34a') // tf-allow: 默认输入值
   const [compare, setCompare] = useState('#ffffff') // tf-allow: 默认对比色
+  useLaunchInput((text) => setInput(text))
 
   const trimmed = input.trim()
   const args = trimmed ? { input: trimmed, compare } : null

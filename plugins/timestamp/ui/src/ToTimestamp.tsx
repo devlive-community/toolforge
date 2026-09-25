@@ -6,9 +6,9 @@ import type { Parsed } from './types'
 
 const EXAMPLES = ['2024-02-29 12:00:00', '2024/2/29', '2023-11-14T22:13:20Z', '2023-11-15T06:13:20+08:00', 'Tue, 14 Nov 2023 22:13:20 +0000']
 
-export function ToTimestamp({ zones, local }: { zones: string[]; local: string }) {
+export function ToTimestamp({ zones, local, initial }: { zones: string[]; local: string; initial?: string }) {
   const { t, errorMessage } = usePlugin()
-  const [input, setInput] = useState('2024-02-29 12:00:00')
+  const [input, setInput] = useState(initial ?? '2024-02-29 12:00:00')
   const [timezone, setTimezone] = useState('local')
   const trimmed = input.trim()
   const args = trimmed ? { input: trimmed, timezone } : null

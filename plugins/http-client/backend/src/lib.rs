@@ -1,6 +1,7 @@
 //! HTTP 客户端插件后端：请求由 Rust 发送（任务，可取消、实时日志），
 //! 响应正文在后端格式化并缓存，前端只展示预览。
 
+mod detect;
 mod http;
 
 use serde_json::Value;
@@ -27,6 +28,10 @@ impl Default for HttpClient {
 impl ToolPlugin for HttpClient {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

@@ -1,6 +1,7 @@
 //! 编解码插件后端：Base64 / Base32 / Hex / URL / HTML 实体 / Unicode 转义，以及文件转 Base64。
 
 mod codec;
+mod detect;
 mod file;
 mod unicode;
 
@@ -28,6 +29,10 @@ impl Default for Encoder {
 impl ToolPlugin for Encoder {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

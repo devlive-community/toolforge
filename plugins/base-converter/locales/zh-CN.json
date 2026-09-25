@@ -47,6 +47,9 @@
     "unsigned": "无符号",
     "signed": "有符号"
   },
+  "detect": {
+    "number": "{{base}} 进制数"
+  },
   "errors": {
     "base.empty": "请输入数字",
     "base.invalid_digit": "第 {{position}} 个字符“{{char}}”不是合法的 {{base}} 进制数字",

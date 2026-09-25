@@ -6,9 +6,9 @@ import type { Report } from './types'
 
 const EXAMPLES = ['192.168.1.130/26', '10.0.0.1 255.255.0.0', '172.16.5.4/12', '2001:db8:abcd:12::1/48', 'fe80::1/64']
 
-export function SubnetTool() {
+export function SubnetTool({ initial }: { initial?: string }) {
   const { t, errorMessage } = usePlugin()
-  const [input, setInput] = useState('192.168.1.130/26')
+  const [input, setInput] = useState(initial ?? '192.168.1.130/26')
   const [splitOn, setSplitOn] = useState(false)
   const [split, setSplit] = useState(28)
   const [contains, setContains] = useState('')

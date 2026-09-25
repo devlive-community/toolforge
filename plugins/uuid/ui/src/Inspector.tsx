@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Empty, Input, Panel } from '@toolforge/ui'
-import { ValueRow, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
+import { ValueRow, useDebouncedCall, useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { ScanSearch } from 'lucide-react'
 import type { InspectResult } from './types'
 
@@ -9,6 +9,7 @@ const localTime = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', time
 export function Inspector() {
   const { t, errorMessage } = usePlugin()
   const [input, setInput] = useState('')
+  useLaunchInput((text) => setInput(text))
   const trimmed = input.trim()
   const { result, error } = useDebouncedCall<InspectResult>(trimmed ? 'inspect' : null, trimmed ? { input: trimmed } : null, [trimmed])
 

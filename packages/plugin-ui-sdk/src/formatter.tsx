@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next'
 import { CopyButton } from './copy'
 import { host, type FileFilter } from './host'
 import { useErrorMessage } from './i18n'
-import { usePlugin } from './context'
+import { useLaunchInput, usePlugin } from './context'
 import type { AppError } from './types'
 import { useDebouncedCall } from './useDebouncedCall'
 
@@ -104,6 +104,7 @@ export function FormatterTool<R extends FormatterResult>({
   const errorMessage = useErrorMessage(manifest.id)
   const [mode, setMode] = useState(modes[0].fn)
   const [input, setInput] = useState(sample)
+  useLaunchInput((text) => setInput(text))
   const [wrap, setWrap] = useState(false)
   const inputRef = useRef<CodeEditorHandle>(null)
 

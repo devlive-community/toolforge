@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { Button, CodeEditor, Panel, Progress, SegmentedControl, Spinner, Tooltip, cn, toast } from '@toolforge/ui'
-import { CopyButton, host, useCopy, useDebouncedCall, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
+import { CopyButton, host, useCopy, useDebouncedCall, useLaunchInput, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
 import { ArrowUpDown, Check, Copy, Download, FileText, FileUp, Info, Terminal, X } from 'lucide-react'
 import { CodecOptions } from './CodecOptions'
 import { GROUPS, type Codec, type Direction, type FileFormat, type FileResult, type Options, type TransformResult } from './types'
 
 const BASE64_CODECS: Codec[] = ['base64']
+/** 剪贴板识别的标签对应的解码方式 */
+const LAUNCH_CODECS: Record<string, Codec> = { url: 'urlComponent', unicode: 'unicode', html: 'html', base64: 'base64', base64url: 'base64url' }
 
 export function EncoderTool() {
   const { t, call, errorMessage } = usePlugin()
@@ -13,6 +15,14 @@ export function EncoderTool() {
   const [codec, setCodec] = useState<Codec>('base64')
   const [direction, setDirection] = useState<Direction>('encode')
   const [input, setInput] = useState('ToolForge 工具箱 🔧 https://toolforge.dev/?q=a b&lang=zh')
+  useLaunchInput((text, label) => {
+    const launched = label ? LAUNCH_CODECS[label] : undefined
+    if (launched) {
+      setCodec(launched)
+      setDirection('decode')
+    }
+    setInput(text)
+  })
   const [options, setOptions] = useState<Options>({
     padding: true,
     wrap: false,

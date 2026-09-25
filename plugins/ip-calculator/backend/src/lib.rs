@@ -1,5 +1,6 @@
 //! IP 计算器插件后端：IPv4 / IPv6 网段计算、子网拆分、归属判断与地址段转 CIDR。
 
+mod detect;
 mod ip;
 
 use serde_json::Value;
@@ -22,6 +23,10 @@ impl Default for IpCalculator {
 impl ToolPlugin for IpCalculator {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

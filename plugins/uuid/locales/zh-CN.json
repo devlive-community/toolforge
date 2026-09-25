@@ -66,6 +66,10 @@
     "unixMs": "Unix 毫秒",
     "hex": "十六进制"
   },
+  "detect": {
+    "uuid": "UUID 版本 {{version}}",
+    "ulid": "ULID"
+  },
   "errors": {
     "uuid.invalid_count": "数量需在 1 到 {{max}} 之间",
     "uuid.invalid_namespace": "自定义命名空间不是合法的 UUID",

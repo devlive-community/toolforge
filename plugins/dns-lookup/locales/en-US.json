@@ -36,6 +36,9 @@
     "ttl": "TTL {{ttl}}",
     "fakeIp": "Some answers are in 198.18.0.0/15, which proxies in TUN / fake-ip mode return as placeholders. Disable the proxy to see real addresses."
   },
+  "detect": {
+    "domain": "Look up DNS records"
+  },
   "errors": {
     "dns.empty": "Enter a domain",
     "dns.invalid_name": "“{{name}}” is not a valid domain name",

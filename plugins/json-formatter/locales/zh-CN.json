@@ -101,6 +101,11 @@
     "title": "JSON 格式错误",
     "locate": "定位到错误"
   },
+  "detect": {
+    "object": "合法的 JSON 对象",
+    "array": "合法的 JSON 数组",
+    "invalid": "像是 JSON，但有语法错误"
+  },
   "errors": {
     "json.empty": "输入为空",
     "json.syntax": "第 {{line}} 行第 {{column}} 列附近存在语法错误",

@@ -54,6 +54,9 @@
     "result": "生成的令牌",
     "open": "在解析中打开"
   },
+  "detect": {
+    "token": "使用 {{alg}} 签名的 JWT"
+  },
   "errors": {
     "jwt.empty": "请输入令牌",
     "jwt.malformed": "令牌格式不正确，应为三段以 . 分隔的内容",

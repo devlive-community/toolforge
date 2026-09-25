@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Badge, Empty, Input, NumberInput, Panel, Select, Spinner, Switch, cn, toast } from '@toolforge/ui'
-import { CopyButton, ValueRow, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
+import { CopyButton, ValueRow, useDebouncedCall, useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { Binary, Hash, Layers } from 'lucide-react'
 import { INPUT_BASES, type Converted } from './types'
 
@@ -11,6 +11,10 @@ export function BaseConverter() {
   const [input, setInput] = useState('0xDEADBEEF')
   const [from, setFrom] = useState(0)
   const [custom, setCustom] = useState(36)
+  useLaunchInput((text) => {
+    setInput(text)
+    setFrom(0)
+  })
   const [uppercase, setUppercase] = useState(true)
   const [group, setGroup] = useState(true)
 

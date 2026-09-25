@@ -30,6 +30,9 @@
   "dialectSqlserver": "SQL Server",
   "compact": "Compact",
   "statements": "{{count}} statements",
+  "detect": {
+    "statement": "Format this SQL"
+  },
   "errors": {
     "sql.empty": "Input is empty",
     "sql.too_large": "Input is too large (over {{limit}})"

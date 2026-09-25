@@ -30,6 +30,9 @@
   "dialectSqlserver": "SQL Server",
   "compact": "紧凑",
   "statements": "{{count}} 条语句",
+  "detect": {
+    "statement": "格式化这段 SQL"
+  },
   "errors": {
     "sql.empty": "输入为空",
     "sql.too_large": "内容过大（超过 {{limit}}）"

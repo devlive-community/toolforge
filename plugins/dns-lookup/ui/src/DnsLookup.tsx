@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Badge, Button, Empty, Input, Panel, cn } from '@toolforge/ui'
-import { CopyButton, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
+import { CopyButton, useDebouncedCall, useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { Globe, Info, Search, Server, TriangleAlert } from 'lucide-react'
 import type { Catalog, Report, ServerResult } from './types'
 
@@ -23,6 +23,7 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
 export function DnsLookup() {
   const { t, call, errorMessage } = usePlugin()
   const [name, setName] = useState('github.com')
+  useLaunchInput((text) => setName(text))
   const [recordType, setRecordType] = useState('A')
   const [servers, setServers] = useState<string[]>(['system'])
   const [custom, setCustom] = useState('')

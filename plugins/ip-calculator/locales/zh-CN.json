@@ -74,6 +74,10 @@
     "summary": "{{count}} 个块 · {{total}} 个地址",
     "copyAll": "全部复制"
   },
+  "detect": {
+    "ip": "IP 地址 {{input}}",
+    "cidr": "网段 {{input}}"
+  },
   "errors": {
     "ip.empty": "请输入 IP 地址",
     "ip.invalid": "“{{input}}”不是有效的 IP 地址",

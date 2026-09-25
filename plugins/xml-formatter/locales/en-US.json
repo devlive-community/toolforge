@@ -23,6 +23,9 @@
   "indent4": "4 spaces",
   "indentTab": "Tab",
   "summary": "{{elements}} elements · {{attributes}} attributes · depth {{depth}}",
+  "detect": {
+    "document": "Format this XML"
+  },
   "errors": {
     "xml.empty": "Input is empty",
     "xml.syntax": "Syntax error near line {{line}}, column {{column}}",

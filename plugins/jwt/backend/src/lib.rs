@@ -2,6 +2,7 @@
 //! 令牌与密钥属于敏感数据，manifest 标记 sensitive，不写入历史。
 
 mod claims;
+mod detect;
 mod keys;
 mod token;
 
@@ -25,6 +26,10 @@ impl Default for Jwt {
 impl ToolPlugin for Jwt {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

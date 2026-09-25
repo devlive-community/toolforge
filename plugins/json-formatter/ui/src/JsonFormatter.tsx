@@ -15,7 +15,7 @@ import {
   type CodeEditorHandle,
   type CursorPosition,
 } from '@toolforge/ui'
-import { host, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
+import { host, useDebouncedCall, useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
 import {
   ArrowDownAZ,
   Binary,
@@ -70,6 +70,10 @@ export function JsonFormatter() {
   const { t, errorMessage } = usePlugin()
   const [tab, setTab] = useState<Tab>('format')
   const [input, setInput] = useState(SAMPLES[0].text)
+  useLaunchInput((text) => {
+    setInput(text)
+    setTab('format')
+  })
   const [right, setRight] = useState(SAMPLES[0].text.replace('"0.1.0"', '"0.2.0"'))
   const [mode, setMode] = useState<Mode>('json')
   const [indent, setIndent] = useState<Indent>('2')

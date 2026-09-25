@@ -60,6 +60,10 @@
     "empty": "输入日期时间查看时间戳",
     "formats": "支持的格式（点击填入）"
   },
+  "detect": {
+    "timestamp": "Unix 时间戳（{{unit}}）· {{utc}}",
+    "date": "把这个日期转换为时间戳"
+  },
   "errors": {
     "time.empty": "请输入内容",
     "time.not_a_number": "时间戳只能包含数字",

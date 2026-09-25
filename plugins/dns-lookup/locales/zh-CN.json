@@ -36,6 +36,9 @@
     "ttl": "TTL {{ttl}}",
     "fakeIp": "部分结果位于 198.18.0.0/15，这是 TUN / fake-ip 模式的代理返回的占位地址，关闭代理后可看到真实地址。"
   },
+  "detect": {
+    "domain": "查询 DNS 记录"
+  },
   "errors": {
     "dns.empty": "请输入域名",
     "dns.invalid_name": "“{{name}}”不是有效的域名",

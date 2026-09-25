@@ -1,6 +1,7 @@
 //! JSON 格式化插件后端：解析、格式化、压缩、校验、转义、树形浏览与对比，
 //! 所有数据处理都在这里完成，前端只负责展示。
 
+mod detect;
 mod diff;
 mod docs;
 mod format;
@@ -103,6 +104,10 @@ impl JsonFormatter {
 impl ToolPlugin for JsonFormatter {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

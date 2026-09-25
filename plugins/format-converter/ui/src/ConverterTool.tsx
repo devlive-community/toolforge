@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Badge, Button, Checkbox, CodeEditor, Panel, Select, Spinner, Switch, Tooltip, toast } from '@toolforge/ui'
-import { CopyButton, host, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
+import { CopyButton, host, useDebouncedCall, useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { ArrowRight, ArrowRightLeft, ClipboardPaste, Download, FileText, FolderOpen, Terminal, Wand2 } from 'lucide-react'
 import { EXTENSIONS, FORMATS, SAMPLES, type Concrete, type ConvertResult, type Delimiter, type Format, type Options } from './types'
 
@@ -9,6 +9,11 @@ export function ConverterTool() {
   const [from, setFrom] = useState<Format>('auto')
   const [to, setTo] = useState<Concrete>('yaml')
   const [input, setInput] = useState(SAMPLES.json)
+  useLaunchInput((text, label) => {
+    setInput(text)
+    setFrom('auto')
+    setTo(label === 'json' ? 'yaml' : 'json')
+  })
   const [options, setOptions] = useState<Options>({ indent: 2, minify: false, delimiter: 'comma', header: true, inferTypes: true })
   const set = (patch: Partial<Options>) => setOptions((prev) => ({ ...prev, ...patch }))
 

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Tabs } from '@toolforge/ui'
-import { usePlugin } from '@toolforge/plugin-ui-sdk'
+import { useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { PenLine, ScanSearch } from 'lucide-react'
 import { DecodeView } from './DecodeView'
 import { SignView } from './SignView'
@@ -10,6 +10,10 @@ export function JwtTool() {
   const { t } = usePlugin()
   const [tab, setTab] = useState<'decode' | 'sign'>('decode')
   const [token, setToken] = useState(SAMPLE_TOKEN)
+  useLaunchInput((text) => {
+    setToken(text)
+    setTab('decode')
+  })
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-4">

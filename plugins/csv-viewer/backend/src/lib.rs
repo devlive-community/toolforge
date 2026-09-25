@@ -1,6 +1,7 @@
 //! CSV 查看器插件后端：流式读取大文件、识别编码与分隔符，表格保存在 Rust 侧，
 //! 前端按页读取当前视图（排序、搜索、筛选后）的行。
 
+mod detect;
 mod export;
 mod load;
 mod table;
@@ -284,6 +285,10 @@ impl CsvViewer {
 impl ToolPlugin for CsvViewer {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

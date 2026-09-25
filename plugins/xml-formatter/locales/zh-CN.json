@@ -23,6 +23,9 @@
   "indent4": "4 空格",
   "indentTab": "Tab",
   "summary": "{{elements}} 个元素 · {{attributes}} 个属性 · 深度 {{depth}}",
+  "detect": {
+    "document": "格式化这段 XML"
+  },
   "errors": {
     "xml.empty": "输入为空",
     "xml.syntax": "第 {{line}} 行第 {{column}} 列附近存在语法错误",

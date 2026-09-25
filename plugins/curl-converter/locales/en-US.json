@@ -50,6 +50,9 @@
     "curl.urlencode_file": "--data-urlencode {{value}} reads a file and is not converted",
     "curl.invalid_form": "Invalid -F value: {{value}}"
   },
+  "detect": {
+    "command": "Convert this curl command to code"
+  },
   "errors": {
     "curl.empty": "Enter a curl command",
     "curl.no_url": "The command has no URL",

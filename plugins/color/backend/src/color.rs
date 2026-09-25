@@ -81,7 +81,7 @@ pub fn parse(input: &str) -> PluginResult<Color> {
     Color::from_html(input).map_err(|_| PluginError::new("color.invalid").with("input", input))
 }
 
-fn opaque_hex(color: &Color) -> String {
+pub fn opaque_hex(color: &Color) -> String {
     let [r, g, b, _] = color.to_rgba8();
     format!("#{r:02x}{g:02x}{b:02x}")
 }

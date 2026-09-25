@@ -41,6 +41,11 @@
   "records": "{{count}} records",
   "elapsed": "{{ms}} ms",
   "waiting": "The converted result appears here once you enter some input",
+  "detect": {
+    "json": "Convert this JSON to YAML, TOML or CSV",
+    "yaml": "YAML document",
+    "toml": "TOML document"
+  },
   "errors": {
     "format.empty": "Input is empty",
     "format.too_large": "Input is too large (over {{limit}})",

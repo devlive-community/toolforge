@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { Badge, Button, CodeEditor, Empty, Input, NumberInput, Panel, SegmentedControl, Select, Spinner, Switch, Tabs, cn, toast } from '@toolforge/ui'
-import { CopyButton, formatBytes, host, useCopy, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
+import { CopyButton, formatBytes, host, useCopy, useLaunchInput, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
 import { Check, Download, FileWarning, Info, Send, Square, Terminal, Upload } from 'lucide-react'
 import { KeyValueEditor } from './KeyValueEditor'
 import { METHODS, type BodyKind, type Method, type Pair, type Reply } from './types'
@@ -34,6 +34,10 @@ export function HttpClient() {
   const { copy, copied } = useCopy()
   const [method, setMethod] = useState<Method>('GET')
   const [url, setUrl] = useState('https://api.github.com/repos/devlive-community/toolforge')
+  useLaunchInput((text) => {
+    setMethod('GET')
+    setUrl(text)
+  })
   const [params, setParams] = useState<Pair[]>([])
   const [headers, setHeaders] = useState<Pair[]>([{ key: 'Accept', value: 'application/json', enabled: true }])
   const [bodyKind, setBodyKind] = useState<BodyKind>('none')

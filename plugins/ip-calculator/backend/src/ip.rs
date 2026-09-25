@@ -86,7 +86,7 @@ fn invalid(input: &str) -> PluginError {
 
 /// 统一用 u128 运算；IPv4 占低 32 位
 #[derive(Debug, Clone, Copy, PartialEq)]
-struct Net {
+pub(crate) struct Net {
     bits: u8,
     addr: u128,
     prefix: u8,
@@ -145,7 +145,7 @@ fn mask_to_prefix(mask: Ipv4Addr) -> Option<u8> {
 }
 
 /// 解析 `地址`、`地址/前缀`、`地址/掩码` 或 `地址 掩码`
-fn parse_net(input: &str) -> PluginResult<Net> {
+pub(crate) fn parse_net(input: &str) -> PluginResult<Net> {
     let trimmed = input.trim();
     if trimmed.is_empty() {
         return Err(PluginError::new("ip.empty"));

@@ -126,6 +126,10 @@
     "withSeconds": "The first field is seconds.",
     "fiveFields": "Standard five-field expression (minute precision)."
   },
+  "detect": {
+    "expression": "Explain this {{fields}}-field cron expression",
+    "alias": "Explain this cron shortcut"
+  },
   "errors": {
     "cron.empty": "Enter a cron expression",
     "cron.invalid": "Invalid expression: {{detail}}",

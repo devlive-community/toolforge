@@ -276,15 +276,25 @@ fn run(time: &Zoned, now: &Zoned) -> Run {
     }
 }
 
-pub fn evaluate(args: Args) -> PluginResult<Report> {
-    let (normalized, fields) = explain(&args.expression)?;
-    let parser = CronParser::builder()
+fn parser(dom_and_dow: bool) -> CronParser {
+    CronParser::builder()
         .seconds(Seconds::Optional)
-        .dom_and_dow(args.dom_and_dow)
+        .dom_and_dow(dom_and_dow)
         // 兼容 Quartz / Spring 常见的 `0/15` 写法
         .sloppy_ranges(true)
-        .build();
-    let cron: Cron = parser.parse(&normalized).map_err(map_error)?;
+        .build()
+}
+
+/// 结构与取值范围都合法
+pub fn is_valid(expression: &str) -> bool {
+    explain(expression).is_ok_and(|(normalized, _)| parser(false).parse(&normalized).is_ok())
+}
+
+pub fn evaluate(args: Args) -> PluginResult<Report> {
+    let (normalized, fields) = explain(&args.expression)?;
+    let cron: Cron = parser(args.dom_and_dow)
+        .parse(&normalized)
+        .map_err(map_error)?;
     let tz = timezone(&args.timezone)?;
     let now = Zoned::now().with_time_zone(tz.clone());
 

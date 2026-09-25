@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { usePlugin } from '@toolforge/plugin-ui-sdk'
+import { useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { NowCard } from './NowCard'
 import { ToDate } from './ToDate'
 import { ToTimestamp } from './ToTimestamp'
@@ -11,6 +11,16 @@ export function TimestampTool() {
   const [value, setValue] = useState('1700000000')
   const [unit, setUnit] = useState<Unit>('auto')
   const [compare, setCompare] = useState('America/New_York')
+  // 日期文本交给「日期转时间戳」，按序号重建组件以带入初始值
+  const [dateInput, setDateInput] = useState<{ text: string; seq: number } | null>(null)
+  useLaunchInput((text, label) => {
+    if (label === 'date') {
+      setDateInput((prev) => ({ text, seq: (prev?.seq ?? 0) + 1 }))
+    } else {
+      setValue(text)
+      setUnit('auto')
+    }
+  })
 
   useEffect(() => {
     call<Zones>('timezones')
@@ -48,7 +58,7 @@ export function TimestampTool() {
               .catch(() => {})
           }}
         />
-        <ToTimestamp zones={zones.all} local={zones.local} />
+        <ToTimestamp key={dateInput?.seq ?? 0} initial={dateInput?.text} zones={zones.all} local={zones.local} />
       </div>
     </div>
   )

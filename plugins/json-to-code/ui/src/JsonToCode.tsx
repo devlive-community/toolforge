@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Badge, Button, CodeEditor, Input, Panel, SegmentedControl, Spinner, toast, type CodeLanguage } from '@toolforge/ui'
-import { CopyButton, host, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
+import { CopyButton, host, useDebouncedCall, useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { Braces, Code2, Download } from 'lucide-react'
 
 type Language = 'typescript' | 'rust' | 'go' | 'java' | 'kotlin' | 'python' | 'csharp'
@@ -40,6 +40,7 @@ export function JsonToCode() {
   const [input, setInput] = useState(SAMPLE)
   const [language, setLanguage] = useState<Language>('typescript')
   const [root, setRoot] = useState('User')
+  useLaunchInput((text) => setInput(text))
 
   const args = input.trim() ? { input, language, root } : null
   const { result, error, pending } = useDebouncedCall<Output>(args ? 'generate' : null, args, [input, language, root])

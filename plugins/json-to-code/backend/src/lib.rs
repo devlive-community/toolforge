@@ -1,5 +1,6 @@
 //! JSON 转代码类型插件后端：从 JSON 样例推断结构，生成多种语言的类型定义。
 
+mod detect;
 mod emit;
 mod model;
 mod schema;
@@ -75,6 +76,10 @@ impl Default for JsonToCode {
 impl ToolPlugin for JsonToCode {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

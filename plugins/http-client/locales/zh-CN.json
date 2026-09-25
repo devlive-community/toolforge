@@ -65,6 +65,9 @@
       "body": "接收 {{bytes, number}} 字节，耗时 {{ms}} ms"
     }
   },
+  "detect": {
+    "url": "向 {{host}} 发送请求"
+  },
   "errors": {
     "http.empty_url": "请输入地址",
     "http.invalid_url": "地址无效：{{detail}}",

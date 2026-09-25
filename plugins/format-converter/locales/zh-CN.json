@@ -41,6 +41,11 @@
   "records": "{{count}} 条记录",
   "elapsed": "耗时 {{ms}}ms",
   "waiting": "在左侧输入内容后，这里会显示转换结果",
+  "detect": {
+    "json": "把这段 JSON 转换为 YAML、TOML 或 CSV",
+    "yaml": "YAML 文档",
+    "toml": "TOML 文档"
+  },
   "errors": {
     "format.empty": "输入为空",
     "format.too_large": "内容过大（超过 {{limit}}）",

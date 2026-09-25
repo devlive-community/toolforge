@@ -1,5 +1,5 @@
 import { Badge, Button, CodeEditor, Panel, SegmentedControl, Spinner, toast, type CodeLanguage } from '@toolforge/ui'
-import { CopyButton, ValueRow, host, useDebouncedCall, usePlugin, usePluginState } from '@toolforge/plugin-ui-sdk'
+import { CopyButton, ValueRow, host, useDebouncedCall, useLaunchInput, usePlugin, usePluginState } from '@toolforge/plugin-ui-sdk'
 import { ClipboardPaste, Code2, Download, Send, Terminal, TriangleAlert } from 'lucide-react'
 import type { Body, Converted, Language } from './types'
 
@@ -24,6 +24,7 @@ export function CurlConverter() {
   const { t, errorMessage } = usePlugin()
   const [input, setInput] = usePluginState('command', SAMPLE)
   const [language, setLanguage] = usePluginState<Language>('language', 'python')
+  useLaunchInput((text) => setInput(text))
 
   const args = input.trim() ? { command: input, language } : null
   const { result, error, pending } = useDebouncedCall<Converted>(args ? 'convert' : null, args, [input, language])

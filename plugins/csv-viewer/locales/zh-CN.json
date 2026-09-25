@@ -105,6 +105,10 @@
     "markdown": "Markdown 表格",
     "done": "已导出 {{count}} 行"
   },
+  "detect": {
+    "tsv": "{{rows}} 行 × {{columns}} 列的表格",
+    "csv": "{{rows}} 行 × {{columns}} 列的 CSV"
+  },
   "errors": {
     "csv.unknown_encoding": "未知的编码：{{encoding}}",
     "csv.invalid_delimiter": "分隔符必须是单个字符",

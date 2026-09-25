@@ -54,6 +54,9 @@
     "triadic": "三角色",
     "tetradic": "四角色"
   },
+  "detect": {
+    "color": "颜色 {{hex}}"
+  },
   "errors": {
     "color.empty": "请输入颜色",
     "color.invalid": "无法识别的颜色：“{{input}}”"

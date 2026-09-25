@@ -54,6 +54,9 @@
     "result": "Signed token",
     "open": "Open in decoder"
   },
+  "detect": {
+    "token": "JWT signed with {{alg}}"
+  },
   "errors": {
     "jwt.empty": "Enter a token",
     "jwt.malformed": "Malformed token; expected three parts separated by dots",

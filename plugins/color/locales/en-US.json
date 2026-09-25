@@ -54,6 +54,9 @@
     "triadic": "Triadic",
     "tetradic": "Tetradic"
   },
+  "detect": {
+    "color": "Color {{hex}}"
+  },
   "errors": {
     "color.empty": "Enter a color",
     "color.invalid": "“{{input}}” is not a recognized color"

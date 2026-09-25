@@ -1,5 +1,6 @@
 //! DNS 查询插件后端：使用系统解析器或公共 DNS 查询各类记录，可同时比较多个服务器。
 
+mod detect;
 mod dns;
 
 use serde_json::{Value, json};
@@ -22,6 +23,10 @@ impl Default for DnsLookup {
 impl ToolPlugin for DnsLookup {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn detect(&self, text: &str) -> Option<tf_plugin_api::Detection> {
+        detect::detect(text)
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

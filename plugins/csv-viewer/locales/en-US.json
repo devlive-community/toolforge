@@ -105,6 +105,10 @@
     "markdown": "Markdown table",
     "done": "Exported {{count}} rows"
   },
+  "detect": {
+    "tsv": "Table with {{rows}} rows × {{columns}} columns",
+    "csv": "CSV with {{rows}} rows × {{columns}} columns"
+  },
   "errors": {
     "csv.unknown_encoding": "Unknown encoding: {{encoding}}",
     "csv.invalid_delimiter": "The delimiter must be a single character",

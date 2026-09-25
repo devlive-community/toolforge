@@ -96,6 +96,13 @@
       "file_done": "Finished {{file}}, {{chars, number}} characters"
     }
   },
+  "detect": {
+    "url": "Decode URL encoding",
+    "unicode": "Decode \\u escapes",
+    "html": "Decode HTML entities",
+    "base64": "Decode Base64 text",
+    "base64url": "Decode Base64URL text"
+  },
   "errors": {
     "encode.result_expired": "The result has expired, encode the file again",
     "encode.invalid_input": "The input is not valid {{codec}}",
