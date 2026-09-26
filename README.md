@@ -65,6 +65,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Local Server** | Serve a folder as a website on localhost or the local network (with QR codes) and watch every request live; directory listing, SPA fallback, CORS, byte ranges, dotfiles hidden and paths locked to the folder |
 | **System Monitor** | Live CPU, memory, disk, network and temperature readings plus a searchable process list |
 | **Unit Converter** | 14 categories including length, weight, temperature, area, volume, data size and rate, pressure, energy and power, plus traditional Chinese units |
+| **Image Compressor** | Batch compress JPEG (mozjpeg), PNG (dithered palette with transparency, or lossless oxipng) and WebP offline; resize, strip EXIF, keep color profiles, never overwrite, and compare with the original using a drag divider |
 | **Image Converter** | Batch convert PNG / JPEG / WebP / GIF / BMP / ICO / TIFF, resize by percent or bounding box, JPEG quality; runs as a task with live logs and never overwrites files |
 | **Cron Expression** | Explain 5 / 6 / 7-field cron expressions field by field, preview upcoming runs in any time zone, with `L`, `W`, `#` and aliases such as `@daily` |
 | **JSON to Code** | Generate TypeScript, Rust (serde), Go, Java records, Kotlin, Python (pydantic) and C# models from JSON samples, merging arrays and detecting optional and nullable fields |
