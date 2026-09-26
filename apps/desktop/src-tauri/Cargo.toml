@@ -27,6 +27,7 @@ tf-core.workspace = true
 tf-plugin-api.workspace = true
 tfp-background-remover.workspace = true
 tfp-base-converter.workspace = true
+tfp-certificate.workspace = true
 tfp-color.workspace = true
 tfp-cron.workspace = true
 tfp-csv-viewer.workspace = true

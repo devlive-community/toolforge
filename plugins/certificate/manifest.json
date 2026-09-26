@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.certificate",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "encoding",
+  "keywords": ["certificate", "x509", "ssl", "tls", "pem", "der", "crt", "https", "chain", "expiry", "fingerprint", "san", "证书", "证书链", "过期", "指纹", "域名证书"],
+  "accent": "green",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["network", "fs:user-selected", "clipboard:read", "clipboard:write"],
+  "functions": {
+    "parse": {},
+    "parse_file": {},
+    "fetch": { "task": true }
+  },
+  "sensitive": false
+}

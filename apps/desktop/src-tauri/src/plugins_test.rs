@@ -65,6 +65,10 @@ fn clipboard_samples_suggest_the_right_tool_first() {
         ("name\tage\nAda\t36\n", "csv-viewer"),
         ("name: app\nversion: 1\n", "format-converter"),
         ("localhost:3000", "port-manager"),
+        (
+            include_str!("../../../../plugins/certificate/backend/fixtures/chain.pem"),
+            "certificate",
+        ),
         ("db.internal:5432", "port-manager"),
         ("[server]\nport = 80\n", "format-converter"),
     ];

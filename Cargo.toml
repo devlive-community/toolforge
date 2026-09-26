@@ -22,6 +22,7 @@ tf-core = { path = "crates/tf-core" }
 tf-plugin-api = { path = "crates/tf-plugin-api" }
 tfp-background-remover = { path = "plugins/background-remover/backend" }
 tfp-base-converter = { path = "plugins/base-converter/backend" }
+tfp-certificate = { path = "plugins/certificate/backend" }
 tfp-color = { path = "plugins/color/backend" }
 tfp-cron = { path = "plugins/cron/backend" }
 tfp-csv-viewer = { path = "plugins/csv-viewer/backend" }

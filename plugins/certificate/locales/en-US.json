@@ -1,0 +1,105 @@
+{
+  "name": "Certificate Viewer",
+  "description": "Inspect X.509 certificates and chains, and check the TLS certificate a server presents",
+  "help": [
+    "Paste one or more PEM certificates, or open a .pem / .crt / .cer / .der file, to see subject, issuer, validity, alternative names, key, usages and fingerprints.",
+    "The server mode connects to a host and shows the chain it actually sends, verified against your operating system's trust store, including the TLS version and cipher suite.",
+    "Expired, untrusted or mismatched certificates are still shown so you can find out what is wrong.",
+    "Only direct TLS ports such as 443, 465, 993 or 8443 are supported; STARTTLS (for example SMTP on 587) is not."
+  ],
+  "functions": {
+    "parse": "Parse certificate",
+    "parse_file": "Open certificate file",
+    "fetch": "Fetch server certificate"
+  },
+  "input": {
+    "mode": "Source",
+    "paste": "Paste or open",
+    "server": "From server",
+    "pemTitle": "Certificate",
+    "open": "Open",
+    "filter": "Certificates",
+    "placeholder": "-----BEGIN CERTIFICATE-----"
+  },
+  "server": {
+    "title": "Server",
+    "host": "Host",
+    "port": "Port",
+    "fetch": "Fetch certificate",
+    "fetching": "Connecting…",
+    "address": "Address",
+    "protocol": "Protocol",
+    "cipher": "Cipher",
+    "elapsed": "Time",
+    "ms": "{{ms}} ms",
+    "hint": "The connection is verified with your system's trust store, like a browser.",
+    "viaProxy": "(via proxy fake-ip)"
+  },
+  "verdicts": {
+    "trusted": "Trusted certificate",
+    "expired": "Certificate expired",
+    "not_yet_valid": "Certificate not yet valid",
+    "name_mismatch": "Certificate does not match the host name",
+    "untrusted": "Not trusted by this system",
+    "revoked": "Certificate revoked",
+    "invalid": "Certificate could not be verified"
+  },
+  "chain": {
+    "title": "Certificate chain",
+    "count": "{{count}} certificates",
+    "empty": "No certificate yet",
+    "emptyHint": "Paste a PEM certificate, open a file or fetch one from a server",
+    "until": "Valid until {{date}}",
+    "unordered": "The certificates are not in chain order: each issuer should be the next certificate's subject."
+  },
+  "roles": {
+    "leaf": "Server certificate",
+    "intermediate": "Intermediate CA",
+    "root": "Root CA"
+  },
+  "validity": {
+    "valid": "Valid · {{days}} days left",
+    "expiring": "Expires in {{days}} days",
+    "expired": "Expired",
+    "not_yet_valid": "Not yet valid"
+  },
+  "details": {
+    "names": "Names",
+    "subject": "Subject",
+    "issuer": "Issuer",
+    "technical": "Details",
+    "key": "Public key",
+    "bits": "{{bits}} bits",
+    "signature": "Signature",
+    "version": "Version",
+    "serial": "Serial number",
+    "pathLen": "Path length",
+    "unlimited": "Unlimited",
+    "keyUsage": "Key usage",
+    "extendedKeyUsage": "Extended usage",
+    "fingerprints": "Fingerprints",
+    "subjectKeyId": "Subject key ID",
+    "authorityKeyId": "Authority key ID",
+    "links": "Links",
+    "caIssuers": "CA issuers",
+    "ca": "CA",
+    "selfSigned": "Self-signed",
+    "save": "Save PEM"
+  },
+  "detect": {
+    "pem": "{{count}} PEM certificate(s)"
+  },
+  "errors": {
+    "cert.invalid": "The certificate could not be parsed: {{detail}}",
+    "cert.not_a_certificate": "This is not a certificate",
+    "cert.too_many": "At most {{max}} certificates can be opened at once",
+    "cert.too_large": "The input is larger than {{limit}}",
+    "cert.no_host": "Enter a host",
+    "cert.invalid_host": "“{{host}}” is not a valid host name",
+    "cert.resolve_failed": "Could not resolve {{host}}",
+    "cert.connect_failed": "Could not connect to {{host}}:{{port}}: {{detail}}",
+    "cert.timeout": "The TLS handshake timed out",
+    "cert.tls_failed": "The TLS handshake failed: {{detail}}",
+    "cert.no_certificates": "The server did not send a certificate"
+  }
+}

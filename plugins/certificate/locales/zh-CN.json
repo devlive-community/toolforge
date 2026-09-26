@@ -1,0 +1,105 @@
+{
+  "name": "证书查看",
+  "description": "查看 X.509 证书与证书链，检查服务器实际使用的 TLS 证书",
+  "help": [
+    "粘贴一个或多个 PEM 证书，或打开 .pem / .crt / .cer / .der 文件，查看主体、签发者、有效期、备用名称、公钥、用途与指纹。",
+    "「从服务器获取」会连接主机，显示服务器实际下发的证书链，并用操作系统的信任库校验，同时显示 TLS 版本与加密套件。",
+    "即使证书过期、不受信任或与域名不匹配，也会完整展示，方便排查问题。",
+    "只支持直接 TLS 的端口（如 443、465、993、8443），不支持 STARTTLS（例如 SMTP 的 587 端口）。"
+  ],
+  "functions": {
+    "parse": "解析证书",
+    "parse_file": "打开证书文件",
+    "fetch": "获取服务器证书"
+  },
+  "input": {
+    "mode": "来源",
+    "paste": "粘贴或打开",
+    "server": "从服务器获取",
+    "pemTitle": "证书",
+    "open": "打开",
+    "filter": "证书",
+    "placeholder": "-----BEGIN CERTIFICATE-----"
+  },
+  "server": {
+    "title": "服务器",
+    "host": "主机",
+    "port": "端口",
+    "fetch": "获取证书",
+    "fetching": "正在连接…",
+    "address": "地址",
+    "protocol": "协议",
+    "cipher": "加密套件",
+    "elapsed": "用时",
+    "ms": "{{ms}} 毫秒",
+    "hint": "与浏览器一样，使用系统信任库校验连接。",
+    "viaProxy": "（经代理 fake-ip）"
+  },
+  "verdicts": {
+    "trusted": "证书受信任",
+    "expired": "证书已过期",
+    "not_yet_valid": "证书尚未生效",
+    "name_mismatch": "证书与域名不匹配",
+    "untrusted": "系统不信任该证书",
+    "revoked": "证书已被吊销",
+    "invalid": "证书校验失败"
+  },
+  "chain": {
+    "title": "证书链",
+    "count": "{{count}} 张证书",
+    "empty": "还没有证书",
+    "emptyHint": "粘贴 PEM 证书、打开证书文件或从服务器获取",
+    "until": "有效期至 {{date}}",
+    "unordered": "证书没有按链的顺序排列：每张证书的签发者应当是下一张证书的主体。"
+  },
+  "roles": {
+    "leaf": "服务器证书",
+    "intermediate": "中间证书",
+    "root": "根证书"
+  },
+  "validity": {
+    "valid": "有效 · 剩余 {{days}} 天",
+    "expiring": "{{days}} 天后过期",
+    "expired": "已过期",
+    "not_yet_valid": "尚未生效"
+  },
+  "details": {
+    "names": "名称",
+    "subject": "主体",
+    "issuer": "签发者",
+    "technical": "详细信息",
+    "key": "公钥",
+    "bits": "{{bits}} 位",
+    "signature": "签名算法",
+    "version": "版本",
+    "serial": "序列号",
+    "pathLen": "路径长度",
+    "unlimited": "不限",
+    "keyUsage": "密钥用途",
+    "extendedKeyUsage": "扩展用途",
+    "fingerprints": "指纹",
+    "subjectKeyId": "主体密钥标识",
+    "authorityKeyId": "签发者密钥标识",
+    "links": "链接",
+    "caIssuers": "签发者证书",
+    "ca": "CA",
+    "selfSigned": "自签名",
+    "save": "保存 PEM"
+  },
+  "detect": {
+    "pem": "{{count}} 张 PEM 证书"
+  },
+  "errors": {
+    "cert.invalid": "无法解析证书：{{detail}}",
+    "cert.not_a_certificate": "这不是证书",
+    "cert.too_many": "一次最多打开 {{max}} 张证书",
+    "cert.too_large": "内容超过 {{limit}}",
+    "cert.no_host": "请输入主机",
+    "cert.invalid_host": "“{{host}}”不是有效的主机名",
+    "cert.resolve_failed": "无法解析 {{host}}",
+    "cert.connect_failed": "无法连接 {{host}}:{{port}}：{{detail}}",
+    "cert.timeout": "TLS 握手超时",
+    "cert.tls_failed": "TLS 握手失败：{{detail}}",
+    "cert.no_certificates": "服务器没有发送证书"
+  }
+}
