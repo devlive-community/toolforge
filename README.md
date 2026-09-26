@@ -65,6 +65,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Port Manager** | See which process listens on each TCP / UDP port (with user, memory and command line), search, stop the process, and check remote ports in parallel with latency and failure reasons |
 | **Local Server** | Serve a folder as a website on localhost or the local network (with QR codes) and watch every request live; directory listing, SPA fallback, CORS, byte ranges, dotfiles hidden and paths locked to the folder |
 | **System Monitor** | Live CPU, memory, disk, network and temperature readings plus a searchable process list |
+| **Disk Usage** | Scan a folder or disk in parallel and see what takes up space in a zoomable treemap colored by file type, with folder contents, largest files and a type breakdown; move items to the Trash |
 | **Duplicate Finder** | Find files with identical content across folders (size → first 64 KB → full BLAKE3 hash, in parallel), ignore hard links, preselect extra copies by date, path or folder and move them to the Trash after re-verifying |
 | **Unit Converter** | 14 categories including length, weight, temperature, area, volume, data size and rate, pressure, energy and power, plus traditional Chinese units |
 | **Image Compressor** | Batch compress JPEG (mozjpeg), PNG (dithered palette with transparency, or lossless oxipng) and WebP offline; resize, strip EXIF, keep color profiles, never overwrite, and compare with the original using a drag divider |
