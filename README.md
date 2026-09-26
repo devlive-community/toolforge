@@ -57,6 +57,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Base Converter** | Arbitrary-precision integers in bases 2–36, prefix detection, two's complement for 8–128 bits and a clickable 64-bit view |
 | **Color Converter** | HEX / RGB / HSL / HSV / HWB / CMYK / Lab / OKLCH, WCAG contrast checks, tints, shades and harmonies |
 | **Password Generator** | Cryptographically secure passwords with per-type options and exclusions, plus a local strength and crack-time check |
+| **SSH Keys** | Generate Ed25519, ECDSA and RSA keys in the OpenSSH format with passphrases, inspect keys, authorized_keys and known_hosts with SHA256 / MD5 fingerprints and randomart identical to ssh-keygen, convert PEM RSA keys and change passphrases |
 | **QR Code** | Generate QR codes as PNG / SVG with error correction, size and colors; read QR codes from images |
 | **Background Remover** | Remove image backgrounds with a local AI model (U²-Net lite or IS-Net) running in Rust; models download on first use with resume and SHA-256 verification; transparent PNG or a solid color |
 | **OCR** | Extract Chinese and English text from images and screenshots with PaddleOCR PP-OCRv4 models running in Rust (about 15 MB, downloaded on first use); paste screenshots with ⌘V, see recognized boxes and copy lines |
