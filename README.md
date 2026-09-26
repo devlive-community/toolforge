@@ -28,6 +28,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 - **Live feedback for long tasks**: heavy work such as hashing large files runs as a background task with live progress and logs, and can be cancelled at any time. The task center keeps the history and logs.
 - **Modern interface**: semantic design tokens, light / dark themes, custom components and window controls, a ⌘K command palette, favorites and recently used tools.
 - **Clipboard-aware ⌘K**: open the command palette and it recognizes what you copied (JSON, JWT, timestamps, UUIDs, colors, curl commands, cron expressions, IPs, SQL, spreadsheet tables and more) and offers the right tool, opened with the content already filled in. Detection runs locally in Rust and can be turned off.
+- **Quick launch**: a global shortcut (⌥Space / Alt+Space by default, configurable) brings ToolForge forward with the command palette from any app; background mode keeps it in the menu bar or system tray.
 - **Internationalized**: Simplified Chinese and English; plugins ship their own translations, and Rust only returns error codes that the UI translates.
 - **On-demand resources**: large assets such as AI models are downloaded only when a tool needs them, from verified sources with resume support, and can be removed at any time.
 - **In-app updates**: delivered through GitHub Releases with signed update packages; versions can be skipped and automatic checks turned off.
