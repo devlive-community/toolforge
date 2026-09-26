@@ -335,6 +335,7 @@ impl TaskManager {
         let store = self.store.clone();
         let running = self.running.clone();
         let id = task_id.clone();
+        let label = format!("{plugin_id}.{function}");
 
         thread::Builder::new()
             .name(format!("task-{task_id}"))
@@ -363,6 +364,10 @@ impl TaskManager {
                     Err(err) => (TaskStatus::Failed, None, Some(err)),
                 };
                 let elapsed_ms = begin.elapsed().as_millis() as u64;
+                // 应用日志只记录错误码，不记录参数，避免写入用户数据
+                if let Some(err) = &error {
+                    log::warn!("task {id} {label} failed: {}", err.code);
+                }
                 match &error {
                     Some(err) => runner.log(
                         LogLevel::Error,

@@ -1,7 +1,8 @@
 import { Button, SegmentedControl, Select, Switch, toast } from '@toolforge/ui'
-import { useErrorMessage } from '@toolforge/plugin-ui-sdk'
-import { ChevronRight, RefreshCw } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { formatBytes, host, useErrorMessage, type AppError } from '@toolforge/plugin-ui-sdk'
+import { invoke } from '@tauri-apps/api/core'
+import { ChevronRight, FolderOpen, PackageOpen, RefreshCw } from 'lucide-react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SUPPORTED_LOCALES, resolveLocale, type Locale } from '../i18n'
 import type { ThemeMode } from '../lib/boot'
@@ -13,12 +14,13 @@ import { ShortcutRecorder } from './ShortcutRecorder'
 
 const LOCALE_LABELS: Record<Locale, string> = { 'zh-CN': '简体中文', 'en-US': 'English' }
 
-function Row({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
+function Row({ label, hint, warning, children }: { label: string; hint?: string; warning?: string | null; children: ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-6 px-5 py-4">
       <div>
         <p className="text-[13px] font-medium text-fg">{label}</p>
         {hint && <p className="mt-0.5 text-xs text-fg-muted">{hint}</p>}
+        {warning && <p className="mt-1 text-xs text-warning">{warning}</p>}
       </div>
       {children}
     </div>
@@ -45,6 +47,31 @@ export function Settings() {
   const setAutoUpdate = usePrefs((s) => s.setAutoUpdate)
   const update = useUpdate()
   const errorMessage = useErrorMessage()
+  const [shortcutError, setShortcutError] = useState<AppError | null>(null)
+  const [exporting, setExporting] = useState(false)
+
+  // 启动时快捷键注册失败（例如被其他应用占用）需要提示用户更换
+  useEffect(() => {
+    invoke<{ error: AppError | null }>('launcher_status')
+      .then((status) => setShortcutError(status.error))
+      .catch(() => {})
+  }, [globalShortcut])
+
+  const exportDiagnostics = async () => {
+    try {
+      const date = new Date().toISOString().slice(0, 10)
+      const path = await host.dialog.saveFile(`toolforge-diagnostics-${date}.zip`, [{ name: 'ZIP', extensions: ['zip'] }])
+      if (!path) return
+      setExporting(true)
+      const result = await invoke<{ path: string; bytes: number }>('diagnostics_export', { path })
+      toast.success(t('settings.diagnosticsDone', { size: formatBytes(result.bytes) }))
+      host.revealPath(result.path).catch(() => {})
+    } catch (error) {
+      toast.error(errorMessage(error))
+    } finally {
+      setExporting(false)
+    }
+  }
 
   const updateHint = () => {
     switch (update.status) {
@@ -103,7 +130,11 @@ export function Settings() {
       </Section>
       <Section title={t('settings.launcher')}>
         <div className="divide-y divide-border rounded-card border border-border bg-surface shadow-card">
-          <Row label={t('settings.globalShortcut')} hint={t('settings.globalShortcutHint')}>
+          <Row
+            label={t('settings.globalShortcut')}
+            hint={t('settings.globalShortcutHint')}
+            warning={shortcutError ? t('settings.shortcutFailed', { detail: errorMessage(shortcutError) }) : null}
+          >
             <ShortcutRecorder value={globalShortcut} onChange={setGlobalShortcut} />
           </Row>
           <Row label={t('settings.runInBackground')} hint={t('settings.runInBackgroundHint')}>
@@ -149,6 +180,20 @@ export function Settings() {
           </Row>
           <Row label={t('settings.storage')} hint={t('settings.storageHint')}>
             <span className="text-[13px] text-fg-muted">SQLite</span>
+          </Row>
+          <Row label={t('settings.diagnostics')} hint={t('settings.diagnosticsHint')}>
+            <div className="flex items-center gap-2">
+              {info?.logDir && (
+                <Button onClick={() => host.revealPath(info.logDir!).catch((error) => toast.error(errorMessage(error)))}>
+                  <FolderOpen />
+                  {t('settings.openLogs')}
+                </Button>
+              )}
+              <Button loading={exporting} onClick={exportDiagnostics}>
+                <PackageOpen />
+                {t('settings.diagnosticsExport')}
+              </Button>
+            </div>
           </Row>
         </div>
       </Section>

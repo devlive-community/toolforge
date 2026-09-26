@@ -11,6 +11,7 @@ serde.workspace = true
 serde_json.workspace = true
 tf-plugin-api.workspace = true
 indexmap = "2"
+log = { version = "0.4", features = ["std"] }
 pulldown-cmark = { version = "0.13", default-features = false }
 reqwest = { version = "0.13", default-features = false, features = ["blocking", "http2", "rustls-no-provider", "system-proxy"] }
 rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }

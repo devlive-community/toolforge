@@ -1,4 +1,5 @@
 mod commands;
+mod diagnostics;
 mod launcher;
 mod lifecycle;
 mod menu;
@@ -11,16 +12,20 @@ mod window;
 use std::sync::Arc;
 
 use tauri::{Manager, RunEvent};
-use tf_core::{PluginRegistry, Resources, Store, TaskManager};
+use tf_core::{AppLog, PluginRegistry, Resources, Store, TaskManager};
 
 /// 保留的任务记录与日志数量
 const TASK_HISTORY: usize = 200;
+/// 应用日志单个文件上限与保留的文件数
+const LOG_BYTES: u64 = 2 * 1024 * 1024;
+const LOG_FILES: usize = 3;
 
 pub struct AppState {
     pub store: Arc<Store>,
     pub plugins: Arc<PluginRegistry>,
     pub tasks: TaskManager,
     pub resources: Arc<Resources>,
+    pub log: &'static AppLog,
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -38,6 +43,18 @@ pub fn run() {
         .on_menu_event(menu::on_event)
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
+            let log = AppLog::new(data_dir.join("logs"), LOG_BYTES, LOG_FILES).install();
+            let previous = std::panic::take_hook();
+            std::panic::set_hook(Box::new(move |info| {
+                log::error!("panic: {info}");
+                previous(info);
+            }));
+            log::info!(
+                "ToolForge {} starting on {} {}",
+                app.package_info().version,
+                std::env::consts::OS,
+                std::env::consts::ARCH
+            );
             let store = Arc::new(Store::open(&data_dir.join("toolforge.db"))?);
             let prefs = store.kv_get(commands::PREFS_KEY)?.unwrap_or_default();
             let resources = Arc::new(Resources::new(data_dir.join("resources")));
@@ -58,6 +75,7 @@ pub fn run() {
                 plugins: Arc::new(plugins::builtin()),
                 tasks,
                 resources,
+                log,
             });
             launcher::init(app.handle(), &prefs);
             Ok(())
@@ -70,6 +88,8 @@ pub fn run() {
             lifecycle::app_quit,
             launcher::launcher_set_shortcut,
             launcher::launcher_set_background,
+            launcher::launcher_status,
+            diagnostics::diagnostics_export,
             menu::app_menu_locale,
             commands::app_reveal_path,
             commands::prefs_get,

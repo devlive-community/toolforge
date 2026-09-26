@@ -5961,6 +5961,7 @@ name = "tf-core"
 version = "0.1.5"
 dependencies = [
  "indexmap 2.14.2",
+ "log",
  "pulldown-cmark",
  "reqwest",
  "rusqlite",
@@ -6581,6 +6582,7 @@ checksum = "7d56353a2a665ad0f41a421187180aab746c8c325620617ad883a99a1cbe66d2"
 name = "toolforge"
 version = "0.1.5"
 dependencies = [
+ "log",
  "objc2-app-kit",
  "serde",
  "serde_json",
@@ -6622,6 +6624,7 @@ dependencies = [
  "tfp-unit-converter",
  "tfp-uuid",
  "tfp-xml-formatter",
+ "zip",
 ]
 
 [[package]]
@@ -8295,8 +8298,10 @@ checksum = "caa8cd6af31c3b31c6631b8f483848b91589021b28fffe50adada48d4f4d2ed1"
 dependencies = [
  "arbitrary",
  "crc32fast",
+ "flate2",
  "indexmap 2.14.2",
  "memchr",
+ "zopfli",
 ]
 
 [[package]]
@@ -8310,6 +8315,18 @@ name = "zmij"
 version = "1.0.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "29666d0abbfad1e3dc4dcf6144730dd3a3ab225bbbdac83319345b1b44ccfc1b"
+
+[[package]]
+name = "zopfli"
+version = "0.8.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f05cd8797d63865425ff89b5c4a48804f35ba0ce8d125800027ad6017d2b5249"
+dependencies = [
+ "bumpalo",
+ "crc32fast",
+ "log",
+ "simd-adler32",
+]
 
 [[package]]
 name = "zune-core"

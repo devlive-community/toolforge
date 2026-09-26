@@ -18,6 +18,7 @@ export interface AppInfo {
   tauriVersion: string
   webviewVersion: string | null
   dataDir: string | null
+  logDir: string | null
 }
 
 interface AppState {

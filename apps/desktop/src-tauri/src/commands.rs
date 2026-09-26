@@ -18,6 +18,22 @@ pub struct AppInfo {
     tauri_version: &'static str,
     webview_version: Option<String>,
     data_dir: Option<String>,
+    log_dir: Option<String>,
+}
+
+#[cfg(test)]
+impl AppInfo {
+    pub fn test_value() -> Self {
+        Self {
+            version: "0.0.0".into(),
+            os: "test",
+            arch: "test",
+            tauri_version: "2",
+            webview_version: None,
+            data_dir: None,
+            log_dir: None,
+        }
+    }
 }
 
 #[tauri::command]
@@ -34,6 +50,11 @@ pub fn app_info(app: tauri::AppHandle) -> AppInfo {
             .app_data_dir()
             .ok()
             .map(|p| p.to_string_lossy().into_owned()),
+        log_dir: app
+            .path()
+            .app_data_dir()
+            .ok()
+            .map(|p| p.join("logs").to_string_lossy().into_owned()),
     }
 }
 
@@ -62,10 +83,15 @@ pub fn app_reveal_path(app: tauri::AppHandle, path: String) -> AppResult<()> {
         .map_err(|e| AppError::new("app.open_failed").with("detail", e.to_string()))
 }
 
-/// 前端日志转发到终端（开发期排查 WebView 内的错误）
+/// 前端日志写入应用日志（WebView 内的错误等）
 #[tauri::command]
 pub fn app_log(level: String, message: String) {
-    eprintln!("[webview:{level}] {message}");
+    let level = match level.as_str() {
+        "error" => log::Level::Error,
+        "warn" => log::Level::Warn,
+        _ => log::Level::Info,
+    };
+    log::log!(target: "webview", level, "{message}");
 }
 
 #[tauri::command]

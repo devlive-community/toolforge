@@ -87,7 +87,13 @@
       "shortcutReset": "Reset",
       "shortcutDisable": "Turn off",
       "runInBackground": "Keep running in the background",
-      "runInBackgroundHint": "Closing the window keeps ToolForge in the menu bar / system tray so the shortcut stays available"
+      "runInBackgroundHint": "Closing the window keeps ToolForge in the menu bar / system tray so the shortcut stays available",
+      "diagnostics": "Diagnostics",
+      "diagnosticsHint": "Save version details, the plugin list, recent task summaries and app logs as a zip to attach to bug reports. Clipboard, task inputs and file contents are never included.",
+      "diagnosticsExport": "Export…",
+      "diagnosticsDone": "Diagnostics saved ({{size}})",
+      "openLogs": "Open logs",
+      "shortcutFailed": "The shortcut could not be registered at startup: {{detail}}. Choose another one."
     },
     "tool": {
       "favorite": "Favorite",

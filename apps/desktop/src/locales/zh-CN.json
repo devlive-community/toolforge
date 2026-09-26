@@ -87,7 +87,13 @@
       "shortcutReset": "恢复默认",
       "shortcutDisable": "关闭",
       "runInBackground": "后台运行",
-      "runInBackgroundHint": "关闭窗口后 ToolForge 留在菜单栏 / 系统托盘中，快捷键始终可用"
+      "runInBackgroundHint": "关闭窗口后 ToolForge 留在菜单栏 / 系统托盘中，快捷键始终可用",
+      "diagnostics": "诊断信息",
+      "diagnosticsHint": "把版本信息、插件列表、最近的任务摘要与应用日志打包为 zip，便于反馈问题；不包含剪贴板、任务输入与文件内容。",
+      "diagnosticsExport": "导出…",
+      "diagnosticsDone": "诊断包已保存（{{size}}）",
+      "openLogs": "打开日志目录",
+      "shortcutFailed": "启动时未能注册快捷键：{{detail}}，请更换其他快捷键。"
     },
     "tool": {
       "favorite": "加入收藏",

@@ -3,6 +3,7 @@
 
 use std::sync::Mutex;
 
+use serde::Serialize;
 use serde_json::Value;
 use tauri::image::Image;
 use tauri::menu::{Menu, MenuEvent, MenuItem, PredefinedMenuItem};
@@ -23,9 +24,21 @@ const TRAY_OPEN: &str = "tray.open";
 const TRAY_PALETTE: &str = "tray.palette";
 const TRAY_QUIT: &str = "tray.quit";
 
-/// 当前已注册的全局快捷键
+/// 当前已注册的全局快捷键，以及启动时注册失败的原因
+#[derive(Debug, Clone, Default, Serialize)]
+pub struct LauncherStatus {
+    pub shortcut: Option<String>,
+    pub error: Option<AppError>,
+}
+
 #[derive(Default)]
-pub struct ActiveShortcut(Mutex<Option<String>>);
+pub struct ActiveShortcut(Mutex<LauncherStatus>);
+
+impl ActiveShortcut {
+    pub fn status(&self) -> LauncherStatus {
+        self.0.lock().unwrap_or_else(|e| e.into_inner()).clone()
+    }
+}
 
 /// 偏好中的快捷键：未设置时使用默认值，显式为 null 表示关闭
 pub fn shortcut_from(prefs: &Value) -> Option<String> {
@@ -163,18 +176,20 @@ pub fn set_tray(app: &AppHandle, enabled: bool, locale: &str) -> tauri::Result<(
 /// 启动时按偏好注册快捷键并显示托盘
 pub fn init(app: &AppHandle, prefs: &Value) {
     let shortcut = shortcut_from(prefs);
-    match register(app, shortcut.as_deref()) {
-        Ok(()) => {
-            *app.state::<ActiveShortcut>()
-                .0
-                .lock()
-                .unwrap_or_else(|e| e.into_inner()) = shortcut
+    let result = register(app, shortcut.as_deref());
+    let state = app.state::<ActiveShortcut>();
+    let mut status = state.0.lock().unwrap_or_else(|e| e.into_inner());
+    match result {
+        Ok(()) => status.shortcut = shortcut,
+        Err(err) => {
+            log::warn!("global shortcut not registered: {err}");
+            status.error = Some(err);
         }
-        Err(err) => eprintln!("[launcher] {err}"),
     }
+    drop(status);
     let locale = prefs.get("locale").and_then(Value::as_str).unwrap_or("en");
     if let Err(err) = set_tray(app, background_from(prefs), locale) {
-        eprintln!("[launcher] tray: {err}");
+        log::warn!("tray icon not created: {err}");
     }
 }
 
@@ -186,17 +201,24 @@ pub fn launcher_set_shortcut(
     shortcut: Option<String>,
 ) -> AppResult<()> {
     let shortcut = shortcut.filter(|s| !s.trim().is_empty());
-    let mut current = active.0.lock().unwrap_or_else(|e| e.into_inner());
+    let mut status = active.0.lock().unwrap_or_else(|e| e.into_inner());
     match register(&app, shortcut.as_deref()) {
         Ok(()) => {
-            *current = shortcut;
+            status.shortcut = shortcut;
+            status.error = None;
             Ok(())
         }
         Err(err) => {
-            let _ = register(&app, current.as_deref());
+            let _ = register(&app, status.shortcut.as_deref());
             Err(err)
         }
     }
+}
+
+/// 快捷键状态：设置页据此提示启动时注册失败
+#[tauri::command]
+pub fn launcher_status(active: State<'_, ActiveShortcut>) -> LauncherStatus {
+    active.status()
 }
 
 /// 开启或关闭后台运行（同时显示或移除托盘图标）
