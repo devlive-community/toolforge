@@ -72,6 +72,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **cURL to Code** | Convert curl commands (including browser “Copy as cURL” in bash or cmd format) into JavaScript fetch, Python requests, Go, Rust reqwest, Java HttpClient, PHP and C# code, listing anything that cannot be converted |
 | **Mock Data** | Generate up to 100,000 rows of realistic Chinese or English test data (consistent names, emails, valid ID numbers, real cities and 35 field types) as JSON, CSV or SQL INSERT, reproducible with a seed |
 | **CSV Viewer** | Open CSV / TSV files up to 1 GB (a million rows in under a second) with automatic encoding, delimiter and header detection; sort, search, filter, column statistics and export to CSV / TSV / JSON / Markdown |
+| **Log Viewer** | Open gigabyte log files instantly, filter by level, text or regex with highlighted matches, follow new lines like `tail -f`, and inspect JSON inside lines; GB18030 and ANSI colors handled |
 | **Image Info** | Format, dimensions, color type, EXIF camera settings and GPS location with a map link, dominant colors; strip EXIF / XMP / IPTC from JPEG and PNG losslessly |
 | **Markdown Editor** | GitHub Flavored Markdown with live preview rendered in Rust, outline, word count, formatting toolbar and shortcuts; drafts are saved automatically; export standalone HTML |
 
