@@ -34,6 +34,7 @@ tfp-format-converter = { path = "plugins/format-converter/backend" }
 tfp-hash = { path = "plugins/hash/backend" }
 tfp-http-client = { path = "plugins/http-client/backend" }
 tfp-image-converter = { path = "plugins/image-converter/backend" }
+tfp-image-compressor = { path = "plugins/image-compressor/backend" }
 tfp-image-info = { path = "plugins/image-info/backend" }
 tfp-ip-calculator = { path = "plugins/ip-calculator/backend" }
 tfp-json-formatter = { path = "plugins/json-formatter/backend" }

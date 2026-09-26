@@ -1,0 +1,100 @@
+{
+  "name": "图片压缩",
+  "description": "离线批量压缩 JPEG、PNG 与 WebP 图片，并与原图对比效果",
+  "help": [
+    "添加图片或整个文件夹（JPEG、PNG、WebP），也可以直接拖入窗口，然后点击“压缩”。全部在本机完成，不会上传任何图片。",
+    "JPEG 使用 mozjpeg 重新编码，质量 70–80 通常与原图肉眼无差别，体积却小很多。",
+    "有损 PNG 会把图片量化为最多 256 色并抖动（类似 TinyPNG / pngquant），保留透明度；无损 PNG 只重新打包数据，每个像素都不变。",
+    "WebP 通常是体积最小的格式，所有现代浏览器都支持。",
+    "色彩配置文件始终保留；除非开启“保留 EXIF 信息”，否则会移除相机参数与 GPS 位置，并按方向信息把照片摆正。",
+    "原图永远不会被修改：结果以文件名后缀保存在原图旁边，或保存到所选文件夹。如果压缩后反而更大，会直接复制原图。",
+    "点击结果上的对比按钮，可拖动分隔线对比原图与压缩后的效果。"
+  ],
+  "functions": {
+    "scan": "查找图片",
+    "compare": "对比",
+    "compress": "压缩图片"
+  },
+  "options": {
+    "title": "设置",
+    "format": "输出格式",
+    "keep": "与原图相同",
+    "quality": "质量",
+    "qualityHint": "用于 JPEG 与 WebP，70–80 是较好的平衡。",
+    "png": "PNG 压缩方式",
+    "lossy": "有损",
+    "lossless": "无损",
+    "pngHint": {
+      "lossy": "量化为调色板，体积通常减少 60–80%",
+      "lossless": "仅重新打包，像素完全不变"
+    },
+    "colors": "颜色数",
+    "dither": "抖动",
+    "maxSize": "尺寸",
+    "original": "保持原尺寸",
+    "longEdge": "长边 ≤ {{size}} px",
+    "metadata": "保留 EXIF 信息",
+    "metadataHint": "相机参数、拍摄时间与 GPS 位置，仅 JPEG 输出可以保留。",
+    "output": "保存到",
+    "sameDir": "原图所在文件夹",
+    "resetDir": "保存到原图所在文件夹",
+    "suffix": "文件名后缀"
+  },
+  "files": {
+    "title": "图片",
+    "count": "{{count}} 张 · {{size}}",
+    "add": "添加图片",
+    "addFolder": "添加文件夹",
+    "filter": "图片",
+    "drop": "拖入图片或文件夹",
+    "dropHint": "支持 JPEG、PNG、WebP · 也可点击选择",
+    "noImages": "没有找到 JPEG、PNG 或 WebP 图片",
+    "remove": "移除",
+    "start": "压缩 {{count}} 张图片",
+    "cancel": "取消",
+    "progress": "已压缩 {{done}} / {{total}}"
+  },
+  "results": {
+    "summary": "{{total}} 张中成功 {{count}} 张，用时 {{ms}} ms",
+    "saved": "节省 {{size}}",
+    "kept": "保留原图",
+    "keptHint": "压缩后体积反而更大，已直接复制原图",
+    "compare": "与原图对比",
+    "reveal": "在文件夹中显示"
+  },
+  "compare": {
+    "original": "原图 {{size}}",
+    "compressed": "压缩后 {{size}}",
+    "originalLabel": "原图",
+    "compressedLabel": "压缩后",
+    "zoom": "缩放",
+    "fit": "适应",
+    "actual": "100%",
+    "center": "居中"
+  },
+  "logPanel": {
+    "title": "实时日志",
+    "empty": "压缩过程中的日志会显示在这里",
+    "jumpLatest": "跳到最新"
+  },
+  "stages": {
+    "image.compress": "正在压缩…"
+  },
+  "logs": {
+    "image": {
+      "file_done": "{{file}} → {{output}} · {{before, number}} → {{after, number}} 字节 · {{ms}} ms",
+      "file_kept": "{{file}}：压缩后会变大，已复制原图到 {{output}}",
+      "file_failed": "跳过 {{file}}：{{code}}",
+      "summary": "完成：{{succeeded}} / {{count}} 张，{{before, number}} → {{after, number}} 字节，用时 {{ms}} ms"
+    }
+  },
+  "errors": {
+    "image.unsupported": "仅支持 JPEG、PNG 与 WebP 图片",
+    "image.decode_failed": "无法读取图片：{{detail}}",
+    "image.encode_failed": "无法压缩图片：{{detail}}",
+    "image.too_large": "文件超过 {{limit}}",
+    "image.no_files": "请先添加图片",
+    "image.output_dir_missing": "文件夹 {{path}} 不存在",
+    "image.suffix_required": "请填写文件名后缀或选择其他文件夹，以免替换原图"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.image-compressor",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": ["compress", "compression", "optimize", "minify", "tinypng", "mozjpeg", "oxipng", "pngquant", "webp", "jpeg", "png", "shrink", "图片压缩", "压缩图片", "减小体积", "优化图片"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "scan": {},
+    "compare": {},
+    "compress": { "task": true }
+  },
+  "sensitive": false
+}

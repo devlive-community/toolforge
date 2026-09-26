@@ -1,0 +1,100 @@
+{
+  "name": "Image Compressor",
+  "description": "Shrink JPEG, PNG and WebP images in batches, offline, and compare the result with the original",
+  "help": [
+    "Add images or whole folders (JPEG, PNG and WebP), or drop them onto the window, then press Compress. Everything runs on this computer; no image is uploaded.",
+    "JPEG is re-encoded with mozjpeg. A quality of 70–80 usually looks the same as the original at a fraction of the size.",
+    "Lossy PNG reduces the image to at most 256 colors with dithering (like TinyPNG / pngquant) and keeps transparency. Lossless PNG only repacks the data, so every pixel stays identical.",
+    "WebP is usually the smallest format and is supported by all modern browsers.",
+    "Color profiles are always kept. Camera details and GPS location are removed unless “Keep EXIF metadata” is on; photos are rotated upright when the metadata is removed.",
+    "Originals are never changed. Results are saved next to the originals with the suffix, or in the chosen folder. If compressing would make a file larger, the original is copied instead.",
+    "Press the compare button on a result to drag a divider between the original and the compressed image."
+  ],
+  "functions": {
+    "scan": "Find images",
+    "compare": "Compare",
+    "compress": "Compress images"
+  },
+  "options": {
+    "title": "Settings",
+    "format": "Output format",
+    "keep": "Same as original",
+    "quality": "Quality",
+    "qualityHint": "For JPEG and WebP. 70–80 is a good balance.",
+    "png": "PNG compression",
+    "lossy": "Lossy",
+    "lossless": "Lossless",
+    "pngHint": {
+      "lossy": "Reduce to a color palette; usually 60–80% smaller",
+      "lossless": "Repack only; pixels stay identical"
+    },
+    "colors": "Colors",
+    "dither": "Dithering",
+    "maxSize": "Resize",
+    "original": "Keep original size",
+    "longEdge": "Long edge ≤ {{size}} px",
+    "metadata": "Keep EXIF metadata",
+    "metadataHint": "Camera details, capture time and GPS location. Only JPEG output can keep them.",
+    "output": "Save to",
+    "sameDir": "Next to the originals",
+    "resetDir": "Save next to the originals",
+    "suffix": "File name suffix"
+  },
+  "files": {
+    "title": "Images",
+    "count": "{{count}} · {{size}}",
+    "add": "Add images",
+    "addFolder": "Add folder",
+    "filter": "Images",
+    "drop": "Drop images or folders here",
+    "dropHint": "JPEG, PNG and WebP · or click to choose",
+    "noImages": "No JPEG, PNG or WebP images were found",
+    "remove": "Remove",
+    "start": "Compress {{count}} images",
+    "cancel": "Cancel",
+    "progress": "Compressed {{done}} / {{total}}"
+  },
+  "results": {
+    "summary": "{{count}} of {{total}} images in {{ms}} ms",
+    "saved": "Saved {{size}}",
+    "kept": "Original kept",
+    "keptHint": "Compressing would have made this image larger, so the original was copied",
+    "compare": "Compare with original",
+    "reveal": "Show in folder"
+  },
+  "compare": {
+    "original": "Original {{size}}",
+    "compressed": "Compressed {{size}}",
+    "originalLabel": "Original",
+    "compressedLabel": "Compressed",
+    "zoom": "Zoom",
+    "fit": "Fit",
+    "actual": "100%",
+    "center": "Center"
+  },
+  "stages": {
+    "image.compress": "Compressing…"
+  },
+  "logPanel": {
+    "title": "Live logs",
+    "empty": "Logs appear here while images are compressed",
+    "jumpLatest": "Jump to latest"
+  },
+  "logs": {
+    "image": {
+      "file_done": "{{file}} → {{output}} · {{before, number}} → {{after, number}} bytes · {{ms}} ms",
+      "file_kept": "{{file}}: compressing would make it larger, original copied to {{output}}",
+      "file_failed": "Skipped {{file}}: {{code}}",
+      "summary": "Done: {{succeeded}} / {{count}} images, {{before, number}} → {{after, number}} bytes in {{ms}} ms"
+    }
+  },
+  "errors": {
+    "image.unsupported": "Only JPEG, PNG and WebP images are supported",
+    "image.decode_failed": "The image could not be read: {{detail}}",
+    "image.encode_failed": "The image could not be compressed: {{detail}}",
+    "image.too_large": "The file is larger than {{limit}}",
+    "image.no_files": "Add some images first",
+    "image.output_dir_missing": "The folder {{path}} does not exist",
+    "image.suffix_required": "Enter a file name suffix or choose another folder so the originals are not replaced"
+  }
+}

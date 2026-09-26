@@ -1,0 +1,19 @@
+[package]
+name = "tfp-image-compressor"
+description = "ToolForge plugin: lossy and lossless image compression"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+data-encoding = "2"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp"] }
+mozjpeg = { version = "0.10", default-features = false }
+oxipng = { version = "10", default-features = false, features = ["parallel", "zopfli"] }
+png = "0.18"
+exoquant = "0.2"
+webp = { version = "0.3", default-features = false }
