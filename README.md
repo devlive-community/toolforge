@@ -62,6 +62,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **OCR** | Extract Chinese and English text from images and screenshots with PaddleOCR PP-OCRv4 models running in Rust (about 15 MB, downloaded on first use); paste screenshots with ⌘V, see recognized boxes and copy lines |
 | **IP Calculator** | IPv4 / IPv6 subnets: network, broadcast, host range, counts, address type and reverse DNS; subnet splitting, membership check and range to CIDR |
 | **HTTP Client** | Send requests with params, headers and JSON / text / form bodies; status, timing, headers and pretty-printed JSON; save responses and copy as cURL |
+| **WebSocket Client** | Connect to ws:// and wss:// servers with custom headers and subprotocols, watch every received and sent frame live, format JSON, and send text, hex / base64 binary or pings with saved snippets |
 | **DNS Lookup** | A / AAAA / CNAME / MX / TXT / NS / SOA / SRV / CAA / PTR records from the system resolver or public DNS, compared side by side with timings; flags proxy fake IPs |
 | **Port Manager** | See which process listens on each TCP / UDP port (with user, memory and command line), search, stop the process, and check remote ports in parallel with latency and failure reasons |
 | **Local Server** | Serve a folder as a website on localhost or the local network (with QR codes) and watch every request live; directory listing, SPA fallback, CORS, byte ranges, dotfiles hidden and paths locked to the folder |
