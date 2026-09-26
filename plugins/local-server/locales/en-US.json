@@ -1,0 +1,78 @@
+{
+  "name": "Local Server",
+  "description": "Serve a folder as a website on this computer or your local network and watch every request",
+  "help": [
+    "Choose a folder and a port, then press Start. Open the address in a browser to see the folder as a website; stop the server with Stop.",
+    "By default only this computer can connect. Turn on “Allow LAN access” to open the site from a phone or another computer on the same network, for example by scanning the QR code.",
+    "index.html is served for folders that contain one; otherwise a file listing is shown when “Directory listing” is on.",
+    "“SPA fallback” serves the root index.html for paths without a file extension, which single-page apps with client-side routing need.",
+    "Files and folders starting with a dot (such as .git and .env) are hidden unless you turn that option off. Paths can never leave the chosen folder.",
+    "The server keeps running when you switch to another tool; it also appears in the task center, where it can be stopped."
+  ],
+  "functions": {
+    "addresses": "Addresses",
+    "free_port": "Find a free port",
+    "serve": "Serve folder"
+  },
+  "settings": {
+    "root": "Folder",
+    "rootPlaceholder": "Choose the folder to serve",
+    "choose": "Choose",
+    "port": "Port",
+    "lan": "Allow LAN access",
+    "lanHint": "Listen on all network interfaces so other devices on your network can connect",
+    "listing": "Directory listing",
+    "listingHint": "Show the files of folders that have no index.html",
+    "spa": "SPA fallback",
+    "spaHint": "Serve index.html for unknown paths without a file extension",
+    "cors": "CORS",
+    "corsHint": "Add Access-Control-Allow-Origin: * so pages on other origins can fetch files",
+    "hideDotfiles": "Hide dotfiles",
+    "hideDotfilesHint": "Do not serve or list files and folders whose names start with a dot",
+    "portBusy": "Port {{port}} is in use",
+    "freePort": "Use a free port"
+  },
+  "actions": {
+    "start": "Start",
+    "stop": "Stop"
+  },
+  "status": {
+    "running": "Running",
+    "stopped": "Stopped"
+  },
+  "addresses": {
+    "title": "Addresses",
+    "local": "This computer",
+    "lan": "Local network · {{name}}",
+    "open": "Open in browser",
+    "lanWarning": "Anyone on your network can read the files in this folder while the server is running.",
+    "scan": "Scan with a phone on the same network",
+    "noLan": "No local network address was found",
+    "reattached": "This server was started earlier and is still running."
+  },
+  "requests": {
+    "title": "Requests",
+    "waiting": "Waiting for requests…",
+    "jumpLatest": "Jump to latest",
+    "placeholder": "No server running",
+    "placeholderHint": "Choose a folder and press Start; every request appears here"
+  },
+  "stages": {
+    "serving": "Serving"
+  },
+  "logs": {
+    "server": {
+      "started": "Serving {{root}} on port {{port}}",
+      "request": "{{method}} {{url}} → {{status}} · {{size, number}} B · {{ms}} ms · {{remote}}",
+      "stopped": "Stopped after {{requests}} requests, {{bytes, number}} bytes sent"
+    }
+  },
+  "errors": {
+    "server.not_directory": "{{path}} is not a folder",
+    "server.invalid_port": "Choose a port between 1 and 65535",
+    "server.port_in_use": "Port {{port}} is already in use",
+    "server.port_denied": "Port {{port}} needs administrator rights; choose a port above 1024",
+    "server.bind_failed": "Could not listen on port {{port}}: {{detail}}",
+    "server.no_free_port": "No free port was found"
+  }
+}

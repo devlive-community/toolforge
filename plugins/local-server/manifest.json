@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.local-server",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "network",
+  "keywords": ["http", "server", "static", "serve", "web", "lan", "share", "http.server", "preview", "spa", "本地服务", "静态服务器", "局域网", "文件共享", "网站预览"],
+  "accent": "green",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["network", "fs:user-selected", "clipboard:write"],
+  "functions": {
+    "addresses": {},
+    "free_port": {},
+    "serve": { "task": true }
+  },
+  "sensitive": false
+}

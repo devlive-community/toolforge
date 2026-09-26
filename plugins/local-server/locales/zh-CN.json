@@ -1,0 +1,78 @@
+{
+  "name": "本地服务",
+  "description": "把文件夹作为网站在本机或局域网内访问，实时查看每个请求",
+  "help": [
+    "选择文件夹和端口后点击“启动”，在浏览器中打开地址即可以网站形式访问该文件夹；点击“停止”关闭服务。",
+    "默认只有本机可以访问。开启“允许局域网访问”后，同一网络中的手机或其他电脑也能打开，例如扫描二维码。",
+    "文件夹中有 index.html 时直接返回它；否则在开启“目录列表”时显示文件列表。",
+    "“SPA 回退”会对没有扩展名的路径返回根目录的 index.html，适用于使用前端路由的单页应用。",
+    "以点开头的文件和文件夹（如 .git、.env）默认隐藏，可关闭该选项。请求路径始终无法跳出所选文件夹。",
+    "切换到其他工具后服务仍会继续运行，也会显示在任务中心，可在那里停止。"
+  ],
+  "functions": {
+    "addresses": "访问地址",
+    "free_port": "查找空闲端口",
+    "serve": "提供文件夹服务"
+  },
+  "settings": {
+    "root": "文件夹",
+    "rootPlaceholder": "选择要提供服务的文件夹",
+    "choose": "选择",
+    "port": "端口",
+    "lan": "允许局域网访问",
+    "lanHint": "监听所有网卡，同一网络中的其他设备也可以连接",
+    "listing": "目录列表",
+    "listingHint": "文件夹中没有 index.html 时显示文件列表",
+    "spa": "SPA 回退",
+    "spaHint": "对没有扩展名的未知路径返回 index.html",
+    "cors": "跨域 CORS",
+    "corsHint": "添加 Access-Control-Allow-Origin: *，允许其他来源的页面请求文件",
+    "hideDotfiles": "隐藏点文件",
+    "hideDotfilesHint": "不提供也不列出名称以点开头的文件和文件夹",
+    "portBusy": "端口 {{port}} 已被占用",
+    "freePort": "使用空闲端口"
+  },
+  "actions": {
+    "start": "启动",
+    "stop": "停止"
+  },
+  "status": {
+    "running": "运行中",
+    "stopped": "已停止"
+  },
+  "addresses": {
+    "title": "访问地址",
+    "local": "本机",
+    "lan": "局域网 · {{name}}",
+    "open": "在浏览器中打开",
+    "lanWarning": "服务运行期间，同一网络中的任何人都可以读取该文件夹中的文件。",
+    "scan": "使用同一网络中的手机扫码访问",
+    "noLan": "未找到局域网地址",
+    "reattached": "该服务在之前启动，目前仍在运行。"
+  },
+  "requests": {
+    "title": "请求日志",
+    "waiting": "等待请求…",
+    "jumpLatest": "跳到最新",
+    "placeholder": "服务未运行",
+    "placeholderHint": "选择文件夹后点击“启动”，每个请求都会显示在这里"
+  },
+  "stages": {
+    "serving": "服务中"
+  },
+  "logs": {
+    "server": {
+      "started": "开始提供 {{root}}，端口 {{port}}",
+      "request": "{{method}} {{url}} → {{status}} · {{size, number}} B · {{ms}} ms · {{remote}}",
+      "stopped": "已停止，共 {{requests}} 个请求，发送 {{bytes, number}} 字节"
+    }
+  },
+  "errors": {
+    "server.not_directory": "{{path}} 不是文件夹",
+    "server.invalid_port": "请选择 1 到 65535 之间的端口",
+    "server.port_in_use": "端口 {{port}} 已被占用",
+    "server.port_denied": "端口 {{port}} 需要管理员权限，请选择 1024 以上的端口",
+    "server.bind_failed": "无法监听端口 {{port}}：{{detail}}",
+    "server.no_free_port": "未找到空闲端口"
+  }
+}
