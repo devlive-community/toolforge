@@ -59,6 +59,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **IP Calculator** | IPv4 / IPv6 subnets: network, broadcast, host range, counts, address type and reverse DNS; subnet splitting, membership check and range to CIDR |
 | **HTTP Client** | Send requests with params, headers and JSON / text / form bodies; status, timing, headers and pretty-printed JSON; save responses and copy as cURL |
 | **DNS Lookup** | A / AAAA / CNAME / MX / TXT / NS / SOA / SRV / CAA / PTR records from the system resolver or public DNS, compared side by side with timings; flags proxy fake IPs |
+| **Port Manager** | See which process listens on each TCP / UDP port (with user, memory and command line), search, stop the process, and check remote ports in parallel with latency and failure reasons |
 | **System Monitor** | Live CPU, memory, disk, network and temperature readings plus a searchable process list |
 | **Unit Converter** | 14 categories including length, weight, temperature, area, volume, data size and rate, pressure, energy and power, plus traditional Chinese units |
 | **Image Converter** | Batch convert PNG / JPEG / WebP / GIF / BMP / ICO / TIFF, resize by percent or bounding box, JPEG quality; runs as a task with live logs and never overwrites files |
