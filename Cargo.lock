@@ -6260,7 +6260,7 @@ dependencies = [
 
 [[package]]
 name = "tf-core"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "indexmap 2.14.2",
  "log",
@@ -6276,7 +6276,7 @@ dependencies = [
 
 [[package]]
 name = "tf-plugin-api"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "indexmap 2.14.2",
  "serde",
@@ -6924,7 +6924,7 @@ checksum = "7d56353a2a665ad0f41a421187180aab746c8c325620617ad883a99a1cbe66d2"
 
 [[package]]
 name = "toolforge"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "log",
  "objc2-app-kit",
@@ -8462,7 +8462,7 @@ checksum = "b9cc00251562a284751c9973bace760d86c0276c471b4be569fe6b068ee97a56"
 
 [[package]]
 name = "xtask"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "regex",
  "walkdir",
