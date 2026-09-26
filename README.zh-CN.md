@@ -67,6 +67,7 @@
 | **Cron 表达式** | 逐字段解释 5 / 6 / 7 段 Cron 表达式，按任意时区预览后续执行时间，支持 `L`、`W`、`#` 与 `@daily` 等别名 |
 | **JSON 转代码** | 从 JSON 样例生成 TypeScript、Rust（serde）、Go、Java record、Kotlin、Python（pydantic）与 C# 模型，自动合并数组并识别可选与可空字段 |
 | **cURL 转代码** | 把 curl 命令（含浏览器「复制为 cURL」的 bash / cmd 格式）转换为 JavaScript fetch、Python requests、Go、Rust reqwest、Java HttpClient、PHP 与 C# 代码，无法转换的选项会逐条列出 |
+| **模拟数据** | 生成最多 10 万行逼真的中文或英文测试数据（姓名与邮箱一致、校验码正确的身份证号、真实城市等 35 种类型），输出为 JSON、CSV 或 SQL INSERT，可用种子复现 |
 | **CSV 查看器** | 打开最大 1 GB 的 CSV / TSV 文件（百万行不到一秒），自动识别编码、分隔符与表头；支持排序、搜索、筛选、列统计，并可导出为 CSV / TSV / JSON / Markdown |
 | **图片信息** | 格式、尺寸、颜色类型、EXIF 拍摄参数与 GPS 位置（可在地图中打开）、主色提取；无损移除 JPEG / PNG 中的 EXIF / XMP / IPTC |
 | **Markdown 编辑器** | GitHub 风格 Markdown，Rust 实时渲染预览，目录、字数统计、格式工具栏与快捷键；草稿自动保存，可导出独立 HTML |
