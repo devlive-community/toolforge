@@ -25,6 +25,7 @@ serde.workspace = true
 serde_json.workspace = true
 tf-core.workspace = true
 tf-plugin-api.workspace = true
+tfp-archive.workspace = true
 tfp-background-remover.workspace = true
 tfp-base-converter.workspace = true
 tfp-batch-rename.workspace = true

@@ -1,0 +1,136 @@
+{
+  "name": "Archive Manager",
+  "description": "Browse, preview and extract ZIP, 7z and TAR archives, and create new ones, with password support",
+  "help": [
+    "Open or drop an archive to browse it like a folder: ZIP, 7z, TAR and tar.gz / tar.bz2 / tar.xz / tar.zst are supported, as well as single .gz, .bz2, .xz and .zst files. The format is detected from the content, not the extension.",
+    "Click a file to preview text or images. Tick files and folders to extract only those, or extract everything. By default a new folder named after the archive is created next to it.",
+    "Entries with unsafe paths (containing .. or starting at the root) are never written, and symbolic links inside archives are skipped, so an archive cannot place files outside the destination folder.",
+    "Encrypted ZIP (AES and legacy ZipCrypto) and 7z archives ask for the password when needed.",
+    "On the Create tab, add files and folders and choose ZIP, 7z, tar.gz or tar.xz. ZIP and 7z can be protected with an AES-256 password; Windows Explorer cannot open AES-encrypted ZIP files, but 7-Zip and this tool can. .DS_Store, Thumbs.db and similar files are skipped.",
+    "Everything is done in Rust without external tools."
+  ],
+  "functions": {
+    "open": "Open archive",
+    "extract": "Extract",
+    "create": "Create archive",
+    "list": "List folder",
+    "preview": "Preview entry",
+    "suggest": "Suggest file name"
+  },
+  "tabs": {
+    "open": "Open",
+    "create": "Create"
+  },
+  "open": {
+    "drop": "Drop an archive here",
+    "hint": "ZIP, 7z, TAR, tar.gz, tar.xz, tar.zst… · or click to choose",
+    "reading": "Reading archive…",
+    "filter": "Archives",
+    "summary": "{{files}} files · {{bytes}} · {{size}} on disk",
+    "encrypted": "Encrypted",
+    "unsafe": "{{count}} unsafe paths",
+    "unsafeHint": "These entries try to write outside the destination folder and will be skipped",
+    "links": "{{count}} links",
+    "linksHint": "Symbolic and hard links are listed but not extracted",
+    "another": "Open another"
+  },
+  "password": {
+    "title": "Password",
+    "required": "This archive is protected with a password",
+    "wrong": "The password is incorrect",
+    "unlock": "Unlock"
+  },
+  "browse": {
+    "up": "Up one level",
+    "selectAll": "Select all in this folder",
+    "select": "Select",
+    "name": "Name",
+    "size": "Size",
+    "packed": "Packed",
+    "modified": "Modified",
+    "files": "{{count}} files",
+    "empty": "This folder is empty"
+  },
+  "extract": {
+    "nextTo": "Next to the archive",
+    "createFolder": "Into a new folder",
+    "conflict": "If a file exists",
+    "selected": "Extract selected ({{count}})",
+    "all": "Extract all",
+    "show": "Show in folder",
+    "done": "Extracted {{count}} files ({{size}})"
+  },
+  "conflicts": {
+    "rename": "Keep both",
+    "overwrite": "Replace",
+    "skip": "Skip"
+  },
+  "preview": {
+    "close": "Close",
+    "loading": "Loading…",
+    "truncated": "Only the beginning of the file is shown",
+    "binary": "This file is not text or an image",
+    "tooLarge": "The image is too large to preview",
+    "none": "Nothing to preview"
+  },
+  "create": {
+    "sources": "Files to compress",
+    "addFiles": "Add files",
+    "addFolder": "Add folder",
+    "empty": "Add files or folders",
+    "emptyHint": "Or drop them onto this window",
+    "remove": "Remove",
+    "options": "Options",
+    "format": "Format",
+    "formatHint": {
+      "zip": "Opens everywhere. Good for sharing.",
+      "sevenZ": "Usually the smallest. Needs 7-Zip or this tool on Windows.",
+      "tarGz": "Common on Linux and macOS; keeps permissions.",
+      "tarXz": "Smaller than tar.gz but slower to create."
+    },
+    "level": "Compression",
+    "password": "Password",
+    "passwordPlaceholder": "Optional",
+    "passwordHint": "Encrypts with AES-256",
+    "passwordUnsupported": "tar archives cannot be encrypted",
+    "output": "Save as",
+    "outputEmpty": "Add files first",
+    "start": "Create archive",
+    "done": "Archive created ({{size}})",
+    "summary": "{{files}} files · {{bytes}} → {{size}}",
+    "skipped": "{{count}} links and system files were skipped",
+    "show": "Show in folder"
+  },
+  "levels": {
+    "0": "Store only (fastest)",
+    "3": "Fast",
+    "6": "Normal",
+    "9": "Maximum (slowest)"
+  },
+  "stages": {
+    "archive.read": "Reading…",
+    "archive.extract": "Extracting…",
+    "archive.compress": "Compressing…"
+  },
+  "logs": {
+    "archive": {
+      "opened": "{{entries, number}} entries ({{bytes, number}} bytes) in {{ms}} ms",
+      "extracted": "Extracted {{files, number}} files ({{bytes, number}} bytes) to {{dest}}",
+      "created": "Created archive with {{files, number}} files: {{bytes, number}} → {{size, number}} bytes",
+      "unsafe_path": "Skipped unsafe path {{path}}",
+      "link_skipped": "Skipped link {{path}}"
+    }
+  },
+  "errors": {
+    "archive.unsupported": "This is not a supported archive",
+    "archive.corrupt": "The archive is damaged: {{detail}}",
+    "archive.password_required": "A password is required",
+    "archive.wrong_password": "The password is incorrect",
+    "archive.unsupported_method": "Compression method {{method}} is not supported",
+    "archive.closed": "The archive was closed; open it again",
+    "archive.entry_missing": "{{entry}} is not in the archive",
+    "archive.no_sources": "Add files or folders to compress",
+    "archive.password_unsupported": "tar archives cannot be encrypted; choose ZIP or 7z",
+    "archive.write_failed": "Could not write the archive: {{detail}}"
+  }
+}

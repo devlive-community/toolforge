@@ -20,6 +20,7 @@ serde_json = { version = "1", features = ["preserve_order", "arbitrary_precision
 thiserror = "2"
 tf-core = { path = "crates/tf-core" }
 tf-plugin-api = { path = "crates/tf-plugin-api" }
+tfp-archive = { path = "plugins/archive/backend" }
 tfp-background-remover = { path = "plugins/background-remover/backend" }
 tfp-base-converter = { path = "plugins/base-converter/backend" }
 tfp-batch-rename = { path = "plugins/batch-rename/backend" }

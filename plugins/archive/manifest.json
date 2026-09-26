@@ -1,0 +1,20 @@
+{
+  "id": "org.devlive.toolforge.archive",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "convert",
+  "keywords": ["zip", "unzip", "7z", "7-zip", "tar", "gz", "tgz", "xz", "bz2", "zst", "zstd", "archive", "extract", "compress", "压缩", "解压", "压缩包", "打包"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "open": { "task": true },
+    "extract": { "task": true },
+    "create": { "task": true },
+    "list": {},
+    "preview": {},
+    "suggest": {}
+  },
+  "sensitive": false
+}

@@ -1,0 +1,136 @@
+{
+  "name": "压缩包管理",
+  "description": "浏览、预览、解压 ZIP、7z、TAR 压缩包，也可以创建新的压缩包，支持密码",
+  "help": [
+    "打开或拖入压缩包即可像文件夹一样浏览：支持 ZIP、7z、TAR 以及 tar.gz / tar.bz2 / tar.xz / tar.zst，也支持单个 .gz、.bz2、.xz、.zst 文件。格式按内容识别，与扩展名无关。",
+    "点击文件可预览文本或图片；勾选文件和文件夹可只解压这些内容，也可以全部解压。默认在压缩包旁边新建一个同名文件夹。",
+    "路径不安全的条目（包含 .. 或从根目录开始）不会被写入，压缩包内的符号链接也会跳过，压缩包无法把文件放到目标文件夹之外。",
+    "加密的 ZIP（AES 与传统 ZipCrypto）和 7z 会在需要时要求输入密码。",
+    "在“创建”页添加文件和文件夹，选择 ZIP、7z、tar.gz 或 tar.xz。ZIP 与 7z 可以设置 AES-256 密码；Windows 资源管理器无法打开 AES 加密的 ZIP，可使用 7-Zip 或本工具。会自动跳过 .DS_Store、Thumbs.db 等文件。",
+    "全部在 Rust 中完成，不依赖外部工具。"
+  ],
+  "functions": {
+    "open": "打开压缩包",
+    "extract": "解压",
+    "create": "创建压缩包",
+    "list": "列出文件夹",
+    "preview": "预览条目",
+    "suggest": "推荐文件名"
+  },
+  "tabs": {
+    "open": "打开",
+    "create": "创建"
+  },
+  "open": {
+    "drop": "拖入压缩包",
+    "hint": "ZIP、7z、TAR、tar.gz、tar.xz、tar.zst… · 也可点击选择",
+    "reading": "正在读取压缩包…",
+    "filter": "压缩包",
+    "summary": "{{files}} 个文件 · {{bytes}} · 占用 {{size}}",
+    "encrypted": "已加密",
+    "unsafe": "{{count}} 个不安全路径",
+    "unsafeHint": "这些条目试图写到目标文件夹之外，解压时会被跳过",
+    "links": "{{count}} 个链接",
+    "linksHint": "符号链接与硬链接只列出，不会解压",
+    "another": "打开其他"
+  },
+  "password": {
+    "title": "密码",
+    "required": "该压缩包需要密码",
+    "wrong": "密码不正确",
+    "unlock": "解锁"
+  },
+  "browse": {
+    "up": "上一级",
+    "selectAll": "全选此文件夹",
+    "select": "选择",
+    "name": "名称",
+    "size": "大小",
+    "packed": "压缩后",
+    "modified": "修改时间",
+    "files": "{{count}} 个文件",
+    "empty": "文件夹为空"
+  },
+  "extract": {
+    "nextTo": "压缩包所在文件夹",
+    "createFolder": "解压到新文件夹",
+    "conflict": "文件已存在时",
+    "selected": "解压所选（{{count}}）",
+    "all": "全部解压",
+    "show": "在文件夹中显示",
+    "done": "已解压 {{count}} 个文件（{{size}}）"
+  },
+  "conflicts": {
+    "rename": "保留两者",
+    "overwrite": "替换",
+    "skip": "跳过"
+  },
+  "preview": {
+    "close": "关闭",
+    "loading": "正在加载…",
+    "truncated": "只显示文件开头部分",
+    "binary": "该文件不是文本或图片",
+    "tooLarge": "图片太大，无法预览",
+    "none": "没有可预览的内容"
+  },
+  "create": {
+    "sources": "要压缩的文件",
+    "addFiles": "添加文件",
+    "addFolder": "添加文件夹",
+    "empty": "添加文件或文件夹",
+    "emptyHint": "也可以直接拖入窗口",
+    "remove": "移除",
+    "options": "选项",
+    "format": "格式",
+    "formatHint": {
+      "zip": "到处都能打开，适合分享。",
+      "sevenZ": "通常体积最小；Windows 上需要 7-Zip 或本工具。",
+      "tarGz": "Linux 与 macOS 常用，保留权限。",
+      "tarXz": "比 tar.gz 更小，但压缩更慢。"
+    },
+    "level": "压缩级别",
+    "password": "密码",
+    "passwordPlaceholder": "可选",
+    "passwordHint": "使用 AES-256 加密",
+    "passwordUnsupported": "tar 格式不支持加密",
+    "output": "保存为",
+    "outputEmpty": "请先添加文件",
+    "start": "创建压缩包",
+    "done": "压缩包已创建（{{size}}）",
+    "summary": "{{files}} 个文件 · {{bytes}} → {{size}}",
+    "skipped": "已跳过 {{count}} 个链接与系统文件",
+    "show": "在文件夹中显示"
+  },
+  "levels": {
+    "0": "仅存储（最快）",
+    "3": "快速",
+    "6": "标准",
+    "9": "最大（最慢）"
+  },
+  "stages": {
+    "archive.read": "正在读取…",
+    "archive.extract": "正在解压…",
+    "archive.compress": "正在压缩…"
+  },
+  "logs": {
+    "archive": {
+      "opened": "{{entries, number}} 个条目（{{bytes, number}} 字节），用时 {{ms}} ms",
+      "extracted": "已解压 {{files, number}} 个文件（{{bytes, number}} 字节）到 {{dest}}",
+      "created": "已创建压缩包，共 {{files, number}} 个文件：{{bytes, number}} → {{size, number}} 字节",
+      "unsafe_path": "已跳过不安全路径 {{path}}",
+      "link_skipped": "已跳过链接 {{path}}"
+    }
+  },
+  "errors": {
+    "archive.unsupported": "不是支持的压缩包格式",
+    "archive.corrupt": "压缩包已损坏：{{detail}}",
+    "archive.password_required": "需要输入密码",
+    "archive.wrong_password": "密码不正确",
+    "archive.unsupported_method": "不支持压缩方法 {{method}}",
+    "archive.closed": "压缩包已关闭，请重新打开",
+    "archive.entry_missing": "压缩包中没有 {{entry}}",
+    "archive.no_sources": "请添加要压缩的文件或文件夹",
+    "archive.password_unsupported": "tar 格式不支持加密，请选择 ZIP 或 7z",
+    "archive.write_failed": "无法写入压缩包：{{detail}}"
+  }
+}

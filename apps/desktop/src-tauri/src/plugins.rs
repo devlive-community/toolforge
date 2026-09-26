@@ -51,6 +51,7 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_batch_rename::BatchRename::default()));
     registry.register(Arc::new(tfp_duplicate_finder::DuplicateFinder::default()));
     registry.register(Arc::new(tfp_disk_usage::DiskUsage::default()));
+    registry.register(Arc::new(tfp_archive::Archive::default()));
     registry
 }
 
