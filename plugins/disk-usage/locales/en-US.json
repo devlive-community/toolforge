@@ -1,0 +1,93 @@
+{
+  "name": "Disk Usage",
+  "description": "See which folders and files take up space with a treemap, and move what you no longer need to the Trash",
+  "help": [
+    "Choose a folder (or a whole disk) and press Scan. Folders are read in parallel; external drives and network mounts inside the folder are not entered.",
+    "The treemap shows every item as a rectangle sized by how much space it uses. Files are colored by type; click a folder to open it, and use the path above or the up button to go back.",
+    "Contents lists the current folder sorted by size, Largest shows the biggest files anywhere inside it, and Types shows how much space images, videos, documents and other kinds of files use.",
+    "Tick items and choose Move to Trash to free space; they can be restored from the Trash. Symbolic links are not followed and hard links are counted once.",
+    "Folders that cannot be read (for example because of permissions) are skipped and counted at the bottom."
+  ],
+  "functions": {
+    "scan": "Scan folder",
+    "trash": "Move to Trash",
+    "list": "List folder",
+    "treemap": "Treemap",
+    "types": "File types",
+    "largest": "Largest files"
+  },
+  "scan": {
+    "choose": "Choose a folder",
+    "hidden": "Include hidden files",
+    "start": "Scan",
+    "cancel": "Cancel",
+    "running": "Scanning…",
+    "progress": "{{count}} files"
+  },
+  "empty": {
+    "title": "Choose a folder to see what takes up space",
+    "hint": "Scanning a whole disk can take a minute"
+  },
+  "nav": {
+    "up": "Up one level"
+  },
+  "summary": {
+    "files": "{{files}} files · scanned in {{ms}} ms",
+    "denied": "{{count}} folders could not be read"
+  },
+  "tabs": {
+    "label": "Details",
+    "contents": "Contents",
+    "largest": "Largest",
+    "types": "Types"
+  },
+  "list": {
+    "others": "{{count}} more items · {{size}}",
+    "empty": "This folder is empty"
+  },
+  "treemap": {
+    "merged": "{{count}} small items"
+  },
+  "types": {
+    "files": "{{count}} files"
+  },
+  "categories": {
+    "images": "Images",
+    "videos": "Videos",
+    "audio": "Audio",
+    "documents": "Documents",
+    "archives": "Archives",
+    "code": "Code",
+    "other": "Other"
+  },
+  "reveal": "Show in folder",
+  "trash": {
+    "select": "Select to move to the Trash",
+    "summary": "{{count}} selected · {{size}}",
+    "action": "Move to Trash",
+    "confirmTitle": "Move {{count}} items to the Trash?",
+    "confirmText": "{{names}} — {{size}} in total. You can restore them from the Trash.",
+    "cancel": "Cancel",
+    "confirm": "Move to Trash",
+    "done": "Moved {{count}} items to the Trash, freeing {{size}}",
+    "failed": "{{count}} items could not be moved"
+  },
+  "stages": {
+    "disk.scan": "Scanning…",
+    "disk.trash": "Moving to Trash…"
+  },
+  "logs": {
+    "disk": {
+      "scanned": "{{files, number}} files, {{bytes, number}} bytes, {{denied}} unreadable folders in {{ms}} ms",
+      "trashed": "Moved to Trash: {{path}}",
+      "trash_failed": "Could not move {{path}}: {{detail}}"
+    }
+  },
+  "errors": {
+    "disk.not_a_folder": "{{path}} is not a folder",
+    "disk.node_missing": "This item is no longer in the results",
+    "disk.scan_expired": "The scan was closed; scan again",
+    "disk.cannot_remove_root": "The scanned folder itself cannot be moved to the Trash",
+    "disk.scan_failed": "Scanning failed"
+  }
+}

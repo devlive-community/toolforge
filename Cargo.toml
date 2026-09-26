@@ -30,6 +30,7 @@ tfp-cron = { path = "plugins/cron/backend" }
 tfp-csv-viewer = { path = "plugins/csv-viewer/backend" }
 tfp-curl-converter = { path = "plugins/curl-converter/backend" }
 tfp-dns-lookup = { path = "plugins/dns-lookup/backend" }
+tfp-disk-usage = { path = "plugins/disk-usage/backend" }
 tfp-duplicate-finder = { path = "plugins/duplicate-finder/backend" }
 tfp-encoder = { path = "plugins/encoder/backend" }
 tfp-format-converter = { path = "plugins/format-converter/backend" }

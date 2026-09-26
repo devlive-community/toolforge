@@ -6735,6 +6735,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-disk-usage"
+version = "0.1.0"
+dependencies = [
+ "rayon",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "trash",
+]
+
+[[package]]
 name = "tfp-dns-lookup"
 version = "0.1.0"
 dependencies = [
@@ -7396,6 +7407,7 @@ dependencies = [
  "tfp-crypto",
  "tfp-csv-viewer",
  "tfp-curl-converter",
+ "tfp-disk-usage",
  "tfp-dns-lookup",
  "tfp-duplicate-finder",
  "tfp-encoder",

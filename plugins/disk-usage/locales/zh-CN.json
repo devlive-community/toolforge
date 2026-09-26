@@ -1,0 +1,93 @@
+{
+  "name": "磁盘空间分析",
+  "description": "用树图查看哪些文件夹和文件占用了空间，把不需要的移到回收站",
+  "help": [
+    "选择一个文件夹（或整个磁盘）后点击“扫描”。多个文件夹并行读取，不会进入其中挂载的外接磁盘或网络位置。",
+    "树图中每个项目是一个矩形，面积与占用空间成正比；文件按类型着色，点击文件夹进入，通过上方路径或“上一级”按钮返回。",
+    "“内容”按大小列出当前文件夹，“最大文件”列出其中最大的文件，“类型”统计图片、视频、文档等各类文件的占用。",
+    "勾选项目后点击“移到回收站”即可释放空间，之后可以从回收站恢复。不跟随符号链接，硬链接只计算一次。",
+    "无法读取（例如没有权限）的文件夹会被跳过，数量显示在底部。"
+  ],
+  "functions": {
+    "scan": "扫描文件夹",
+    "trash": "移到回收站",
+    "list": "列出文件夹",
+    "treemap": "树图",
+    "types": "文件类型",
+    "largest": "最大文件"
+  },
+  "scan": {
+    "choose": "选择文件夹",
+    "hidden": "包含隐藏文件",
+    "start": "扫描",
+    "cancel": "取消",
+    "running": "正在扫描…",
+    "progress": "{{count}} 个文件"
+  },
+  "empty": {
+    "title": "选择文件夹，看看空间都去哪了",
+    "hint": "扫描整个磁盘可能需要一分钟左右"
+  },
+  "nav": {
+    "up": "上一级"
+  },
+  "summary": {
+    "files": "{{files}} 个文件 · 扫描用时 {{ms}} ms",
+    "denied": "{{count}} 个文件夹无法读取"
+  },
+  "tabs": {
+    "label": "详情",
+    "contents": "内容",
+    "largest": "最大文件",
+    "types": "类型"
+  },
+  "list": {
+    "others": "另有 {{count}} 项 · {{size}}",
+    "empty": "文件夹为空"
+  },
+  "treemap": {
+    "merged": "{{count}} 个小项目"
+  },
+  "types": {
+    "files": "{{count}} 个文件"
+  },
+  "categories": {
+    "images": "图片",
+    "videos": "视频",
+    "audio": "音频",
+    "documents": "文档",
+    "archives": "压缩包",
+    "code": "代码",
+    "other": "其他"
+  },
+  "reveal": "在文件夹中显示",
+  "trash": {
+    "select": "勾选以移到回收站",
+    "summary": "已选 {{count}} 项 · {{size}}",
+    "action": "移到回收站",
+    "confirmTitle": "将 {{count}} 项移到回收站？",
+    "confirmText": "{{names}}，共 {{size}}。之后可以从回收站恢复。",
+    "cancel": "取消",
+    "confirm": "移到回收站",
+    "done": "已将 {{count}} 项移到回收站，释放 {{size}}",
+    "failed": "{{count}} 项无法移动"
+  },
+  "stages": {
+    "disk.scan": "正在扫描…",
+    "disk.trash": "正在移到回收站…"
+  },
+  "logs": {
+    "disk": {
+      "scanned": "{{files, number}} 个文件，{{bytes, number}} 字节，{{denied}} 个文件夹无法读取，用时 {{ms}} ms",
+      "trashed": "已移到回收站：{{path}}",
+      "trash_failed": "无法移动 {{path}}：{{detail}}"
+    }
+  },
+  "errors": {
+    "disk.not_a_folder": "{{path}} 不是文件夹",
+    "disk.node_missing": "该项目已不在结果中",
+    "disk.scan_expired": "扫描结果已关闭，请重新扫描",
+    "disk.cannot_remove_root": "不能把扫描的文件夹本身移到回收站",
+    "disk.scan_failed": "扫描失败"
+  }
+}
