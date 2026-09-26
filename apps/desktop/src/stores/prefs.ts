@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import { create } from 'zustand'
 import { i18n, resolveLocale, type Locale } from '../i18n'
-import { boot, type Prefs, type ThemeMode } from '../lib/boot'
+import { DEFAULT_SHORTCUT, boot, type Prefs, type ThemeMode } from '../lib/boot'
 
 interface PrefsState extends Prefs {
   systemDark: boolean
@@ -12,6 +12,9 @@ interface PrefsState extends Prefs {
   skipVersion: (version: string | null) => void
   setConfirmQuit: (value: boolean) => void
   setClipboardSuggest: (value: boolean) => void
+  /** 注册失败时抛出错误并保留原快捷键 */
+  setGlobalShortcut: (value: string | null) => Promise<void>
+  setRunInBackground: (value: boolean) => Promise<void>
 }
 
 const systemDark = matchMedia('(prefers-color-scheme: dark)')
@@ -39,6 +42,8 @@ const snapshot = (state: PrefsState): Prefs => ({
   skippedVersion: state.skippedVersion,
   confirmQuit: state.confirmQuit,
   clipboardSuggest: state.clipboardSuggest,
+  globalShortcut: state.globalShortcut,
+  runInBackground: state.runInBackground,
 })
 
 export const usePrefs = create<PrefsState>((set, get) => ({
@@ -49,6 +54,8 @@ export const usePrefs = create<PrefsState>((set, get) => ({
   skippedVersion: boot.prefs.skippedVersion ?? null,
   confirmQuit: boot.prefs.confirmQuit ?? true,
   clipboardSuggest: boot.prefs.clipboardSuggest ?? true,
+  globalShortcut: boot.prefs.globalShortcut === undefined ? DEFAULT_SHORTCUT : boot.prefs.globalShortcut,
+  runInBackground: boot.prefs.runInBackground ?? false,
   systemDark: systemDark.matches,
   setTheme: (theme) => {
     applyTheme(theme)
@@ -75,6 +82,23 @@ export const usePrefs = create<PrefsState>((set, get) => ({
   setClipboardSuggest: (clipboardSuggest) => {
     set({ clipboardSuggest })
     persist(snapshot(get()))
+  },
+  setGlobalShortcut: async (globalShortcut) => {
+    try {
+      await invoke('launcher_set_shortcut', { shortcut: globalShortcut })
+    } catch (error) {
+      await invoke('launcher_set_shortcut', { shortcut: get().globalShortcut }).catch(() => {})
+      throw error
+    }
+    set({ globalShortcut })
+    persist(snapshot(get()))
+  },
+  setRunInBackground: async (runInBackground) => {
+    await invoke('launcher_set_background', { enabled: runInBackground, locale: i18n.language })
+    set({ runInBackground })
+    // 关闭窗口时由 Rust 读取，需立即写入
+    clearTimeout(saveTimer)
+    await invoke('prefs_set', { prefs: snapshot(get()) }).catch(() => {})
   },
   setConfirmQuit: (confirmQuit) => {
     set({ confirmQuit })

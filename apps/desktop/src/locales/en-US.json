@@ -78,7 +78,16 @@
       "confirmQuit": "Confirm before quitting",
       "confirmQuitHint": "Ask before closing the window or quitting the app",
       "clipboardSuggest": "Suggest tools for clipboard content",
-      "clipboardSuggestHint": "When you open ⌘K, the clipboard text is checked locally and matching tools are listed first"
+      "clipboardSuggestHint": "When you open ⌘K, the clipboard text is checked locally and matching tools are listed first",
+      "launcher": "Quick launch",
+      "globalShortcut": "Global shortcut",
+      "globalShortcutHint": "Bring ToolForge to the front and open the command palette from any app",
+      "shortcutRecording": "Press a new shortcut… (Esc to cancel)",
+      "shortcutOff": "Off",
+      "shortcutReset": "Reset",
+      "shortcutDisable": "Turn off",
+      "runInBackground": "Keep running in the background",
+      "runInBackgroundHint": "Closing the window keeps ToolForge in the menu bar / system tray so the shortcut stays available"
     },
     "tool": {
       "favorite": "Favorite",
@@ -171,6 +180,9 @@
         "license": "MIT License",
         "licenseHint": "Free to use, modify and distribute"
       }
+    },
+    "keys": {
+      "space": "Space"
     }
   },
   "common": {
@@ -219,7 +231,9 @@
       "resource.network": "Network error while contacting {{host}}: {{detail}}",
       "resource.http_status": "{{host}} responded with HTTP {{status}}",
       "resource.size_mismatch": "The download stopped early ({{actual}} of {{expected}} bytes); try again to resume",
-      "resource.checksum_mismatch": "The downloaded file for “{{id}}” failed verification and was discarded"
+      "resource.checksum_mismatch": "The downloaded file for “{{id}}” failed verification and was discarded",
+      "shortcut.invalid": "Invalid shortcut: {{shortcut}}",
+      "shortcut.unavailable": "{{shortcut}} is already used by the system or another app"
     },
     "logs": {
       "task": {

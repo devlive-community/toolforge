@@ -46,11 +46,7 @@ pub fn request_quit(app: &AppHandle) -> bool {
         return true;
     }
     let seq = guard.requested.fetch_add(1, Ordering::SeqCst) + 1;
-    if let Some(window) = app.get_webview_window("main") {
-        let _ = window.unminimize();
-        let _ = window.show();
-        let _ = window.set_focus();
-    }
+    crate::window::show_main(app);
     let _ = app.emit(CLOSE_REQUESTED, seq);
 
     let handle = app.clone();

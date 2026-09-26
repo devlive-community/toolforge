@@ -1,7 +1,16 @@
 use serde_json::{Value, json};
 use tauri::webview::PageLoadEvent;
 use tauri::window::Color;
-use tauri::{AppHandle, WebviewUrl, WebviewWindowBuilder};
+use tauri::{AppHandle, Manager, WebviewUrl, WebviewWindowBuilder};
+
+/// 显示主窗口并置于前台
+pub fn show_main<R: tauri::Runtime>(app: &AppHandle<R>) {
+    if let Some(window) = app.get_webview_window("main") {
+        let _ = window.unminimize();
+        let _ = window.show();
+        let _ = window.set_focus();
+    }
+}
 
 /// 创建主窗口。
 ///
@@ -51,13 +60,17 @@ pub fn create_main(app: &AppHandle, prefs: &Value) -> tauri::Result<()> {
 
     let window = builder.build()?;
 
-    // 关闭窗口前先确认（自绘关闭按钮、⌘W 都会走到这里）
+    // 关闭窗口前先确认（自绘关闭按钮、⌘W 都会走到这里）；后台运行时只隐藏窗口
     let app_handle = app.clone();
+    let closing = window.clone();
     window.on_window_event(move |event| {
-        if let tauri::WindowEvent::CloseRequested { api, .. } = event
-            && !crate::lifecycle::request_quit(&app_handle)
-        {
-            api.prevent_close();
+        if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+            if crate::launcher::keep_in_background(&app_handle) {
+                api.prevent_close();
+                let _ = closing.hide();
+            } else if !crate::lifecycle::request_quit(&app_handle) {
+                api.prevent_close();
+            }
         }
     });
 

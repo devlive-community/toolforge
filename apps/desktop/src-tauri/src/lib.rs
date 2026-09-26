@@ -1,4 +1,5 @@
 mod commands;
+mod launcher;
 mod lifecycle;
 mod menu;
 mod plugins;
@@ -27,11 +28,13 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(updater::PendingUpdate::default())
         .manage(resources::ActiveDownloads::default())
         .manage(lifecycle::QuitGuard::default())
+        .manage(launcher::ActiveShortcut::default())
         .on_menu_event(menu::on_event)
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
@@ -56,6 +59,7 @@ pub fn run() {
                 tasks,
                 resources,
             });
+            launcher::init(app.handle(), &prefs);
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -64,6 +68,8 @@ pub fn run() {
             commands::app_open_url,
             lifecycle::app_close_ack,
             lifecycle::app_quit,
+            launcher::launcher_set_shortcut,
+            launcher::launcher_set_background,
             menu::app_menu_locale,
             commands::app_reveal_path,
             commands::prefs_get,
@@ -92,14 +98,14 @@ pub fn run() {
         ])
         .build(tauri::generate_context!())
         .expect("error while building ToolForge")
-        .run(|app, event| {
+        .run(|app, event| match event {
             // ⌘Q、菜单退出等（code 为空）先交给前端确认；app.exit() 带退出码直接放行
-            if let RunEvent::ExitRequested {
+            RunEvent::ExitRequested {
                 code: None, api, ..
-            } = event
-                && !lifecycle::request_quit(app)
-            {
-                api.prevent_exit();
-            }
+            } if !lifecycle::request_quit(app) => api.prevent_exit(),
+            // macOS 点击 Dock 图标时重新显示隐藏的窗口
+            #[cfg(target_os = "macos")]
+            RunEvent::Reopen { .. } => window::show_main(app),
+            _ => {}
         });
 }

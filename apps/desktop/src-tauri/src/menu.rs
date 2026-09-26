@@ -2,7 +2,7 @@
 //! 其他平台使用无边框窗口，不显示菜单栏。
 
 use tauri::menu::{Menu, MenuEvent, MenuItem, PredefinedMenuItem, Submenu};
-use tauri::{AppHandle, Emitter, Manager, Runtime};
+use tauri::{AppHandle, Emitter, Runtime};
 
 /// 通知前端切换页面，载荷为视图名（about / settings）
 pub const NAVIGATE: &str = "app://navigate";
@@ -137,11 +137,7 @@ pub fn on_event<R: Runtime>(app: &AppHandle<R>, event: MenuEvent) {
         SETTINGS => SETTINGS,
         _ => return,
     };
-    if let Some(window) = app.get_webview_window("main") {
-        let _ = window.unminimize();
-        let _ = window.show();
-        let _ = window.set_focus();
-    }
+    crate::window::show_main(app);
     let _ = app.emit(NAVIGATE, view);
 }
 
@@ -152,6 +148,11 @@ pub fn app_menu_locale(app: AppHandle, locale: String) -> tf_core::AppResult<()>
         let menu = build(&app, &locale)
             .map_err(|e| tf_core::AppError::new("app.unknown").with("detail", e.to_string()))?;
         app.set_menu(menu)
+            .map_err(|e| tf_core::AppError::new("app.unknown").with("detail", e.to_string()))?;
+    }
+    // 托盘菜单跟随界面语言
+    if app.tray_by_id("main").is_some() {
+        crate::launcher::set_tray(&app, true, &locale)
             .map_err(|e| tf_core::AppError::new("app.unknown").with("detail", e.to_string()))?;
     }
     Ok(())

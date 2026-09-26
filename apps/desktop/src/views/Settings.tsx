@@ -1,4 +1,4 @@
-import { Button, SegmentedControl, Select, Switch } from '@toolforge/ui'
+import { Button, SegmentedControl, Select, Switch, toast } from '@toolforge/ui'
 import { useErrorMessage } from '@toolforge/plugin-ui-sdk'
 import { ChevronRight, RefreshCw } from 'lucide-react'
 import type { ReactNode } from 'react'
@@ -9,6 +9,7 @@ import { useApp } from '../stores/app'
 import { usePrefs } from '../stores/prefs'
 import { useUpdate } from '../stores/update'
 import { Page, Section } from './Page'
+import { ShortcutRecorder } from './ShortcutRecorder'
 
 const LOCALE_LABELS: Record<Locale, string> = { 'zh-CN': '简体中文', 'en-US': 'English' }
 
@@ -35,6 +36,10 @@ export function Settings() {
   const setConfirmQuit = usePrefs((s) => s.setConfirmQuit)
   const clipboardSuggest = usePrefs((s) => s.clipboardSuggest)
   const setClipboardSuggest = usePrefs((s) => s.setClipboardSuggest)
+  const globalShortcut = usePrefs((s) => s.globalShortcut)
+  const setGlobalShortcut = usePrefs((s) => s.setGlobalShortcut)
+  const runInBackground = usePrefs((s) => s.runInBackground)
+  const setRunInBackground = usePrefs((s) => s.setRunInBackground)
   const navigate = useApp((s) => s.navigate)
   const autoUpdate = usePrefs((s) => s.autoUpdate)
   const setAutoUpdate = usePrefs((s) => s.setAutoUpdate)
@@ -93,6 +98,20 @@ export function Settings() {
           </Row>
           <Row label={t('settings.clipboardSuggest')} hint={t('settings.clipboardSuggestHint')}>
             <Switch checked={clipboardSuggest} onCheckedChange={setClipboardSuggest} aria-label={t('settings.clipboardSuggest')} />
+          </Row>
+        </div>
+      </Section>
+      <Section title={t('settings.launcher')}>
+        <div className="divide-y divide-border rounded-card border border-border bg-surface shadow-card">
+          <Row label={t('settings.globalShortcut')} hint={t('settings.globalShortcutHint')}>
+            <ShortcutRecorder value={globalShortcut} onChange={setGlobalShortcut} />
+          </Row>
+          <Row label={t('settings.runInBackground')} hint={t('settings.runInBackgroundHint')}>
+            <Switch
+              checked={runInBackground}
+              onCheckedChange={(value) => setRunInBackground(value).catch((error) => toast.error(errorMessage(error)))}
+              aria-label={t('settings.runInBackground')}
+            />
           </Row>
         </div>
       </Section>

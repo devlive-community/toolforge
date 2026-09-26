@@ -78,7 +78,16 @@
       "confirmQuit": "退出前确认",
       "confirmQuitHint": "关闭窗口或退出应用时先弹出确认",
       "clipboardSuggest": "按剪贴板内容推荐工具",
-      "clipboardSuggestHint": "打开 ⌘K 时在本地识别剪贴板中的文本，并优先列出能处理它的工具"
+      "clipboardSuggestHint": "打开 ⌘K 时在本地识别剪贴板中的文本，并优先列出能处理它的工具",
+      "launcher": "快捷启动",
+      "globalShortcut": "全局快捷键",
+      "globalShortcutHint": "在任意应用中把 ToolForge 带到前台并打开命令面板",
+      "shortcutRecording": "请按下新的快捷键…（Esc 取消）",
+      "shortcutOff": "已关闭",
+      "shortcutReset": "恢复默认",
+      "shortcutDisable": "关闭",
+      "runInBackground": "后台运行",
+      "runInBackgroundHint": "关闭窗口后 ToolForge 留在菜单栏 / 系统托盘中，快捷键始终可用"
     },
     "tool": {
       "favorite": "加入收藏",
@@ -171,6 +180,9 @@
         "license": "MIT 许可证",
         "licenseHint": "可自由使用、修改与分发"
       }
+    },
+    "keys": {
+      "space": "空格"
     }
   },
   "common": {
@@ -219,7 +231,9 @@
       "resource.network": "连接 {{host}} 时网络错误：{{detail}}",
       "resource.http_status": "{{host}} 返回 HTTP {{status}}",
       "resource.size_mismatch": "下载中断（已下载 {{actual}} / {{expected}} 字节），重试即可继续",
-      "resource.checksum_mismatch": "“{{id}}”下载的文件校验失败，已丢弃"
+      "resource.checksum_mismatch": "“{{id}}”下载的文件校验失败，已丢弃",
+      "shortcut.invalid": "无效的快捷键：{{shortcut}}",
+      "shortcut.unavailable": "{{shortcut}} 已被系统或其他应用占用"
     },
     "logs": {
       "task": {

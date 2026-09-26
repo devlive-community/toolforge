@@ -55,9 +55,19 @@ export function App() {
     const offNavigate = listen<'about' | 'settings'>('app://navigate', ({ payload }) => {
       useApp.getState().navigate({ view: payload })
     })
+    // 全局快捷键：窗口已在前台时切换命令面板，否则重新打开（重新读取剪贴板）
+    const offPalette = listen<boolean>('app://palette', ({ payload: focused }) => {
+      const { paletteOpen, setPaletteOpen } = useApp.getState()
+      if (!paletteOpen) setPaletteOpen(true)
+      else {
+        setPaletteOpen(false)
+        if (!focused) requestAnimationFrame(() => setPaletteOpen(true))
+      }
+    })
     return () => {
       offQuit.then((off) => off())
       offNavigate.then((off) => off())
+      offPalette.then((off) => off())
     }
   }, [])
 
