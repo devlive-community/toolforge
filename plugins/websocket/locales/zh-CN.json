@@ -1,0 +1,125 @@
+{
+  "name": "WebSocket 客户端",
+  "description": "连接 ws:// 与 wss:// 地址，实时查看每条消息，发送文本、JSON、二进制或 Ping",
+  "help": [
+    "输入 ws:// 或 wss:// 地址后点击“连接”。安全连接会使用系统信任的证书进行校验。",
+    "展开选项可添加请求头（如 Authorization、Cookie）和子协议（如 graphql-ws），握手状态与协商的协议也显示在这里。",
+    "收到的消息为绿色，发送的为蓝色，连接事件为灰色；点击消息查看完整内容，JSON 会自动格式化。",
+    "可发送文本或 JSON、以十六进制或 Base64 表示的二进制数据以及 Ping，按 ⌘/Ctrl + Enter 发送；常用内容可保存为片段。",
+    "切换到其他工具时连接会继续保持，也会显示在任务中心；断开连接时发送正常的关闭帧。"
+  ],
+  "functions": {
+    "connect": "连接",
+    "messages": "读取消息",
+    "send": "发送消息",
+    "close": "关闭连接",
+    "clear": "清空消息",
+    "pretty": "格式化 JSON"
+  },
+  "connection": {
+    "url": "WebSocket 地址",
+    "history": "最近使用",
+    "options": "请求头与子协议",
+    "connect": "连接",
+    "disconnect": "断开",
+    "headers": "请求头",
+    "addHeader": "添加",
+    "noHeaders": "没有额外的请求头",
+    "headerName": "名称",
+    "headerValue": "值",
+    "removeHeader": "删除请求头",
+    "protocols": "子协议（逗号分隔）",
+    "handshake": "HTTP {{status}}，用时 {{ms}} ms · {{address}}",
+    "protocol": "协议 {{protocol}}"
+  },
+  "states": {
+    "connecting": "连接中",
+    "open": "已连接",
+    "closing": "正在关闭",
+    "closed": "未连接"
+  },
+  "messages": {
+    "title": "消息",
+    "search": "搜索消息",
+    "filter": "方向",
+    "clear": "清空消息",
+    "empty": "还没有消息",
+    "emptyHint": "连接服务器后开始收发消息",
+    "noMatch": "没有匹配的消息",
+    "closeCode": "关闭码 {{code}}"
+  },
+  "filters": {
+    "all": "全部",
+    "in": "收到",
+    "out": "发送",
+    "event": "事件"
+  },
+  "kinds": {
+    "text": "文本",
+    "binary": "二进制",
+    "ping": "Ping",
+    "pong": "Pong",
+    "close": "关闭",
+    "open": "已连接",
+    "error": "错误"
+  },
+  "encodings": {
+    "text": "UTF-8 文本",
+    "hex": "十六进制",
+    "base64": "Base64"
+  },
+  "composer": {
+    "kind": "消息类型",
+    "encoding": "输入格式",
+    "send": "发送",
+    "placeholder": "要发送的消息 · ⌘/Ctrl + Enter 发送",
+    "payload": "消息"
+  },
+  "snippets": {
+    "title": "片段",
+    "save": "保存",
+    "saved": "片段已保存",
+    "clear": "删除全部片段",
+    "untitled": "未命名"
+  },
+  "detail": {
+    "title": "消息 #{{seq}}",
+    "close": "关闭",
+    "hex": "十六进制",
+    "truncated": "只显示该消息的开头部分"
+  },
+  "stages": {
+    "ws.connect": "正在连接…",
+    "ws.open": "已连接"
+  },
+  "logs": {
+    "ws": {
+      "opened": "已连接到 {{url}}",
+      "closed": "已断开，共发送 {{sent}} 条、收到 {{received}} 条消息",
+      "reset": "服务器未发送关闭帧就断开了连接",
+      "connection_lost": "连接中断：{{detail}}"
+    }
+  },
+  "errors": {
+    "ws.invalid_url": "请输入有效的 ws:// 或 wss:// 地址",
+    "ws.invalid_scheme": "请使用 ws:// 或 wss://，而不是 {{scheme}}://",
+    "ws.invalid_header": "请求头 {{name}} 无效",
+    "ws.resolve_failed": "无法解析 {{host}}",
+    "ws.refused": "服务器拒绝连接",
+    "ws.timeout": "连接超时",
+    "ws.connect_failed": "无法连接：{{detail}}",
+    "ws.tls_failed": "安全连接失败：{{detail}}",
+    "ws.rejected": "服务器拒绝了 WebSocket 升级（HTTP {{status}}）",
+    "ws.handshake_failed": "握手失败：{{detail}}",
+    "ws.no_session": "连接已结束",
+    "ws.not_open": "尚未连接",
+    "ws.invalid_hex": "请输入十六进制字节，如 48 65 6c 6c 6f",
+    "ws.invalid_base64": "请输入有效的 Base64",
+    "ws.not_utf8": "文本消息必须是有效的 UTF-8",
+    "ws.ping_too_long": "Ping 负载最多 125 字节",
+    "ws.invalid_close_code": "关闭码请使用 1000 或 3000–4999",
+    "ws.reason_too_long": "关闭原因最多 123 字节",
+    "ws.reset": "服务器未发送关闭帧就断开了连接",
+    "ws.connection_lost": "连接已中断"
+  }
+}

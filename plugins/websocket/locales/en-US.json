@@ -1,0 +1,125 @@
+{
+  "name": "WebSocket Client",
+  "description": "Connect to ws:// and wss:// endpoints, watch every message live and send text, JSON, binary or pings",
+  "help": [
+    "Enter a ws:// or wss:// URL and press Connect. Secure connections are verified against the system's trusted certificates.",
+    "Open the options to add request headers (for example Authorization or Cookie) and subprotocols such as graphql-ws. The handshake status and negotiated protocol are shown there too.",
+    "Received messages are green, sent messages blue, and connection events gray. Click a message to see it in full; JSON is formatted automatically.",
+    "Send text or JSON, binary data written as hex or base64, or a ping. Press ⌘/Ctrl + Enter to send. Save payloads you use often as snippets.",
+    "The connection keeps running while you use other tools and also appears in the task center. Disconnect sends a normal close frame."
+  ],
+  "functions": {
+    "connect": "Connect",
+    "messages": "Read messages",
+    "send": "Send message",
+    "close": "Close connection",
+    "clear": "Clear messages",
+    "pretty": "Format JSON"
+  },
+  "connection": {
+    "url": "WebSocket URL",
+    "history": "Recent URLs",
+    "options": "Headers and protocols",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "headers": "Request headers",
+    "addHeader": "Add",
+    "noHeaders": "No extra headers",
+    "headerName": "Header name",
+    "headerValue": "Header value",
+    "removeHeader": "Remove header",
+    "protocols": "Subprotocols (comma separated)",
+    "handshake": "HTTP {{status}} in {{ms}} ms · {{address}}",
+    "protocol": "protocol {{protocol}}"
+  },
+  "states": {
+    "connecting": "Connecting",
+    "open": "Connected",
+    "closing": "Closing",
+    "closed": "Disconnected"
+  },
+  "messages": {
+    "title": "Messages",
+    "search": "Search messages",
+    "filter": "Direction",
+    "clear": "Clear messages",
+    "empty": "No messages yet",
+    "emptyHint": "Connect to a server to start",
+    "noMatch": "No matching messages",
+    "closeCode": "Close code {{code}}"
+  },
+  "filters": {
+    "all": "All",
+    "in": "Received",
+    "out": "Sent",
+    "event": "Events"
+  },
+  "kinds": {
+    "text": "Text",
+    "binary": "Binary",
+    "ping": "Ping",
+    "pong": "Pong",
+    "close": "Close",
+    "open": "Connected",
+    "error": "Error"
+  },
+  "encodings": {
+    "text": "UTF-8 text",
+    "hex": "Hex",
+    "base64": "Base64"
+  },
+  "composer": {
+    "kind": "Message type",
+    "encoding": "Input format",
+    "send": "Send",
+    "placeholder": "Message to send · ⌘/Ctrl + Enter to send",
+    "payload": "Message"
+  },
+  "snippets": {
+    "title": "Snippets",
+    "save": "Save",
+    "saved": "Snippet saved",
+    "clear": "Remove all snippets",
+    "untitled": "Untitled"
+  },
+  "detail": {
+    "title": "Message #{{seq}}",
+    "close": "Close",
+    "hex": "Hex",
+    "truncated": "Only the beginning of this message is shown"
+  },
+  "stages": {
+    "ws.connect": "Connecting…",
+    "ws.open": "Connected"
+  },
+  "logs": {
+    "ws": {
+      "opened": "Connected to {{url}}",
+      "closed": "Disconnected after sending {{sent}} and receiving {{received}} messages",
+      "reset": "The server closed the connection without a close frame",
+      "connection_lost": "Connection lost: {{detail}}"
+    }
+  },
+  "errors": {
+    "ws.invalid_url": "Enter a valid ws:// or wss:// URL",
+    "ws.invalid_scheme": "Use ws:// or wss:// instead of {{scheme}}://",
+    "ws.invalid_header": "The header {{name}} is not valid",
+    "ws.resolve_failed": "Could not resolve {{host}}",
+    "ws.refused": "The server refused the connection",
+    "ws.timeout": "The connection timed out",
+    "ws.connect_failed": "Could not connect: {{detail}}",
+    "ws.tls_failed": "Secure connection failed: {{detail}}",
+    "ws.rejected": "The server rejected the WebSocket upgrade (HTTP {{status}})",
+    "ws.handshake_failed": "The handshake failed: {{detail}}",
+    "ws.no_session": "The connection has ended",
+    "ws.not_open": "Not connected",
+    "ws.invalid_hex": "Enter hexadecimal bytes such as 48 65 6c 6c 6f",
+    "ws.invalid_base64": "Enter valid Base64",
+    "ws.not_utf8": "Text messages must be valid UTF-8",
+    "ws.ping_too_long": "Ping payloads can be at most 125 bytes",
+    "ws.invalid_close_code": "Use close code 1000 or 3000–4999",
+    "ws.reason_too_long": "The close reason can be at most 123 bytes",
+    "ws.reset": "The server closed the connection without a close frame",
+    "ws.connection_lost": "The connection was lost"
+  }
+}

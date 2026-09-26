@@ -60,6 +60,7 @@ tfp-text-tools = { path = "plugins/text-tools/backend" }
 tfp-timestamp = { path = "plugins/timestamp/backend" }
 tfp-unit-converter = { path = "plugins/unit-converter/backend" }
 tfp-uuid = { path = "plugins/uuid/backend" }
+tfp-websocket = { path = "plugins/websocket/backend" }
 tfp-xml-formatter = { path = "plugins/xml-formatter/backend" }
 
 [profile.release]

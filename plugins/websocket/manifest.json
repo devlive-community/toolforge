@@ -1,0 +1,20 @@
+{
+  "id": "org.devlive.toolforge.websocket",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "network",
+  "keywords": ["websocket", "ws", "wss", "socket", "realtime", "client", "debug", "frames", "ping", "长连接", "实时", "调试", "消息"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["network", "clipboard:write"],
+  "functions": {
+    "connect": { "task": true },
+    "messages": {},
+    "send": {},
+    "close": {},
+    "clear": {},
+    "pretty": {}
+  },
+  "sensitive": false
+}
