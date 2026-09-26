@@ -1,0 +1,15 @@
+[package]
+name = "tfp-log-viewer"
+description = "ToolForge plugin: large log file viewer with filters and follow mode"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+encoding_rs = "0.8"
+memchr = "2"
+regex = "1"

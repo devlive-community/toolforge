@@ -6870,6 +6870,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-log-viewer"
+version = "0.1.0"
+dependencies = [
+ "encoding_rs",
+ "memchr",
+ "regex",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-markdown-editor"
 version = "0.1.0"
 dependencies = [
@@ -7353,6 +7365,7 @@ dependencies = [
  "tfp-json-to-code",
  "tfp-jwt",
  "tfp-local-server",
+ "tfp-log-viewer",
  "tfp-markdown-editor",
  "tfp-mock-data",
  "tfp-ocr",

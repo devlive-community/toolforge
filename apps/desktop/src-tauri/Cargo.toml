@@ -46,6 +46,7 @@ tfp-json-formatter.workspace = true
 tfp-json-to-code.workspace = true
 tfp-jwt.workspace = true
 tfp-local-server.workspace = true
+tfp-log-viewer.workspace = true
 tfp-markdown-editor.workspace = true
 tfp-mock-data.workspace = true
 tfp-ocr.workspace = true

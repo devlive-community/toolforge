@@ -1,0 +1,80 @@
+{
+  "name": "Log Viewer",
+  "description": "Open large log files, filter by level, text or regex, and follow new lines as they are written",
+  "help": [
+    "Open a log file of any size, or drop it onto the window. Lines are indexed in Rust (about 1 GB per second) and only the visible part is read, so gigabyte logs open quickly.",
+    "Levels are detected from common formats: plain text (ERROR, WARN, INFO…), [error], level=warn, JSON logs and numeric pino levels. Stack trace lines inherit the level of the line above.",
+    "Type to filter lines, turn on Aa for case-sensitive matching or .* for regular expressions, and click the level chips to show only those levels. Matches are highlighted.",
+    "Turn on Follow to watch the file like tail -f: new lines appear every second and the view stays at the end. Scroll up to pause following. Truncated or rotated files are re-indexed automatically.",
+    "Click a line to see the full text; JSON inside the line is formatted in the side panel.",
+    "UTF-8 and GB18030 (GBK) logs are detected automatically; color codes are removed."
+  ],
+  "functions": {
+    "open": "Open log",
+    "filter": "Filter lines",
+    "lines": "Read lines",
+    "line": "Line details",
+    "refresh": "Check for new lines"
+  },
+  "open": {
+    "drop": "Drop a log file here",
+    "dropHint": "Any size · or click to choose",
+    "indexing": "Indexing lines…",
+    "filter": "Logs",
+    "recent": "Recent files",
+    "forget": "Remove from recent"
+  },
+  "toolbar": {
+    "search": "Filter lines",
+    "caseSensitive": "Match case",
+    "regex": "Regular expression",
+    "follow": "Follow",
+    "reload": "Check for new lines",
+    "reloaded": "New lines loaded",
+    "unchanged": "The file has not changed",
+    "open": "Open",
+    "allLevels": "All levels"
+  },
+  "levels": {
+    "error": "Error",
+    "warn": "Warning",
+    "info": "Info",
+    "debug": "Debug",
+    "trace": "Trace",
+    "none": "Other"
+  },
+  "status": {
+    "lines": "{{total}} lines",
+    "filtered": "{{shown}} of {{total}} lines"
+  },
+  "list": {
+    "empty": "No matching lines",
+    "emptyHint": "Change the filter or level selection"
+  },
+  "detail": {
+    "title": "Line {{n}}",
+    "close": "Close",
+    "truncated": "Only the first 1 MB of this line is shown",
+    "json": "JSON"
+  },
+  "stages": {
+    "log.index": "Indexing lines…",
+    "log.filter": "Filtering…"
+  },
+  "logs": {
+    "log": {
+      "indexed": "Indexed {{lines, number}} lines ({{bytes, number}} bytes, {{encoding}}) in {{ms}} ms",
+      "filtered": "{{matches, number}} matching lines in {{ms}} ms"
+    }
+  },
+  "errors": {
+    "log.utf16_unsupported": "UTF-16 logs are not supported; save the file as UTF-8",
+    "log.not_a_file": "Choose a file, not a folder",
+    "log.invalid_regex": "Invalid regular expression: {{detail}}",
+    "log.invalid_level": "Unknown level {{level}}",
+    "log.line_out_of_range": "Line {{line}} does not exist",
+    "log.view_expired": "The filter changed; the list will reload",
+    "log.file_expired": "The file was closed; open it again",
+    "log.filter_failed": "Filtering failed"
+  }
+}

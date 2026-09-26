@@ -47,6 +47,7 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_crypto::Crypto::default()));
     registry.register(Arc::new(tfp_local_server::LocalServer::default()));
     registry.register(Arc::new(tfp_image_compressor::ImageCompressor::default()));
+    registry.register(Arc::new(tfp_log_viewer::LogViewer::default()));
     registry
 }
 

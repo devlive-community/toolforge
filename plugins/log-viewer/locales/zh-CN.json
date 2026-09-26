@@ -1,0 +1,80 @@
+{
+  "name": "日志查看",
+  "description": "打开大体积日志，按级别、文本或正则筛选，并实时跟踪新写入的行",
+  "help": [
+    "打开任意大小的日志文件，或直接拖入窗口。行索引在 Rust 中建立（约每秒 1 GB），只读取可见部分，GB 级日志也能很快打开。",
+    "自动识别常见格式中的级别：纯文本（ERROR、WARN、INFO…）、[error]、level=warn、JSON 日志与 pino 数字级别；堆栈行沿用上一行的级别。",
+    "输入文字即可筛选，开启 Aa 区分大小写、开启 .* 使用正则表达式，点击级别标签只显示对应级别，匹配内容会高亮。",
+    "开启“跟踪”后像 tail -f 一样每秒显示新写入的行并停留在末尾，向上滚动会暂停跟踪；文件被截断或轮转时会自动重新索引。",
+    "点击某一行可查看完整内容，行内的 JSON 会在侧栏中格式化显示。",
+    "自动识别 UTF-8 与 GB18030（GBK）编码，并去除颜色控制码。"
+  ],
+  "functions": {
+    "open": "打开日志",
+    "filter": "筛选",
+    "lines": "读取行",
+    "line": "行详情",
+    "refresh": "检查新行"
+  },
+  "open": {
+    "drop": "拖入日志文件",
+    "dropHint": "不限大小 · 也可点击选择",
+    "indexing": "正在建立行索引…",
+    "filter": "日志",
+    "recent": "最近打开",
+    "forget": "从最近打开中移除"
+  },
+  "toolbar": {
+    "search": "筛选行",
+    "caseSensitive": "区分大小写",
+    "regex": "正则表达式",
+    "follow": "跟踪",
+    "reload": "检查新行",
+    "reloaded": "已加载新行",
+    "unchanged": "文件没有变化",
+    "open": "打开",
+    "allLevels": "全部级别"
+  },
+  "levels": {
+    "error": "错误",
+    "warn": "警告",
+    "info": "信息",
+    "debug": "调试",
+    "trace": "跟踪",
+    "none": "其他"
+  },
+  "status": {
+    "lines": "共 {{total}} 行",
+    "filtered": "{{total}} 行中匹配 {{shown}} 行"
+  },
+  "list": {
+    "empty": "没有匹配的行",
+    "emptyHint": "修改筛选文字或级别"
+  },
+  "detail": {
+    "title": "第 {{n}} 行",
+    "close": "关闭",
+    "truncated": "仅显示该行的前 1 MB",
+    "json": "JSON"
+  },
+  "stages": {
+    "log.index": "正在建立行索引…",
+    "log.filter": "正在筛选…"
+  },
+  "logs": {
+    "log": {
+      "indexed": "已索引 {{lines, number}} 行（{{bytes, number}} 字节，{{encoding}}），用时 {{ms}} ms",
+      "filtered": "匹配 {{matches, number}} 行，用时 {{ms}} ms"
+    }
+  },
+  "errors": {
+    "log.utf16_unsupported": "不支持 UTF-16 日志，请另存为 UTF-8",
+    "log.not_a_file": "请选择文件而不是文件夹",
+    "log.invalid_regex": "正则表达式无效：{{detail}}",
+    "log.invalid_level": "未知级别 {{level}}",
+    "log.line_out_of_range": "第 {{line}} 行不存在",
+    "log.view_expired": "筛选条件已变化，列表会重新加载",
+    "log.file_expired": "文件已关闭，请重新打开",
+    "log.filter_failed": "筛选失败"
+  }
+}
