@@ -52,6 +52,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Text Tools** | 13 naming styles and letter cases; trim, dedupe, sort (natural, by length), shuffle and number lines; character, word, CJK and reading-time statistics |
 | **Text Diff** | Line, word or character diff with side-by-side highlighting, ignore case / whitespace and unified patch export |
 | **Batch Rename** | Rename many files with chained rules (replace / regex, insert, remove, case, numbering, templates with dates and EXIF capture time), a live conflict-checked preview, safe two-phase renaming and undo |
+| **Archive Manager** | Browse, preview and extract ZIP, 7z, TAR and tar.gz / bz2 / xz / zst archives (encrypted ZIP and 7z included) with path-traversal protection, and create ZIP, 7z, tar.gz or tar.xz archives with AES-256 passwords — all in pure Rust |
 | **Format Converter** | JSON ⇄ YAML ⇄ TOML ⇄ CSV with automatic detection, preserved key order and CSV delimiter / header / type options |
 | **Base Converter** | Arbitrary-precision integers in bases 2–36, prefix detection, two's complement for 8–128 bits and a clickable 64-bit view |
 | **Color Converter** | HEX / RGB / HSL / HSV / HWB / CMYK / Lab / OKLCH, WCAG contrast checks, tints, shades and harmonies |
