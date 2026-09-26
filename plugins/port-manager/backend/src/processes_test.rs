@@ -30,10 +30,27 @@ fn refuses_protected_processes() {
     assert_eq!(err.code, "port.process_not_found");
 }
 
-#[cfg(unix)]
+/// 启动一个会持续约 30 秒的子进程（Windows 没有 sleep 命令）
+fn long_running_child() -> std::process::Child {
+    #[cfg(windows)]
+    let mut command = {
+        let mut command = Command::new("ping");
+        command.args(["-n", "30", "127.0.0.1"]);
+        command
+    };
+    #[cfg(not(windows))]
+    let mut command = {
+        let mut command = Command::new("sleep");
+        command.arg("30");
+        command
+    };
+    command.stdout(std::process::Stdio::null()).spawn().unwrap()
+}
+
+/// Unix 发送 SIGTERM；Windows 不支持时退回为结束进程
 #[test]
 fn terminates_a_child_process() {
-    let mut child = Command::new("sleep").arg("30").spawn().unwrap();
+    let mut child = long_running_child();
     terminate(TerminateArgs {
         pid: child.id(),
         force: false,

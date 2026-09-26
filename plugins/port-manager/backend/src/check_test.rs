@@ -71,8 +71,12 @@ fn checks_local_ports() {
     // 并行测试时端口状态可能短暂变化，只要求判定为未开放
     let closed = find(closed_port);
     assert!(!closed.open, "{closed:?}");
+    // Windows 连接本机关闭的端口会重试约 2 秒，超过超时时间时结果为 timeout
     assert!(
-        matches!(closed.reason.as_deref(), Some("refused" | "other")),
+        matches!(
+            closed.reason.as_deref(),
+            Some("refused" | "timeout" | "other")
+        ),
         "{closed:?}"
     );
 }
