@@ -6511,6 +6511,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-mock-data"
+version = "0.1.0"
+dependencies = [
+ "jiff",
+ "rand 0.9.5",
+ "rand_chacha 0.9.0",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-ocr"
 version = "0.1.0"
 dependencies = [
@@ -6958,6 +6970,7 @@ dependencies = [
  "tfp-json-to-code",
  "tfp-jwt",
  "tfp-markdown-editor",
+ "tfp-mock-data",
  "tfp-ocr",
  "tfp-password",
  "tfp-port-manager",

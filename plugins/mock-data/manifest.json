@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.mock-data",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["mock", "fake", "test data", "faker", "seed", "sql insert", "json", "csv", "id card", "模拟数据", "测试数据", "假数据", "身份证", "手机号"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "functions": {
+    "generate": {},
+    "save": {}
+  },
+  "sensitive": false
+}
