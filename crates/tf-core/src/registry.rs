@@ -116,6 +116,28 @@ impl PluginRegistry {
         suggestions
     }
 
+    /// 剪贴板中是图片时，询问哪些插件可以处理
+    pub fn detect_image(&self, width: u32, height: u32) -> Vec<Suggestion> {
+        if width == 0 || height == 0 {
+            return Vec::new();
+        }
+        let mut suggestions: Vec<Suggestion> = self
+            .plugins
+            .iter()
+            .filter_map(|(id, plugin)| {
+                plugin
+                    .detect_image(width, height)
+                    .filter(|d| d.score >= MIN_SCORE)
+                    .map(|detection| Suggestion {
+                        plugin_id: id.clone(),
+                        detection,
+                    })
+            })
+            .collect();
+        suggestions.sort_by_key(|s| std::cmp::Reverse(s.detection.score));
+        suggestions
+    }
+
     /// 普通调用；声明为任务的函数必须通过 [`Self::run_task`] 运行
     pub fn call(&self, plugin_id: &str, function: &str, args: Value) -> AppResult<Value> {
         let (plugin, task) = self.resolve(plugin_id, function)?;

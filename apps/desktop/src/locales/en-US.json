@@ -39,7 +39,8 @@
       "darkTheme": "Switch to dark theme",
       "lightTheme": "Switch to light theme",
       "clipboard": "From clipboard",
-      "tools": "Tools"
+      "tools": "Tools",
+      "clipboardImage": "Image · {{width}} × {{height}}"
     },
     "home": {
       "title": "Welcome to ToolForge",

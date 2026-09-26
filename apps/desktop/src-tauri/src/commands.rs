@@ -158,6 +158,8 @@ pub struct ClipboardSuggestions {
     /// 剪贴板文本；没有推荐时为空，避免无谓地把内容传给界面
     text: Option<String>,
     preview: String,
+    /// 剪贴板中是图片时的尺寸（宽、高）；图片内容不传给界面，由插件自行读取
+    image: Option<(u32, u32)>,
     suggestions: Vec<tf_core::Suggestion>,
 }
 
@@ -168,14 +170,29 @@ pub async fn clipboard_suggestions(
     state: State<'_, AppState>,
 ) -> AppResult<ClipboardSuggestions> {
     use tauri_plugin_clipboard_manager::ClipboardExt;
-    // 剪贴板里没有文本（例如图片）时视为空
     let text = app.clipboard().read_text().unwrap_or_default();
+    // 没有文本时再看是否为图片（例如截图）
+    let image = text
+        .trim()
+        .is_empty()
+        .then(|| app.clipboard().read_image().ok())
+        .flatten()
+        .map(|image| (image.width(), image.height()));
     let registry = state.plugins.clone();
     tauri::async_runtime::spawn_blocking(move || {
+        if let Some((width, height)) = image {
+            return ClipboardSuggestions {
+                text: None,
+                preview: String::new(),
+                image: Some((width, height)),
+                suggestions: registry.detect_image(width, height),
+            };
+        }
         let suggestions = registry.detect(&text);
         ClipboardSuggestions {
             preview: tf_core::preview(&text, 80),
             text: (!suggestions.is_empty()).then(|| text.trim().to_owned()),
+            image: None,
             suggestions,
         }
     })

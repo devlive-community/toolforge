@@ -180,6 +180,12 @@ pub trait ToolPlugin: Send + Sync {
         None
     }
 
+    /// 剪贴板中是图片时能否处理（只提供尺寸，插件需要时自行读取剪贴板）；默认不处理。
+    fn detect_image(&self, width: u32, height: u32) -> Option<Detection> {
+        let _ = (width, height);
+        None
+    }
+
     /// 调用插件函数，参数与返回值均为 JSON。
     fn call(&self, function: &str, args: Value) -> PluginResult<Value>;
 

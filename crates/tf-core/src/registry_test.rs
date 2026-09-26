@@ -117,3 +117,44 @@ fn previews_text_on_one_line() {
     assert_eq!(preview("abc", 3), "abc");
     assert_eq!(preview("ab cd", 4), "ab c…");
 }
+
+struct Viewer(Manifest, u8);
+
+impl ToolPlugin for Viewer {
+    fn manifest(&self) -> &Manifest {
+        &self.0
+    }
+
+    fn call(&self, function: &str, _: Value) -> PluginResult<Value> {
+        Err(unknown_function(function))
+    }
+
+    fn detect_image(&self, width: u32, _: u32) -> Option<tf_plugin_api::Detection> {
+        (width >= 10).then(|| tf_plugin_api::Detection::new(self.1, "image"))
+    }
+}
+
+fn viewer(id: &str, score: u8) -> Arc<dyn ToolPlugin> {
+    let manifest = Manifest::from_static(&format!(
+        r#"{{"id":"{id}","version":"1.0.0","name":"n","description":"d","category":"image","functions":{{}}}}"#
+    ));
+    Arc::new(Viewer(manifest, score))
+}
+
+#[test]
+fn ranks_image_detections() {
+    let mut registry = registry();
+    registry.register(viewer("qr", 70));
+    registry.register(viewer("ocr", 80));
+    registry.register(viewer("weak", 10));
+    let ids: Vec<String> = registry
+        .detect_image(100, 50)
+        .into_iter()
+        .map(|s| s.plugin_id)
+        .collect();
+    assert_eq!(ids, vec!["ocr", "qr"]);
+    assert!(registry.detect_image(5, 50).is_empty());
+    assert!(registry.detect_image(0, 0).is_empty());
+    // 文本识别不受影响
+    assert!(registry.detect("hello").is_empty());
+}

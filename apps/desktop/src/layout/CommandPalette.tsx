@@ -25,6 +25,8 @@ interface Entry {
 interface ClipboardSuggestions {
   text: string | null
   preview: string
+  /** 剪贴板是图片时的宽高 */
+  image: [number, number] | null
   suggestions: { pluginId: string; score: number; label: string; params?: Record<string, unknown> }[]
 }
 
@@ -83,8 +85,10 @@ function PaletteContent() {
   }, [clipboardSuggest])
 
   const suggestions = useMemo<Entry[]>(() => {
-    const content = clip?.text
-    if (!content) return []
+    if (!clip) return []
+    // 图片由插件自行读取剪贴板，传空文本
+    const content = clip.image ? '' : clip.text
+    if (content == null || (!content && !clip.image)) return []
     return clip.suggestions.slice(0, MAX_SUGGESTIONS).flatMap((suggestion) => {
       const manifest = plugins.find((p) => p.id === suggestion.pluginId)
       if (!manifest) return []
@@ -192,7 +196,7 @@ function PaletteContent() {
                     <ClipboardList className="size-3.5" />
                     {t('palette.clipboard')}
                     <span className="min-w-0 flex-1 truncate font-mono font-normal" data-selectable>
-                      {clip?.preview}
+                      {clip?.image ? t('palette.clipboardImage', { width: clip.image[0], height: clip.image[1] }) : clip?.preview}
                     </span>
                   </>
                 ) : (

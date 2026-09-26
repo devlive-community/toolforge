@@ -39,7 +39,8 @@
       "darkTheme": "切换到暗色主题",
       "lightTheme": "切换到亮色主题",
       "clipboard": "来自剪贴板",
-      "tools": "工具"
+      "tools": "工具",
+      "clipboardImage": "图片 · {{width}} × {{height}}"
     },
     "home": {
       "title": "欢迎使用 ToolForge",
