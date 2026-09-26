@@ -27,11 +27,10 @@ fn site() -> (Config, PathBuf) {
     (config, root)
 }
 
-fn rand_suffix() -> u128 {
-    std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .unwrap()
-        .as_nanos()
+/// 每个测试使用独立目录；macOS 时钟只有微秒精度，时间戳作为目录名会在并行测试中冲突
+fn rand_suffix() -> usize {
+    static NEXT: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+    NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
 }
 
 fn header<'a>(reply: &'a Reply, name: &str) -> Option<&'a str> {
