@@ -6192,6 +6192,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-ocr"
+version = "0.1.0"
+dependencies = [
+ "arboard",
+ "data-encoding",
+ "image",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tract-onnx",
+]
+
+[[package]]
 name = "tfp-password"
 version = "0.1.0"
 dependencies = [
@@ -6613,6 +6626,7 @@ dependencies = [
  "tfp-json-to-code",
  "tfp-jwt",
  "tfp-markdown-editor",
+ "tfp-ocr",
  "tfp-password",
  "tfp-qrcode",
  "tfp-regex",

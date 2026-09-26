@@ -1,0 +1,75 @@
+{
+  "name": "文字识别",
+  "description": "离线识别图片与截图中的中英文文字",
+  "help": [
+    "在本机用 Rust 运行 PaddleOCR PP-OCRv4 模型，图片不会离开你的电脑。",
+    "首次使用需下载两个模型（共约 15 MB），支持断点续传与镜像回退，并用 SHA-256 校验。",
+    "打开或拖入图片，或按 ⌘/Ctrl+V 识别剪贴板中的截图。",
+    "鼠标悬停在框上可查看文字，点击即可复制该行；识别结果可以先编辑再复制。"
+  ],
+  "functions": {
+    "recognize": "识别文字"
+  },
+  "resources": {
+    "ppocr-v4-det": {
+      "name": "文字检测（PP-OCRv4）",
+      "description": "定位图片中的文字区域"
+    },
+    "ppocr-v4-rec": {
+      "name": "文字识别（PP-OCRv4）",
+      "description": "识别中文、英文、数字与符号"
+    }
+  },
+  "model": {
+    "title": "模型",
+    "hint": "模型下载后即可离线使用。",
+    "required": "请先下载两个模型",
+    "downloadAll": "下载模型"
+  },
+  "source": {
+    "title": "图片",
+    "drop": "拖入图片或点击打开",
+    "dropHint": "也可以按 ⌘/Ctrl+V 粘贴截图",
+    "open": "打开图片",
+    "paste": "粘贴截图",
+    "filter": "图片",
+    "cancel": "取消"
+  },
+  "stages": {
+    "ocr": {
+      "load": "正在加载…",
+      "detect": "正在定位文字…",
+      "recognize": "正在识别文字…"
+    },
+    "lines": "正在识别 {{done}} / {{total}} 行"
+  },
+  "result": {
+    "placeholder": "识别出的文字会显示在这里",
+    "placeholderHint": "打开图片或粘贴截图开始识别",
+    "clipboard": "剪贴板图片",
+    "size": "{{width}} × {{height}}",
+    "boxes": "显示文字框",
+    "text": "文字",
+    "lines": "{{count}} 行",
+    "confidence": "置信度 {{value}}%",
+    "confidenceHint": "所有识别行的平均置信度",
+    "empty": "这张图片中没有找到文字",
+    "elapsed": "识别用时 {{ms}} 毫秒"
+  },
+  "logs": {
+    "ocr": {
+      "model_loaded": "模型加载用时 {{ms}} 毫秒",
+      "regions": "找到 {{count}} 个文字区域",
+      "done": "识别出 {{lines}} 行，用时 {{ms}} 毫秒"
+    }
+  },
+  "errors": {
+    "ocr.model_invalid": "无法加载模型文件：{{detail}}",
+    "ocr.inference_failed": "模型运行失败：{{detail}}",
+    "ocr.decode_failed": "无法解码图片：{{detail}}",
+    "ocr.unsupported": "不支持的图片格式",
+    "ocr.file_too_large": "图片超过 {{limit}}",
+    "ocr.too_many_pixels": "图片尺寸过大（{{width}} × {{height}}）",
+    "ocr.clipboard_empty": "剪贴板中没有图片"
+  }
+}

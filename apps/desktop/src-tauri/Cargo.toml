@@ -43,6 +43,7 @@ tfp-json-formatter.workspace = true
 tfp-json-to-code.workspace = true
 tfp-jwt.workspace = true
 tfp-markdown-editor.workspace = true
+tfp-ocr.workspace = true
 tfp-password.workspace = true
 tfp-qrcode.workspace = true
 tfp-regex.workspace = true

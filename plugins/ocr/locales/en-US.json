@@ -1,0 +1,75 @@
+{
+  "name": "OCR",
+  "description": "Extract Chinese and English text from images and screenshots, fully offline",
+  "help": [
+    "Runs PaddleOCR PP-OCRv4 models in Rust on your machine; images never leave your computer.",
+    "Download the two models once (about 15 MB in total). Downloads resume if interrupted, fall back to mirrors and are verified with SHA-256.",
+    "Open or drop an image, or press ⌘/Ctrl+V to recognize a screenshot from the clipboard.",
+    "Hover a box to see its text and click it to copy that line. The recognized text can be edited before copying."
+  ],
+  "functions": {
+    "recognize": "Recognize text"
+  },
+  "resources": {
+    "ppocr-v4-det": {
+      "name": "Text detection (PP-OCRv4)",
+      "description": "Finds where the text is"
+    },
+    "ppocr-v4-rec": {
+      "name": "Text recognition (PP-OCRv4)",
+      "description": "Reads Chinese, English, digits and symbols"
+    }
+  },
+  "model": {
+    "title": "Models",
+    "hint": "Models run offline once downloaded.",
+    "required": "Download both models first",
+    "downloadAll": "Download models"
+  },
+  "source": {
+    "title": "Image",
+    "drop": "Drop an image or click to open",
+    "dropHint": "Or press ⌘/Ctrl+V to paste a screenshot",
+    "open": "Open image",
+    "paste": "Paste screenshot",
+    "filter": "Images",
+    "cancel": "Cancel"
+  },
+  "stages": {
+    "ocr": {
+      "load": "Loading…",
+      "detect": "Finding text…",
+      "recognize": "Reading text…"
+    },
+    "lines": "Reading lines {{done}} / {{total}}"
+  },
+  "result": {
+    "placeholder": "Recognized text appears here",
+    "placeholderHint": "Open an image or paste a screenshot to start",
+    "clipboard": "Clipboard image",
+    "size": "{{width}} × {{height}}",
+    "boxes": "Show boxes",
+    "text": "Text",
+    "lines": "{{count}} lines",
+    "confidence": "{{value}}% confidence",
+    "confidenceHint": "Average confidence of the recognized lines",
+    "empty": "No text found in this image",
+    "elapsed": "Recognized in {{ms}} ms"
+  },
+  "logs": {
+    "ocr": {
+      "model_loaded": "Loaded models in {{ms}} ms",
+      "regions": "Found {{count}} text regions",
+      "done": "Recognized {{lines}} lines in {{ms}} ms"
+    }
+  },
+  "errors": {
+    "ocr.model_invalid": "The model file could not be loaded: {{detail}}",
+    "ocr.inference_failed": "The model failed to run: {{detail}}",
+    "ocr.decode_failed": "The image could not be decoded: {{detail}}",
+    "ocr.unsupported": "Not a supported image format",
+    "ocr.file_too_large": "The image is larger than {{limit}}",
+    "ocr.too_many_pixels": "The image is too large ({{width}} × {{height}})",
+    "ocr.clipboard_empty": "There is no image on the clipboard"
+  }
+}

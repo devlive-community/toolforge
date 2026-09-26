@@ -1,0 +1,39 @@
+{
+  "id": "org.devlive.toolforge.ocr",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": ["ocr", "text recognition", "screenshot", "extract text", "image to text", "paddleocr", "chinese", "文字识别", "图片转文字", "截图识别", "提取文字"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected", "clipboard:read", "clipboard:write", "network:resources"],
+  "functions": {
+    "recognize": { "task": true }
+  },
+  "sensitive": false,
+  "resources": [
+    {
+      "id": "ppocr-v4-det",
+      "urls": [
+        "https://huggingface.co/SWHL/RapidOCR/resolve/main/PP-OCRv4/ch_PP-OCRv4_det_infer.onnx",
+        "https://hf-mirror.com/SWHL/RapidOCR/resolve/main/PP-OCRv4/ch_PP-OCRv4_det_infer.onnx",
+        "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/master/onnx/PP-OCRv4/det/ch_PP-OCRv4_det_mobile.onnx"
+      ],
+      "sha256": "d2a7720d45a54257208b1e13e36a8479894cb74155a5efe29462512d42f49da9",
+      "size": 4745517,
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "ppocr-v4-rec",
+      "urls": [
+        "https://huggingface.co/SWHL/RapidOCR/resolve/main/PP-OCRv4/ch_PP-OCRv4_rec_infer.onnx",
+        "https://hf-mirror.com/SWHL/RapidOCR/resolve/main/PP-OCRv4/ch_PP-OCRv4_rec_infer.onnx",
+        "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/master/onnx/PP-OCRv4/rec/ch_PP-OCRv4_rec_mobile.onnx"
+      ],
+      "sha256": "48fc40f24f6d2a207a2b1091d3437eb3cc3eb6b676dc3ef9c37384005483683b",
+      "size": 10857958,
+      "license": "Apache-2.0"
+    }
+  ]
+}
