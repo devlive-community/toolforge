@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.port-manager",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "network",
+  "keywords": ["port", "listen", "lsof", "netstat", "process", "kill", "pid", "tcp", "udp", "occupied", "端口", "端口占用", "进程", "结束进程", "连通性"],
+  "accent": "pink",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["network", "process"],
+  "functions": {
+    "list": {},
+    "terminate": {},
+    "check": { "task": true }
+  },
+  "sensitive": false
+}

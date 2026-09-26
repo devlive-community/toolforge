@@ -41,6 +41,7 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_curl_converter::CurlConverter::default()));
     registry.register(Arc::new(tfp_csv_viewer::CsvViewer::default()));
     registry.register(Arc::new(tfp_ocr::Ocr::default()));
+    registry.register(Arc::new(tfp_port_manager::PortManager::default()));
     registry
 }
 

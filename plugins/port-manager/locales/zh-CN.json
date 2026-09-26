@@ -1,0 +1,118 @@
+{
+  "name": "端口管理",
+  "description": "查看端口被哪个进程占用并结束进程，检查远程端口是否可达",
+  "help": [
+    "列出本机所有监听中的 TCP 端口与已绑定的 UDP 端口，以及所属进程、用户与内存占用。",
+    "可以按端口、PID、进程名、地址或命令行搜索；打开「显示连接」可同时查看已建立的 TCP 连接。",
+    "「仅本机」表示只监听 127.0.0.1 或 ::1，其他设备无法访问；「所有网卡」表示局域网内的设备也能访问。",
+    "结束进程时默认先请求进程正常退出，勾选强制则立即结束。部分系统进程需要管理员权限，可能无法显示名称。",
+    "远程检查会逐个尝试 TCP 连接，例如 80,443,8000-8010（最多 1024 个端口）。"
+  ],
+  "functions": {
+    "list": "列出端口",
+    "terminate": "结束进程",
+    "check": "检查端口"
+  },
+  "tabs": {
+    "local": "本机端口",
+    "remote": "远程检查"
+  },
+  "local": {
+    "title": "端口",
+    "search": "端口、PID、进程名或地址",
+    "protocol": "协议",
+    "all": "全部",
+    "connections": "显示连接",
+    "auto": "自动刷新",
+    "refresh": "刷新",
+    "count": "{{shown}} / {{total}}",
+    "port": "端口",
+    "address": "地址",
+    "state": "状态",
+    "process": "进程",
+    "user": "用户",
+    "memory": "内存",
+    "loopback": "仅本机",
+    "loopbackHint": "只能从这台电脑访问",
+    "wildcard": "所有网卡",
+    "wildcardHint": "局域网内的其他设备也能访问",
+    "unknown": "未知",
+    "unknownHint": "进程属于其他用户或系统，没有管理员权限时无法读取",
+    "reveal": "在文件夹中显示程序",
+    "empty": "没有匹配的端口"
+  },
+  "states": {
+    "listen": "监听中",
+    "bound": "已绑定",
+    "established": "已连接",
+    "syn_sent": "正在连接",
+    "syn_received": "收到连接",
+    "fin_wait1": "等待关闭 1",
+    "fin_wait2": "等待关闭 2",
+    "close_wait": "等待关闭",
+    "closing": "正在关闭",
+    "last_ack": "最后确认",
+    "time_wait": "TIME_WAIT",
+    "closed": "已关闭"
+  },
+  "terminate": {
+    "action": "结束进程",
+    "title": "结束这个进程？",
+    "description": "{{name}}（PID {{pid}}）正在占用端口 {{port}}，其中未保存的内容可能会丢失。",
+    "force": "立即强制结束",
+    "hint": "不勾选时会请求进程正常退出，让它先完成清理。",
+    "confirm": "结束",
+    "cancel": "取消",
+    "done": "已结束 {{name}}（PID {{pid}}）"
+  },
+  "remote": {
+    "title": "结果",
+    "host": "主机",
+    "ports": "端口",
+    "portsHint": "80,443,8000-8010",
+    "presets": "预设",
+    "timeout": "超时",
+    "ms": "{{ms}} 毫秒",
+    "check": "检查",
+    "cancel": "取消",
+    "resultTitle": "{{host}}（{{address}}）",
+    "summary": "{{open}} / {{total}} 个开放",
+    "elapsed": "检查用时 {{ms}} 毫秒",
+    "progress": "已检查 {{done}} / {{total}}",
+    "openHint": "端口接受了 TCP 连接",
+    "placeholder": "检查主机上的端口是否可达",
+    "placeholderHint": "输入主机与端口后点击检查",
+    "fakeIp": "{{address}} 是代理软件在 fake-ip 模式下返回的虚假地址，结果反映的是代理的行为，而非真实服务器。"
+  },
+  "presets": {
+    "common": "常用服务",
+    "web": "Web 开发",
+    "databases": "数据库"
+  },
+  "reasons": {
+    "refused": "连接被拒绝：该端口没有程序在监听",
+    "timeout": "连接超时：可能被防火墙丢弃",
+    "unreachable": "主机或网络不可达",
+    "other": "连接失败"
+  },
+  "reasonsShort": {
+    "refused": "关闭",
+    "timeout": "超时",
+    "unreachable": "不可达",
+    "other": "失败"
+  },
+  "detect": {
+    "endpoint": "检查 {{host}}:{{port}}"
+  },
+  "errors": {
+    "port.list_failed": "无法读取端口列表：{{detail}}",
+    "port.protected_process": "不能结束进程 {{pid}}",
+    "port.process_not_found": "进程 {{pid}} 已经不在运行",
+    "port.terminate_failed": "无法结束进程 {{pid}}，可能需要管理员权限",
+    "port.invalid_ports": "无效的端口：{{value}}",
+    "port.too_many_ports": "一次最多检查 {{max}} 个端口",
+    "port.no_ports": "请至少输入一个端口",
+    "port.no_host": "请输入主机",
+    "port.resolve_failed": "无法解析 {{host}}"
+  }
+}

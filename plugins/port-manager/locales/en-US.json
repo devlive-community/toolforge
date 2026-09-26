@@ -1,0 +1,118 @@
+{
+  "name": "Port Manager",
+  "description": "See which process is using a port, stop it, and check whether remote ports are reachable",
+  "help": [
+    "Lists every TCP port that is listening and every bound UDP port on this machine, together with the owning process, its user and memory.",
+    "Search by port, PID, process name, address or command line. Turn on connections to also see established TCP connections.",
+    "“Local only” ports listen on 127.0.0.1 or ::1 and cannot be reached from other devices; “All interfaces” ports are reachable from your network.",
+    "Stopping a process asks it to exit first; choose force to kill it immediately. Some system processes need administrator rights and may not be listed with a name.",
+    "The remote check tries a TCP connection to each port, for example 80,443,8000-8010 (up to 1024 ports)."
+  ],
+  "functions": {
+    "list": "List ports",
+    "terminate": "Stop process",
+    "check": "Check ports"
+  },
+  "tabs": {
+    "local": "Local ports",
+    "remote": "Remote check"
+  },
+  "local": {
+    "title": "Ports",
+    "search": "Port, PID, process or address",
+    "protocol": "Protocol",
+    "all": "All",
+    "connections": "Show connections",
+    "auto": "Auto refresh",
+    "refresh": "Refresh",
+    "count": "{{shown}} of {{total}}",
+    "port": "Port",
+    "address": "Address",
+    "state": "State",
+    "process": "Process",
+    "user": "User",
+    "memory": "Memory",
+    "loopback": "Local only",
+    "loopbackHint": "Only reachable from this computer",
+    "wildcard": "All interfaces",
+    "wildcardHint": "Reachable from other devices on your network",
+    "unknown": "Unknown",
+    "unknownHint": "The process belongs to another user or the system and cannot be read without administrator rights",
+    "reveal": "Show program in folder",
+    "empty": "No ports match"
+  },
+  "states": {
+    "listen": "Listening",
+    "bound": "Bound",
+    "established": "Established",
+    "syn_sent": "SYN sent",
+    "syn_received": "SYN received",
+    "fin_wait1": "FIN wait 1",
+    "fin_wait2": "FIN wait 2",
+    "close_wait": "Close wait",
+    "closing": "Closing",
+    "last_ack": "Last ACK",
+    "time_wait": "Time wait",
+    "closed": "Closed"
+  },
+  "terminate": {
+    "action": "Stop process",
+    "title": "Stop this process?",
+    "description": "{{name}} (PID {{pid}}) is using port {{port}}. Unsaved work in it may be lost.",
+    "force": "Force stop immediately",
+    "hint": "Without force, the process is asked to exit so it can clean up first.",
+    "confirm": "Stop",
+    "cancel": "Cancel",
+    "done": "Stopped {{name}} (PID {{pid}})"
+  },
+  "remote": {
+    "title": "Results",
+    "host": "Host",
+    "ports": "Ports",
+    "portsHint": "80,443,8000-8010",
+    "presets": "Presets",
+    "timeout": "Timeout",
+    "ms": "{{ms}} ms",
+    "check": "Check",
+    "cancel": "Cancel",
+    "resultTitle": "{{host}} ({{address}})",
+    "summary": "{{open}} / {{total}} open",
+    "elapsed": "Checked in {{ms}} ms",
+    "progress": "Checked {{done}} / {{total}}",
+    "openHint": "The port accepted a TCP connection",
+    "placeholder": "Check whether ports on a host are reachable",
+    "placeholderHint": "Enter a host and ports, then press Check",
+    "fakeIp": "{{address}} is a fake IP returned by your proxy (fake-ip mode). The results show what the proxy accepts, not the real server."
+  },
+  "presets": {
+    "common": "Common services",
+    "web": "Web development",
+    "databases": "Databases"
+  },
+  "reasons": {
+    "refused": "Connection refused: nothing is listening on this port",
+    "timeout": "Timed out: a firewall may be dropping the connection",
+    "unreachable": "The host or network is unreachable",
+    "other": "The connection failed"
+  },
+  "reasonsShort": {
+    "refused": "Closed",
+    "timeout": "Timeout",
+    "unreachable": "Unreachable",
+    "other": "Failed"
+  },
+  "detect": {
+    "endpoint": "Check {{host}}:{{port}}"
+  },
+  "errors": {
+    "port.list_failed": "Could not read the port list: {{detail}}",
+    "port.protected_process": "Process {{pid}} cannot be stopped",
+    "port.process_not_found": "Process {{pid}} is no longer running",
+    "port.terminate_failed": "Could not stop process {{pid}}; it may need administrator rights",
+    "port.invalid_ports": "Invalid port: {{value}}",
+    "port.too_many_ports": "Check at most {{max}} ports at a time",
+    "port.no_ports": "Enter at least one port",
+    "port.no_host": "Enter a host",
+    "port.resolve_failed": "Could not resolve {{host}}"
+  }
+}

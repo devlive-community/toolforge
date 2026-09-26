@@ -40,6 +40,7 @@ tfp-jwt = { path = "plugins/jwt/backend" }
 tfp-markdown-editor = { path = "plugins/markdown-editor/backend" }
 tfp-ocr = { path = "plugins/ocr/backend" }
 tfp-password = { path = "plugins/password/backend" }
+tfp-port-manager = { path = "plugins/port-manager/backend" }
 tfp-qrcode = { path = "plugins/qrcode/backend" }
 tfp-regex = { path = "plugins/regex/backend" }
 tfp-sql-formatter = { path = "plugins/sql-formatter/backend" }
