@@ -1,0 +1,152 @@
+{
+  "name": "Batch Rename",
+  "description": "Rename many files at once with rules, a live preview, conflict checks and undo",
+  "help": [
+    "Add files or folders (turn on “Include subfolders” to add their contents too), then build a list of rules. Rules run from top to bottom and the preview updates as you type.",
+    "Replace supports plain text or regular expressions ($1 inserts a group). Insert, Remove and Case work on the name, the extension or the whole file name.",
+    "Numbering and {n} count files in the chosen sort order. Natural name order puts file2 before file10.",
+    "Templates build a new name from tokens: {name} {ext} {n} {n:3} {parent} {date:%Y-%m-%d} and {exif:%Y%m%d_%H%M%S}, which uses the photo's capture time and falls back to the modified time.",
+    "Nothing is renamed while any file shows a conflict (two files would get the same name, or a file already exists) or an invalid name.",
+    "Files are renamed in two steps, so swapping names and changing only upper/lower case work. If a step fails, everything is moved back. Undo restores the last batch."
+  ],
+  "functions": {
+    "scan": "Add files",
+    "preview": "Preview",
+    "apply": "Rename files",
+    "undo": "Undo rename"
+  },
+  "rules": {
+    "title": "Rules",
+    "add": "Add rule",
+    "empty": "No rules yet",
+    "emptyHint": "Add a rule to change the file names",
+    "enabled": "Enabled",
+    "up": "Move up",
+    "down": "Move down",
+    "remove": "Remove rule"
+  },
+  "kinds": {
+    "replace": "Replace text",
+    "insert": "Insert text",
+    "remove": "Remove characters",
+    "case": "Change case",
+    "number": "Numbering",
+    "template": "Template",
+    "extension": "Extension",
+    "clean": "Clean up"
+  },
+  "fields": {
+    "find": "Find",
+    "replace": "Replace with",
+    "caseSensitive": "Match case",
+    "regex": "Regular expression",
+    "part": "Apply to",
+    "place": "Position",
+    "index": "At character",
+    "text": "Text",
+    "count": "Characters",
+    "mode": "Change to",
+    "start": "Start",
+    "step": "Step",
+    "pad": "Digits",
+    "separator": "Separator",
+    "pattern": "Pattern",
+    "templateHint": "Click a token to append it. Dates use strftime codes such as %Y %m %d %H %M %S.",
+    "extension": "New extension",
+    "collapseSpaces": "Merge spaces",
+    "trim": "Trim",
+    "removeIllegal": "Remove <>:\"/\\|?*",
+    "spacesTo": "Replace spaces with",
+    "keepSpaces": "Keep spaces"
+  },
+  "parts": {
+    "stem": "Name",
+    "ext": "Extension",
+    "full": "Whole file name"
+  },
+  "places": {
+    "start": "Start",
+    "end": "End",
+    "index": "Position"
+  },
+  "cases": {
+    "lower": "lowercase",
+    "upper": "UPPERCASE",
+    "title": "Title Case",
+    "sentence": "Sentence case"
+  },
+  "extensions": {
+    "lower": "lowercase",
+    "upper": "UPPERCASE",
+    "set": "Change to…",
+    "remove": "Remove"
+  },
+  "sorts": {
+    "added": "Order added",
+    "name": "Name",
+    "modified": "Modified time",
+    "size": "Size"
+  },
+  "files": {
+    "title": "Preview",
+    "sort": "Sort",
+    "add": "Add files",
+    "addFolder": "Add folder",
+    "recursive": "Include subfolders",
+    "recursiveHint": "When adding a folder, also add files in its subfolders",
+    "drop": "Drop files or folders here",
+    "dropHint": "Or click to choose files",
+    "skipped": "Only the first 10,000 files were added; {{count}} were skipped",
+    "summary": "{{changes}} to rename · {{problems}} problems",
+    "none": "No files"
+  },
+  "status": {
+    "unchanged": "Same",
+    "ok": "Rename",
+    "conflict": "Conflict",
+    "invalid": "Invalid",
+    "missing": "Missing"
+  },
+  "reasons": {
+    "rename.duplicate": "Another file in this list would get the same name",
+    "rename.exists": "A file with this name already exists",
+    "rename.empty": "The new name is empty",
+    "rename.too_long": "The new name is longer than 255 bytes",
+    "rename.illegal_chars": "The new name contains characters that are not allowed",
+    "rename.trailing_dot": "Names cannot end with a dot or space on Windows",
+    "rename.reserved": "This name is reserved by Windows",
+    "fs.not_found": "The file no longer exists",
+    "unknown": "This file cannot be renamed"
+  },
+  "apply": {
+    "run": "Rename {{count}} files",
+    "done": "Renamed {{count}} files",
+    "undo": "Undo",
+    "undoHint": "Restore {{count}} files renamed at {{time}}",
+    "undone": "Restored {{count}} file names"
+  },
+  "stages": {
+    "rename.check": "Checking…",
+    "rename.apply": "Renaming…",
+    "rename.undo": "Undoing…"
+  },
+  "logs": {
+    "rename": {
+      "renamed": "{{from}} → {{to}}",
+      "done": "Renamed {{count}} files in {{ms}} ms",
+      "undone": "Restored {{count}} file names",
+      "rolled_back": "Failed ({{code}}); all files were moved back"
+    }
+  },
+  "errors": {
+    "rename.invalid_regex": "Invalid regular expression: {{detail}}",
+    "rename.unknown_token": "Unknown template token {{token}}",
+    "rename.invalid_token": "Invalid template token {{token}}",
+    "rename.has_conflicts": "Resolve {{count}} problems before renaming",
+    "rename.nothing_to_do": "No file names change",
+    "rename.failed": "Could not rename {{path}}: {{detail}}",
+    "rename.target_appeared": "{{path}} appeared while renaming; nothing was changed",
+    "rename.undo_missing": "{{path}} no longer exists, so the batch cannot be undone",
+    "rename.undo_occupied": "{{path}} is now used by another file, so the batch cannot be undone"
+  }
+}

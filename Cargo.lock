@@ -6622,6 +6622,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-batch-rename"
+version = "0.1.0"
+dependencies = [
+ "jiff",
+ "kamadak-exif",
+ "regex",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-certificate"
 version = "0.1.0"
 dependencies = [
@@ -7346,6 +7358,7 @@ dependencies = [
  "tf-plugin-api",
  "tfp-background-remover",
  "tfp-base-converter",
+ "tfp-batch-rename",
  "tfp-certificate",
  "tfp-color",
  "tfp-cron",

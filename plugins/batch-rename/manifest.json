@@ -1,0 +1,18 @@
+{
+  "id": "org.devlive.toolforge.batch-rename",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "text",
+  "keywords": ["rename", "batch rename", "bulk rename", "files", "numbering", "sequence", "exif", "extension", "regex", "批量重命名", "重命名", "文件名", "编号", "序号"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "scan": {},
+    "preview": {},
+    "apply": { "task": true },
+    "undo": { "task": true }
+  },
+  "sensitive": false
+}

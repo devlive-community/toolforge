@@ -1,0 +1,15 @@
+[package]
+name = "tfp-batch-rename"
+description = "ToolForge plugin: rule based batch file renaming with preview and undo"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+jiff = "0.2"
+kamadak-exif = "0.6"
+regex = "1"

@@ -1,0 +1,152 @@
+{
+  "name": "批量重命名",
+  "description": "按规则一次重命名大量文件，实时预览、检查冲突并可撤销",
+  "help": [
+    "添加文件或文件夹（开启“包含子文件夹”会一并添加其中的文件），再组合重命名规则。规则从上到下依次执行，预览随输入实时更新。",
+    "替换支持普通文本或正则表达式（$1 引用分组）；插入、删除、大小写可作用于主名、扩展名或完整文件名。",
+    "编号与 {n} 按所选排序计数，自然排序会把 file2 排在 file10 之前。",
+    "模板用占位符生成新名字：{name} {ext} {n} {n:3} {parent} {date:%Y-%m-%d} 以及 {exif:%Y%m%d_%H%M%S}（照片拍摄时间，没有时使用修改时间）。",
+    "只要有文件显示冲突（两个文件会得到同一名字或目标文件已存在）或名字非法，就不会执行改名。",
+    "改名分两步进行，因此互换名字、只改大小写都能正确完成；任何一步失败都会全部恢复原状。“撤销”可恢复上一批改名。"
+  ],
+  "functions": {
+    "scan": "添加文件",
+    "preview": "预览",
+    "apply": "重命名文件",
+    "undo": "撤销重命名"
+  },
+  "rules": {
+    "title": "规则",
+    "add": "添加规则",
+    "empty": "还没有规则",
+    "emptyHint": "添加规则来修改文件名",
+    "enabled": "启用",
+    "up": "上移",
+    "down": "下移",
+    "remove": "删除规则"
+  },
+  "kinds": {
+    "replace": "替换文字",
+    "insert": "插入文字",
+    "remove": "删除字符",
+    "case": "大小写",
+    "number": "编号",
+    "template": "模板",
+    "extension": "扩展名",
+    "clean": "清理"
+  },
+  "fields": {
+    "find": "查找",
+    "replace": "替换为",
+    "caseSensitive": "区分大小写",
+    "regex": "正则表达式",
+    "part": "作用于",
+    "place": "位置",
+    "index": "第几个字符",
+    "text": "文字",
+    "count": "字符数",
+    "mode": "改为",
+    "start": "起始",
+    "step": "步长",
+    "pad": "位数",
+    "separator": "分隔符",
+    "pattern": "模板",
+    "templateHint": "点击占位符追加到末尾；日期使用 strftime 格式，如 %Y %m %d %H %M %S。",
+    "extension": "新扩展名",
+    "collapseSpaces": "合并空格",
+    "trim": "去除首尾空格",
+    "removeIllegal": "去除 <>:\"/\\|?*",
+    "spacesTo": "空格替换为",
+    "keepSpaces": "保留空格"
+  },
+  "parts": {
+    "stem": "主名",
+    "ext": "扩展名",
+    "full": "完整文件名"
+  },
+  "places": {
+    "start": "开头",
+    "end": "末尾",
+    "index": "指定位置"
+  },
+  "cases": {
+    "lower": "全部小写",
+    "upper": "全部大写",
+    "title": "单词首字母大写",
+    "sentence": "句首大写"
+  },
+  "extensions": {
+    "lower": "小写",
+    "upper": "大写",
+    "set": "改为…",
+    "remove": "删除"
+  },
+  "sorts": {
+    "added": "添加顺序",
+    "name": "名称",
+    "modified": "修改时间",
+    "size": "大小"
+  },
+  "files": {
+    "title": "预览",
+    "sort": "排序",
+    "add": "添加文件",
+    "addFolder": "添加文件夹",
+    "recursive": "包含子文件夹",
+    "recursiveHint": "添加文件夹时一并添加子文件夹中的文件",
+    "drop": "拖入文件或文件夹",
+    "dropHint": "也可点击选择文件",
+    "skipped": "最多添加 10,000 个文件，已跳过 {{count}} 个",
+    "summary": "{{changes}} 个将改名 · {{problems}} 个问题",
+    "none": "没有文件"
+  },
+  "status": {
+    "unchanged": "不变",
+    "ok": "改名",
+    "conflict": "冲突",
+    "invalid": "非法",
+    "missing": "不存在"
+  },
+  "reasons": {
+    "rename.duplicate": "列表中另一个文件会得到相同的名字",
+    "rename.exists": "已存在同名文件",
+    "rename.empty": "新名字为空",
+    "rename.too_long": "新名字超过 255 字节",
+    "rename.illegal_chars": "新名字包含不允许的字符",
+    "rename.trailing_dot": "Windows 上名字不能以点或空格结尾",
+    "rename.reserved": "这是 Windows 保留的名字",
+    "fs.not_found": "文件已不存在",
+    "unknown": "该文件无法重命名"
+  },
+  "apply": {
+    "run": "重命名 {{count}} 个文件",
+    "done": "已重命名 {{count}} 个文件",
+    "undo": "撤销",
+    "undoHint": "恢复 {{time}} 重命名的 {{count}} 个文件",
+    "undone": "已恢复 {{count}} 个文件名"
+  },
+  "stages": {
+    "rename.check": "正在检查…",
+    "rename.apply": "正在重命名…",
+    "rename.undo": "正在撤销…"
+  },
+  "logs": {
+    "rename": {
+      "renamed": "{{from}} → {{to}}",
+      "done": "已重命名 {{count}} 个文件，用时 {{ms}} ms",
+      "undone": "已恢复 {{count}} 个文件名",
+      "rolled_back": "失败（{{code}}），所有文件已恢复原名"
+    }
+  },
+  "errors": {
+    "rename.invalid_regex": "正则表达式无效：{{detail}}",
+    "rename.unknown_token": "未知的模板占位符 {{token}}",
+    "rename.invalid_token": "模板占位符无效：{{token}}",
+    "rename.has_conflicts": "请先解决 {{count}} 个问题再重命名",
+    "rename.nothing_to_do": "没有文件名发生变化",
+    "rename.failed": "无法重命名 {{path}}：{{detail}}",
+    "rename.target_appeared": "重命名期间出现了 {{path}}，所有文件均未改动",
+    "rename.undo_missing": "{{path}} 已不存在，无法撤销",
+    "rename.undo_occupied": "{{path}} 已被其他文件占用，无法撤销"
+  }
+}
