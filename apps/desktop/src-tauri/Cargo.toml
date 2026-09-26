@@ -30,6 +30,7 @@ tfp-base-converter.workspace = true
 tfp-certificate.workspace = true
 tfp-color.workspace = true
 tfp-cron.workspace = true
+tfp-crypto.workspace = true
 tfp-csv-viewer.workspace = true
 tfp-curl-converter.workspace = true
 tfp-dns-lookup.workspace = true

@@ -1,0 +1,22 @@
+{
+  "id": "org.devlive.toolforge.crypto",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "encoding",
+  "keywords": ["encrypt", "decrypt", "aes", "gcm", "cbc", "sm4", "chacha20", "rsa", "oaep", "sign", "verify", "pbkdf2", "key pair", "加密", "解密", "对称加密", "非对称加密", "国密", "签名", "验签", "密钥"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],
+  "functions": {
+    "symmetric": {},
+    "random": {},
+    "rsa_generate": { "task": true },
+    "rsa_inspect": {},
+    "rsa_encrypt": {},
+    "rsa_decrypt": {},
+    "rsa_sign": {},
+    "rsa_verify": {}
+  },
+  "sensitive": true
+}

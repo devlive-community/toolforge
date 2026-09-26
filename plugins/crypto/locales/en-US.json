@@ -1,0 +1,126 @@
+{
+  "name": "Encryption",
+  "description": "Encrypt and decrypt with AES, SM4 and ChaCha20, and generate, use and verify RSA keys",
+  "help": [
+    "Symmetric: AES (GCM, CBC, CTR, ECB), SM4 and ChaCha20-Poly1305. Keys can be hex, Base64, text or a password derived with PBKDF2-HMAC-SHA256.",
+    "When encrypting, an empty IV or nonce is generated randomly. Turn on “Put IV before ciphertext” to store it at the start of the output; decryption then reads it from there.",
+    "RSA: generate 2048–4096-bit key pairs (PKCS#8 or PKCS#1 PEM), encrypt with OAEP or PKCS#1 v1.5, and sign or verify with PKCS#1 v1.5 or PSS.",
+    "Results are compatible with OpenSSL. Nothing you type here is saved."
+  ],
+  "functions": {
+    "symmetric": "Symmetric encryption",
+    "random": "Random bytes",
+    "rsa_generate": "Generate RSA key pair",
+    "rsa_inspect": "Inspect RSA key",
+    "rsa_encrypt": "RSA encrypt",
+    "rsa_decrypt": "RSA decrypt",
+    "rsa_sign": "RSA sign",
+    "rsa_verify": "RSA verify"
+  },
+  "tabs": {
+    "symmetric": "Symmetric",
+    "rsa": "RSA"
+  },
+  "encodings": {
+    "utf8": "Text"
+  },
+  "symmetric": {
+    "options": "Options",
+    "algorithm": "Algorithm",
+    "mode": "Mode",
+    "ecbWarning": "ECB leaks patterns in the data; prefer GCM.",
+    "keyBits": "Key length",
+    "bits": "{{bits}} bit",
+    "key": "Key",
+    "keyEncoding": "Key format",
+    "password": "Password",
+    "keyHint": "{{bytes}} bytes",
+    "passwordHint": "A key is derived from the password with PBKDF2",
+    "randomKey": "Random key",
+    "salt": "Salt",
+    "iterations": "Iterations",
+    "randomWhenEmpty": "Random when empty",
+    "iv": "IV",
+    "nonce": "Nonce",
+    "embedIv": "Put IV before ciphertext",
+    "aad": "Associated data",
+    "optional": "Optional",
+    "padding": "Padding",
+    "zeroPadding": "Zero bytes",
+    "noPadding": "None",
+    "direction": "Direction",
+    "encrypt": "Encrypt",
+    "decrypt": "Decrypt",
+    "swap": "Use output as input",
+    "plaintext": "Plaintext",
+    "ciphertext": "Ciphertext",
+    "inputEncoding": "Input format",
+    "outputEncoding": "Output format",
+    "derivedKey": "Derived key",
+    "needKey": "Enter a key and some input"
+  },
+  "rsa": {
+    "keys": "Keys",
+    "bits": "Key size",
+    "bitsOption": "{{bits}} bit",
+    "format": "Format",
+    "generate": "Generate",
+    "privateKey": "Private key",
+    "publicKey": "Public key",
+    "privateInfo": "RSA {{bits}} private key",
+    "publicInfo": "RSA {{bits}} public key",
+    "invalidKey": "Not an RSA key",
+    "operation": "Operation",
+    "encrypt": "Encrypt",
+    "decrypt": "Decrypt",
+    "sign": "Sign",
+    "verify": "Verify",
+    "padding": "Padding",
+    "scheme": "Scheme",
+    "hash": "Hash",
+    "plaintext": "Plaintext",
+    "ciphertext": "Ciphertext",
+    "message": "Message",
+    "signature": "Signature",
+    "signaturePlaceholder": "Paste the signature to verify",
+    "output": "Output",
+    "inputEncoding": "Input format",
+    "outputEncoding": "Output format",
+    "valid": "Signature is valid",
+    "invalid": "Signature does not match"
+  },
+  "stages": {
+    "crypto": {
+      "generate": "Generating key pair…"
+    }
+  },
+  "logs": {
+    "crypto": {
+      "generated": "Generated a {{bits}}-bit key pair in {{ms}} ms"
+    }
+  },
+  "detect": {
+    "privateKey": "RSA private key",
+    "publicKey": "RSA public key"
+  },
+  "errors": {
+    "crypto.invalid_hex": "The {{field}} is not valid hex",
+    "crypto.invalid_base64": "The {{field}} is not valid Base64",
+    "crypto.not_utf8": "The result is binary data; choose Hex or Base64 as the output format",
+    "crypto.invalid_key_bits": "Unsupported key size: {{bits}}",
+    "crypto.invalid_key_length": "The key must be {{expected}} bytes, but it is {{actual}} bytes",
+    "crypto.invalid_iv_length": "The IV must be {{expected}} bytes, but it is {{actual}} bytes",
+    "crypto.iv_required": "Enter the IV used for encryption, or turn on “Put IV before ciphertext”",
+    "crypto.salt_required": "Enter the salt used for encryption",
+    "crypto.empty_key": "Enter a password",
+    "crypto.empty_input": "Enter some input",
+    "crypto.not_aligned": "Without padding the data must be a multiple of 16 bytes (it is {{length}})",
+    "crypto.decrypt_failed": "Decryption failed: the key, IV, padding or data is wrong, or the data was changed",
+    "crypto.too_large": "The input is larger than {{limit}}",
+    "crypto.invalid_length": "Invalid length",
+    "crypto.invalid_key_pem": "The key is not a valid RSA key in PEM format",
+    "crypto.encrypted_key": "Password-protected private keys are not supported; export it without a password first",
+    "crypto.message_too_long": "The message is too long for this key and padding: at most {{max}} bytes (it is {{actual}})",
+    "crypto.rsa_failed": "The RSA operation failed: {{detail}}"
+  }
+}

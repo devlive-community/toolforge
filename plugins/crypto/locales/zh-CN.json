@@ -1,0 +1,126 @@
+{
+  "name": "加解密",
+  "description": "AES、SM4、ChaCha20 加解密，RSA 密钥生成、加解密与签名验签",
+  "help": [
+    "对称加密：AES（GCM、CBC、CTR、ECB）、国密 SM4 与 ChaCha20-Poly1305。密钥可以是十六进制、Base64、文本，或用 PBKDF2-HMAC-SHA256 从口令派生。",
+    "加密时 IV / nonce 留空会随机生成。打开「IV 放在密文前」后，IV 会写在输出开头，解密时自动从开头读取。",
+    "RSA：生成 2048–4096 位密钥对（PKCS#8 或 PKCS#1 PEM），用 OAEP 或 PKCS#1 v1.5 加解密，用 PKCS#1 v1.5 或 PSS 签名与验签。",
+    "结果与 OpenSSL 兼容；这里输入的内容不会被保存。"
+  ],
+  "functions": {
+    "symmetric": "对称加解密",
+    "random": "随机字节",
+    "rsa_generate": "生成 RSA 密钥对",
+    "rsa_inspect": "识别 RSA 密钥",
+    "rsa_encrypt": "RSA 加密",
+    "rsa_decrypt": "RSA 解密",
+    "rsa_sign": "RSA 签名",
+    "rsa_verify": "RSA 验签"
+  },
+  "tabs": {
+    "symmetric": "对称加密",
+    "rsa": "RSA"
+  },
+  "encodings": {
+    "utf8": "文本"
+  },
+  "symmetric": {
+    "options": "选项",
+    "algorithm": "算法",
+    "mode": "模式",
+    "ecbWarning": "ECB 会暴露数据中的规律，建议使用 GCM。",
+    "keyBits": "密钥长度",
+    "bits": "{{bits}} 位",
+    "key": "密钥",
+    "keyEncoding": "密钥格式",
+    "password": "口令",
+    "keyHint": "{{bytes}} 字节",
+    "passwordHint": "用 PBKDF2 从口令派生密钥",
+    "randomKey": "随机密钥",
+    "salt": "盐",
+    "iterations": "迭代次数",
+    "randomWhenEmpty": "留空则随机生成",
+    "iv": "IV",
+    "nonce": "Nonce",
+    "embedIv": "IV 放在密文前",
+    "aad": "附加数据（AAD）",
+    "optional": "可选",
+    "padding": "填充",
+    "zeroPadding": "补零",
+    "noPadding": "不填充",
+    "direction": "方向",
+    "encrypt": "加密",
+    "decrypt": "解密",
+    "swap": "输出作为输入",
+    "plaintext": "明文",
+    "ciphertext": "密文",
+    "inputEncoding": "输入格式",
+    "outputEncoding": "输出格式",
+    "derivedKey": "派生密钥",
+    "needKey": "请输入密钥与内容"
+  },
+  "rsa": {
+    "keys": "密钥",
+    "bits": "密钥长度",
+    "bitsOption": "{{bits}} 位",
+    "format": "格式",
+    "generate": "生成",
+    "privateKey": "私钥",
+    "publicKey": "公钥",
+    "privateInfo": "RSA {{bits}} 位私钥",
+    "publicInfo": "RSA {{bits}} 位公钥",
+    "invalidKey": "不是 RSA 密钥",
+    "operation": "操作",
+    "encrypt": "加密",
+    "decrypt": "解密",
+    "sign": "签名",
+    "verify": "验签",
+    "padding": "填充",
+    "scheme": "签名方案",
+    "hash": "摘要算法",
+    "plaintext": "明文",
+    "ciphertext": "密文",
+    "message": "消息",
+    "signature": "签名",
+    "signaturePlaceholder": "粘贴要验证的签名",
+    "output": "结果",
+    "inputEncoding": "输入格式",
+    "outputEncoding": "输出格式",
+    "valid": "签名有效",
+    "invalid": "签名不匹配"
+  },
+  "stages": {
+    "crypto": {
+      "generate": "正在生成密钥对…"
+    }
+  },
+  "logs": {
+    "crypto": {
+      "generated": "已生成 {{bits}} 位密钥对，用时 {{ms}} 毫秒"
+    }
+  },
+  "detect": {
+    "privateKey": "RSA 私钥",
+    "publicKey": "RSA 公钥"
+  },
+  "errors": {
+    "crypto.invalid_hex": "{{field}} 不是有效的十六进制",
+    "crypto.invalid_base64": "{{field}} 不是有效的 Base64",
+    "crypto.not_utf8": "结果是二进制数据，请把输出格式改为 Hex 或 Base64",
+    "crypto.invalid_key_bits": "不支持的密钥长度：{{bits}}",
+    "crypto.invalid_key_length": "密钥应为 {{expected}} 字节，实际为 {{actual}} 字节",
+    "crypto.invalid_iv_length": "IV 应为 {{expected}} 字节，实际为 {{actual}} 字节",
+    "crypto.iv_required": "请输入加密时使用的 IV，或打开「IV 放在密文前」",
+    "crypto.salt_required": "请输入加密时使用的盐",
+    "crypto.empty_key": "请输入口令",
+    "crypto.empty_input": "请输入内容",
+    "crypto.not_aligned": "不填充时数据长度必须是 16 字节的倍数（当前 {{length}} 字节）",
+    "crypto.decrypt_failed": "解密失败：密钥、IV、填充方式或数据有误，或数据已被篡改",
+    "crypto.too_large": "内容超过 {{limit}}",
+    "crypto.invalid_length": "长度无效",
+    "crypto.invalid_key_pem": "不是有效的 PEM 格式 RSA 密钥",
+    "crypto.encrypted_key": "不支持带口令保护的私钥，请先导出为无口令的私钥",
+    "crypto.message_too_long": "消息超出该密钥与填充方式的上限：最多 {{max}} 字节（当前 {{actual}} 字节）",
+    "crypto.rsa_failed": "RSA 操作失败：{{detail}}"
+  }
+}

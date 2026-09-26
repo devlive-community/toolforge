@@ -66,6 +66,10 @@ fn clipboard_samples_suggest_the_right_tool_first() {
         ("name: app\nversion: 1\n", "format-converter"),
         ("localhost:3000", "port-manager"),
         (
+            "-----BEGIN PUBLIC KEY-----\nMIIBIjAN\n-----END PUBLIC KEY-----",
+            "crypto",
+        ),
+        (
             include_str!("../../../../plugins/certificate/backend/fixtures/chain.pem"),
             "certificate",
         ),

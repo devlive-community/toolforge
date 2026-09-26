@@ -1,0 +1,26 @@
+[package]
+name = "tfp-crypto"
+description = "ToolForge plugin: AES, SM4, ChaCha20 and RSA encryption"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+aes = "0.8"
+aes-gcm = "0.10"
+cbc = { version = "0.1", features = ["std"] }
+chacha20poly1305 = "0.10"
+ctr = "0.9"
+data-encoding = "2"
+ecb = { version = "0.1", features = ["std"] }
+hmac = "0.12"
+pbkdf2 = { version = "0.12", default-features = false, features = ["hmac"] }
+rand = "0.8"
+rsa = { version = "0.9", features = ["sha2"] }
+sha1 = { version = "0.10", features = ["oid"] }
+sha2 = { version = "0.10", features = ["oid"] }
+sm4 = "0.5"

@@ -44,6 +44,7 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_port_manager::PortManager::default()));
     registry.register(Arc::new(tfp_certificate::CertificateViewer::default()));
     registry.register(Arc::new(tfp_mock_data::MockData::default()));
+    registry.register(Arc::new(tfp_crypto::Crypto::default()));
     registry
 }
 
