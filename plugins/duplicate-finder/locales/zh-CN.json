@@ -1,0 +1,95 @@
+{
+  "name": "重复文件查找",
+  "description": "跨文件夹查找内容完全相同的文件，把多余的副本移到回收站",
+  "help": [
+    "添加一个或多个文件夹后点击“扫描”。文件依次按大小、开头 64 KB、完整 BLAKE3 哈希比较，只有内容完全相同的文件才会分到一组。",
+    "默认跳过隐藏文件、node_modules 与 .git 文件夹，不跟随符号链接；硬链接指向同一份数据，不算重复。",
+    "选择每组保留哪一份（最新、最旧、路径最短或第一个添加的文件夹中的），其余副本会被勾选；也可以手动调整，但每组始终至少保留一份。",
+    "勾选的文件会移到回收站（废纸篓），可以恢复。移除前会重新计算每个文件的哈希，扫描后内容有变化的文件会被跳过。",
+    "按类型（图片、视频、文档…）或最小大小筛选，优先处理最占空间的文件。"
+  ],
+  "functions": {
+    "scan": "查找重复",
+    "remove": "移到回收站"
+  },
+  "folders": {
+    "add": "添加文件夹",
+    "remove": "移除文件夹"
+  },
+  "options": {
+    "kind": "文件类型",
+    "minSize": "最小大小",
+    "anySize": "任意大小",
+    "atLeast": "至少 {{size}}",
+    "hidden": "包含隐藏文件"
+  },
+  "kinds": {
+    "all": "全部文件",
+    "images": "图片",
+    "videos": "视频",
+    "audio": "音频",
+    "documents": "文档",
+    "archives": "压缩包"
+  },
+  "scan": {
+    "start": "扫描",
+    "cancel": "取消",
+    "running": "正在扫描…"
+  },
+  "results": {
+    "title": "重复文件",
+    "summary": "{{groups}} 组 · 浪费 {{wasted}}",
+    "clean": "没有发现重复文件",
+    "cleanHint": "这些文件夹中的文件都是唯一的",
+    "empty": "添加文件夹后点击“扫描”",
+    "emptyHint": "内容完全相同的文件会分组显示在这里",
+    "scanned": "已扫描 {{files}} 个文件（{{size}}），用时 {{ms}} ms",
+    "copies": "{{count}} 份 × {{size}}",
+    "wasted": "浪费 {{size}}",
+    "linksHint": "指向同一数据的硬链接：\n{{paths}}",
+    "reveal": "在文件夹中显示"
+  },
+  "strategies": {
+    "newest": "保留最新的",
+    "oldest": "保留最旧的",
+    "shortest": "保留路径最短的",
+    "firstFolder": "保留第一个文件夹中的"
+  },
+  "select": {
+    "strategy": "选择方式",
+    "clear": "清除勾选",
+    "toggle": "勾选以移除",
+    "keepOne": "每组文件至少要保留一份",
+    "summary": "已选 {{count}} 个 · 可释放 {{size}}"
+  },
+  "remove": {
+    "action": "移到回收站",
+    "confirmTitle": "将 {{count}} 个文件移到回收站？",
+    "confirmText": "可释放 {{size}}。移动前会再次校验文件内容，之后可从回收站恢复。",
+    "cancel": "取消",
+    "confirm": "移到回收站",
+    "done": "已将 {{count}} 个文件移到回收站，释放 {{size}}",
+    "skipped": "{{count}} 个文件内容有变化或无法移动，已保留"
+  },
+  "stages": {
+    "dup.scan": "正在列出文件…",
+    "dup.head": "正在比较文件开头…",
+    "dup.full": "正在比较完整内容…",
+    "dup.remove": "正在移到回收站…"
+  },
+  "logs": {
+    "dup": {
+      "scanned": "共 {{files, number}} 个文件（{{bytes, number}} 字节）",
+      "found": "{{groups, number}} 组重复，多余副本 {{duplicates, number}} 个，共 {{wasted, number}} 字节，用时 {{ms}} ms",
+      "trashed": "已移到回收站：{{path}}",
+      "changed": "跳过 {{path}}：扫描后内容已变化",
+      "trash_failed": "无法移动 {{path}}：{{detail}}",
+      "removed": "已移动 {{count}} 个文件（{{freed, number}} 字节），跳过 {{skipped}} 个"
+    }
+  },
+  "errors": {
+    "dup.no_folders": "请至少添加一个文件夹",
+    "dup.not_a_folder": "{{path}} 不是文件夹",
+    "dup.keep_one": "每组文件至少要保留一份"
+  }
+}

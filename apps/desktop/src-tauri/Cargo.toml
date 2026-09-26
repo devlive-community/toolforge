@@ -35,6 +35,7 @@ tfp-crypto.workspace = true
 tfp-csv-viewer.workspace = true
 tfp-curl-converter.workspace = true
 tfp-dns-lookup.workspace = true
+tfp-duplicate-finder.workspace = true
 tfp-encoder.workspace = true
 tfp-format-converter.workspace = true
 tfp-hash.workspace = true

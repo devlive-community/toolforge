@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.duplicate-finder",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "system",
+  "keywords": ["duplicate", "duplicates", "dedupe", "same files", "disk space", "cleanup", "blake3", "trash", "重复文件", "查重", "清理", "磁盘空间", "相同文件"],
+  "accent": "pink",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "scan": { "task": true },
+    "remove": { "task": true }
+  },
+  "sensitive": false
+}

@@ -1,0 +1,95 @@
+{
+  "name": "Duplicate Finder",
+  "description": "Find files with identical content across folders and move the extra copies to the Trash",
+  "help": [
+    "Add one or more folders and press Scan. Files are compared by size, then by the first 64 KB, then by a full BLAKE3 hash, so only files with exactly the same content are grouped.",
+    "Hidden files, node_modules and .git folders are skipped by default, and symbolic links are not followed. Hard links point to the same data, so they are not counted as duplicates.",
+    "Choose which copy to keep in each group (newest, oldest, shortest path or the first folder you added); the other copies are selected for removal. You can change the selection by hand, but one copy of every group is always kept.",
+    "Selected files are moved to the Trash (Recycle Bin), so they can be restored. Right before removal each file is hashed again; files that changed since the scan are skipped.",
+    "Filter by type (images, videos, documents…) or minimum size to focus on the files that take the most space."
+  ],
+  "functions": {
+    "scan": "Find duplicates",
+    "remove": "Move to Trash"
+  },
+  "folders": {
+    "add": "Add folder",
+    "remove": "Remove folder"
+  },
+  "options": {
+    "kind": "File type",
+    "minSize": "Minimum size",
+    "anySize": "Any size",
+    "atLeast": "At least {{size}}",
+    "hidden": "Include hidden files"
+  },
+  "kinds": {
+    "all": "All files",
+    "images": "Images",
+    "videos": "Videos",
+    "audio": "Audio",
+    "documents": "Documents",
+    "archives": "Archives"
+  },
+  "scan": {
+    "start": "Scan",
+    "cancel": "Cancel",
+    "running": "Scanning…"
+  },
+  "results": {
+    "title": "Duplicates",
+    "summary": "{{groups}} groups · {{wasted}} wasted",
+    "clean": "No duplicates found",
+    "cleanHint": "Every file in these folders is unique",
+    "empty": "Add folders and press Scan",
+    "emptyHint": "Files with identical content are grouped here",
+    "scanned": "Scanned {{files}} files ({{size}}) in {{ms}} ms",
+    "copies": "{{count}} copies of {{size}}",
+    "wasted": "{{size}} wasted",
+    "linksHint": "Hard links to the same data:\n{{paths}}",
+    "reveal": "Show in folder"
+  },
+  "strategies": {
+    "newest": "Keep the newest",
+    "oldest": "Keep the oldest",
+    "shortest": "Keep the shortest path",
+    "firstFolder": "Keep files in the first folder"
+  },
+  "select": {
+    "strategy": "Selection",
+    "clear": "Clear selection",
+    "toggle": "Select for removal",
+    "keepOne": "At least one copy of each file is kept",
+    "summary": "{{count}} selected · frees {{size}}"
+  },
+  "remove": {
+    "action": "Move to Trash",
+    "confirmTitle": "Move {{count}} files to the Trash?",
+    "confirmText": "This frees {{size}}. Files are checked again before they are moved and can be restored from the Trash.",
+    "cancel": "Cancel",
+    "confirm": "Move to Trash",
+    "done": "Moved {{count}} files to the Trash, freeing {{size}}",
+    "skipped": "{{count}} files changed or could not be moved and were kept"
+  },
+  "stages": {
+    "dup.scan": "Listing files…",
+    "dup.head": "Comparing file starts…",
+    "dup.full": "Comparing full contents…",
+    "dup.remove": "Moving to Trash…"
+  },
+  "logs": {
+    "dup": {
+      "scanned": "Found {{files, number}} files ({{bytes, number}} bytes)",
+      "found": "{{groups, number}} duplicate groups, {{duplicates, number}} extra copies, {{wasted, number}} bytes in {{ms}} ms",
+      "trashed": "Moved to Trash: {{path}}",
+      "changed": "Skipped {{path}}: its content changed since the scan",
+      "trash_failed": "Could not move {{path}}: {{detail}}",
+      "removed": "Moved {{count}} files ({{freed, number}} bytes), skipped {{skipped}}"
+    }
+  },
+  "errors": {
+    "dup.no_folders": "Add at least one folder",
+    "dup.not_a_folder": "{{path}} is not a folder",
+    "dup.keep_one": "Keep at least one copy of each file"
+  }
+}
