@@ -59,6 +59,7 @@ tfp-port-manager.workspace = true
 tfp-qrcode.workspace = true
 tfp-regex.workspace = true
 tfp-sql-formatter.workspace = true
+tfp-ssh-key.workspace = true
 tfp-system-monitor.workspace = true
 tfp-text-diff.workspace = true
 tfp-text-tools.workspace = true

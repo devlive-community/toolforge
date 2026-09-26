@@ -53,6 +53,7 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_disk_usage::DiskUsage::default()));
     registry.register(Arc::new(tfp_archive::Archive::default()));
     registry.register(Arc::new(tfp_websocket::WebSocketClient::default()));
+    registry.register(Arc::new(tfp_ssh_key::SshKey::default()));
     registry
 }
 

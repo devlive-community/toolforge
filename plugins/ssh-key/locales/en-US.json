@@ -1,0 +1,119 @@
+{
+  "name": "SSH Keys",
+  "description": "Generate Ed25519, ECDSA and RSA key pairs, inspect fingerprints and randomart, and change passphrases",
+  "help": [
+    "Generate: choose Ed25519 (recommended), ECDSA or RSA, add a comment and an optional passphrase. Keys are created in the OpenSSH format used by ssh-keygen and can be saved with the right permissions (private key readable only by you).",
+    "Inspect: paste or open a public key, a private key, an authorized_keys file or a known_hosts file to see each key's type, size, comment, SHA256 and MD5 fingerprints and randomart — the same values ssh-keygen -lv shows.",
+    "Encrypted private keys show their fingerprint without the passphrase; enter it to check that it is correct.",
+    "Old PEM RSA private keys (BEGIN RSA PRIVATE KEY or BEGIN PRIVATE KEY) are converted to the OpenSSH format.",
+    "Passphrase: add, change or remove the passphrase of an OpenSSH private key.",
+    "Keys are generated with the operating system's secure random number generator and never leave this computer."
+  ],
+  "functions": {
+    "generate": "Generate key",
+    "inspect": "Inspect keys",
+    "passphrase": "Change passphrase",
+    "save": "Save key"
+  },
+  "tabs": {
+    "generate": "Generate",
+    "inspect": "Inspect",
+    "passphrase": "Passphrase"
+  },
+  "generate": {
+    "title": "New key",
+    "type": "Key type",
+    "hint": {
+      "ed25519": "Recommended: short, fast and secure. Supported by OpenSSH 6.5+ and GitHub, GitLab and most servers.",
+      "ecdsa": "NIST curves, for systems that require them.",
+      "rsa": "For old systems that do not support Ed25519. Use at least 3072 bits."
+    },
+    "size": "Key size",
+    "comment": "Comment",
+    "action": "Generate key",
+    "running": "Generating…",
+    "empty": "Generate a key pair",
+    "emptyHint": "The public key goes into authorized_keys or your Git hosting settings; keep the private key secret",
+    "private": "Private key",
+    "reveal": "Show",
+    "copyPrivate": "Copy private key",
+    "privateHint": "Never share the private key. Anyone who has it can sign in as you."
+  },
+  "sizes": {
+    "ecdsa256": "P-256 (256 bits)",
+    "ecdsa384": "P-384 (384 bits)",
+    "ecdsa521": "P-521 (521 bits)",
+    "rsa2048": "2048 bits",
+    "rsa3072": "3072 bits",
+    "rsa4096": "4096 bits"
+  },
+  "passphrase": {
+    "label": "Passphrase",
+    "placeholder": "Optional passphrase",
+    "confirm": "Repeat passphrase",
+    "new": "New passphrase",
+    "show": "Show passphrase",
+    "hide": "Hide passphrase",
+    "hint": "Protects the private key if the file is copied. Leave empty for no passphrase.",
+    "title": "Change passphrase",
+    "privateKey": "OpenSSH private key",
+    "old": "Current passphrase (if any)",
+    "change": "Change passphrase",
+    "remove": "Remove passphrase",
+    "removeHint": "Leave the new passphrase empty to save the key without encryption.",
+    "result": "Updated private key",
+    "empty": "The updated key appears here"
+  },
+  "inspect": {
+    "input": "Keys",
+    "paste": "Paste",
+    "open": "Open file",
+    "placeholder": "Paste a public or private key, authorized_keys or known_hosts…",
+    "passphrase": "Passphrase to check encrypted private keys",
+    "empty": "Nothing to inspect yet",
+    "emptyHint": "Every key found in the text is listed with its fingerprints"
+  },
+  "kinds": {
+    "public": "Public key",
+    "private": "Private key"
+  },
+  "info": {
+    "algorithm": "Algorithm",
+    "public": "Public key",
+    "hosts": "Hosts",
+    "options": "Options",
+    "line": "Line {{line}}",
+    "encrypted": "Encrypted",
+    "encryptedHint": "Protected with a passphrase ({{cipher}})",
+    "randomart": "Randomart",
+    "converted": "Converted from PEM to the OpenSSH format",
+    "copyConverted": "Copy OpenSSH key"
+  },
+  "save": {
+    "action": "Save…",
+    "done": "Saved to {{path}}"
+  },
+  "detect": {
+    "publicKey": "SSH public key",
+    "privateKey": "SSH private key"
+  },
+  "stages": {
+    "ssh.generate": "Generating key…"
+  },
+  "logs": {
+    "ssh": {
+      "generated": "Generated {{algorithm}} ({{bits}} bits) {{fingerprint}}"
+    }
+  },
+  "errors": {
+    "ssh.invalid_key": "Not a valid SSH public key",
+    "ssh.invalid_private_key": "Not a valid OpenSSH private key: {{detail}}",
+    "ssh.unsupported_pem": "This PEM private key is not an RSA key; convert it with ssh-keygen",
+    "ssh.legacy_encrypted": "Encrypted PEM keys are not supported; run ssh-keygen -p -f <file> to convert them",
+    "ssh.wrong_passphrase": "The passphrase is incorrect",
+    "ssh.passphrase_required": "Enter the current passphrase",
+    "ssh.generate_failed": "Could not generate the key: {{detail}}",
+    "ssh.encrypt_failed": "Could not encrypt the key: {{detail}}",
+    "ssh.file_exists": "{{path}} already exists"
+  }
+}

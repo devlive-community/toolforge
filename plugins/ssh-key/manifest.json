@@ -1,0 +1,18 @@
+{
+  "id": "org.devlive.toolforge.ssh-key",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "encode",
+  "keywords": ["ssh", "ssh-keygen", "key", "ed25519", "rsa", "ecdsa", "fingerprint", "authorized_keys", "known_hosts", "openssh", "passphrase", "密钥", "公钥", "私钥", "指纹"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected", "clipboard:read", "clipboard:write"],
+  "functions": {
+    "generate": { "task": true },
+    "inspect": {},
+    "passphrase": {},
+    "save": {}
+  },
+  "sensitive": true
+}

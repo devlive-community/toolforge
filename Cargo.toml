@@ -53,6 +53,7 @@ tfp-password = { path = "plugins/password/backend" }
 tfp-port-manager = { path = "plugins/port-manager/backend" }
 tfp-qrcode = { path = "plugins/qrcode/backend" }
 tfp-regex = { path = "plugins/regex/backend" }
+tfp-ssh-key = { path = "plugins/ssh-key/backend" }
 tfp-sql-formatter = { path = "plugins/sql-formatter/backend" }
 tfp-system-monitor = { path = "plugins/system-monitor/backend" }
 tfp-text-diff = { path = "plugins/text-diff/backend" }

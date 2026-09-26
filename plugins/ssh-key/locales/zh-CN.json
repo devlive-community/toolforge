@@ -1,0 +1,119 @@
+{
+  "name": "SSH 密钥",
+  "description": "生成 Ed25519、ECDSA、RSA 密钥对，查看指纹与随机图，修改私钥口令",
+  "help": [
+    "生成：选择 Ed25519（推荐）、ECDSA 或 RSA，填写备注和可选口令。密钥使用与 ssh-keygen 相同的 OpenSSH 格式，保存时会设置正确的权限（私钥只有你自己可读）。",
+    "查看：粘贴或打开公钥、私钥、authorized_keys 或 known_hosts 文件，列出每把密钥的类型、位数、备注、SHA256 与 MD5 指纹以及随机图，与 ssh-keygen -lv 的结果一致。",
+    "加密的私钥不输入口令也能查看指纹；输入口令可校验是否正确。",
+    "旧式 PEM 格式的 RSA 私钥（BEGIN RSA PRIVATE KEY 或 BEGIN PRIVATE KEY）会被转换为 OpenSSH 格式。",
+    "口令：为 OpenSSH 私钥添加、修改或移除口令。",
+    "密钥使用操作系统的安全随机数生成，不会离开这台电脑。"
+  ],
+  "functions": {
+    "generate": "生成密钥",
+    "inspect": "查看密钥",
+    "passphrase": "修改口令",
+    "save": "保存密钥"
+  },
+  "tabs": {
+    "generate": "生成",
+    "inspect": "查看",
+    "passphrase": "口令"
+  },
+  "generate": {
+    "title": "新密钥",
+    "type": "密钥类型",
+    "hint": {
+      "ed25519": "推荐：短小、快速且安全，OpenSSH 6.5+ 以及 GitHub、GitLab 和大多数服务器都支持。",
+      "ecdsa": "NIST 曲线，用于有此要求的系统。",
+      "rsa": "用于不支持 Ed25519 的旧系统，建议至少 3072 位。"
+    },
+    "size": "密钥长度",
+    "comment": "备注",
+    "action": "生成密钥",
+    "running": "正在生成…",
+    "empty": "生成一对密钥",
+    "emptyHint": "公钥放到 authorized_keys 或代码托管平台的设置中；私钥务必保密",
+    "private": "私钥",
+    "reveal": "显示",
+    "copyPrivate": "复制私钥",
+    "privateHint": "不要把私钥发给任何人，拿到私钥就能以你的身份登录。"
+  },
+  "sizes": {
+    "ecdsa256": "P-256（256 位）",
+    "ecdsa384": "P-384（384 位）",
+    "ecdsa521": "P-521（521 位）",
+    "rsa2048": "2048 位",
+    "rsa3072": "3072 位",
+    "rsa4096": "4096 位"
+  },
+  "passphrase": {
+    "label": "口令",
+    "placeholder": "可选口令",
+    "confirm": "再次输入口令",
+    "new": "新口令",
+    "show": "显示口令",
+    "hide": "隐藏口令",
+    "hint": "私钥文件被复制时也无法直接使用；留空表示不设置口令。",
+    "title": "修改口令",
+    "privateKey": "OpenSSH 私钥",
+    "old": "当前口令（如有）",
+    "change": "修改口令",
+    "remove": "移除口令",
+    "removeHint": "新口令留空将以不加密的方式保存私钥。",
+    "result": "修改后的私钥",
+    "empty": "修改后的私钥会显示在这里"
+  },
+  "inspect": {
+    "input": "密钥",
+    "paste": "粘贴",
+    "open": "打开文件",
+    "placeholder": "粘贴公钥、私钥、authorized_keys 或 known_hosts…",
+    "passphrase": "用于校验加密私钥的口令",
+    "empty": "还没有可查看的内容",
+    "emptyHint": "文本中找到的每把密钥都会列出指纹"
+  },
+  "kinds": {
+    "public": "公钥",
+    "private": "私钥"
+  },
+  "info": {
+    "algorithm": "算法",
+    "public": "公钥",
+    "hosts": "主机",
+    "options": "选项",
+    "line": "第 {{line}} 行",
+    "encrypted": "已加密",
+    "encryptedHint": "使用口令保护（{{cipher}}）",
+    "randomart": "随机图",
+    "converted": "已从 PEM 转换为 OpenSSH 格式",
+    "copyConverted": "复制 OpenSSH 私钥"
+  },
+  "save": {
+    "action": "保存…",
+    "done": "已保存到 {{path}}"
+  },
+  "detect": {
+    "publicKey": "SSH 公钥",
+    "privateKey": "SSH 私钥"
+  },
+  "stages": {
+    "ssh.generate": "正在生成密钥…"
+  },
+  "logs": {
+    "ssh": {
+      "generated": "已生成 {{algorithm}}（{{bits}} 位）{{fingerprint}}"
+    }
+  },
+  "errors": {
+    "ssh.invalid_key": "不是有效的 SSH 公钥",
+    "ssh.invalid_private_key": "不是有效的 OpenSSH 私钥：{{detail}}",
+    "ssh.unsupported_pem": "该 PEM 私钥不是 RSA 密钥，请使用 ssh-keygen 转换",
+    "ssh.legacy_encrypted": "不支持加密的 PEM 私钥，请运行 ssh-keygen -p -f <文件> 转换",
+    "ssh.wrong_passphrase": "口令不正确",
+    "ssh.passphrase_required": "请输入当前口令",
+    "ssh.generate_failed": "无法生成密钥：{{detail}}",
+    "ssh.encrypt_failed": "无法加密私钥：{{detail}}",
+    "ssh.file_exists": "{{path}} 已存在"
+  }
+}
