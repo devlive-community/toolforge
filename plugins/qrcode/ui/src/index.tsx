@@ -20,7 +20,13 @@ function QrCodeTool() {
         ]}
         aria-label={t('name')}
       />
-      <div className="min-h-0 flex-1">{tab === 'generate' ? <Generate /> : <Decode />}</div>
+      {/* 两个页面都保持挂载：切换时保留状态，识别页也能接收剪贴板图片 */}
+      <div className={tab === 'generate' ? 'min-h-0 flex-1' : 'hidden'}>
+        <Generate />
+      </div>
+      <div className={tab === 'decode' ? 'min-h-0 flex-1' : 'hidden'}>
+        <Decode onActivate={() => setTab('decode')} />
+      </div>
     </div>
   )
 }

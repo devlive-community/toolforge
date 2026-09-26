@@ -53,7 +53,12 @@
     "found_other": "{{count}} 个二维码",
     "scanning": "正在识别…",
     "empty": "选择包含二维码的图片",
-    "meta": "版本 {{version}} · 纠错等级 {{ecc}}"
+    "meta": "版本 {{version}} · 纠错等级 {{ecc}}",
+    "paste": "粘贴图片",
+    "clipboard": "剪贴板图片"
+  },
+  "detect": {
+    "image": "识别复制的图片中的二维码"
   },
   "errors": {
     "qr.empty": "请输入内容",
@@ -64,6 +69,7 @@
     "qr.encode_failed": "二维码渲染失败：{{detail}}",
     "qr.decode_failed": "无法读取图片：{{detail}}",
     "qr.not_found": "图片中没有找到二维码",
-    "qr.file_too_large": "图片超过 {{limit}}"
+    "qr.file_too_large": "图片超过 {{limit}}",
+    "qr.clipboard_empty": "剪贴板中没有图片"
   }
 }

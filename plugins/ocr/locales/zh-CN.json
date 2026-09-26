@@ -63,6 +63,9 @@
       "done": "识别出 {{lines}} 行，用时 {{ms}} 毫秒"
     }
   },
+  "detect": {
+    "image": "识别复制的图片中的文字"
+  },
   "errors": {
     "ocr.model_invalid": "无法加载模型文件：{{detail}}",
     "ocr.inference_failed": "模型运行失败：{{detail}}",

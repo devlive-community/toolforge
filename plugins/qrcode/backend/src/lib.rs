@@ -24,6 +24,11 @@ impl ToolPlugin for QrCodeTool {
         &self.manifest
     }
 
+    /// 剪贴板中的图片（如截图）可能包含二维码；二维码至少 21×21 模块
+    fn detect_image(&self, width: u32, height: u32) -> Option<tf_plugin_api::Detection> {
+        (width.min(height) >= 21).then(|| tf_plugin_api::Detection::new(70, "image"))
+    }
+
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
         match function {
             "generate" => to_value(qr::generate(parse_args(args)?)?),

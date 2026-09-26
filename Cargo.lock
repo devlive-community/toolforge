@@ -6548,6 +6548,7 @@ dependencies = [
 name = "tfp-qrcode"
 version = "0.1.0"
 dependencies = [
+ "arboard",
  "data-encoding",
  "image",
  "qrcode",

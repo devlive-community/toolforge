@@ -103,7 +103,8 @@ fn saves_png_and_svg() {
         .unwrap();
     }
     let decoded = decode(DecodeArgs {
-        path: png.to_string_lossy().into_owned(),
+        path: Some(png.to_string_lossy().into_owned()),
+        clipboard: false,
     })
     .unwrap();
     assert_eq!(decoded[0].text, "save me");
@@ -122,7 +123,8 @@ fn reports_missing_codes() {
     assert_eq!(decode_bytes(b"nope").unwrap_err().code, "qr.decode_failed");
     assert_eq!(
         decode(DecodeArgs {
-            path: "/nope.png".into()
+            path: Some("/nope.png".into()),
+            clipboard: false,
         })
         .unwrap_err()
         .code,

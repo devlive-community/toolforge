@@ -63,6 +63,9 @@
       "done": "Recognized {{lines}} lines in {{ms}} ms"
     }
   },
+  "detect": {
+    "image": "Recognize text in the copied image"
+  },
   "errors": {
     "ocr.model_invalid": "The model file could not be loaded: {{detail}}",
     "ocr.inference_failed": "The model failed to run: {{detail}}",

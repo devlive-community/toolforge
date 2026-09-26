@@ -1,6 +1,6 @@
 import { useEffect, useEffectEvent, useState } from 'react'
 import { Badge, Button, CodeEditor, Empty, Panel, Progress, Switch, Tooltip, cn, toast } from '@toolforge/ui'
-import { CopyButton, ResourceItem, host, useCopy, usePlugin, useResources, useTask } from '@toolforge/plugin-ui-sdk'
+import { CopyButton, ResourceItem, host, useCopy, useLaunchInput, usePlugin, useResources, useTask } from '@toolforge/plugin-ui-sdk'
 import { Brain, ClipboardPaste, Download, ImagePlus, ScanText, Square, TextSelect, Upload } from 'lucide-react'
 import type { Output, Source } from './types'
 
@@ -35,7 +35,8 @@ export function OcrTool() {
   }, [nextMissing, resources])
 
   const recognize = (source: Source) => {
-    if (!ready) {
+    // 模型状态还在加载时直接交给后端，缺少模型时后端会返回 resource.missing
+    if (resources.items !== null && !ready) {
       toast.error(t('model.required'))
       return
     }
@@ -71,6 +72,11 @@ export function OcrTool() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
+
+  // ⌘K 中选择「识别剪贴板图片」时直接识别
+  useLaunchInput((_, label) => {
+    if (label === 'image') recognize({ kind: 'clipboard' })
+  })
 
   const pick = async () => {
     try {

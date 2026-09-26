@@ -53,7 +53,12 @@
     "found_other": "{{count}} codes",
     "scanning": "Scanning…",
     "empty": "Choose an image containing a QR code",
-    "meta": "Version {{version}} · error correction {{ecc}}"
+    "meta": "Version {{version}} · error correction {{ecc}}",
+    "paste": "Paste image",
+    "clipboard": "Clipboard image"
+  },
+  "detect": {
+    "image": "Read QR codes in the copied image"
   },
   "errors": {
     "qr.empty": "Enter some content",
@@ -64,6 +69,7 @@
     "qr.encode_failed": "Failed to render the QR code: {{detail}}",
     "qr.decode_failed": "The image could not be read: {{detail}}",
     "qr.not_found": "No QR code was found in the image",
-    "qr.file_too_large": "The image is larger than {{limit}}"
+    "qr.file_too_large": "The image is larger than {{limit}}",
+    "qr.clipboard_empty": "There is no image on the clipboard"
   }
 }

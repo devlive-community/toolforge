@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Badge, Button, Empty, Panel, Spinner, cn } from '@toolforge/ui'
-import { CopyButton, host, usePlugin } from '@toolforge/plugin-ui-sdk'
-import { ImageUp, ScanLine, Upload } from 'lucide-react'
+import { CopyButton, host, useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
+import { ClipboardPaste, ImageUp, ScanLine, Upload } from 'lucide-react'
 import type { Decoded } from './types'
 
 const IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'bmp']
 const baseName = (path: string) => path.split(/[\\/]/).pop() ?? path
 
-export function Decode() {
+export function Decode({ onActivate }: { onActivate: () => void }) {
   const { t, call, errorMessage } = usePlugin()
   const [path, setPath] = useState<string | null>(null)
   const [results, setResults] = useState<Decoded[] | null>(null)
@@ -15,19 +15,28 @@ export function Decode() {
   const [busy, setBusy] = useState(false)
   const [hovering, setHovering] = useState(false)
 
-  const scan = async (file: string) => {
-    setPath(file)
+  const run = async (label: string | null, args: object) => {
+    setPath(label)
     setBusy(true)
     setError(null)
     setResults(null)
     try {
-      setResults(await call<Decoded[]>('decode', { path: file }))
+      setResults(await call<Decoded[]>('decode', args))
     } catch (reason) {
       setError(reason)
     } finally {
       setBusy(false)
     }
   }
+  const scan = (file: string) => run(file, { path: file })
+  const paste = () => run(t('decode.clipboard'), { clipboard: true })
+
+  // ⌘K 中选择「识别剪贴板图片」时切到识别页并读取剪贴板
+  useLaunchInput((_, label) => {
+    if (label !== 'image') return
+    onActivate()
+    paste()
+  })
 
   useEffect(() => {
     const off = host.onFileDrop({ drop: (paths) => paths[0] && scan(paths[0]), over: setHovering })
@@ -53,11 +62,17 @@ export function Decode() {
         icon={<ImageUp />}
         title={t('decode.image')}
         actions={
-          path && (
-            <Button size="sm" onClick={pick}>
-              {t('decode.another')}
+          <>
+            <Button size="sm" onClick={paste} disabled={busy}>
+              <ClipboardPaste />
+              {t('decode.paste')}
             </Button>
-          )
+            {path && (
+              <Button size="sm" onClick={pick}>
+                {t('decode.another')}
+              </Button>
+            )}
+          </>
         }
         bodyClassName="p-3"
       >

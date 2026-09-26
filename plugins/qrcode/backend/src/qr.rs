@@ -91,7 +91,12 @@ pub struct Generated {
 
 #[derive(Deserialize)]
 pub struct DecodeArgs {
-    path: String,
+    /// 图片路径；clipboard 为 true 时忽略
+    #[serde(default)]
+    path: Option<String>,
+    /// 识别剪贴板中的图片（例如截图）
+    #[serde(default)]
+    clipboard: bool,
 }
 
 #[derive(Debug, Serialize, PartialEq)]
@@ -272,6 +277,26 @@ pub fn decode_bytes(bytes: &[u8]) -> PluginResult<Vec<Decoded>> {
         .decode()
         .map_err(|e| PluginError::new("qr.decode_failed").with("detail", e.to_string()))?
         .to_luma8();
+    decode_luma(&image)
+}
+
+/// 读取剪贴板图片并转为灰度（透明区域按白底合成）
+fn clipboard_luma() -> PluginResult<image::GrayImage> {
+    let empty = || PluginError::new("qr.clipboard_empty");
+    let data = arboard::Clipboard::new()
+        .and_then(|mut clipboard| clipboard.get_image())
+        .map_err(|_| empty())?;
+    let (width, height) = (data.width as u32, data.height as u32);
+    let rgba =
+        image::RgbaImage::from_raw(width, height, data.bytes.into_owned()).ok_or_else(empty)?;
+    Ok(image::GrayImage::from_fn(width, height, |x, y| {
+        let [r, g, b, a] = rgba.get_pixel(x, y).0;
+        let luma = (r as u32 * 299 + g as u32 * 587 + b as u32 * 114) / 1000;
+        image::Luma([((luma * a as u32 + 255 * (255 - a as u32)) / 255) as u8])
+    }))
+}
+
+pub fn decode_luma(image: &image::GrayImage) -> PluginResult<Vec<Decoded>> {
     let mut prepared = rqrr::PreparedImage::prepare_from_greyscale(
         image.width() as usize,
         image.height() as usize,
@@ -294,14 +319,18 @@ pub fn decode_bytes(bytes: &[u8]) -> PluginResult<Vec<Decoded>> {
 }
 
 pub fn decode(args: DecodeArgs) -> PluginResult<Vec<Decoded>> {
-    let metadata = std::fs::metadata(&args.path)
-        .map_err(|_| PluginError::new("fs.not_found").with("path", args.path.as_str()))?;
+    if args.clipboard {
+        return decode_luma(&clipboard_luma()?);
+    }
+    let path = args.path.unwrap_or_default();
+    let metadata = std::fs::metadata(&path)
+        .map_err(|_| PluginError::new("fs.not_found").with("path", path.as_str()))?;
     if metadata.len() > MAX_DECODE_FILE {
         return Err(PluginError::new("qr.file_too_large").with("limit", "50 MB"));
     }
-    let bytes = std::fs::read(&args.path).map_err(|e| {
+    let bytes = std::fs::read(&path).map_err(|e| {
         PluginError::new("fs.io")
-            .with("path", args.path.as_str())
+            .with("path", path.as_str())
             .with("detail", e.to_string())
     })?;
     decode_bytes(&bytes)

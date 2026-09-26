@@ -32,6 +32,10 @@ impl ToolPlugin for Ocr {
         &self.manifest
     }
 
+    fn detect_image(&self, width: u32, height: u32) -> Option<tf_plugin_api::Detection> {
+        (width.min(height) >= 16).then(|| tf_plugin_api::Detection::new(80, "image"))
+    }
+
     fn call(&self, function: &str, _args: Value) -> PluginResult<Value> {
         Err(unknown_function(function))
     }

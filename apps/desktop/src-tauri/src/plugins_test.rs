@@ -95,3 +95,19 @@ fn clipboard_samples_suggest_the_right_tool_first() {
         );
     }
 }
+
+/// 剪贴板中是图片时推荐文字识别与二维码识别
+#[test]
+fn clipboard_images_suggest_image_tools() {
+    let registry = builtin();
+    let ids: Vec<String> = registry
+        .detect_image(1440, 900)
+        .into_iter()
+        .map(|s| s.plugin_id)
+        .collect();
+    assert_eq!(
+        ids,
+        vec!["org.devlive.toolforge.ocr", "org.devlive.toolforge.qrcode"]
+    );
+    assert!(registry.detect_image(8, 8).is_empty());
+}
