@@ -51,6 +51,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Encryption** | AES (GCM / CBC / CTR / ECB), SM4 and ChaCha20-Poly1305 with hex, Base64, text or PBKDF2 keys; RSA key generation, OAEP / PKCS#1 encryption and PKCS#1 / PSS signatures, compatible with OpenSSL |
 | **Text Tools** | 13 naming styles and letter cases; trim, dedupe, sort (natural, by length), shuffle and number lines; character, word, CJK and reading-time statistics |
 | **Text Diff** | Line, word or character diff with side-by-side highlighting, ignore case / whitespace and unified patch export |
+| **Batch Rename** | Rename many files with chained rules (replace / regex, insert, remove, case, numbering, templates with dates and EXIF capture time), a live conflict-checked preview, safe two-phase renaming and undo |
 | **Format Converter** | JSON ⇄ YAML ⇄ TOML ⇄ CSV with automatic detection, preserved key order and CSV delimiter / header / type options |
 | **Base Converter** | Arbitrary-precision integers in bases 2–36, prefix detection, two's complement for 8–128 bits and a clickable 64-bit view |
 | **Color Converter** | HEX / RGB / HSL / HSV / HWB / CMYK / Lab / OKLCH, WCAG contrast checks, tints, shades and harmonies |
