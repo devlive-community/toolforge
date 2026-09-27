@@ -2,7 +2,7 @@ import { cn } from '@toolforge/ui'
 import { ChevronDown, Clock3, House, Star } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CATEGORIES } from '../lib/categories'
+import { CATEGORIES, KNOWN_CATEGORIES } from '../lib/categories'
 import { ToolGlyph } from '../plugins/ToolIcon'
 import { usePluginText } from '../plugins/usePluginText'
 import { useApp, type Route } from '../stores/app'
@@ -61,7 +61,8 @@ export function Sidebar() {
 
         <div className="pt-2">
           {CATEGORIES.map(({ id, icon: Icon }) => {
-            const items = plugins.filter((p) => p.category === id)
+            // 未知分类的插件归入“其他”，避免拼写错误让工具从菜单中消失
+            const items = plugins.filter((p) => p.category === id || (id === 'other' && !KNOWN_CATEGORIES.has(p.category)))
             // 分类默认展开含工具的分类；用户手动折叠状态持久化到 SQLite
             const open = collapsed[id] === undefined ? items.length > 0 : !collapsed[id]
             return (

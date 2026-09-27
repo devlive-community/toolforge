@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "name": "i18n:name",
   "description": "i18n:description",
-  "category": "encoding",
+  "category": "encode",
   "keywords": ["encrypt", "decrypt", "aes", "gcm", "cbc", "sm4", "chacha20", "rsa", "oaep", "sign", "verify", "pbkdf2", "key pair", "加密", "解密", "对称加密", "非对称加密", "国密", "签名", "验签", "密钥"],
   "accent": "orange",
   "locales": ["zh-CN", "en-US"],

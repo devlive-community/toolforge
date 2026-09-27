@@ -31,6 +31,35 @@ fn every_plugin_directory_is_registered() {
     );
 }
 
+/// 插件声明的分类必须是侧边栏认识的分类，否则工具不会出现在分类菜单中
+#[test]
+fn every_plugin_uses_a_known_category() {
+    let source = std::fs::read_to_string(
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("../src/lib/categories.ts"),
+    )
+    .expect("categories.ts");
+    let known: BTreeSet<String> = source
+        .lines()
+        .filter_map(|line| line.split("id: '").nth(1))
+        .filter_map(|rest| rest.split('\'').next())
+        .map(str::to_owned)
+        .collect();
+    assert!(
+        known.contains("dev") && known.contains("other"),
+        "{known:?}"
+    );
+    let unknown: Vec<String> = builtin()
+        .manifests()
+        .into_iter()
+        .filter(|m| !known.contains(&m.category))
+        .map(|m| format!("{} ({})", m.id, m.category))
+        .collect();
+    assert!(
+        unknown.is_empty(),
+        "plugins with unknown categories: {unknown:?}"
+    );
+}
+
 /// 常见剪贴板内容应当把最合适的工具排在第一位
 #[test]
 fn clipboard_samples_suggest_the_right_tool_first() {

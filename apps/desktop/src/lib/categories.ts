@@ -23,3 +23,5 @@ export const CATEGORIES: { id: string; icon: LucideIcon }[] = [
   { id: 'calc', icon: Calculator },
   { id: 'other', icon: LayoutGrid },
 ]
+
+export const KNOWN_CATEGORIES = new Set(CATEGORIES.map((c) => c.id))
