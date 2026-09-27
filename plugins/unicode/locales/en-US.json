@@ -1,0 +1,135 @@
+{
+  "name": "Character Inspector",
+  "description": "See every character's code point and name, and find invisible characters, lookalikes and hidden direction controls",
+  "help": [
+    "Paste text to list every character with its code point, name, category, script and UTF-8 / UTF-16 bytes. Characters that need attention are highlighted in the text.",
+    "Invisible characters (zero-width spaces, BOMs, word joiners, variation selectors) often break passwords, identifiers and comparisons.",
+    "Direction controls such as U+202E can make text display differently from how it is stored — the “Trojan Source” attack used in source code and file names.",
+    "Lookalikes are characters from other scripts that look like ASCII, such as the Cyrillic “а” in pаypal.com. Words that mix scripts are listed separately.",
+    "Clean removes invisible characters and direction controls, turns special spaces into normal spaces, and can replace lookalikes and normalize to NFC or NFKC. Emoji joiners are kept.",
+    "Lookup finds characters by code point (U+1F600, 0x4E2D, &#x1F600;, \\u{1F600}) or by name, and shows how to write them in Rust, JavaScript, Python, Java, HTML, CSS and URLs."
+  ],
+  "functions": {
+    "analyze": "Analyze text",
+    "clean": "Clean text",
+    "lookup": "Find characters"
+  },
+  "tabs": {
+    "inspect": "Inspect",
+    "lookup": "Lookup"
+  },
+  "inspect": {
+    "input": "Text",
+    "placeholder": "Paste text to inspect…"
+  },
+  "stats": {
+    "chars": "Characters",
+    "graphemes": "Graphemes",
+    "utf8": "UTF-8 bytes",
+    "utf16": "UTF-16 units",
+    "invisible": "Invisible",
+    "bidi": "Direction controls",
+    "confusable": "Lookalikes",
+    "space": "Special spaces"
+  },
+  "warnings": {
+    "bidi": "This text contains direction control characters, so what you see may differ from the actual order of the characters.",
+    "mixed": "Words mixing scripts: {{words}}"
+  },
+  "normalization": {
+    "nfcHint": "Already in canonical composed form (NFC)",
+    "nfdHint": "Already in canonical decomposed form (NFD)",
+    "nfkcHint": "Already in compatibility composed form (NFKC)",
+    "nfkdHint": "Already in compatibility decomposed form (NFKD)"
+  },
+  "list": {
+    "title": "Characters",
+    "issues": "{{count}} to check",
+    "onlyFlagged": "Only characters to check",
+    "truncated": "Only the first {{count}} characters are listed",
+    "noFlagged": "Nothing to check",
+    "empty": "No text yet",
+    "emptyHint": "Every character is listed here with its code point and name",
+    "unnamed": "(no name)",
+    "lookalike": "looks like “{{ascii}}”"
+  },
+  "flags": {
+    "invisible": "Invisible",
+    "bidi": "Direction",
+    "confusable": "Lookalike",
+    "space": "Space",
+    "control": "Control",
+    "combining": "Combining",
+    "unassigned": "Unassigned"
+  },
+  "clean": {
+    "title": "Clean up",
+    "summary": "{{removed}} removed · {{replaced}} replaced",
+    "copy": "Copy result",
+    "apply": "Use result",
+    "removeInvisible": "Remove invisible",
+    "removeBidi": "Remove direction controls",
+    "normalizeSpaces": "Normal spaces",
+    "replaceConfusables": "Replace lookalikes",
+    "removeControls": "Remove control characters",
+    "form": "Normalization"
+  },
+  "forms": {
+    "none": "No normalization",
+    "nfc": "NFC",
+    "nfkc": "NFKC"
+  },
+  "lookup": {
+    "placeholder": "U+1F600, 0x4E2D, snowman, greek alpha…",
+    "empty": "Find a character",
+    "none": "No characters found",
+    "hint": "Search by code point, character or name",
+    "select": "Select a character"
+  },
+  "detail": {
+    "code": "Code point",
+    "decimal": "Decimal",
+    "script": "Script: {{script}}",
+    "copyChar": "Copy character",
+    "close": "Close"
+  },
+  "categories": {
+    "Lu": "Uppercase letter",
+    "Ll": "Lowercase letter",
+    "Lt": "Titlecase letter",
+    "Lm": "Modifier letter",
+    "Lo": "Other letter",
+    "Mn": "Non-spacing mark",
+    "Mc": "Spacing mark",
+    "Me": "Enclosing mark",
+    "Nd": "Decimal digit",
+    "Nl": "Letter number",
+    "No": "Other number",
+    "Pc": "Connector punctuation",
+    "Pd": "Dash",
+    "Ps": "Opening punctuation",
+    "Pe": "Closing punctuation",
+    "Pi": "Initial quote",
+    "Pf": "Final quote",
+    "Po": "Other punctuation",
+    "Sm": "Math symbol",
+    "Sc": "Currency symbol",
+    "Sk": "Modifier symbol",
+    "So": "Other symbol",
+    "Zs": "Space separator",
+    "Zl": "Line separator",
+    "Zp": "Paragraph separator",
+    "Cc": "Control",
+    "Cf": "Format",
+    "Cs": "Surrogate",
+    "Co": "Private use",
+    "Cn": "Unassigned"
+  },
+  "detect": {
+    "bidi": "{{count}} hidden direction controls",
+    "hidden": "{{count}} invisible characters"
+  },
+  "errors": {
+    "unicode.too_large": "Text larger than {{limit}} cannot be analyzed"
+  }
+}

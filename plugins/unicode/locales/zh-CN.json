@@ -1,0 +1,135 @@
+{
+  "name": "字符检查",
+  "description": "查看每个字符的码位与名称，找出不可见字符、形近字和隐藏的方向控制符",
+  "help": [
+    "粘贴文本即可列出每个字符的码位、名称、类别、文字系统以及 UTF-8 / UTF-16 字节，需要注意的字符会在文本中高亮。",
+    "不可见字符（零宽空格、BOM、连接符、变体选择符）常导致密码、标识符和字符串比较出错。",
+    "U+202E 等方向控制符会让文本的显示顺序与实际存储顺序不同，即源代码和文件名中的“Trojan Source”攻击。",
+    "形近字是外形与 ASCII 字符相同的其他文字，如 pаypal.com 中的西里尔字母“а”；混用多种文字系统的单词会单独列出。",
+    "清理可删除不可见字符与方向控制符，把特殊空格换成普通空格，还可替换形近字并规范化为 NFC 或 NFKC；emoji 中的连接符会保留。",
+    "查找可按码位（U+1F600、0x4E2D、&#x1F600;、\\u{1F600}）或名称搜索字符，并给出在 Rust、JavaScript、Python、Java、HTML、CSS 与 URL 中的写法。"
+  ],
+  "functions": {
+    "analyze": "分析文本",
+    "clean": "清理文本",
+    "lookup": "查找字符"
+  },
+  "tabs": {
+    "inspect": "检查",
+    "lookup": "查找"
+  },
+  "inspect": {
+    "input": "文本",
+    "placeholder": "粘贴要检查的文本…"
+  },
+  "stats": {
+    "chars": "字符",
+    "graphemes": "字形",
+    "utf8": "UTF-8 字节",
+    "utf16": "UTF-16 单元",
+    "invisible": "不可见",
+    "bidi": "方向控制符",
+    "confusable": "形近字",
+    "space": "特殊空格"
+  },
+  "warnings": {
+    "bidi": "文本中含有方向控制符，看到的内容可能与字符的实际顺序不同。",
+    "mixed": "混用多种文字系统的单词：{{words}}"
+  },
+  "normalization": {
+    "nfcHint": "已是标准组合形式（NFC）",
+    "nfdHint": "已是标准分解形式（NFD）",
+    "nfkcHint": "已是兼容组合形式（NFKC）",
+    "nfkdHint": "已是兼容分解形式（NFKD）"
+  },
+  "list": {
+    "title": "字符",
+    "issues": "{{count}} 个需要注意",
+    "onlyFlagged": "只看需要注意的字符",
+    "truncated": "只列出前 {{count}} 个字符",
+    "noFlagged": "没有需要注意的字符",
+    "empty": "还没有文本",
+    "emptyHint": "每个字符都会连同码位与名称列在这里",
+    "unnamed": "（无名称）",
+    "lookalike": "形似“{{ascii}}”"
+  },
+  "flags": {
+    "invisible": "不可见",
+    "bidi": "方向",
+    "confusable": "形近",
+    "space": "空格",
+    "control": "控制",
+    "combining": "组合",
+    "unassigned": "未分配"
+  },
+  "clean": {
+    "title": "清理",
+    "summary": "删除 {{removed}} 个 · 替换 {{replaced}} 个",
+    "copy": "复制结果",
+    "apply": "使用结果",
+    "removeInvisible": "删除不可见字符",
+    "removeBidi": "删除方向控制符",
+    "normalizeSpaces": "统一为普通空格",
+    "replaceConfusables": "替换形近字",
+    "removeControls": "删除控制字符",
+    "form": "规范化"
+  },
+  "forms": {
+    "none": "不规范化",
+    "nfc": "NFC",
+    "nfkc": "NFKC"
+  },
+  "lookup": {
+    "placeholder": "U+1F600、0x4E2D、snowman、greek alpha…",
+    "empty": "查找字符",
+    "none": "没有找到字符",
+    "hint": "可按码位、字符本身或英文名称搜索",
+    "select": "选择一个字符"
+  },
+  "detail": {
+    "code": "码位",
+    "decimal": "十进制",
+    "script": "文字系统：{{script}}",
+    "copyChar": "复制字符",
+    "close": "关闭"
+  },
+  "categories": {
+    "Lu": "大写字母",
+    "Ll": "小写字母",
+    "Lt": "首字母大写",
+    "Lm": "修饰字母",
+    "Lo": "其他字母",
+    "Mn": "非间距组合符",
+    "Mc": "间距组合符",
+    "Me": "封闭组合符",
+    "Nd": "十进制数字",
+    "Nl": "字母数字",
+    "No": "其他数字",
+    "Pc": "连接标点",
+    "Pd": "破折号",
+    "Ps": "开标点",
+    "Pe": "闭标点",
+    "Pi": "起始引号",
+    "Pf": "结束引号",
+    "Po": "其他标点",
+    "Sm": "数学符号",
+    "Sc": "货币符号",
+    "Sk": "修饰符号",
+    "So": "其他符号",
+    "Zs": "空格",
+    "Zl": "行分隔符",
+    "Zp": "段落分隔符",
+    "Cc": "控制字符",
+    "Cf": "格式字符",
+    "Cs": "代理",
+    "Co": "私用区",
+    "Cn": "未分配"
+  },
+  "detect": {
+    "bidi": "{{count}} 个隐藏的方向控制符",
+    "hidden": "{{count}} 个不可见字符"
+  },
+  "errors": {
+    "unicode.too_large": "超过 {{limit}} 的文本无法分析"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.unicode",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "text",
+  "keywords": ["unicode", "character", "code point", "utf-8", "utf-16", "zero width", "invisible", "homoglyph", "confusable", "bidi", "trojan source", "emoji", "normalization", "nfc", "字符", "码位", "零宽字符", "不可见字符", "形近字", "编码"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:read", "clipboard:write"],
+  "functions": {
+    "analyze": {},
+    "clean": {},
+    "lookup": {}
+  },
+  "sensitive": false
+}
