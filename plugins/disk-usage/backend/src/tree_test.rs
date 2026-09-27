@@ -50,7 +50,10 @@ fn sums_sizes_and_sorts_children() {
     let (raw, _) = child(&tree, photos, "raw");
     assert_eq!(
         tree.path(raw),
-        dir.canonicalize().unwrap().join("photos/raw")
+        dunce::canonicalize(&dir)
+            .unwrap()
+            .join("photos")
+            .join("raw")
     );
     let (jpg, file) = child(&tree, photos, "a.jpg");
     assert_eq!(file.category, Category::Images);

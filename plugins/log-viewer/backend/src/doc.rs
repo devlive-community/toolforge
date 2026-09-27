@@ -137,11 +137,12 @@ impl Doc {
         mut progress: impl FnMut(u64, u64),
         is_cancelled: impl Fn() -> bool,
     ) -> PluginResult<Self> {
-        let mut file = open_file(path)?;
-        let meta = file.metadata().map_err(io_error)?;
-        if meta.is_dir() {
+        // Windows 无法以文件方式打开文件夹，先检查类型再打开
+        if std::fs::metadata(path).is_ok_and(|m| m.is_dir()) {
             return Err(PluginError::new("log.not_a_file"));
         }
+        let mut file = open_file(path)?;
+        let meta = file.metadata().map_err(io_error)?;
         let mut sample = Vec::with_capacity(ENCODING_SAMPLE);
         (&mut file)
             .take(ENCODING_SAMPLE as u64)

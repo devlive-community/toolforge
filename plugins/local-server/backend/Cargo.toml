@@ -10,6 +10,7 @@ authors.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tf-plugin-api.workspace = true
+dunce = "1"
 data-encoding = "2"
 if-addrs = "0.15"
 mime_guess = "2"

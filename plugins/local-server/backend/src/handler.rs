@@ -223,7 +223,7 @@ fn route(config: &Config, method: &str, url: &str, range: Option<&str>) -> Reply
     }
     let target = config.root.join(&relative);
     // 规范化后仍须位于根目录内（防止符号链接指向外部）
-    let resolved = match target.canonicalize() {
+    let resolved = match dunce::canonicalize(&target) {
         Ok(path) if path.starts_with(&config.root) => Some(path),
         Ok(_) => return page(403, "Forbidden"),
         Err(_) => None,

@@ -6849,6 +6849,7 @@ name = "tfp-archive"
 version = "0.1.0"
 dependencies = [
  "bzip2",
+ "dunce",
  "flate2",
  "jiff",
  "lzma-rust2 0.21.0",
@@ -6982,6 +6983,7 @@ dependencies = [
 name = "tfp-disk-usage"
 version = "0.1.0"
 dependencies = [
+ "dunce",
  "rayon",
  "serde",
  "serde_json",
@@ -7005,6 +7007,7 @@ name = "tfp-duplicate-finder"
 version = "0.1.0"
 dependencies = [
  "blake3",
+ "dunce",
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -7157,6 +7160,7 @@ name = "tfp-local-server"
 version = "0.1.0"
 dependencies = [
  "data-encoding",
+ "dunce",
  "if-addrs",
  "mime_guess",
  "percent-encoding",

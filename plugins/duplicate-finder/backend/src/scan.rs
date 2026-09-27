@@ -69,8 +69,8 @@ fn hidden(name: &str) -> bool {
 fn normalize_roots(roots: &[String]) -> PluginResult<Vec<PathBuf>> {
     let mut resolved = Vec::new();
     for root in roots {
-        let path = Path::new(root)
-            .canonicalize()
+        // dunce 在 Windows 上返回普通路径而不是 \\?\ 形式
+        let path = dunce::canonicalize(Path::new(root))
             .ok()
             .filter(|p| p.is_dir())
             .ok_or_else(|| PluginError::new("dup.not_a_folder").with("path", root.as_str()))?;

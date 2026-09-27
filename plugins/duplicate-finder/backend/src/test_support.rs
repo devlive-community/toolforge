@@ -40,7 +40,7 @@ pub fn workspace(name: &str) -> PathBuf {
     let dir = std::env::temp_dir().join(format!("tfp-dup-{name}-{}-{n}", std::process::id()));
     let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir).unwrap();
-    dir.canonicalize().unwrap()
+    dunce::canonicalize(dir).unwrap()
 }
 
 pub fn write(dir: &std::path::Path, name: &str, content: &[u8]) -> String {

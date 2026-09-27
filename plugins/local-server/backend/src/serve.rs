@@ -48,8 +48,8 @@ pub struct Summary {
 }
 
 pub fn config(args: &Args) -> PluginResult<Config> {
-    let root = PathBuf::from(&args.root)
-        .canonicalize()
+    // dunce 在 Windows 上返回普通路径而不是 \\?\ 形式
+    let root = dunce::canonicalize(PathBuf::from(&args.root))
         .ok()
         .filter(|p| p.is_dir())
         .ok_or_else(|| PluginError::new("server.not_directory").with("path", args.root.clone()))?;

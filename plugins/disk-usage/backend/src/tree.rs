@@ -149,8 +149,8 @@ impl Tree {
         files: &AtomicU64,
         is_cancelled: &(dyn Fn() -> bool + Sync),
     ) -> PluginResult<Self> {
-        let root = root
-            .canonicalize()
+        // dunce 在 Windows 上返回普通路径而不是 \\?\ 形式，路径会显示给用户
+        let root = dunce::canonicalize(root)
             .ok()
             .filter(|p| p.is_dir())
             .ok_or_else(|| {

@@ -10,5 +10,6 @@ authors.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tf-plugin-api.workspace = true
+dunce = "1"
 rayon = "1"
 trash = "5"

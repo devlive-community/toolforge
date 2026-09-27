@@ -13,10 +13,11 @@ fn site() -> (Config, PathBuf) {
     std::fs::write(dir.join("app.js"), "console.log(1)").unwrap();
     std::fs::write(dir.join("data.bin"), (0..100u8).collect::<Vec<_>>()).unwrap();
     std::fs::write(dir.join("docs/readme.md"), "# docs").unwrap();
-    std::fs::write(dir.join("docs/a <b>.txt"), "x").unwrap();
+    // Windows 文件名不允许 < > 等字符，用 & 验证列表中的 HTML 转义
+    std::fs::write(dir.join("docs/a & b.txt"), "x").unwrap();
     std::fs::write(dir.join(".env"), "SECRET=1").unwrap();
     std::fs::write(dir.join(".git/config"), "x").unwrap();
-    let root = dir.canonicalize().unwrap();
+    let root = dunce::canonicalize(&dir).unwrap();
     let config = Config {
         root: root.clone(),
         listing: true,
@@ -79,10 +80,7 @@ fn lists_directories_and_redirects_to_trailing_slash() {
         html.contains("href=\"nested/\"") && html.contains("href=\"readme%2Emd\""),
         "{html}"
     );
-    assert!(
-        html.contains("a &lt;b&gt;.txt"),
-        "names are escaped: {html}"
-    );
+    assert!(html.contains("a &amp; b.txt"), "names are escaped: {html}");
     assert!(html.contains("href=\"../\""));
     let off = Config {
         listing: false,
@@ -168,4 +166,12 @@ fn falls_back_for_single_page_apps_and_handles_cors() {
     assert_eq!(header(&reply, "Access-Control-Allow-Origin"), Some("*"));
     assert_eq!(handle(&spa, "OPTIONS", "/app.js", None).status, 204);
     assert_eq!(handle(&config, "POST", "/app.js", None).status, 405);
+}
+
+#[test]
+fn escapes_html() {
+    assert_eq!(
+        escape("<a href=\"x\">&</a>"),
+        "&lt;a href=&quot;x&quot;&gt;&amp;&lt;/a&gt;"
+    );
 }

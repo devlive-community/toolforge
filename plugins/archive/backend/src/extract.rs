@@ -117,7 +117,7 @@ fn selected(entries: &[String], path: &str) -> bool {
 fn inside(base: &Path, target: &Path) -> bool {
     target
         .parent()
-        .and_then(|p| p.canonicalize().ok())
+        .and_then(|p| dunce::canonicalize(p).ok())
         .is_some_and(|p| p.starts_with(base))
 }
 
@@ -177,7 +177,8 @@ pub fn extract(request: &Request, ctx: &dyn TaskContext) -> PluginResult<Outcome
     } else {
         request.dest.to_owned()
     };
-    let base = base.canonicalize().map_err(|e| io(&base, e))?;
+    // dunce 在 Windows 上返回普通路径而不是 \\?\ 形式
+    let base = dunce::canonicalize(&base).map_err(|e| io(&base, e))?;
     let total = std::fs::metadata(request.archive)
         .map(|m| m.len())
         .unwrap_or(0);
