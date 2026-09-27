@@ -184,6 +184,23 @@ fn matches_ssh_keygen() {
         "{listing}\n{}",
         info.randomart
     );
+    // 多把随机密钥逐一比对随机图，覆盖计数上限、起点终点重合等边界情况
+    for index in 0..40 {
+        let generated = generate(Kind::Ed25519, "", None).unwrap();
+        let public = dir.join(format!("random{index}.pub"));
+        std::fs::write(&public, format!("{}\n", generated.public)).unwrap();
+        let output = Command::new("ssh-keygen")
+            .args(["-l", "-v", "-f"])
+            .arg(&public)
+            .output()
+            .unwrap();
+        let expected = String::from_utf8(output.stdout).unwrap();
+        assert!(
+            expected.contains(&generated.info.randomart),
+            "{expected}\n{}",
+            generated.info.randomart
+        );
+    }
     let md5 = Command::new("ssh-keygen")
         .args(["-l", "-E", "md5", "-f"])
         .arg(&path)
@@ -213,4 +230,15 @@ fn matches_ssh_keygen() {
             String::from_utf8_lossy(&output.stderr)
         );
     }
+}
+
+#[test]
+fn caps_visits_and_prefers_the_end_marker() {
+    // 全 0x00：每步都向左上移动，停在角落并反复访问同一格
+    let art = randomart("T", &[0u8; 64], "F");
+    assert!(art.lines().nth(1).unwrap().starts_with("|E"), "{art}");
+    // 0x33 = 右下、左上交替：来回踩同一格，计数在 '^' 封顶，终点回到起点
+    let art = randomart("T", &[0x33; 32], "F");
+    assert!(art.contains('^'), "{art}");
+    assert!(art.contains('E') && !art.contains('S'), "{art}");
 }

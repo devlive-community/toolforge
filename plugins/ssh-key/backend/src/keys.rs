@@ -126,6 +126,7 @@ pub fn randomart(title: &str, digest: &[u8], footer: &str) -> String {
             } else {
                 y.saturating_sub(1)
             };
+            // 与 OpenSSH 相同：计数最多到 14（'^'），S 与 E 只用于起点和终点
             let cell = &mut field[y][x];
             if (*cell as usize) < SYMBOLS.len() - 3 {
                 *cell += 1;
@@ -144,10 +145,11 @@ pub fn randomart(title: &str, digest: &[u8], footer: &str) -> String {
     for (row, cells) in field.iter().enumerate() {
         out.push('|');
         for (column, cell) in cells.iter().enumerate() {
-            let symbol = if (column, row) == (start_x, start_y) {
-                b'S'
-            } else if (column, row) == (x, y) {
+            // 终点与起点重合时 OpenSSH 显示 E
+            let symbol = if (column, row) == (x, y) {
                 b'E'
+            } else if (column, row) == (start_x, start_y) {
+                b'S'
             } else {
                 SYMBOLS[*cell as usize]
             };
