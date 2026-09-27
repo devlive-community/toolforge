@@ -118,8 +118,12 @@ fn serves_until_cancelled_and_logs_requests() {
         (Some("/hello.txt"), Some(11))
     );
     assert_eq!(logs.last().unwrap().1["requests"], 4);
-    // 停止后端口被释放
-    assert!(addresses::bind(port, false).is_ok());
+    // 停止后端口被释放；tiny_http 的接受线程会稍后才关闭监听，最多等待 2 秒
+    let deadline = Instant::now() + Duration::from_secs(2);
+    while addresses::bind(port, false).is_err() {
+        assert!(Instant::now() < deadline, "port {port} was not released");
+        std::thread::sleep(Duration::from_millis(20));
+    }
 }
 
 #[test]

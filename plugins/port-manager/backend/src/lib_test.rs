@@ -9,15 +9,26 @@ fn lists_listeners_with_their_processes() {
     let listener = TcpListener::bind("127.0.0.1:0").unwrap();
     let port = listener.local_addr().unwrap().port();
     let tool = PortManager::default();
-    let out = tool.call("list", json!({})).unwrap();
-    let socket = out["sockets"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .find(|s| s["port"] == port && s["protocol"] == "tcp")
-        .expect("own listener");
+    // macOS 上按进程遍历文件描述符来关联端口与进程；并行测试同时开关套接字时
+    // 本进程可能被暂时跳过，重试几次直到拿到 PID
+    let mut attempt = 0;
+    let (out, socket) = loop {
+        let out = tool.call("list", json!({})).unwrap();
+        let socket = out["sockets"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|s| s["port"] == port && s["protocol"] == "tcp")
+            .expect("own listener")
+            .clone();
+        attempt += 1;
+        if socket["pids"].as_array().is_some_and(|p| !p.is_empty()) || attempt >= 5 {
+            break (out, socket);
+        }
+        std::thread::sleep(std::time::Duration::from_millis(50));
+    };
     assert_eq!(socket["state"], "listen");
-    let pid = socket["pids"][0].as_u64().unwrap();
+    let pid = socket["pids"][0].as_u64().expect("listener has a pid");
     assert!(
         out["processes"]
             .as_array()
