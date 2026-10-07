@@ -13,18 +13,18 @@
     "react": "^19"
   },
   "dependencies": {
-    "@tauri-apps/api": "2.11.1",
-    "@tauri-apps/plugin-clipboard-manager": "2.3.3",
-    "@tauri-apps/plugin-dialog": "2.7.3",
+    "@tauri-apps/api": "2.12.1",
+    "@tauri-apps/plugin-clipboard-manager": "2.4.1",
+    "@tauri-apps/plugin-dialog": "2.8.1",
     "@toolforge/ui": "workspace:*",
     "i18next": "26.4.2",
-    "lucide-react": "1.47.0",
+    "lucide-react": "1.52.0",
     "react-i18next": "17.0.15"
   },
   "devDependencies": {
     "@types/react": "19.3.0",
     "react": "19.3.0",
-    "typescript": "5.9.3",
-    "vite": "8.3.0"
+    "typescript": "7.0.2",
+    "vite": "8.3.2"
   }
 }
