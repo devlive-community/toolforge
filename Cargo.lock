@@ -7527,6 +7527,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-folder-compare"
+version = "0.1.0"
+dependencies = [
+ "blake3",
+ "dunce",
+ "rayon",
+ "serde",
+ "serde_json",
+ "similar",
+ "tf-plugin-api",
+ "walkdir",
+]
+
+[[package]]
 name = "tfp-format-converter"
 version = "0.1.0"
 dependencies = [
@@ -8275,6 +8289,7 @@ dependencies = [
  "tfp-dns-lookup",
  "tfp-duplicate-finder",
  "tfp-encoder",
+ "tfp-folder-compare",
  "tfp-format-converter",
  "tfp-hash",
  "tfp-hex-viewer",

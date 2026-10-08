@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.folder-compare",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "system",
+  "keywords": ["folder compare", "directory diff", "compare folders", "diff", "sync", "backup", "beyond compare", "meld", "文件夹对比", "目录对比", "比较", "同步", "备份"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "compare": { "task": true },
+    "diff": {},
+    "copy": { "task": true }
+  },
+  "sensitive": false
+}

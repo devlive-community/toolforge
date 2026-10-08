@@ -1,0 +1,17 @@
+[package]
+name = "tfp-folder-compare"
+description = "ToolForge plugin: compare two folders, diff changed text files and copy differences across"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+blake3 = "1"
+dunce = "1"
+rayon = "1"
+similar = "3"
+walkdir = "2"

@@ -1,0 +1,106 @@
+{
+  "name": "Folder Compare",
+  "description": "Compare two folders, see changed text files side by side and copy differences across",
+  "help": [
+    "Choose a left and a right folder and press Compare. Quick mode compares size and modification time; content mode also reads files of equal size, so it finds edits that kept the size and time.",
+    "Ignore takes comma-separated names or patterns such as node_modules, *.log or build/*.map (patterns with / match the path). Symbolic links are skipped.",
+    "The result is a tree. By default only differences are shown; folders containing differences are marked as changed. The newer side of a changed file is shown in bold.",
+    "Click a changed text file to see a side-by-side diff below. ⌘ / Ctrl-click selects several entries.",
+    "Copy → / ← copies the selected files or folders to the other side, replacing files there after you confirm. Modification times are kept, and the folders are compared again afterwards. Nothing is ever deleted."
+  ],
+  "functions": {
+    "compare": "Compare folders",
+    "diff": "Diff a file",
+    "copy": "Copy entries"
+  },
+  "folders": {
+    "left": "Left folder",
+    "right": "Right folder",
+    "swap": "Swap folders"
+  },
+  "options": {
+    "method": "Compare by",
+    "ignore": "Ignore",
+    "ignoreHint": "Comma-separated names or patterns, e.g. node_modules, *.log, build/*.map",
+    "hidden": "Skip hidden files"
+  },
+  "methods": {
+    "quick": "Size and time",
+    "content": "Content"
+  },
+  "compare": {
+    "run": "Compare"
+  },
+  "result": {
+    "title": "Differences",
+    "filter": "Show",
+    "empty": "Choose two folders",
+    "emptyHint": "Then press Compare to see what differs",
+    "identical": "The folders are identical",
+    "noMatch": "Nothing matches this filter",
+    "name": "Name",
+    "status": "Status",
+    "collapse": "Collapse",
+    "expand": "Expand"
+  },
+  "filters": {
+    "diff": "Differences",
+    "all": "All",
+    "changed": "Changed",
+    "leftOnly": "Left only",
+    "rightOnly": "Right only"
+  },
+  "status": {
+    "same": "Same",
+    "changed": "Changed",
+    "leftOnly": "Left only",
+    "rightOnly": "Right only",
+    "mismatch": "File / folder"
+  },
+  "diff": {
+    "truncated": "Truncated",
+    "identical": "The text is identical"
+  },
+  "copy": {
+    "toRight": "Copy →",
+    "toLeft": "Copy ←",
+    "confirmRight_one": "Copy {{count}} entry to the right folder?",
+    "confirmRight_other": "Copy {{count}} entries to the right folder?",
+    "confirmLeft_one": "Copy {{count}} entry to the left folder?",
+    "confirmLeft_other": "Copy {{count}} entries to the left folder?",
+    "overwrite_one": "It exists on the other side and will be replaced.",
+    "overwrite_other": "{{count}} of them exist on the other side and will be replaced.",
+    "noOverwrite": "Nothing on the other side will be replaced.",
+    "confirm": "Copy",
+    "more": "… and {{count}} more",
+    "done_one": "Copied {{count}} file ({{size}})",
+    "done_other": "Copied {{count}} files ({{size}})"
+  },
+  "stages": {
+    "fc.scan": "Scanning folders…",
+    "fc.hash": "Comparing contents…",
+    "fc.copy": "Copying…"
+  },
+  "logs": {
+    "fc": {
+      "scanned": "Found {{left}} entries on the left and {{right}} on the right",
+      "links_skipped": "Skipped {{count}} symbolic links",
+      "hashing": "Comparing {{count}} files ({{bytes, number}} bytes)",
+      "done": "{{changed}} changed, {{leftOnly}} only on the left, {{rightOnly}} only on the right, {{same}} the same",
+      "copied": "Copied {{path}}",
+      "copy_done": "Copied {{files}} files ({{bytes, number}} bytes)"
+    }
+  },
+  "errors": {
+    "fc.not_a_folder": "{{path}} is not a folder",
+    "fc.same_folder": "Choose two different folders",
+    "fc.not_a_file": "This is a folder",
+    "fc.too_large": "The file is too large to compare (over 4 MB)",
+    "fc.read_failed": "Could not read {{path}}: {{detail}}",
+    "fc.binary": "Binary files cannot be shown as text",
+    "fc.invalid_path": "Invalid path {{path}}",
+    "fc.write_failed": "Could not write {{path}}: {{detail}}",
+    "fc.kind_mismatch": "{{path}} is a file on one side and a folder on the other",
+    "fc.nothing_selected": "Select something to copy"
+  }
+}

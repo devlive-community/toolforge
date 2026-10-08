@@ -1,0 +1,106 @@
+{
+  "name": "文件夹对比",
+  "description": "比较两个文件夹，并排查看变化的文本文件，并把差异复制到另一侧",
+  "help": [
+    "选择左右两个文件夹后点击“对比”。按大小和时间比较时只看大小与修改时间；按内容比较还会读取大小相同的文件，能发现大小和时间都没变的修改。",
+    "忽略项用逗号分隔，可以是名称或通配，如 node_modules、*.log、build/*.map（含 / 时匹配路径）。符号链接会跳过。",
+    "结果以树形显示，默认只显示差异；含有差异的文件夹标记为“已变化”。已变化的文件中，较新的一侧以粗体显示。",
+    "点击已变化的文本文件，下方并排显示逐行对比。按住 ⌘ / Ctrl 单击可多选。",
+    "“复制 →”/“复制 ←”把选中的文件或文件夹复制到另一侧，确认后会替换那边的同名文件；保留修改时间，完成后自动重新对比。不会删除任何内容。"
+  ],
+  "functions": {
+    "compare": "对比文件夹",
+    "diff": "对比文件",
+    "copy": "复制条目"
+  },
+  "folders": {
+    "left": "左侧文件夹",
+    "right": "右侧文件夹",
+    "swap": "交换左右"
+  },
+  "options": {
+    "method": "比较方式",
+    "ignore": "忽略",
+    "ignoreHint": "用逗号分隔的名称或通配，如 node_modules, *.log, build/*.map",
+    "hidden": "跳过隐藏文件"
+  },
+  "methods": {
+    "quick": "大小和时间",
+    "content": "内容"
+  },
+  "compare": {
+    "run": "对比"
+  },
+  "result": {
+    "title": "差异",
+    "filter": "显示",
+    "empty": "选择两个文件夹",
+    "emptyHint": "然后点击“对比”查看差异",
+    "identical": "两个文件夹完全相同",
+    "noMatch": "没有符合筛选条件的条目",
+    "name": "名称",
+    "status": "状态",
+    "collapse": "收起",
+    "expand": "展开"
+  },
+  "filters": {
+    "diff": "差异",
+    "all": "全部",
+    "changed": "已变化",
+    "leftOnly": "仅左侧",
+    "rightOnly": "仅右侧"
+  },
+  "status": {
+    "same": "相同",
+    "changed": "已变化",
+    "leftOnly": "仅左侧",
+    "rightOnly": "仅右侧",
+    "mismatch": "文件 / 文件夹"
+  },
+  "diff": {
+    "truncated": "已截断",
+    "identical": "文本内容相同"
+  },
+  "copy": {
+    "toRight": "复制 →",
+    "toLeft": "复制 ←",
+    "confirmRight_one": "把 {{count}} 个条目复制到右侧文件夹？",
+    "confirmRight_other": "把 {{count}} 个条目复制到右侧文件夹？",
+    "confirmLeft_one": "把 {{count}} 个条目复制到左侧文件夹？",
+    "confirmLeft_other": "把 {{count}} 个条目复制到左侧文件夹？",
+    "overwrite_one": "其中 {{count}} 个在另一侧已存在，将被替换。",
+    "overwrite_other": "其中 {{count}} 个在另一侧已存在，将被替换。",
+    "noOverwrite": "不会替换另一侧的任何内容。",
+    "confirm": "复制",
+    "more": "…… 以及另外 {{count}} 个",
+    "done_one": "已复制 {{count}} 个文件（{{size}}）",
+    "done_other": "已复制 {{count}} 个文件（{{size}}）"
+  },
+  "stages": {
+    "fc.scan": "正在扫描文件夹…",
+    "fc.hash": "正在比较内容…",
+    "fc.copy": "正在复制…"
+  },
+  "logs": {
+    "fc": {
+      "scanned": "左侧 {{left}} 个条目，右侧 {{right}} 个条目",
+      "links_skipped": "跳过了 {{count}} 个符号链接",
+      "hashing": "正在比较 {{count}} 个文件（{{bytes, number}} 字节）",
+      "done": "已变化 {{changed}}，仅左侧 {{leftOnly}}，仅右侧 {{rightOnly}}，相同 {{same}}",
+      "copied": "已复制 {{path}}",
+      "copy_done": "已复制 {{files}} 个文件（{{bytes, number}} 字节）"
+    }
+  },
+  "errors": {
+    "fc.not_a_folder": "{{path}} 不是文件夹",
+    "fc.same_folder": "请选择两个不同的文件夹",
+    "fc.not_a_file": "这是文件夹",
+    "fc.too_large": "文件过大，无法对比（超过 4 MB）",
+    "fc.read_failed": "无法读取 {{path}}：{{detail}}",
+    "fc.binary": "二进制文件无法按文本对比",
+    "fc.invalid_path": "无效的路径 {{path}}",
+    "fc.write_failed": "无法写入 {{path}}：{{detail}}",
+    "fc.kind_mismatch": "{{path}} 在一侧是文件，在另一侧是文件夹",
+    "fc.nothing_selected": "请选择要复制的条目"
+  }
+}
