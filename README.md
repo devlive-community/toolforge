@@ -73,6 +73,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **System Monitor** | Live CPU, memory, disk, network and temperature readings plus a searchable process list |
 | **Disk Usage** | Scan a folder or disk in parallel and see what takes up space in a zoomable treemap colored by file type, with folder contents, largest files and a type breakdown; move items to the Trash |
 | **Duplicate Finder** | Find files with identical content across folders (size → first 64 KB → full BLAKE3 hash, in parallel), ignore hard links, preselect extra copies by date, path or folder and move them to the Trash after re-verifying |
+| **Folder Compare** | Compare two folders by size and time or by content, with ignore patterns; browse the differences as a tree, see changed text files side by side and copy files or folders to the other side, keeping modification times |
 | **Unit Converter** | 14 categories including length, weight, temperature, area, volume, data size and rate, pressure, energy and power, plus traditional Chinese units |
 | **Image Compressor** | Batch compress JPEG (mozjpeg), PNG (dithered palette with transparency, or lossless oxipng) and WebP offline; resize, strip EXIF, keep color profiles, never overwrite, and compare with the original using a drag divider |
 | **Image Converter** | Batch convert PNG / JPEG / WebP / GIF / BMP / ICO / TIFF, resize by percent or bounding box, JPEG quality; runs as a task with live logs and never overwrites files |
