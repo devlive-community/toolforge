@@ -1,0 +1,104 @@
+{
+  "name": "十六进制查看",
+  "description": "逐字节查看任意文件，支持查找、跳转偏移和数据检查器",
+  "help": [
+    "打开文件或直接拖入窗口。任意大小的文件都能立即打开，只读取可见部分，不会修改文件。",
+    "根据文件开头的字节识别类型（PNG、ZIP、PDF、ELF、Mach-O、SQLite 等）。",
+    "单击字节移动光标，按住 Shift 单击选择一段。方向键、Page Up / Down、Home / End 也可移动光标，按住 Shift 可选择；⌘ / Ctrl + Home / End 跳到开头或末尾。",
+    "跳转支持十进制、0x1F0 或 1F0h 形式的十六进制，以及 +16、-0x10 这样的相对偏移。",
+    "可查找文本或十六进制字节（如 DE AD BE EF）。回车查找下一个，Shift + 回车查找上一个，到头后会从另一端继续。",
+    "数据检查器按小端或大端，把光标处的字节解读为整数、浮点数、二进制、UTF-8 与 Unix 时间戳。选区可复制为十六进制、Base64、C 数组、Python bytes 或文本。"
+  ],
+  "functions": {
+    "open": "打开文件",
+    "read": "读取字节",
+    "inspect": "解读字节",
+    "find": "查找",
+    "goto": "跳转偏移",
+    "copy": "复制选区"
+  },
+  "file": {
+    "title": "十六进制",
+    "open": "打开文件",
+    "drop": "拖入文件",
+    "dropHint": "也可点击选择 · 支持任意大小的文件",
+    "empty": "文件为空",
+    "offset": "偏移",
+    "ascii": "ASCII"
+  },
+  "status": {
+    "cursor": "偏移 {{offset}}（{{decimal}}）",
+    "selection": "已选 {{count}} 字节（{{from}}–{{to}}）"
+  },
+  "goto": {
+    "title": "跳转偏移",
+    "placeholder": "偏移，如 0x1F0 或 +16",
+    "go": "跳转"
+  },
+  "search": {
+    "title": "查找",
+    "mode": "查找内容",
+    "modes": {
+      "text": "文本",
+      "hex": "十六进制"
+    },
+    "placeholder": {
+      "text": "要查找的文本",
+      "hex": "字节，如 DE AD BE EF"
+    },
+    "ignoreCase": "忽略大小写",
+    "previous": "上一个",
+    "next": "下一个",
+    "notFound": "没有找到",
+    "wrappedStart": "已到末尾，从开头继续查找",
+    "wrappedEnd": "已到开头，从末尾继续查找"
+  },
+  "inspector": {
+    "title": "数据检查器",
+    "endian": "字节序",
+    "le": "小端",
+    "be": "大端",
+    "empty": "打开文件后查看字节含义",
+    "kinds": {
+      "binary": "二进制",
+      "u8": "UInt8",
+      "i8": "Int8",
+      "u16": "UInt16",
+      "i16": "Int16",
+      "u32": "UInt32",
+      "i32": "Int32",
+      "u64": "UInt64",
+      "i64": "Int64",
+      "f32": "Float32",
+      "f64": "Float64",
+      "utf8": "UTF-8",
+      "unix32": "Unix 时间",
+      "unixMs": "Unix 毫秒"
+    }
+  },
+  "copy": {
+    "title": "复制",
+    "selection": "光标处或选区共 {{count}} 字节",
+    "nothing": "未选择内容",
+    "as": "复制为…",
+    "hint": "一次最多复制 1 MB。",
+    "formats": {
+      "hex": "十六进制（空格分隔）",
+      "hexCompact": "十六进制（紧凑）",
+      "base64": "Base64",
+      "c": "C 数组",
+      "python": "Python bytes",
+      "text": "文本（UTF-8）"
+    }
+  },
+  "errors": {
+    "hex.not_a_file": "这是文件夹，不是文件",
+    "hex.read_failed": "无法读取 {{path}}：{{detail}}",
+    "hex.invalid_pattern": "请输入成对的十六进制字节，如 DE AD BE EF",
+    "hex.empty_pattern": "请输入要查找的内容",
+    "hex.pattern_too_long": "查找内容最多 {{max}} 字节",
+    "hex.invalid_offset": "请输入偏移，如 1024、0x400、400h 或 +16",
+    "hex.offset_out_of_range": "偏移超出文件范围（共 {{size}} 字节）",
+    "hex.copy_too_large": "一次最多复制 {{max}} 字节"
+  }
+}

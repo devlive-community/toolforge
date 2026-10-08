@@ -1,0 +1,15 @@
+[package]
+name = "tfp-hex-viewer"
+description = "ToolForge plugin: inspect binary files as hex with search and a data inspector"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+data-encoding = "2"
+jiff = "0.2"
+memchr = "2"

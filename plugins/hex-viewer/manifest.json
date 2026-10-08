@@ -1,0 +1,20 @@
+{
+  "id": "org.devlive.toolforge.hex-viewer",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["hex", "hexdump", "hex viewer", "hex editor", "binary", "bytes", "magic", "file signature", "xxd", "十六进制", "二进制", "字节", "文件头"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "open": {},
+    "read": {},
+    "inspect": {},
+    "find": {},
+    "goto": {},
+    "copy": {}
+  },
+  "sensitive": false
+}

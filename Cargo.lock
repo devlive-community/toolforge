@@ -7558,6 +7558,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-hex-viewer"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "jiff",
+ "memchr",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-http-client"
 version = "0.1.0"
 dependencies = [
@@ -8265,6 +8277,7 @@ dependencies = [
  "tfp-encoder",
  "tfp-format-converter",
  "tfp-hash",
+ "tfp-hex-viewer",
  "tfp-http-client",
  "tfp-icon-generator",
  "tfp-image-compressor",

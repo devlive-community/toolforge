@@ -1,0 +1,104 @@
+{
+  "name": "Hex Viewer",
+  "description": "Inspect any file byte by byte, with search, go to offset and a data inspector",
+  "help": [
+    "Open a file or drop it on the window. Files of any size open instantly; only the visible part is read. The file is never changed.",
+    "The file type is recognised from its first bytes (PNG, ZIP, PDF, ELF, Mach-O, SQLite and more).",
+    "Click a byte to move the cursor and Shift-click to select a range. Arrow keys, Page Up / Down and Home / End also move the cursor; hold Shift to select. ⌘ / Ctrl + Home / End jump to the start or end.",
+    "Go to accepts decimal numbers, hex such as 0x1F0 or 1F0h, and relative offsets such as +16 or -0x10.",
+    "Search for text or hex bytes such as DE AD BE EF. Enter finds the next match, Shift + Enter the previous one, and the search wraps around the file.",
+    "The data inspector reads the bytes at the cursor as integers, floats, binary, UTF-8 and Unix timestamps in little or big endian. The selection can be copied as hex, Base64, a C array, Python bytes or text."
+  ],
+  "functions": {
+    "open": "Open file",
+    "read": "Read bytes",
+    "inspect": "Inspect bytes",
+    "find": "Find",
+    "goto": "Go to offset",
+    "copy": "Copy selection"
+  },
+  "file": {
+    "title": "Hex",
+    "open": "Open file",
+    "drop": "Drop a file here",
+    "dropHint": "Or click to choose · files of any size",
+    "empty": "The file is empty",
+    "offset": "Offset",
+    "ascii": "ASCII"
+  },
+  "status": {
+    "cursor": "Offset {{offset}} ({{decimal}})",
+    "selection": "{{count}} bytes selected ({{from}}–{{to}})"
+  },
+  "goto": {
+    "title": "Go to offset",
+    "placeholder": "Offset, e.g. 0x1F0 or +16",
+    "go": "Go"
+  },
+  "search": {
+    "title": "Find",
+    "mode": "Search for",
+    "modes": {
+      "text": "Text",
+      "hex": "Hex"
+    },
+    "placeholder": {
+      "text": "Text to find",
+      "hex": "Bytes, e.g. DE AD BE EF"
+    },
+    "ignoreCase": "Ignore case",
+    "previous": "Previous",
+    "next": "Next",
+    "notFound": "Not found",
+    "wrappedStart": "Reached the end, continued from the start",
+    "wrappedEnd": "Reached the start, continued from the end"
+  },
+  "inspector": {
+    "title": "Data inspector",
+    "endian": "Byte order",
+    "le": "Little",
+    "be": "Big",
+    "empty": "Open a file to inspect bytes",
+    "kinds": {
+      "binary": "Binary",
+      "u8": "UInt8",
+      "i8": "Int8",
+      "u16": "UInt16",
+      "i16": "Int16",
+      "u32": "UInt32",
+      "i32": "Int32",
+      "u64": "UInt64",
+      "i64": "Int64",
+      "f32": "Float32",
+      "f64": "Float64",
+      "utf8": "UTF-8",
+      "unix32": "Unix time",
+      "unixMs": "Unix ms"
+    }
+  },
+  "copy": {
+    "title": "Copy",
+    "selection": "{{count}} bytes at the cursor or in the selection",
+    "nothing": "Nothing selected",
+    "as": "Copy as…",
+    "hint": "Up to 1 MB can be copied at once.",
+    "formats": {
+      "hex": "Hex (spaced)",
+      "hexCompact": "Hex (compact)",
+      "base64": "Base64",
+      "c": "C array",
+      "python": "Python bytes",
+      "text": "Text (UTF-8)"
+    }
+  },
+  "errors": {
+    "hex.not_a_file": "This is a folder, not a file",
+    "hex.read_failed": "Could not read {{path}}: {{detail}}",
+    "hex.invalid_pattern": "Enter hex bytes in pairs, such as DE AD BE EF",
+    "hex.empty_pattern": "Enter something to find",
+    "hex.pattern_too_long": "The search can be at most {{max}} bytes",
+    "hex.invalid_offset": "Enter an offset such as 1024, 0x400, 400h or +16",
+    "hex.offset_out_of_range": "The offset is outside the file ({{size}} bytes)",
+    "hex.copy_too_large": "Select at most {{max}} bytes to copy"
+  }
+}
