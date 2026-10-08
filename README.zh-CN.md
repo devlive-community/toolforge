@@ -75,6 +75,7 @@
 | **单位换算** | 长度、重量、温度、面积、体积、数据大小与速率、压强、能量、功率等 14 类单位，含市制单位 |
 | **图片压缩** | 离线批量压缩 JPEG（mozjpeg）、PNG（带透明度的抖动调色板或 oxipng 无损）与 WebP；可缩放、移除 EXIF、保留色彩配置，不覆盖原图，并可拖动分隔线与原图对比 |
 | **图片转换** | PNG / JPEG / WebP / GIF / BMP / ICO / TIFF 批量互转，按比例或限定宽高缩放，JPEG 质量可调；以任务运行并输出实时日志，不覆盖已有文件 |
+| **应用图标生成** | 由一张图片或 SVG 生成整套图标：Web（favicon.ico、PNG、webmanifest 与 HTML 片段）、iOS（Xcode AppIcon.appiconset）、Android（mipmap 与圆形图标）、macOS（.icns）、Windows（多尺寸 .ico），可设置留白、背景色与圆角 |
 | **PDF 工具** | 在缩略图网格中合并 PDF，并对页面重排、旋转、复制或删除；按页码范围、每 N 页或逐页拆分；图片合成 PDF（JPEG 原样嵌入不再压缩）；可打开受密码保护的文件 |
 | **Cron 表达式** | 逐字段解释 5 / 6 / 7 段 Cron 表达式，按任意时区预览后续执行时间，支持 `L`、`W`、`#` 与 `@daily` 等别名 |
 | **JSON 转代码** | 从 JSON 样例生成 TypeScript、Rust（serde）、Go、Java record、Kotlin、Python（pydantic）与 C# 模型，自动合并数组并识别可选与可空字段 |
