@@ -52,7 +52,20 @@ fn finds_own_listeners() {
         udp.local_addr().unwrap().port(),
     );
     let me = std::process::id();
-    let all = list(false).unwrap();
+    // 并行测试会派生子进程，fork 到 exec 之间子进程短暂持有本进程的套接字，
+    // 那一刻的快照可能把监听端口算到子进程名下，重试直到看到本进程
+    let mut attempt = 0;
+    let all = loop {
+        let all = list(false).unwrap();
+        attempt += 1;
+        let mine = all
+            .iter()
+            .any(|s| s.protocol == Protocol::Tcp && s.port == tcp_port && s.pids.contains(&me));
+        if mine || attempt >= 10 {
+            break all;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(50));
+    };
     let find = |protocol, port| {
         all.iter()
             .find(|s| s.protocol == protocol && s.port == port)
