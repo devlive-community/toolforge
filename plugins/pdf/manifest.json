@@ -1,0 +1,19 @@
+{
+  "id": "org.devlive.toolforge.pdf",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "convert",
+  "keywords": ["pdf", "merge", "split", "combine", "extract pages", "rotate", "reorder", "delete pages", "images to pdf", "jpg to pdf", "metadata", "合并", "拆分", "提取页面", "旋转", "删除页面", "图片转 PDF"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "inspect": {},
+    "thumbnails": {},
+    "compose": { "task": true },
+    "split": { "task": true },
+    "images": { "task": true }
+  },
+  "sensitive": false
+}

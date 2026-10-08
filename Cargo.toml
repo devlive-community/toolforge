@@ -50,6 +50,7 @@ tfp-markdown-editor = { path = "plugins/markdown-editor/backend" }
 tfp-mock-data = { path = "plugins/mock-data/backend" }
 tfp-ocr = { path = "plugins/ocr/backend" }
 tfp-password = { path = "plugins/password/backend" }
+tfp-pdf = { path = "plugins/pdf/backend" }
 tfp-port-manager = { path = "plugins/port-manager/backend" }
 tfp-qrcode = { path = "plugins/qrcode/backend" }
 tfp-regex = { path = "plugins/regex/backend" }

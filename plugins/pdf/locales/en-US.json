@@ -1,0 +1,131 @@
+{
+  "name": "PDF Tools",
+  "description": "Merge, split, reorder, rotate and delete PDF pages, and turn images into a PDF",
+  "help": [
+    "Organize: add one or more PDFs (or drop them on the window). Every page appears as a thumbnail; drag pages to reorder them, even between files, and rotate, duplicate or delete the selected pages. Export saves a new PDF and never changes the originals.",
+    "Click to select a page, ⌘/Ctrl-click to add pages, and Shift-click to select a range. Selected pages move together when you drag them.",
+    "Split: cut one PDF into several files by page ranges such as 1-3, 5, 8- (8- means to the last page), every N pages, or one file per page.",
+    "Images to PDF: one image per page. JPEG photos are embedded as they are, without being compressed again; other formats are stored losslessly and keep transparency.",
+    "Password-protected PDFs ask for the password when opened; exported files are saved without the password.",
+    "Bookmarks, forms and links to removed pages are not carried over to the new file."
+  ],
+  "functions": {
+    "inspect": "Read PDF",
+    "thumbnails": "Page thumbnails",
+    "compose": "Save PDF",
+    "split": "Split PDF",
+    "images": "Images to PDF"
+  },
+  "tabs": {
+    "organize": "Organize & merge",
+    "split": "Split",
+    "images": "Images to PDF"
+  },
+  "organize": {
+    "pages": "Pages",
+    "count": "{{count}} pages · {{selected}} selected",
+    "add": "Add PDF",
+    "drop": "Drop PDF files here",
+    "dropHint": "Or click to choose · several files are merged in order",
+    "hint": "Drag to reorder · ⌘/Ctrl or Shift to select several",
+    "rotateLeft": "Rotate left",
+    "rotateRight": "Rotate right",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "reset": "Restore original order",
+    "pageOf": "Page {{page}}",
+    "files": "Files",
+    "noFiles": "No files yet",
+    "fileInfo": "{{pages}} pages · {{size}} · PDF {{version}}",
+    "removeFile": "Remove file",
+    "export": "Save as PDF ({{count}} pages)",
+    "saved": "Saved {{pages}} pages ({{size}})",
+    "show": "Show in folder"
+  },
+  "metadata": {
+    "title": "Document info",
+    "write": "Change document info",
+    "author": "Author",
+    "subject": "Subject",
+    "keywords": "Keywords",
+    "writeHint": "These values are written to the new file.",
+    "keepHint": "The info of the first file is kept."
+  },
+  "password": {
+    "title": "Password",
+    "required": "{{name}} is protected with a password",
+    "wrong": "Wrong password for {{name}}",
+    "skip": "Skip",
+    "unlock": "Open"
+  },
+  "split": {
+    "title": "Split a PDF",
+    "choose": "Choose a PDF",
+    "mode": "Split by",
+    "modes": {
+      "ranges": "Page ranges",
+      "every": "Every N pages",
+      "single": "Each page"
+    },
+    "ranges": "Page ranges",
+    "rangesHint": "Separate files with commas, for example 1-3, 5, 8- (8- means to the end).",
+    "everyLabel": "Pages per file",
+    "output": "Save to",
+    "sameDir": "Next to the original",
+    "start": "Split",
+    "done": "Created {{count}} files",
+    "results": "Files",
+    "empty": "The new files appear here"
+  },
+  "images": {
+    "title": "Images",
+    "add": "Add images",
+    "filter": "Images",
+    "empty": "Add images",
+    "emptyHint": "Each image becomes a page, in this order",
+    "up": "Move up",
+    "down": "Move down",
+    "remove": "Remove",
+    "options": "Page",
+    "pageSize": "Page size",
+    "sizes": {
+      "fit": "Fit image",
+      "a4": "A4",
+      "letter": "Letter"
+    },
+    "sizeHint": {
+      "fit": "Each page has the size of its image.",
+      "a4": "Images are scaled to fit and centered; landscape images get landscape pages.",
+      "letter": "Images are scaled to fit and centered; landscape images get landscape pages."
+    },
+    "margin": "Margin (pt)",
+    "jpegHint": "JPEG photos are embedded without recompression, so quality is unchanged.",
+    "create": "Create PDF"
+  },
+  "stages": {
+    "pdf.compose": "Building PDF…",
+    "pdf.split": "Splitting…",
+    "pdf.images": "Adding images…"
+  },
+  "logs": {
+    "pdf": {
+      "saved": "Saved {{pages}} pages to {{path}} ({{size, number}} bytes)",
+      "part_saved": "Pages {{from}}–{{to}} → {{path}}"
+    }
+  },
+  "errors": {
+    "pdf.password_required": "This PDF is protected with a password",
+    "pdf.wrong_password": "The password is incorrect",
+    "pdf.invalid": "This file is not a readable PDF: {{detail}}",
+    "pdf.no_pages": "The PDF has no pages",
+    "pdf.no_pages_selected": "Choose at least one page",
+    "pdf.page_out_of_range": "Page {{page}} does not exist (the file has {{count}} pages)",
+    "pdf.invalid_source": "Unknown file",
+    "pdf.invalid_rotation": "Pages can only be rotated in steps of 90 degrees",
+    "pdf.invalid_range": "Invalid page range “{{range}}”",
+    "pdf.output_dir_missing": "The folder {{path}} does not exist",
+    "pdf.write_failed": "Could not save the PDF: {{detail}}",
+    "pdf.no_images": "Add some images first",
+    "pdf.image_unsupported": "Could not read the image {{path}}"
+  }
+}

@@ -55,6 +55,7 @@ tfp-markdown-editor.workspace = true
 tfp-mock-data.workspace = true
 tfp-ocr.workspace = true
 tfp-password.workspace = true
+tfp-pdf.workspace = true
 tfp-port-manager.workspace = true
 tfp-qrcode.workspace = true
 tfp-regex.workspace = true

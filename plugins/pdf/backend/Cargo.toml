@@ -1,0 +1,16 @@
+[package]
+name = "tfp-pdf"
+description = "ToolForge plugin: merge, split, rotate and reorder PDF pages"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+data-encoding = "2"
+hayro = "0.7"
+image = { version = "0.25", default-features = false, features = ["jpeg", "png", "webp", "gif", "bmp", "tiff"] }
+lopdf = "0.45"
