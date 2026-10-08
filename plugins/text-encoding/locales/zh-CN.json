@@ -1,0 +1,120 @@
+{
+  "name": "编码转换",
+  "description": "识别文本文件的编码与换行符并批量转换，例如把 GBK 转成 UTF-8",
+  "help": [
+    "添加文件或文件夹（也可直接拖入窗口），自动识别每个文件的编码：BOM、UTF-16、UTF-8，以及 GBK、Big5、Shift_JIS 等传统编码；二进制文件会跳过。",
+    "传统编码的识别是推测。点击文件可以预览：如果看起来是乱码，就在该行换一个编码，直到内容显示正常。解码有错误的文件会带警告图标。",
+    "预览还会提示目标编码存不下的字符（例如 GBK 中的 emoji），这类文件会转换失败并保持原样。",
+    "覆盖原文件时先写临时文件再替换，并默认保留一份 .bak；已经符合目标的文件不会改动。",
+    "换行符可以保持不变，或统一为 LF（macOS / Linux）或 CRLF（Windows）。BOM 只用于 UTF-8 与 UTF-16。"
+  ],
+  "functions": {
+    "encodings": "编码列表",
+    "scan": "识别编码",
+    "preview": "预览文件",
+    "convert": "转换文件"
+  },
+  "encodings": {
+    "UTF-8": "UTF-8",
+    "UTF-16LE": "UTF-16 LE",
+    "UTF-16BE": "UTF-16 BE",
+    "gb18030": "GB18030",
+    "GBK": "GBK（GB2312）",
+    "Big5": "Big5（繁体中文）",
+    "Shift_JIS": "Shift_JIS（日文）",
+    "EUC-JP": "EUC-JP（日文）",
+    "EUC-KR": "EUC-KR（韩文）",
+    "windows-1252": "Windows-1252（西欧）",
+    "windows-1251": "Windows-1251（西里尔）",
+    "KOI8-R": "KOI8-R（俄文）",
+    "ISO-8859-2": "ISO-8859-2（中欧）"
+  },
+  "files": {
+    "title": "文件",
+    "add": "添加文件",
+    "addFolder": "添加文件夹",
+    "recursive": "子文件夹",
+    "recursiveHint": "包含子文件夹中的文件（跳过隐藏文件及 node_modules、target、dist、build）",
+    "drop": "拖入文件或文件夹",
+    "dropHint": "也可点击选择文件夹",
+    "encoding": "源编码",
+    "unsure": "部分字节不符合识别出的编码，请查看预览并选择正确的编码。",
+    "bom": "BOM",
+    "remove": "移除",
+    "skippedBinary": "已跳过 {{count}} 个二进制文件",
+    "skippedTooMany": "只添加了前 5000 个文件，跳过 {{count}} 个",
+    "noneFound": "没有找到文本文件"
+  },
+  "lineEndings": {
+    "none": "—",
+    "lf": "LF",
+    "crlf": "CRLF",
+    "cr": "CR",
+    "mixed": "混合"
+  },
+  "status": {
+    "converted": "已转换",
+    "unchanged": "无需转换",
+    "failed": "失败"
+  },
+  "preview": {
+    "title": "预览",
+    "titleOf": "预览 · {{name}}",
+    "empty": "选择一个文件",
+    "emptyHint": "按源编码显示内容，方便确认是否正确",
+    "malformed": "乱码",
+    "malformedHint": "部分字节不符合该编码，换一个源编码试试。",
+    "unmappable": "不支持“{{char}}”",
+    "unmappableHint": "第 {{line}} 行的“{{char}}”（{{code}}）无法用 {{encoding}} 保存，该文件会转换失败；请改用 UTF-8 或 GB18030 等 Unicode 编码。",
+    "truncated": "…… 只显示开头部分"
+  },
+  "convert": {
+    "title": "转换",
+    "to": "转换为",
+    "bom": "写入 BOM",
+    "bomHint": "部分 Windows 程序（如旧版 Excel、记事本）需要 BOM 才能识别 UTF-8。",
+    "bomUnavailable": "只有 UTF-8 与 UTF-16 有 BOM。",
+    "newline": "换行符",
+    "output": "保存方式",
+    "backup": "保留 .bak 备份",
+    "chooseFolder": "选择文件夹",
+    "inplaceHint": "直接替换原文件；无需转换的文件不会改动。",
+    "folderHint": "转换后的副本保存到该文件夹，不会覆盖已有文件。",
+    "sources": "识别结果",
+    "run": "转换 {{count}} 个文件",
+    "done": "已转换 {{converted}} 个，无需转换 {{unchanged}} 个，失败 {{failed}} 个",
+    "show": "打开文件夹"
+  },
+  "newlines": {
+    "keep": "保持",
+    "lf": "LF",
+    "crlf": "CRLF"
+  },
+  "outputs": {
+    "inplace": "替换原文件",
+    "folder": "保存到文件夹"
+  },
+  "stages": {
+    "encoding.convert": "正在转换…"
+  },
+  "logs": {
+    "encoding": {
+      "converted": "{{name}}：{{from}} → {{to}}",
+      "unchanged": "{{name}}：已符合目标，无需转换",
+      "failed": "{{name}}：转换失败",
+      "done": "已转换 {{converted}} 个，无需转换 {{unchanged}} 个，失败 {{failed}} 个"
+    }
+  },
+  "errors": {
+    "encoding.unsupported": "不支持的编码“{{encoding}}”",
+    "encoding.malformed": "第 {{line}} 行有不属于 {{encoding}} 的字节，请选择正确的源编码",
+    "encoding.unmappable": "第 {{line}} 行的“{{char}}”（{{code}}）无法用 {{encoding}} 保存",
+    "encoding.not_a_file": "这是文件夹，不是文件",
+    "encoding.too_large": "文件过大（超过 64 MB）",
+    "encoding.binary": "这看起来是二进制文件",
+    "encoding.output_dir_missing": "文件夹 {{path}} 不存在",
+    "encoding.no_files": "请先添加文件",
+    "encoding.read_failed": "无法读取 {{path}}：{{detail}}",
+    "encoding.write_failed": "无法写入 {{path}}：{{detail}}"
+  }
+}

@@ -857,6 +857,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "chardetng"
+version = "0.1.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "14b8f0b65b7b08ae3c8187e8d77174de20cb6777864c6b832d8ad365999cf1ea"
+dependencies = [
+ "cfg-if",
+ "encoding_rs",
+ "memchr",
+]
+
+[[package]]
 name = "chrono"
 version = "0.4.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -7646,6 +7657,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-text-encoding"
+version = "0.1.0"
+dependencies = [
+ "chardetng",
+ "encoding_rs",
+ "rayon",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-text-tools"
 version = "0.1.0"
 dependencies = [
@@ -8065,6 +8088,7 @@ dependencies = [
  "tfp-ssh-key",
  "tfp-system-monitor",
  "tfp-text-diff",
+ "tfp-text-encoding",
  "tfp-text-tools",
  "tfp-timestamp",
  "tfp-unicode",

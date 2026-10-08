@@ -1,0 +1,120 @@
+{
+  "name": "Encoding Converter",
+  "description": "Detect the encoding and line endings of text files and convert them in bulk, e.g. GBK to UTF-8",
+  "help": [
+    "Add files or a folder (or drop them on the window). Each file's encoding is detected: byte order marks, UTF-16, UTF-8, and legacy encodings such as GBK, Big5 and Shift_JIS. Binary files are skipped.",
+    "Detection of legacy encodings is a guess. Click a file to preview it: if the text looks garbled, pick another encoding in its row until it reads correctly. A warning icon marks files that do not decode cleanly.",
+    "The preview also warns when a character cannot be stored in the target encoding (for example emoji in GBK); those files are reported as failed and left unchanged.",
+    "Converting in place writes each file safely through a temporary file and keeps a .bak copy unless you turn it off. Files that are already in the target form are not touched.",
+    "Line endings can be kept, or unified to LF (macOS / Linux) or CRLF (Windows). A BOM is only used with UTF-8 and UTF-16."
+  ],
+  "functions": {
+    "encodings": "List encodings",
+    "scan": "Detect encodings",
+    "preview": "Preview file",
+    "convert": "Convert files"
+  },
+  "encodings": {
+    "UTF-8": "UTF-8",
+    "UTF-16LE": "UTF-16 LE",
+    "UTF-16BE": "UTF-16 BE",
+    "gb18030": "GB18030",
+    "GBK": "GBK (GB2312)",
+    "Big5": "Big5 (Traditional Chinese)",
+    "Shift_JIS": "Shift_JIS (Japanese)",
+    "EUC-JP": "EUC-JP (Japanese)",
+    "EUC-KR": "EUC-KR (Korean)",
+    "windows-1252": "Windows-1252 (Western)",
+    "windows-1251": "Windows-1251 (Cyrillic)",
+    "KOI8-R": "KOI8-R (Russian)",
+    "ISO-8859-2": "ISO-8859-2 (Central European)"
+  },
+  "files": {
+    "title": "Files",
+    "add": "Add files",
+    "addFolder": "Add folder",
+    "recursive": "Subfolders",
+    "recursiveHint": "Include files in subfolders (hidden files, node_modules, target, dist and build are skipped)",
+    "drop": "Drop files or a folder here",
+    "dropHint": "Or click to choose a folder",
+    "encoding": "Source encoding",
+    "unsure": "Some bytes do not fit the detected encoding. Check the preview and pick the right encoding.",
+    "bom": "BOM",
+    "remove": "Remove",
+    "skippedBinary": "Skipped {{count}} binary files",
+    "skippedTooMany": "Only the first 5,000 files were added; skipped {{count}}",
+    "noneFound": "No text files found"
+  },
+  "lineEndings": {
+    "none": "—",
+    "lf": "LF",
+    "crlf": "CRLF",
+    "cr": "CR",
+    "mixed": "Mixed"
+  },
+  "status": {
+    "converted": "Converted",
+    "unchanged": "Unchanged",
+    "failed": "Failed"
+  },
+  "preview": {
+    "title": "Preview",
+    "titleOf": "Preview · {{name}}",
+    "empty": "Select a file",
+    "emptyHint": "Its content is shown in the source encoding, so you can check that it reads correctly",
+    "malformed": "Garbled",
+    "malformedHint": "Some bytes are not valid in this encoding. Try another source encoding.",
+    "unmappable": "“{{char}}” not supported",
+    "unmappableHint": "“{{char}}” ({{code}}) on line {{line}} cannot be stored in {{encoding}}. This file will fail; choose a Unicode encoding such as UTF-8 or GB18030.",
+    "truncated": "… only the beginning is shown"
+  },
+  "convert": {
+    "title": "Convert",
+    "to": "Convert to",
+    "bom": "Write BOM",
+    "bomHint": "Some Windows programs (e.g. older Excel and Notepad) need a BOM to recognise UTF-8.",
+    "bomUnavailable": "Only UTF-8 and UTF-16 have a BOM.",
+    "newline": "Line endings",
+    "output": "Save",
+    "backup": "Keep a .bak copy",
+    "chooseFolder": "Choose a folder",
+    "inplaceHint": "Files are replaced in place; unchanged files are not touched.",
+    "folderHint": "Converted copies are saved to the folder; existing files are never overwritten.",
+    "sources": "Detected",
+    "run": "Convert {{count}} files",
+    "done": "Converted {{converted}}, unchanged {{unchanged}}, failed {{failed}}",
+    "show": "Show folder"
+  },
+  "newlines": {
+    "keep": "Keep",
+    "lf": "LF",
+    "crlf": "CRLF"
+  },
+  "outputs": {
+    "inplace": "Replace files",
+    "folder": "To a folder"
+  },
+  "stages": {
+    "encoding.convert": "Converting…"
+  },
+  "logs": {
+    "encoding": {
+      "converted": "{{name}}: {{from}} → {{to}}",
+      "unchanged": "{{name}}: already in the target form",
+      "failed": "{{name}}: could not be converted",
+      "done": "Converted {{converted}}, unchanged {{unchanged}}, failed {{failed}}"
+    }
+  },
+  "errors": {
+    "encoding.unsupported": "Unsupported encoding “{{encoding}}”",
+    "encoding.malformed": "Line {{line}} contains bytes that are not valid {{encoding}}; choose the right source encoding",
+    "encoding.unmappable": "“{{char}}” ({{code}}) on line {{line}} cannot be stored in {{encoding}}",
+    "encoding.not_a_file": "This is a folder, not a file",
+    "encoding.too_large": "The file is too large (over 64 MB)",
+    "encoding.binary": "This looks like a binary file",
+    "encoding.output_dir_missing": "The folder {{path}} does not exist",
+    "encoding.no_files": "Add some files first",
+    "encoding.read_failed": "Could not read {{path}}: {{detail}}",
+    "encoding.write_failed": "Could not write {{path}}: {{detail}}"
+  }
+}
