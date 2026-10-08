@@ -1,0 +1,100 @@
+{
+  "name": "应用图标生成",
+  "description": "由一张图片或 SVG 生成 Web、iOS、Android、macOS 与 Windows 的整套图标",
+  "help": [
+    "选择一张至少 1024 × 1024 像素的方形图片，或一个 SVG（每个尺寸都清晰渲染）。非方形图片会居中放置。",
+    "留白在图案四周留出空间；圆角作用于 Web、Android 与 Windows 图标。开启背景可填充透明区域。",
+    "iOS 图标与 apple-touch-icon 不能透明，因此会加上背景（未设置时为白色）且不带圆角，由系统裁切圆角。Android 圆形图标裁成圆形，macOS 图标按 Apple 模板生成带边距的圆角方块。",
+    "文件保存到图片旁边（或你选择的文件夹）中的新文件夹：Web 网站图标与 site.webmanifest、HTML 代码片段，Xcode 的 AppIcon.appiconset，Android 的 mipmap 文件夹，AppIcon.icns，以及多尺寸 app.ico。"
+  ],
+  "functions": {
+    "inspect": "读取图片",
+    "render": "预览图标",
+    "generate": "生成图标"
+  },
+  "source": {
+    "title": "图片",
+    "filter": "图片",
+    "drop": "选择图片或 SVG",
+    "dropHint": "也可拖入 · 1024 像素以上效果最好",
+    "svg": "SVG · 任何尺寸都清晰",
+    "size": "{{width}} × {{height}} 像素",
+    "change": "换一张图片",
+    "small": "图片只有 {{size}} 像素，大尺寸图标会模糊。建议使用 1024 像素图片或 SVG。",
+    "notSquare": "图片不是方形，会居中放置。",
+    "clear": "清除"
+  },
+  "options": {
+    "title": "图标",
+    "padding": "留白（%）",
+    "radius": "圆角（%）",
+    "background": "背景",
+    "color": "背景色",
+    "invalidColor": "请输入颜色，如 #1e90ff",
+    "backgroundHint": "iOS 与 macOS 图标始终带背景（默认白色）。",
+    "appName": "应用名称",
+    "output": "保存到",
+    "chooseFolder": "选择文件夹"
+  },
+  "presets": {
+    "title": "平台",
+    "web": {
+      "name": "Web",
+      "files": "favicon.ico、PNG、webmanifest"
+    },
+    "ios": {
+      "name": "iOS",
+      "files": "AppIcon.appiconset"
+    },
+    "android": {
+      "name": "Android",
+      "files": "mipmap、圆形、应用商店"
+    },
+    "macos": {
+      "name": "macOS",
+      "files": "AppIcon.icns"
+    },
+    "windows": {
+      "name": "Windows",
+      "files": "app.ico"
+    }
+  },
+  "preview": {
+    "title": "预览",
+    "empty": "还没有图片",
+    "emptyHint": "这里会预览各平台的图标效果",
+    "rounded": "Web / Windows",
+    "ios": "iOS",
+    "round": "Android 圆形",
+    "mac": "macOS"
+  },
+  "generate": {
+    "run": "生成图标",
+    "done": "已生成 {{count}} 个文件",
+    "result": "图标",
+    "files": "{{count}} 个文件",
+    "show": "在文件夹中显示",
+    "snippet": "添加到网页的 <head> 中",
+    "copy": "复制"
+  },
+  "stages": {
+    "icon.load": "正在读取图片…",
+    "icon.generate": "正在生成图标…"
+  },
+  "logs": {
+    "icon": {
+      "file": "{{path}}",
+      "preset_done": "{{preset}}：{{count}} 个文件",
+      "done": "已保存 {{count}} 个文件到 {{path}}"
+    }
+  },
+  "errors": {
+    "icon.invalid_svg": "无法读取 SVG：{{detail}}",
+    "icon.unsupported_image": "无法读取图片：{{detail}}",
+    "icon.invalid_style": "留白须为 0–40%，圆角须为 0–50%",
+    "icon.no_presets": "请至少选择一个平台",
+    "icon.output_dir_missing": "文件夹 {{path}} 不存在",
+    "icon.write_failed": "无法写入 {{path}}：{{detail}}",
+    "icon.encode_failed": "无法编码图标：{{detail}}"
+  }
+}

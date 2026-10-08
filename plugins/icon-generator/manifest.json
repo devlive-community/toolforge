@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.icon-generator",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": ["icon", "app icon", "favicon", "ico", "icns", "appiconset", "ios", "android", "mipmap", "macos", "windows", "webmanifest", "图标", "应用图标", "网站图标", "图标生成"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "inspect": {},
+    "render": {},
+    "generate": { "task": true }
+  },
+  "sensitive": false
+}

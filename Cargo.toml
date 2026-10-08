@@ -52,6 +52,7 @@ tfp-ocr = { path = "plugins/ocr/backend" }
 tfp-password = { path = "plugins/password/backend" }
 tfp-pdf = { path = "plugins/pdf/backend" }
 tfp-text-encoding = { path = "plugins/text-encoding/backend" }
+tfp-icon-generator = { path = "plugins/icon-generator/backend" }
 tfp-port-manager = { path = "plugins/port-manager/backend" }
 tfp-qrcode = { path = "plugins/qrcode/backend" }
 tfp-regex = { path = "plugins/regex/backend" }
@@ -98,6 +99,9 @@ opt-level = 3
 [profile.dev.package.miniz_oxide]
 opt-level = 3
 [profile.dev.package.zune-jpeg]
+opt-level = 3
+# 图标生成在本 crate 内实例化 image 的泛型缩放，未优化时测试很慢
+[profile.dev.package.tfp-icon-generator]
 opt-level = 3
 [profile.release.package.tract-core]
 opt-level = 3

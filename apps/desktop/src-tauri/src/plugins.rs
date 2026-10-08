@@ -57,6 +57,7 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_unicode::UnicodeInspector::default()));
     registry.register(Arc::new(tfp_pdf::PdfTools::default()));
     registry.register(Arc::new(tfp_text_encoding::TextEncoding::default()));
+    registry.register(Arc::new(tfp_icon_generator::IconGenerator::default()));
     registry
 }
 

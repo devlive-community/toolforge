@@ -1,0 +1,100 @@
+{
+  "name": "App Icon Generator",
+  "description": "Turn one image or SVG into complete icon sets for the web, iOS, Android, macOS and Windows",
+  "help": [
+    "Choose a square image of at least 1024 × 1024 pixels, or an SVG (rendered sharply at every size). Other shapes are centred.",
+    "Padding adds space around the artwork; corner radius rounds the web, Android and Windows icons. Turn on a background to fill transparent areas.",
+    "iOS icons and the Apple touch icon cannot be transparent, so they get a background (white if none is set) and square corners; the system rounds them. Android round icons are cut to a circle, and macOS icons follow Apple's template with a rounded tile and margin.",
+    "The files go into a new folder next to the image (or the folder you choose): web favicons with site.webmanifest and an HTML snippet, an Xcode AppIcon.appiconset, Android mipmap folders, AppIcon.icns, and a multi-size app.ico."
+  ],
+  "functions": {
+    "inspect": "Read image",
+    "render": "Preview icons",
+    "generate": "Generate icons"
+  },
+  "source": {
+    "title": "Image",
+    "filter": "Images",
+    "drop": "Choose an image or SVG",
+    "dropHint": "Or drop it here · 1024 px or larger works best",
+    "svg": "SVG · sharp at every size",
+    "size": "{{width}} × {{height}} px",
+    "change": "Choose another image",
+    "small": "The image is only {{size}} px; large icons will look blurry. Use 1024 px or an SVG.",
+    "notSquare": "The image is not square; it is centred.",
+    "clear": "Clear"
+  },
+  "options": {
+    "title": "Icon",
+    "padding": "Padding (%)",
+    "radius": "Corner radius (%)",
+    "background": "Background",
+    "color": "Background color",
+    "invalidColor": "Enter a color such as #1e90ff",
+    "backgroundHint": "iOS and macOS icons always get a background (white by default).",
+    "appName": "App name",
+    "output": "Save to",
+    "chooseFolder": "Choose a folder"
+  },
+  "presets": {
+    "title": "Platforms",
+    "web": {
+      "name": "Web",
+      "files": "favicon.ico, PNG, webmanifest"
+    },
+    "ios": {
+      "name": "iOS",
+      "files": "AppIcon.appiconset"
+    },
+    "android": {
+      "name": "Android",
+      "files": "mipmap, round, Play Store"
+    },
+    "macos": {
+      "name": "macOS",
+      "files": "AppIcon.icns"
+    },
+    "windows": {
+      "name": "Windows",
+      "files": "app.ico"
+    }
+  },
+  "preview": {
+    "title": "Preview",
+    "empty": "No image yet",
+    "emptyHint": "Icons for every platform are previewed here",
+    "rounded": "Web / Windows",
+    "ios": "iOS",
+    "round": "Android round",
+    "mac": "macOS"
+  },
+  "generate": {
+    "run": "Generate icons",
+    "done": "Generated {{count}} files",
+    "result": "Icons",
+    "files": "{{count}} files",
+    "show": "Show in folder",
+    "snippet": "Add to the <head> of your page",
+    "copy": "Copy"
+  },
+  "stages": {
+    "icon.load": "Reading image…",
+    "icon.generate": "Generating icons…"
+  },
+  "logs": {
+    "icon": {
+      "file": "{{path}}",
+      "preset_done": "{{preset}}: {{count}} files",
+      "done": "Saved {{count}} files to {{path}}"
+    }
+  },
+  "errors": {
+    "icon.invalid_svg": "The SVG could not be read: {{detail}}",
+    "icon.unsupported_image": "The image could not be read: {{detail}}",
+    "icon.invalid_style": "Padding must be 0–40% and corner radius 0–50%",
+    "icon.no_presets": "Choose at least one platform",
+    "icon.output_dir_missing": "The folder {{path}} does not exist",
+    "icon.write_failed": "Could not write {{path}}: {{detail}}",
+    "icon.encode_failed": "Could not encode the icon: {{detail}}"
+  }
+}
