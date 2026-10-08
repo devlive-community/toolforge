@@ -40,9 +40,9 @@ fn sniff_utf16(sample: &[u8]) -> Option<&'static Encoding> {
         return None;
     }
     let (mut even, mut odd) = (0, 0);
-    for pair in sample.chunks_exact(2) {
-        even += usize::from(pair[0] == 0);
-        odd += usize::from(pair[1] == 0);
+    for [first, second] in sample.as_chunks::<2>().0 {
+        even += usize::from(*first == 0);
+        odd += usize::from(*second == 0);
     }
     // 一侧大量为 0、另一侧几乎没有 0
     if odd * 10 >= pairs * 3 && even * 20 <= pairs {
