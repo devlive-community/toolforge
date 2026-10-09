@@ -104,9 +104,17 @@ pub struct Manifest {
     pub sensitive: bool,
     #[serde(default)]
     pub resources: Vec<ResourceSpec>,
+    /// 支持的系统（macos / windows / linux）；为空表示全部
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub platforms: Vec<String>,
 }
 
 impl Manifest {
+    /// 插件是否支持该系统（取值同 `std::env::consts::OS`）
+    pub fn supports(&self, os: &str) -> bool {
+        self.platforms.is_empty() || self.platforms.iter().any(|p| p == os)
+    }
+
     /// 解析内置插件的 manifest.json，格式错误属于开发期错误，直接 panic。
     pub fn from_static(source: &str) -> Self {
         serde_json::from_str(source).expect("invalid plugin manifest")

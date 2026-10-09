@@ -31,6 +31,8 @@ export interface Manifest {
   functions: Record<string, FunctionSpec>
   sensitive: boolean
   resources?: ResourceSpec[]
+  /** 支持的系统；为空表示全部 */
+  platforms?: ('macos' | 'windows' | 'linux')[]
 }
 
 export function isAppError(value: unknown): value is AppError {

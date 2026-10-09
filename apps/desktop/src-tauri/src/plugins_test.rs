@@ -3,6 +3,19 @@ use std::path::Path;
 
 use super::*;
 
+/// 所有系统上注册的插件之和（只支持某个系统的插件也要算进来）
+fn all_manifests() -> Vec<tf_plugin_api::Manifest> {
+    let mut out: Vec<tf_plugin_api::Manifest> = Vec::new();
+    for os in ["macos", "windows", "linux"] {
+        for manifest in builtin_for(os).manifests() {
+            if !out.iter().any(|m| m.id == manifest.id) {
+                out.push(manifest);
+            }
+        }
+    }
+    out
+}
+
 /// 每个 plugins/*/manifest.json 都必须在 builtin() 中注册，反之亦然。
 /// 新增插件忘记注册时（Cargo 依赖存在、能编译），只有这里能发现。
 #[test]
@@ -17,7 +30,7 @@ fn every_plugin_directory_is_registered() {
             Some(value["id"].as_str()?.to_owned())
         })
         .collect();
-    let registered: BTreeSet<String> = builtin().manifests().into_iter().map(|m| m.id).collect();
+    let registered: BTreeSet<String> = all_manifests().into_iter().map(|m| m.id).collect();
 
     let missing: Vec<_> = on_disk.difference(&registered).collect();
     let unknown: Vec<_> = registered.difference(&on_disk).collect();
@@ -48,8 +61,7 @@ fn every_plugin_uses_a_known_category() {
         known.contains("dev") && known.contains("other"),
         "{known:?}"
     );
-    let unknown: Vec<String> = builtin()
-        .manifests()
+    let unknown: Vec<String> = all_manifests()
         .into_iter()
         .filter(|m| !known.contains(&m.category))
         .map(|m| format!("{} ({})", m.id, m.category))

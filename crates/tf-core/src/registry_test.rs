@@ -158,3 +158,24 @@ fn ranks_image_detections() {
     // 文本识别不受影响
     assert!(registry.detect("hello").is_empty());
 }
+
+#[test]
+fn skips_plugins_for_other_platforms() {
+    let windows_only = Manifest::from_static(
+        r#"{"id":"winreg","version":"1.0.0","name":"i18n:name","description":"i18n:d",
+            "category":"system","platforms":["windows"],"functions":{"echo":{}}}"#,
+    );
+    assert!(windows_only.supports("windows"));
+    assert!(!windows_only.supports("macos"));
+    let mut registry = PluginRegistry::new();
+    registry.register_for(Arc::new(Echo(windows_only.clone())), "macos");
+    assert!(registry.manifests().is_empty());
+    assert!(registry.get("winreg").is_err());
+    registry.register_for(Arc::new(Echo(windows_only)), "windows");
+    assert_eq!(registry.manifests().len(), 1);
+    // 不声明 platforms 表示全部系统
+    let everywhere = Manifest::from_static(
+        r#"{"id":"any","version":"1.0.0","name":"n","description":"d","category":"dev"}"#,
+    );
+    assert!(everywhere.supports("linux") && everywhere.supports("windows"));
+}

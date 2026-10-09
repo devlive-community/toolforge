@@ -62,7 +62,15 @@ impl PluginRegistry {
         Self::default()
     }
 
+    /// 注册插件；不支持当前系统的插件（如只适用于 Windows 的工具）直接跳过
     pub fn register(&mut self, plugin: Arc<dyn ToolPlugin>) {
+        self.register_for(plugin, std::env::consts::OS);
+    }
+
+    pub fn register_for(&mut self, plugin: Arc<dyn ToolPlugin>, os: &str) {
+        if !plugin.manifest().supports(os) {
+            return;
+        }
         let id = plugin.manifest().id.clone();
         self.plugins.insert(id, plugin);
     }
