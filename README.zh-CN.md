@@ -87,7 +87,7 @@
 | **图片压缩** | 离线批量压缩 JPEG（mozjpeg）、PNG（带透明度的抖动调色板或 oxipng 无损）与 WebP；可缩放、移除 EXIF、保留色彩配置，不覆盖原图，并可拖动分隔线与原图对比 |
 | **图片转换** | PNG / JPEG / WebP / GIF / BMP / ICO / TIFF 批量互转，按比例或限定宽高缩放，JPEG 质量可调；以任务运行并输出实时日志，不覆盖已有文件 |
 | **图片取色** | 点击图片取色（单个像素或区域平均），带放大镜；在 OKLab 空间提取主色及占比；每个颜色提供 HEX、RGB、HSL、OKLCH 与文字对比度；调色板可导出为 CSS、SCSS、Tailwind、JSON 或 GIMP 调色板 |
-| **应用图标生成** | 由一张图片或 SVG 生成整套图标：Web（favicon.ico、PNG、webmanifest 与 HTML 片段）、iOS（Xcode AppIcon.appiconset）、Android（mipmap 与圆形图标）、macOS（.icns）、Windows（多尺寸 .ico），可设置留白、背景色与圆角 |
+| **应用图标生成** | 由一张图片或 SVG 生成整套图标：Web（favicon.ico、PNG、webmanifest 与 HTML 片段）、iOS（Xcode AppIcon.appiconset）、Android（mipmap 与圆形图标）、macOS（.icns）、Windows（多尺寸 .ico），可设置留白、背景色与圆角；也可以把图片放进文件夹、磁盘、文档、光盘盒、相片、卡带等 37 种模板，导出 PNG / ICNS / ICO，或直接设为文件夹图标（macOS 上还可设到磁盘与任意文件），并可一键恢复默认图标 |
 | **PDF 工具** | 在缩略图网格中合并 PDF，并对页面重排、旋转、复制或删除；按页码范围、每 N 页或逐页拆分；图片合成 PDF（JPEG 原样嵌入不再压缩）；可打开受密码保护的文件 |
 | **Cron 表达式** | 逐字段解释 5 / 6 / 7 段 Cron 表达式，按任意时区预览后续执行时间，支持 `L`、`W`、`#` 与 `@daily` 等别名 |
 | **JSON 转代码** | 从 JSON 样例生成 TypeScript、Rust（serde）、Go、Java record、Kotlin、Python（pydantic）与 C# 模型，自动合并数组并识别可选与可空字段 |
