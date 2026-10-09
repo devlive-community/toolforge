@@ -65,6 +65,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Password Generator** | Cryptographically secure passwords with per-type options and exclusions, plus a local strength and crack-time check |
 | **SSH Keys** | Generate Ed25519, ECDSA and RSA keys in the OpenSSH format with passphrases, inspect keys, authorized_keys and known_hosts with SHA256 / MD5 fingerprints and randomart identical to ssh-keygen, convert PEM RSA keys and change passphrases |
 | **QR Code** | Generate QR codes as PNG / SVG with error correction, size and colors; read QR codes from images |
+| **Barcode** | Generate EAN-13, EAN-8, UPC-A, ITF-14, Code 128, Code 39, Code 93, Codabar, Data Matrix, PDF417 and Aztec codes; retail check digits are added or verified automatically, EAN/UPC are drawn with guard bars and grouped digits; save as SVG or PNG, and read every barcode in an image or a clipboard screenshot |
 | **Background Remover** | Remove image backgrounds with a local AI model (U²-Net lite or IS-Net) running in Rust; models download on first use with resume and SHA-256 verification; transparent PNG or a solid color |
 | **OCR** | Extract Chinese and English text from images and screenshots with PaddleOCR PP-OCRv4 models running in Rust (about 15 MB, downloaded on first use); paste screenshots with ⌘V, see recognized boxes and copy lines |
 | **IP Calculator** | IPv4 / IPv6 subnets: network, broadcast, host range, counts, address type and reverse DNS; subnet splitting, membership check and range to CIDR |
