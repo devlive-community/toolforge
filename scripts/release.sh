@@ -3,8 +3,11 @@
 # ToolForge 发布脚本
 #
 # 流程：预检 → 运行检查 → （需要时）更新版本号并提交 → 创建附注标签（内容为该版本的提交历史）
-#      → 推送标签触发 GitHub Actions release 工作流 → （可选）等待工作流完成
-#      → 把版本号更新为下一个开发版本并提交。
+#      → 推送标签触发 GitHub Actions release 工作流 → 立即把版本号更新为下一个开发版本并提交
+#      → 推送分支 → （可选）等待工作流完成。
+#
+# 发布之后的提交都属于下一个版本，所以标签推送成功后马上开启新版本，不等 CI。
+# 已经发布过当前版本、但没有开启新版本时，用 `scripts/release.sh next` 补上。
 #
 # 兼容 macOS 自带的 bash 3.2。
 
@@ -18,8 +21,9 @@ DRY_RUN=0
 ASSUME_YES=0
 SKIP_CHECKS=0
 WAIT=0
-PUSH_BRANCH=0
+PUSH_BRANCH=1
 NOTES_ONLY=0
+START_NEXT_ONLY=0
 NEXT="patch"
 TARGET=""
 WORKFLOW="release.yml"
@@ -45,11 +49,16 @@ die() {
 usage() {
   cat <<'EOF'
 Usage: scripts/release.sh [options] [version | patch | minor | major]
+       scripts/release.sh next [patch | minor | major | version]
 
 Publish a ToolForge release. A v<version> tag is created whose message is the
 version's commit history; pushing it triggers the GitHub release workflow.
-Afterwards the project version is bumped to the next development version and
-committed.
+Right after the tag is pushed, the project version is bumped to the next
+development version and committed, and the branch is pushed, so every later
+commit belongs to the next version.
+
+`next` only starts the next development version (bump + commit + push). Use it
+when the current version has already been released.
 
 Version:
   (none)                  Release the current version (apps/desktop/package.json)
@@ -61,9 +70,8 @@ Options:
   -y, --yes               Do not ask for confirmation
       --next <v|kind>     Next development version: patch (default), minor, major,
                           an exact version, or "none" to keep the released version
-      --wait              Wait for the GitHub release workflow (needs gh); only bump
-                          the version when it succeeds
-      --push              Also push the current branch (release and bump commits)
+      --wait              Wait for the GitHub release workflow afterwards (needs gh)
+      --no-push           Do not push the branch (release and bump commits stay local)
       --skip-checks       Skip cargo xtask check (not recommended)
       --remote <name>     Git remote to push to (default: origin)
       --notes             Only print the release notes for the target version
@@ -74,6 +82,7 @@ Examples:
   scripts/release.sh minor --wait       # bump minor, release, wait, then bump patch
   scripts/release.sh 1.0.0 --next none  # release 1.0.0 and keep the version as is
   scripts/release.sh --dry-run          # preview the plan and notes
+  scripts/release.sh next               # 0.1.7 already released → start 0.1.8
 EOF
 }
 
@@ -85,6 +94,7 @@ while [ $# -gt 0 ]; do
     -y | --yes) ASSUME_YES=1 ;;
     --wait) WAIT=1 ;;
     --push) PUSH_BRANCH=1 ;;
+    --no-push) PUSH_BRANCH=0 ;;
     --skip-checks) SKIP_CHECKS=1 ;;
     --notes) NOTES_ONLY=1 ;;
     --next)
@@ -104,6 +114,10 @@ while [ $# -gt 0 ]; do
       exit 0
       ;;
     -*) die "unknown option: $1 (see --help)" ;;
+    next)
+      [ -z "$TARGET" ] && [ "$START_NEXT_ONLY" -eq 0 ] || die "\`next\` must come first (see --help)"
+      START_NEXT_ONLY=1
+      ;;
     *)
       [ -z "$TARGET" ] || die "only one version may be given"
       TARGET="$1"
@@ -160,6 +174,53 @@ require cargo
 [ "$WAIT" -eq 0 ] || require gh
 
 CURRENT="$(cargo xtask version)"
+
+# 开启下一个开发版本：更新版本号、提交，并按需推送
+start_next() {
+  local next="$1"
+  step "Starting $next development"
+  cargo xtask bump "$next"
+  git add package.json apps/desktop/package.json Cargo.toml Cargo.lock
+  git commit --quiet -m "chore(release): start $next development"
+  ok "committed chore(release): start $next development"
+}
+
+push_branch() {
+  local branch="$1"
+  step "Pushing $branch to $REMOTE"
+  git push --quiet "$REMOTE" "$branch"
+  ok "pushed $branch"
+}
+
+if [ "$START_NEXT_ONLY" -eq 1 ]; then
+  NEXT_VERSION="$(resolve_version "$CURRENT" "${TARGET:-$NEXT}")"
+  [ "$NEXT_VERSION" != "$CURRENT" ] || die "the version is already $CURRENT"
+  BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+  [ "$BRANCH" != "HEAD" ] || die "detached HEAD; check out a branch first"
+  [ -z "$(git status --porcelain)" ] || die "working tree is not clean; commit or stash your changes first"
+  git fetch --quiet --tags "$REMOTE" 2>/dev/null || warn "could not fetch tags from $REMOTE"
+  if ! git rev-parse -q --verify "refs/tags/v$CURRENT" >/dev/null; then
+    warn "v$CURRENT has not been released yet; starting $NEXT_VERSION anyway"
+  fi
+  info "version       $CURRENT → ${C_BOLD}$NEXT_VERSION${C_RESET} (commit: chore(release): start $NEXT_VERSION development)"
+  info "push branch   $([ "$PUSH_BRANCH" -eq 1 ] && echo "$BRANCH → $REMOTE" || echo no)"
+  if [ "$DRY_RUN" -eq 1 ]; then
+    printf '\n%sDry run%s — nothing was changed.\n' "$C_YELLOW" "$C_RESET"
+    exit 0
+  fi
+  if [ "$ASSUME_YES" -eq 0 ]; then
+    printf '\nStart %s%s%s development? [y/N] ' "$C_BOLD" "$NEXT_VERSION" "$C_RESET"
+    read -r answer
+    case "$answer" in
+      y | Y | yes | YES) ;;
+      *) die "aborted" ;;
+    esac
+  fi
+  start_next "$NEXT_VERSION"
+  [ "$PUSH_BRANCH" -eq 0 ] || push_branch "$BRANCH"
+  exit 0
+fi
+
 VERSION="$(resolve_version "$CURRENT" "$TARGET")"
 TAG="v$VERSION"
 
@@ -187,11 +248,12 @@ git remote get-url "$REMOTE" >/dev/null 2>&1 || die "git remote '$REMOTE' does n
 
 step "Checking $REMOTE"
 git fetch --quiet --tags "$REMOTE" || die "failed to fetch from $REMOTE"
+ALREADY="$TAG has already been released; start the next version with: scripts/release.sh next"
 if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
-  die "tag $TAG already exists locally"
+  die "tag $TAG already exists locally. $ALREADY"
 fi
 if [ -n "$(git ls-remote --tags "$REMOTE" "refs/tags/$TAG")" ]; then
-  die "tag $TAG already exists on $REMOTE"
+  die "tag $TAG already exists on $REMOTE. $ALREADY"
 fi
 UPSTREAM="$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null || true)"
 if [ -n "$UPSTREAM" ]; then
@@ -214,13 +276,13 @@ else
 fi
 info "tag           ${C_BOLD}$TAG${C_RESET} → push to $REMOTE (triggers $WORKFLOW)"
 info "checks        $([ "$SKIP_CHECKS" -eq 1 ] && echo skipped || echo 'cargo xtask check')"
-info "wait for CI   $([ "$WAIT" -eq 1 ] && echo yes || echo no)"
 if [ -n "$NEXT_VERSION" ]; then
-  info "next version  ${C_BOLD}$NEXT_VERSION${C_RESET} (commit: chore(release): start $NEXT_VERSION development)"
+  info "next version  ${C_BOLD}$NEXT_VERSION${C_RESET} right after the tag is pushed (commit: chore(release): start $NEXT_VERSION development)"
 else
   info "next version  unchanged"
 fi
-info "push branch   $([ "$PUSH_BRANCH" -eq 1 ] && echo yes || echo no)"
+info "push branch   $([ "$PUSH_BRANCH" -eq 1 ] && echo "$BRANCH → $REMOTE" || echo no)"
+info "wait for CI   $([ "$WAIT" -eq 1 ] && echo yes || echo no)"
 
 step "Release notes"
 sed "s/^/    ${C_DIM}│${C_RESET} /" "$NOTES_FILE"
@@ -243,10 +305,14 @@ fi
 
 TAG_CREATED=0
 TAG_PUSHED=0
+NEXT_STARTED=0
 on_error() {
   local code=$?
   if [ "$TAG_CREATED" -eq 1 ] && [ "$TAG_PUSHED" -eq 0 ]; then
     git tag -d "$TAG" >/dev/null 2>&1 && warn "removed local tag $TAG because the release did not complete"
+  fi
+  if [ "$TAG_PUSHED" -eq 1 ] && [ "$NEXT_STARTED" -eq 0 ] && [ -n "$NEXT_VERSION" ]; then
+    warn "$TAG was pushed but $NEXT_VERSION development was not started; run: scripts/release.sh next $NEXT_VERSION"
   fi
   rm -f "$NOTES_FILE"
   exit "$code"
@@ -276,6 +342,15 @@ git push --quiet "$REMOTE" "refs/tags/$TAG"
 TAG_PUSHED=1
 ok "pushed $TAG; the release workflow has been triggered"
 
+if [ -n "$NEXT_VERSION" ]; then
+  start_next "$NEXT_VERSION"
+  NEXT_STARTED=1
+fi
+
+if [ "$PUSH_BRANCH" -eq 1 ]; then
+  push_branch "$BRANCH"
+fi
+
 if [ "$WAIT" -eq 1 ]; then
   step "Waiting for the release workflow"
   RUN_ID=""
@@ -287,23 +362,9 @@ if [ "$WAIT" -eq 1 ]; then
   [ -n "$RUN_ID" ] || die "could not find the $WORKFLOW run for $TAG; check GitHub Actions"
   info "run $RUN_ID"
   if ! gh run watch "$RUN_ID" --exit-status --interval 15; then
-    die "release workflow failed; the version was not bumped. Inspect it with: gh run view $RUN_ID --log-failed"
+    die "release workflow failed. Inspect it with: gh run view $RUN_ID --log-failed — then re-run it with: gh run rerun $RUN_ID --failed"
   fi
   ok "release workflow succeeded"
-fi
-
-if [ -n "$NEXT_VERSION" ]; then
-  step "Starting $NEXT_VERSION development"
-  cargo xtask bump "$NEXT_VERSION"
-  git add package.json apps/desktop/package.json Cargo.toml Cargo.lock
-  git commit --quiet -m "chore(release): start $NEXT_VERSION development"
-  ok "committed chore(release): start $NEXT_VERSION development"
-fi
-
-if [ "$PUSH_BRANCH" -eq 1 ]; then
-  step "Pushing $BRANCH to $REMOTE"
-  git push --quiet "$REMOTE" "$BRANCH"
-  ok "pushed $BRANCH"
 fi
 
 trap - ERR
