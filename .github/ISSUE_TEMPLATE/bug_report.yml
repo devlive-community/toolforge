@@ -1,0 +1,115 @@
+name: 🐞 问题反馈 / Bug report
+description: 报告 ToolForge 或某个工具的问题 / Report a problem with ToolForge or one of its tools
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！请尽量填写完整，便于我们复现问题。
+        Thanks for reporting! Please fill in as much as you can so we can reproduce the problem.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: 提交前确认 / Before you submit
+      options:
+        - label: 我已搜索过已有的 Issues，没有重复 / I searched existing issues and this is not a duplicate
+          required: true
+        - label: 我使用的是最新版本，或已确认最新版本仍有此问题 / I am on the latest version, or confirmed the latest version still has this problem
+          required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: ToolForge 版本 / Version
+      description: 在“设置 → 关于”中查看 / Shown in Settings → About
+      placeholder: "0.1.8"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platforms
+    attributes:
+      label: 出现问题的平台 / Affected platforms
+      description: 可多选；只在某个平台上出现的问题请只选该平台 / Select all that apply
+      multiple: true
+      options:
+        - macOS（Apple Silicon / M 系列芯片）
+        - macOS（Intel）
+        - Windows（x64）
+        - Linux（x64）
+        - 全部平台 / All platforms
+        - 不确定 / Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: 操作系统版本 / OS version
+      placeholder: "macOS 15.1 / Windows 11 24H2 / Ubuntu 24.04"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: 安装方式 / Installed from
+      options:
+        - ".dmg（macOS）"
+        - ".msi（Windows）"
+        - ".exe 安装程序 / installer（Windows）"
+        - ".deb（Debian / Ubuntu）"
+        - ".rpm（Fedora / openSUSE）"
+        - "AppImage（Linux）"
+        - 从源码构建 / Built from source
+        - 其他 / Other
+    validations:
+      required: false
+
+  - type: input
+    id: tool
+    attributes:
+      label: 相关工具 / Tool
+      description: 问题出现在哪个工具中；与具体工具无关请填“应用本身” / Which tool is affected, or "the app itself"
+      placeholder: "压缩包管理 / Archive Manager"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述 / What happened
+      description: 实际发生了什么，期望的结果是什么 / What happened, and what did you expect instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤 / Steps to reproduce
+      description: 如果与特定文件有关，请说明文件类型、大小，方便时可附上示例文件 / If it depends on a file, describe it or attach a sample
+      placeholder: |
+        1. 打开 …… / Open …
+        2. 点击 …… / Click …
+        3. 出现 …… / See …
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志 / Logs
+      description: 可在“设置 → 诊断信息”中导出诊断包，或粘贴任务日志中的报错 / Export a diagnostics bundle from Settings → Diagnostics, or paste errors from the task log
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 截图 / Screenshots
+      description: 可直接粘贴或拖入图片 / Paste or drag images here
+    validations:
+      required: false

@@ -1,0 +1,51 @@
+name: ✨ 功能改进 / Improvement
+description: 改进现有工具或应用本身 / Improve an existing tool or the app itself
+title: "[Improvement] "
+labels: ["enhancement"]
+body:
+  - type: input
+    id: tool
+    attributes:
+      label: 相关工具 / Tool
+      description: 要改进的工具；与具体工具无关请填“应用本身” / Which tool, or "the app itself"
+      placeholder: "JSON 查询 / JSON Query"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 现在的问题 / What is missing or inconvenient?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 期望的改进 / What would you like?
+      description: 越具体越好，可附上截图或示意图 / Be as specific as you can; screenshots or sketches help
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platforms
+    attributes:
+      label: 需要支持的平台 / Platforms
+      description: 可多选 / Select all that apply
+      multiple: true
+      options:
+        - 全部平台 / All platforms
+        - macOS
+        - Windows
+        - Linux
+        - 命令行（CLI）/ Command line (CLI)
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: ToolForge 版本 / Version
+      placeholder: "0.1.8"
+    validations:
+      required: false

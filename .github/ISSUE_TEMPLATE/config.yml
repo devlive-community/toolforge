@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📦 下载最新版本 / Download the latest release
+    url: https://github.com/devlive-community/toolforge/releases/latest
+    about: 提交问题前请先确认最新版本是否已修复 / Check whether the latest release already fixes your problem
+  - name: 📖 使用说明 / Documentation
+    url: https://github.com/devlive-community/toolforge#readme
+    about: 工具列表与使用说明 / Tool list and usage

@@ -1,0 +1,76 @@
+name: 🧰 新工具建议 / New tool
+description: 建议加入一个新的工具 / Suggest a new tool for ToolForge
+title: "[Tool] "
+labels: ["enhancement", "new tool"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ToolForge 的工具全部离线运行在本地。欢迎告诉我们你需要的工具！
+        Every ToolForge tool runs locally and offline. Tell us which tool you need!
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: 提交前确认 / Before you submit
+      options:
+        - label: 我已确认现有工具和已有 Issues 中没有类似功能 / No existing tool or issue already covers this
+          required: true
+
+  - type: input
+    id: name
+    attributes:
+      label: 工具名称 / Tool name
+      placeholder: "图片取色器 / Image color picker"
+    validations:
+      required: true
+
+  - type: textarea
+    id: purpose
+    attributes:
+      label: 用来做什么 / What should it do?
+      description: 你遇到了什么问题，这个工具如何解决 / What problem do you have, and how would the tool solve it?
+    validations:
+      required: true
+
+  - type: textarea
+    id: io
+    attributes:
+      label: 输入与输出 / Input and output
+      description: 例如：输入一张图片，输出主色调列表与 HEX 值 / E.g. input an image, output its main colors as HEX values
+    validations:
+      required: false
+
+  - type: dropdown
+    id: platforms
+    attributes:
+      label: 需要支持的平台 / Platforms
+      description: 可多选 / Select all that apply
+      multiple: true
+      options:
+        - 全部平台 / All platforms
+        - macOS
+        - Windows
+        - Linux
+        - 命令行（CLI）/ Command line (CLI)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: offline
+    attributes:
+      label: 是否必须离线可用 / Must it work offline?
+      options:
+        - 必须离线 / Must work offline
+        - 可以联网（如查询在线服务）/ May use the network (e.g. an online service)
+        - 不确定 / Not sure
+    validations:
+      required: false
+
+  - type: textarea
+    id: references
+    attributes:
+      label: 参考 / References
+      description: 类似的软件、网站或命令（如 jq、Beyond Compare），以及你希望保留或改进的地方 / Similar apps, sites or commands, and what you like or miss about them
+    validations:
+      required: false
