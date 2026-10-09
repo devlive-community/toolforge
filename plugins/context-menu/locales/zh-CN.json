@@ -1,0 +1,66 @@
+{
+  "name": "右键菜单管理",
+  "description": "查看、禁用和启用 Windows 右键菜单中的项目",
+  "help": [
+    "列出文件、文件夹、文件夹空白处、桌面与驱动器的经典右键菜单项：软件添加的命令（如“通过 Code 打开”）和外壳扩展（如压缩软件）。",
+    "关闭某一项只是隐藏，不删除任何内容：命令会加上 Windows 认可的 LegacyDisable 值，外壳扩展会加入 Windows 的“已阻止扩展”列表；重新打开即撤销这一修改。",
+    "每次修改前都会保存一个撤销文件（.reg），双击即可恢复该项。点击“撤销文件”可打开所在文件夹。",
+    "为所有用户安装的项目以及所有外壳扩展需要管理员权限；如果修改被拒绝，请以管理员身份运行 ToolForge。",
+    "在 Windows 11 上，“经典右键菜单”会直接显示完整菜单，而不是收在“显示更多选项”里。外壳扩展与经典菜单的修改需要重启资源管理器后生效。"
+  ],
+  "functions": {
+    "list": "列出菜单项",
+    "set": "启用或禁用菜单项",
+    "classic": "经典菜单状态",
+    "set_classic": "切换经典菜单",
+    "restart_explorer": "重启资源管理器",
+    "undo_dir": "撤销文件夹"
+  },
+  "classic": {
+    "title": "经典右键菜单（Windows 11）",
+    "hint": "直接显示完整菜单，不再收在“显示更多选项”里。重启资源管理器后生效。"
+  },
+  "entries": {
+    "title": "菜单项",
+    "scope": "菜单出现的位置",
+    "search": "搜索",
+    "refresh": "刷新",
+    "empty": "这里没有菜单项",
+    "noMatch": "没有匹配的菜单项",
+    "extended": "按住 Shift 显示",
+    "machine": "需管理员",
+    "adminHint": "为所有用户安装，修改需要管理员权限",
+    "footer": "不会删除任何内容：只是隐藏，可随时重新打开"
+  },
+  "scopes": {
+    "files": "文件",
+    "folders": "文件夹",
+    "background": "文件夹空白处",
+    "desktop": "桌面",
+    "drives": "驱动器"
+  },
+  "kinds": {
+    "command": "命令",
+    "handler": "扩展"
+  },
+  "undo": {
+    "folder": "撤销文件",
+    "saved": "撤销文件：{{name}}",
+    "show": "显示"
+  },
+  "explorer": {
+    "restart": "重启资源管理器",
+    "restarted": "资源管理器已重启",
+    "confirmTitle": "重启资源管理器？",
+    "confirm": "任务栏和打开的文件夹窗口会短暂关闭后恢复，其他程序中打开的文件不受影响。"
+  },
+  "changed": "已保存。如果菜单没有变化，请重启资源管理器。",
+  "errors": {
+    "ctxmenu.windows_only": "此工具只能在 Windows 上使用",
+    "ctxmenu.needs_admin": "该项为所有用户安装，请以管理员身份运行 ToolForge 后再修改。",
+    "ctxmenu.not_found": "该项已不存在，请刷新列表",
+    "ctxmenu.registry_failed": "无法修改注册表：{{detail}}",
+    "ctxmenu.backup_failed": "无法保存撤销文件，因此没有做任何修改：{{detail}}",
+    "ctxmenu.restart_failed": "无法重启资源管理器：{{detail}}"
+  }
+}

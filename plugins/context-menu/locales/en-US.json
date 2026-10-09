@@ -1,0 +1,66 @@
+{
+  "name": "Context Menu Manager",
+  "description": "View, disable and enable entries in the Windows right-click menu",
+  "help": [
+    "Lists the entries of the classic right-click menu for files, folders, folder background, desktop and drives: commands added by apps (such as “Open with Code”) and shell extensions (such as archive tools).",
+    "Turning an entry off hides it without deleting anything: commands get the LegacyDisable value Windows understands, and shell extensions are added to Windows' list of blocked extensions. Turning it back on undoes exactly that.",
+    "Before every change, an undo file (.reg) is saved; double-click it to restore that entry. Use “Undo files” to open the folder.",
+    "Entries installed for all users and every shell extension need administrator rights. If a change is refused, run ToolForge as administrator.",
+    "On Windows 11, “Classic right-click menu” shows the full menu directly instead of behind “Show more options”. Changes to shell extensions and the classic menu take effect after restarting Explorer."
+  ],
+  "functions": {
+    "list": "List menu entries",
+    "set": "Enable or disable an entry",
+    "classic": "Classic menu status",
+    "set_classic": "Switch the classic menu",
+    "restart_explorer": "Restart Explorer",
+    "undo_dir": "Undo files folder"
+  },
+  "classic": {
+    "title": "Classic right-click menu (Windows 11)",
+    "hint": "Show the full menu directly instead of behind “Show more options”. Restart Explorer to apply."
+  },
+  "entries": {
+    "title": "Menu entries",
+    "scope": "Where the menu appears",
+    "search": "Search",
+    "refresh": "Refresh",
+    "empty": "No entries here",
+    "noMatch": "No entries match",
+    "extended": "Shift only",
+    "machine": "Admin",
+    "adminHint": "Installed for all users; changing it needs administrator rights",
+    "footer": "Nothing is deleted: entries are hidden and can be turned back on"
+  },
+  "scopes": {
+    "files": "Files",
+    "folders": "Folders",
+    "background": "Folder background",
+    "desktop": "Desktop",
+    "drives": "Drives"
+  },
+  "kinds": {
+    "command": "Command",
+    "handler": "Extension"
+  },
+  "undo": {
+    "folder": "Undo files",
+    "saved": "Undo file: {{name}}",
+    "show": "Show"
+  },
+  "explorer": {
+    "restart": "Restart Explorer",
+    "restarted": "Explorer restarted",
+    "confirmTitle": "Restart Explorer?",
+    "confirm": "The taskbar and open folder windows close for a moment and come back. Open files in other apps are not affected."
+  },
+  "changed": "Saved. Restart Explorer if the menu does not change.",
+  "errors": {
+    "ctxmenu.windows_only": "This tool only works on Windows",
+    "ctxmenu.needs_admin": "This entry is installed for all users. Run ToolForge as administrator to change it.",
+    "ctxmenu.not_found": "This entry no longer exists; refresh the list",
+    "ctxmenu.registry_failed": "Could not change the registry: {{detail}}",
+    "ctxmenu.backup_failed": "Could not save the undo file, so nothing was changed: {{detail}}",
+    "ctxmenu.restart_failed": "Could not restart Explorer: {{detail}}"
+  }
+}

@@ -7615,6 +7615,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-context-menu"
+version = "0.1.0"
+dependencies = [
+ "jiff",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "windows-sys 0.61.2",
+ "winreg",
+]
+
+[[package]]
 name = "tfp-cron"
 version = "0.1.0"
 dependencies = [
@@ -8553,6 +8565,7 @@ dependencies = [
  "tfp-batch-rename",
  "tfp-certificate",
  "tfp-color",
+ "tfp-context-menu",
  "tfp-cron",
  "tfp-crypto",
  "tfp-csv-viewer",

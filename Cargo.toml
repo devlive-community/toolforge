@@ -62,6 +62,7 @@ tfp-json-query = { path = "plugins/json-query/backend" }
 tfp-image-palette = { path = "plugins/image-palette/backend" }
 tfp-table-converter = { path = "plugins/table-converter/backend" }
 tfp-doc-converter = { path = "plugins/doc-converter/backend" }
+tfp-context-menu = { path = "plugins/context-menu/backend" }
 tfp-port-manager = { path = "plugins/port-manager/backend" }
 tfp-qrcode = { path = "plugins/qrcode/backend" }
 tfp-regex = { path = "plugins/regex/backend" }

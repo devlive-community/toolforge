@@ -165,3 +165,12 @@ fn clipboard_images_suggest_image_tools() {
     );
     assert!(registry.detect_image(8, 8).is_empty());
 }
+
+/// 只支持 Windows 的插件只在 Windows 上注册
+#[test]
+fn registers_platform_specific_plugins_only_where_supported() {
+    let id = "org.devlive.toolforge.context-menu";
+    let has = |os: &str| builtin_for(os).manifests().iter().any(|m| m.id == id);
+    assert!(has("windows"));
+    assert!(!has("macos") && !has("linux"));
+}
