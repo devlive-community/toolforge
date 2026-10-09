@@ -7,7 +7,7 @@
   "keywords": ["port", "listen", "lsof", "netstat", "process", "kill", "pid", "tcp", "udp", "occupied", "端口", "端口占用", "进程", "结束进程", "连通性"],
   "accent": "pink",
   "locales": ["zh-CN", "en-US"],
-  "permissions": ["network", "process"],
+  "permissions": ["network", "process", "clipboard:write"],
   "functions": {
     "list": {},
     "terminate": {},

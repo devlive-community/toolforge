@@ -7,7 +7,7 @@
   "keywords": ["hex", "hexdump", "hex viewer", "hex editor", "binary", "bytes", "magic", "file signature", "xxd", "十六进制", "二进制", "字节", "文件头"],
   "accent": "blue",
   "locales": ["zh-CN", "en-US"],
-  "permissions": ["fs:user-selected"],
+  "permissions": ["fs:user-selected", "clipboard:write"],
   "functions": {
     "open": {},
     "read": {},

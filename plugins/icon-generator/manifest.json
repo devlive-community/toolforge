@@ -7,7 +7,7 @@
   "keywords": ["icon", "app icon", "favicon", "ico", "icns", "appiconset", "ios", "android", "mipmap", "macos", "windows", "webmanifest", "图标", "应用图标", "网站图标", "图标生成"],
   "accent": "violet",
   "locales": ["zh-CN", "en-US"],
-  "permissions": ["fs:user-selected"],
+  "permissions": ["fs:user-selected", "clipboard:write"],
   "functions": {
     "inspect": {},
     "render": {},
