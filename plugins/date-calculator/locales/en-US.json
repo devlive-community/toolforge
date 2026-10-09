@@ -1,0 +1,214 @@
+{
+  "name": "Date Calculator",
+  "description": "Days between dates, date arithmetic, working days with Chinese public holidays, and a lunar calendar",
+  "help": [
+    "Difference: enter two dates (2025-01-31, 2025/1/31 or 20250131), optionally with a time such as 2025-01-31 08:30. The result shows days, years-months-days, weeks and total hours, minutes and seconds. Turn on \"Include end date\" to count both days, as when counting days of leave.",
+    "Working days are counted Monday to Friday, and also by the Chinese public holiday schedule, which skips holidays and counts the weekend make-up workdays. Holiday data is published one year at a time; later years fall back to plain weekends.",
+    "Add & subtract: years and months are added first, then weeks, days and times. A date at the end of a month stays at the end, so 31 January plus one month is 28 or 29 February.",
+    "Working days mode finds the date N working days before or after the start date, not counting the start date.",
+    "Calendar: each day shows its lunar date, solar terms and festivals, with 休 / 班 marking public holidays and make-up workdays. Select a day to see its ISO week, day of year, lunar year, zodiac and more."
+  ],
+  "functions": {
+    "today": "Today",
+    "diff": "Date difference",
+    "add": "Add to date",
+    "add_workdays": "Add working days",
+    "info": "Day details",
+    "month": "Month calendar"
+  },
+  "tabs": {
+    "diff": "Difference",
+    "add": "Add & subtract",
+    "calendar": "Calendar"
+  },
+  "input": {
+    "placeholder": "2025-01-31 or 2025-01-31 08:30",
+    "today": "Today"
+  },
+  "diff": {
+    "title": "Between",
+    "start": "Start",
+    "end": "End",
+    "swap": "Swap dates",
+    "includeEnd": "Include end date",
+    "hint": "Add a time such as 08:30 to count hours and minutes.",
+    "result": "Result",
+    "empty": "Enter two dates",
+    "days_one": "day",
+    "days_other": "days",
+    "negative": "(the end is before the start)",
+    "ymd": "Years, months, days",
+    "ymdValue": "{{years}} y {{months}} m {{days}} d",
+    "weeks": "Weeks",
+    "weeksValue": "{{weeks}} w {{days}} d",
+    "hms": "Hours, minutes, seconds",
+    "hmsValue": "{{hours}} h {{minutes}} min {{seconds}} s",
+    "totalHours": "Total hours",
+    "totalMinutes": "Total minutes",
+    "totalSeconds": "Total seconds",
+    "workdays": "Working days",
+    "weekdays": "Monday to Friday",
+    "weekdaysHint": "Weekends excluded",
+    "china": "Chinese working days",
+    "chinaHint": "{{holidays}} holidays off, {{adjusted}} make-up workdays",
+    "beyondData": "Holiday data covers up to {{year}}; later dates only skip weekends."
+  },
+  "add": {
+    "title": "Add or subtract",
+    "start": "Start date",
+    "mode": "Count",
+    "modes": {
+      "calendar": "Calendar time",
+      "workdays": "Working days"
+    },
+    "sign": "Direction",
+    "signs": {
+      "add": "Add",
+      "subtract": "Subtract"
+    },
+    "units": {
+      "years": "Years",
+      "months": "Months",
+      "weeks": "Weeks",
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes"
+    },
+    "workdays": "Working days",
+    "calendar": "Working days by",
+    "calendars": {
+      "china": "Chinese holidays",
+      "weekdays": "Monday to Friday"
+    },
+    "workdaysHint": "The start date itself is not counted.",
+    "result": "Result",
+    "empty": "Enter a start date",
+    "clamped": "The day was moved to the last day of the month."
+  },
+  "calendar": {
+    "month": "{{year}}-{{month}}",
+    "weekStart": "Week starts on",
+    "starts": {
+      "monday": "Monday",
+      "sunday": "Sunday"
+    },
+    "previous": "Previous month",
+    "next": "Next month",
+    "rest": "Off",
+    "work": "Work",
+    "restday": "day off",
+    "workday": "make-up workday",
+    "noHolidayData": "Public holidays are only known up to {{year}}."
+  },
+  "info": {
+    "fromToday": "From today",
+    "isToday": "Today",
+    "inDays_one": "In {{count}} day",
+    "inDays_other": "In {{count}} days",
+    "daysAgo_one": "{{count}} day ago",
+    "daysAgo_other": "{{count}} days ago",
+    "week": "ISO week",
+    "weekValue": "Week {{week}} of {{year}}",
+    "dayOfYear": "Day of year",
+    "dayOfYearValue": "{{day}} / {{total}}",
+    "quarter": "Quarter",
+    "quarterValue": "Q{{quarter}}",
+    "leapYear": "Leap year",
+    "yes": "Yes",
+    "no": "No",
+    "ganzhi": "Lunar year",
+    "ganzhiValue": "{{year}} · {{zodiac}}",
+    "term": "Solar term",
+    "termStarts": "{{term}} begins today",
+    "termDay": "{{term}}, day {{day}}",
+    "constellation": "Star sign"
+  },
+  "weekdays": {
+    "0": "Monday",
+    "1": "Tuesday",
+    "2": "Wednesday",
+    "3": "Thursday",
+    "4": "Friday",
+    "5": "Saturday",
+    "6": "Sunday"
+  },
+  "weekdaysShort": {
+    "0": "Mon",
+    "1": "Tue",
+    "2": "Wed",
+    "3": "Thu",
+    "4": "Fri",
+    "5": "Sat",
+    "6": "Sun"
+  },
+  "terms": {
+    "0": "Winter Solstice",
+    "1": "Minor Cold",
+    "2": "Major Cold",
+    "3": "Start of Spring",
+    "4": "Rain Water",
+    "5": "Awakening of Insects",
+    "6": "Spring Equinox",
+    "7": "Clear and Bright",
+    "8": "Grain Rain",
+    "9": "Start of Summer",
+    "10": "Grain Buds",
+    "11": "Grain in Ear",
+    "12": "Summer Solstice",
+    "13": "Minor Heat",
+    "14": "Major Heat",
+    "15": "Start of Autumn",
+    "16": "End of Heat",
+    "17": "White Dew",
+    "18": "Autumn Equinox",
+    "19": "Cold Dew",
+    "20": "Frost's Descent",
+    "21": "Start of Winter",
+    "22": "Minor Snow",
+    "23": "Major Snow"
+  },
+  "holidays": {
+    "0": "New Year's Day",
+    "1": "Spring Festival",
+    "2": "Qingming Festival",
+    "3": "Labour Day",
+    "4": "Dragon Boat Festival",
+    "5": "Mid-Autumn Festival",
+    "6": "National Day",
+    "7": "National Day and Mid-Autumn",
+    "8": "Victory Day"
+  },
+  "zodiac": {
+    "0": "Rat",
+    "1": "Ox",
+    "2": "Tiger",
+    "3": "Rabbit",
+    "4": "Dragon",
+    "5": "Snake",
+    "6": "Horse",
+    "7": "Goat",
+    "8": "Monkey",
+    "9": "Rooster",
+    "10": "Dog",
+    "11": "Pig"
+  },
+  "constellations": {
+    "0": "Aries",
+    "1": "Taurus",
+    "2": "Gemini",
+    "3": "Cancer",
+    "4": "Leo",
+    "5": "Virgo",
+    "6": "Libra",
+    "7": "Scorpio",
+    "8": "Sagittarius",
+    "9": "Capricorn",
+    "10": "Aquarius",
+    "11": "Pisces"
+  },
+  "errors": {
+    "date.invalid": "“{{input}}” is not a valid date; use a form such as 2025-01-31 or 2025-01-31 08:30",
+    "date.out_of_range": "The date is out of the supported range",
+    "date.range_too_large": "The range is too long to count working days"
+  }
+}

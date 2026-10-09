@@ -60,6 +60,7 @@ tfp-text-encoding.workspace = true
 tfp-icon-generator.workspace = true
 tfp-hex-viewer.workspace = true
 tfp-folder-compare.workspace = true
+tfp-date-calculator.workspace = true
 tfp-port-manager.workspace = true
 tfp-qrcode.workspace = true
 tfp-regex.workspace = true

@@ -60,6 +60,7 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_icon_generator::IconGenerator::default()));
     registry.register(Arc::new(tfp_hex_viewer::HexViewer::default()));
     registry.register(Arc::new(tfp_folder_compare::FolderCompare::default()));
+    registry.register(Arc::new(tfp_date_calculator::DateCalculator::default()));
     registry
 }
 

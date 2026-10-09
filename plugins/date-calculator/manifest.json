@@ -1,0 +1,20 @@
+{
+  "id": "org.devlive.toolforge.date-calculator",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "calc",
+  "keywords": ["date", "days between", "date difference", "add days", "working days", "business days", "calendar", "lunar", "holiday", "solar term", "日期", "日期计算", "相差天数", "工作日", "节假日", "调休", "农历", "万年历", "节气", "倒计时"],
+  "accent": "green",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "today": {},
+    "diff": {},
+    "add": {},
+    "add_workdays": {},
+    "info": {},
+    "month": {}
+  },
+  "sensitive": false
+}
