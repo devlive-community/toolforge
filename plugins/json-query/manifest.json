@@ -1,0 +1,15 @@
+{
+  "id": "org.devlive.toolforge.json-query",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["jq", "jsonpath", "json query", "filter json", "select", "json lines", "jsonl", "查询", "过滤", "提取"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "functions": {
+    "query": {}
+  },
+  "sensitive": false
+}

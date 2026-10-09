@@ -63,6 +63,7 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_date_calculator::DateCalculator::default()));
     registry.register(Arc::new(tfp_number_words::NumberWords::default()));
     registry.register(Arc::new(tfp_url_parser::UrlParser::default()));
+    registry.register(Arc::new(tfp_json_query::JsonQuery::default()));
     registry
 }
 

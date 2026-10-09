@@ -1,0 +1,79 @@
+{
+  "name": "JSON 查询",
+  "description": "用 jq 或 JSONPath 查询、改写 JSON",
+  "help": [
+    "编写 jq 程序或 JSONPath 表达式，结果随输入实时更新。jq 引擎为 jaq，支持 jq 语言，包括 select、map、group_by、reduce、字符串插值与正则表达式。",
+    "在左侧粘贴 JSON，或打开、拖入文件（最大 100 MB）。连续的多个 JSON 值（JSON Lines）会像 jq 一样逐个执行查询。",
+    "“原始字符串”输出字符串时不带引号，与 jq -r 相同；“紧凑”每个结果占一行；“按键排序”对对象的键排序。",
+    "JSONPath 结果会显示每个匹配的规范化路径，如 $['users'][0]['name']。",
+    "查询超过 10 秒会被停止，最多显示 5000 个结果。"
+  ],
+  "functions": {
+    "query": "执行查询"
+  },
+  "query": {
+    "title": "查询",
+    "language": "语言",
+    "placeholder": {
+      "jq": "jq 程序，如 .users[] | select(.age >= 18)",
+      "jsonpath": "JSONPath，如 $.users[?@.age >= 18].name"
+    },
+    "examples": "示例"
+  },
+  "examples": {
+    "field": "取字段",
+    "each": "每一项的字段",
+    "filter": "筛选",
+    "map": "每一项挑选字段",
+    "count": "计数",
+    "average": "求平均",
+    "group": "分组计数",
+    "sort": "按字段排序",
+    "keys": "列出键",
+    "text": "拼接文本",
+    "paths": "列出所有叶子路径",
+    "deep": "在任意层级查找字段",
+    "slice": "前两项",
+    "last": "最后一项"
+  },
+  "options": {
+    "raw": "原始字符串",
+    "compact": "紧凑",
+    "sortKeys": "按键排序"
+  },
+  "input": {
+    "title": "JSON",
+    "open": "打开文件",
+    "clear": "清空",
+    "placeholder": "在这里粘贴 JSON 或 JSON Lines",
+    "backToText": "改为编辑文本"
+  },
+  "result": {
+    "title": "结果",
+    "count_one": "{{count}} 个结果",
+    "count_other": "{{count}} 个结果",
+    "lines_one": "{{count}} 个输入",
+    "lines_other": "{{count}} 个输入",
+    "elapsed": "{{ms}} 毫秒",
+    "copyAll": "全部复制",
+    "truncated": "只显示了前面的结果。",
+    "empty": "请编写查询",
+    "emptyHint": "结果会随输入实时显示",
+    "none": "查询没有返回结果"
+  },
+  "errors": {
+    "query.empty_input": "JSON 为空",
+    "query.empty_query": "请编写查询",
+    "query.invalid_json": "JSON 第 {{line}} 行第 {{column}} 列有误：{{detail}}",
+    "query.syntax": "第 {{line}} 行第 {{column}} 列语法错误：应为 {{expected}}",
+    "query.undefined": "第 {{line}} 行第 {{column}} 列：“{{name}}”未定义",
+    "query.runtime": "{{detail}}",
+    "query.timeout": "查询超过 {{seconds}} 秒，已停止",
+    "query.jsonpath": "JSONPath 第 {{column}} 列有误：{{detail}}",
+    "query.file_too_large": "文件过大（超过 100 MB）",
+    "query.read_failed": "无法读取 {{path}}：{{detail}}",
+    "query.not_utf8": "文件不是 UTF-8 文本",
+    "query.undefined_filter": "第 {{line}} 行第 {{column}} 列：未定义的过滤器“{{name}}”",
+    "query.undefined_variable": "第 {{line}} 行第 {{column}} 列：未定义的变量“{{name}}”"
+  }
+}

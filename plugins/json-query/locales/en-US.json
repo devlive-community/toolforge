@@ -1,0 +1,79 @@
+{
+  "name": "JSON Query",
+  "description": "Query and reshape JSON with jq or JSONPath",
+  "help": [
+    "Write a jq program or a JSONPath expression; results update as you type. The jq engine is jaq, which supports the jq language including select, map, group_by, reduce, string interpolation and regular expressions.",
+    "Paste JSON on the left, or open or drop a file (up to 100 MB). Several JSON values in a row (JSON Lines) are each run through the query, like jq.",
+    "Raw strings prints string results without quotes, like jq -r; Compact prints each result on one line; Sort keys orders object keys.",
+    "JSONPath results show the normalized path of each match, such as $['users'][0]['name'].",
+    "Queries are stopped after 10 seconds, and at most 5,000 results are shown."
+  ],
+  "functions": {
+    "query": "Run query"
+  },
+  "query": {
+    "title": "Query",
+    "language": "Language",
+    "placeholder": {
+      "jq": "jq program, e.g. .users[] | select(.age >= 18)",
+      "jsonpath": "JSONPath, e.g. $.users[?@.age >= 18].name"
+    },
+    "examples": "Examples"
+  },
+  "examples": {
+    "field": "Get a field",
+    "each": "Every item's field",
+    "filter": "Filter items",
+    "map": "Pick fields from each item",
+    "count": "Count items",
+    "average": "Average a field",
+    "group": "Group and count",
+    "sort": "Sort by a field",
+    "keys": "List keys",
+    "text": "Build text",
+    "paths": "List all leaf paths",
+    "deep": "Find a field anywhere",
+    "slice": "First two items",
+    "last": "Last item"
+  },
+  "options": {
+    "raw": "Raw strings",
+    "compact": "Compact",
+    "sortKeys": "Sort keys"
+  },
+  "input": {
+    "title": "JSON",
+    "open": "Open file",
+    "clear": "Clear",
+    "placeholder": "Paste JSON or JSON Lines here",
+    "backToText": "Edit text instead"
+  },
+  "result": {
+    "title": "Result",
+    "count_one": "{{count}} result",
+    "count_other": "{{count}} results",
+    "lines_one": "{{count}} input",
+    "lines_other": "{{count}} inputs",
+    "elapsed": "{{ms}} ms",
+    "copyAll": "Copy all",
+    "truncated": "Only the first results are shown.",
+    "empty": "Write a query",
+    "emptyHint": "Results appear here as you type",
+    "none": "The query returned nothing"
+  },
+  "errors": {
+    "query.empty_input": "The JSON is empty",
+    "query.empty_query": "Write a query",
+    "query.invalid_json": "Invalid JSON at line {{line}}, column {{column}}: {{detail}}",
+    "query.syntax": "Syntax error at line {{line}}, column {{column}}: expected {{expected}}",
+    "query.undefined": "“{{name}}” is not defined (line {{line}}, column {{column}})",
+    "query.runtime": "{{detail}}",
+    "query.timeout": "The query took longer than {{seconds}} seconds and was stopped",
+    "query.jsonpath": "Invalid JSONPath at column {{column}}: {{detail}}",
+    "query.file_too_large": "The file is too large (over 100 MB)",
+    "query.read_failed": "Could not read {{path}}: {{detail}}",
+    "query.not_utf8": "The file is not UTF-8 text",
+    "query.undefined_filter": "Unknown filter “{{name}}” at line {{line}}, column {{column}}",
+    "query.undefined_variable": "Unknown variable “{{name}}” at line {{line}}, column {{column}}"
+  }
+}

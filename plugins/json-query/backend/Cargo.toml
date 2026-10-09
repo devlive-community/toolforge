@@ -1,0 +1,16 @@
+[package]
+name = "tfp-json-query"
+description = "ToolForge plugin: query JSON with jq or JSONPath"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+jaq-core = "3.1"
+jaq-json = "2.0"
+jaq-std = "3.0"
+serde_json_path = "0.7"
