@@ -1,0 +1,75 @@
+{
+  "name": "Table Converter",
+  "description": "Convert tables between Markdown, Excel, CSV, HTML, JSON, SQL and more",
+  "help": [
+    "Paste a table on the left. Markdown tables, HTML tables, JSON arrays, cells copied from Excel or Google Sheets (TSV) and CSV (comma, semicolon or pipe separated) are recognised automatically; you can also pick the format.",
+    "Choose the output on the right: Markdown, CSV, TSV, HTML, JSON, a bordered plain-text table, SQL INSERT statements or LaTeX.",
+    "Markdown output pads columns so they line up, counting Chinese, Japanese and Korean characters as two columns. Turn on Compact for minimal tables.",
+    "Click a column header in the preview to switch its alignment (none, left, center, right). Use Header to treat the first row as the header, and Transpose to swap rows and columns.",
+    "SQL output writes numbers as numbers and everything else as quoted text; values with leading zeros such as 007 stay text, and empty cells become NULL."
+  ],
+  "functions": {
+    "convert": "Convert table"
+  },
+  "detect": {
+    "tsv": "Table copied from a spreadsheet ({{rows}} rows)",
+    "markdown": "Markdown table ({{rows}} rows)"
+  },
+  "input": {
+    "title": "Input",
+    "from": "Input format",
+    "auto": "Detect automatically",
+    "paste": "Paste",
+    "clear": "Clear",
+    "placeholder": "Paste a table: Markdown, CSV, cells from Excel, JSON or HTML"
+  },
+  "output": {
+    "title": "Output",
+    "to": "Output format",
+    "copy": "Copy"
+  },
+  "sources": {
+    "markdown": "Markdown",
+    "html": "HTML",
+    "json": "JSON",
+    "tsv": "TSV / Excel",
+    "csv": "CSV"
+  },
+  "targets": {
+    "markdown": "Markdown",
+    "csv": "CSV",
+    "tsv": "TSV (paste into Excel)",
+    "html": "HTML",
+    "json": "JSON",
+    "ascii": "Text table",
+    "sql": "SQL INSERT",
+    "latex": "LaTeX"
+  },
+  "options": {
+    "header": "First row is the header",
+    "transpose": "Transpose",
+    "compact": "Compact",
+    "tableName": "Table name",
+    "size": "{{rows}} rows × {{columns}} columns"
+  },
+  "preview": {
+    "title": "Preview",
+    "hint": "Click a column header to change its alignment",
+    "empty": "Paste a table to see it here",
+    "truncated": "Only the first 200 rows are shown.",
+    "align": "Alignment: {{align}}"
+  },
+  "aligns": {
+    "none": "default",
+    "left": "left",
+    "center": "center",
+    "right": "right"
+  },
+  "errors": {
+    "table.empty": "Paste a table first",
+    "table.not_found": "No {{format}} table was found",
+    "table.invalid_json": "Invalid JSON at line {{line}}, column {{column}}",
+    "table.unsupported_json": "JSON must be an array of objects or an array of arrays",
+    "table.invalid_csv": "Could not read the CSV: {{detail}}"
+  }
+}

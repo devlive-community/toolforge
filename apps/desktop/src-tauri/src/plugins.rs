@@ -65,6 +65,7 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_url_parser::UrlParser::default()));
     registry.register(Arc::new(tfp_json_query::JsonQuery::default()));
     registry.register(Arc::new(tfp_image_palette::ImagePalette::default()));
+    registry.register(Arc::new(tfp_table_converter::TableConverter::default()));
     registry
 }
 

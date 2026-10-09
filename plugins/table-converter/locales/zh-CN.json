@@ -1,0 +1,75 @@
+{
+  "name": "表格转换",
+  "description": "在 Markdown、Excel、CSV、HTML、JSON、SQL 等格式之间转换表格",
+  "help": [
+    "在左侧粘贴表格。会自动识别 Markdown 表格、HTML 表格、JSON 数组、从 Excel / WPS / 在线表格复制的单元格（TSV），以及 CSV（逗号、分号或竖线分隔）；也可以手动选择格式。",
+    "在右侧选择输出：Markdown、CSV、TSV、HTML、JSON、带边框的纯文本表格、SQL INSERT 语句或 LaTeX。",
+    "Markdown 输出会补齐空格让各列对齐，中日韩文字按两个字符宽计算；开启“紧凑”则不补空格。",
+    "在预览中点击列名可切换该列的对齐方式（默认、左、中、右）。“首行为表头”把第一行作为表头，“转置”交换行与列。",
+    "SQL 输出中数字按数值写入，其余按带引号的文本；有前导 0 的值（如 007）保持文本，空单元格写成 NULL。"
+  ],
+  "functions": {
+    "convert": "转换表格"
+  },
+  "detect": {
+    "tsv": "从表格软件复制的表格（{{rows}} 行）",
+    "markdown": "Markdown 表格（{{rows}} 行）"
+  },
+  "input": {
+    "title": "输入",
+    "from": "输入格式",
+    "auto": "自动识别",
+    "paste": "粘贴",
+    "clear": "清空",
+    "placeholder": "粘贴表格：Markdown、CSV、从 Excel 复制的单元格、JSON 或 HTML"
+  },
+  "output": {
+    "title": "输出",
+    "to": "输出格式",
+    "copy": "复制"
+  },
+  "sources": {
+    "markdown": "Markdown",
+    "html": "HTML",
+    "json": "JSON",
+    "tsv": "TSV / Excel",
+    "csv": "CSV"
+  },
+  "targets": {
+    "markdown": "Markdown",
+    "csv": "CSV",
+    "tsv": "TSV（可粘贴到 Excel）",
+    "html": "HTML",
+    "json": "JSON",
+    "ascii": "文本表格",
+    "sql": "SQL INSERT",
+    "latex": "LaTeX"
+  },
+  "options": {
+    "header": "首行为表头",
+    "transpose": "转置",
+    "compact": "紧凑",
+    "tableName": "表名",
+    "size": "{{rows}} 行 × {{columns}} 列"
+  },
+  "preview": {
+    "title": "预览",
+    "hint": "点击列名可切换对齐方式",
+    "empty": "粘贴表格后在这里预览",
+    "truncated": "只显示前 200 行。",
+    "align": "对齐：{{align}}"
+  },
+  "aligns": {
+    "none": "默认",
+    "left": "左对齐",
+    "center": "居中",
+    "right": "右对齐"
+  },
+  "errors": {
+    "table.empty": "请先粘贴表格",
+    "table.not_found": "没有找到 {{format}} 表格",
+    "table.invalid_json": "JSON 第 {{line}} 行第 {{column}} 列有误",
+    "table.unsupported_json": "JSON 必须是对象数组或二维数组",
+    "table.invalid_csv": "无法读取 CSV：{{detail}}"
+  }
+}

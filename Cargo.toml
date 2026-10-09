@@ -60,6 +60,7 @@ tfp-number-words = { path = "plugins/number-words/backend" }
 tfp-url-parser = { path = "plugins/url-parser/backend" }
 tfp-json-query = { path = "plugins/json-query/backend" }
 tfp-image-palette = { path = "plugins/image-palette/backend" }
+tfp-table-converter = { path = "plugins/table-converter/backend" }
 tfp-port-manager = { path = "plugins/port-manager/backend" }
 tfp-qrcode = { path = "plugins/qrcode/backend" }
 tfp-regex = { path = "plugins/regex/backend" }
