@@ -1,0 +1,64 @@
+{
+  "name": "图片取色",
+  "description": "从图片中取色，并提取图片的主色调色板",
+  "help": [
+    "打开或拖入图片（PNG、JPEG、WebP、GIF、BMP、TIFF、ICO），在图片上任意位置点击即可取色；方向键每次移动 1 个像素，按住 Shift 移动 10 个像素。",
+    "取色范围可选 1 像素，或取 3×3、5×5、9×9 区域的平均色，以减少照片噪点的影响。放大镜显示所取位置周围的像素。",
+    "每个颜色都显示 HEX、RGB、HSL 与 OKLCH 写法，以及与白字、黑字的对比度。",
+    "调色板在符合人眼感知的 OKLab 空间中对图片颜色聚类，按占比列出主要颜色，透明像素不参与。“导出”会把调色板复制为 CSS 变量、SCSS、Tailwind 配置、JSON、GIMP 调色板或 HEX 列表。"
+  ],
+  "functions": {
+    "open": "打开图片",
+    "palette": "提取调色板",
+    "pick": "取色",
+    "export": "导出调色板"
+  },
+  "open": {
+    "filter": "图片"
+  },
+  "image": {
+    "title": "图片",
+    "open": "打开图片",
+    "drop": "拖入图片",
+    "dropHint": "也可点击选择 · PNG、JPEG、WebP、GIF、BMP、TIFF",
+    "size": "{{width}} × {{height}}",
+    "hint": "点击取色 · 方向键移动 1 像素，Shift + 方向键移动 10 像素"
+  },
+  "picked": {
+    "title": "所取颜色",
+    "area": "取色范围",
+    "empty": "在图片上点击取色",
+    "noImage": "请先打开图片",
+    "position": "x {{x}}，y {{y}}",
+    "alpha": "不透明度 {{alpha}}%",
+    "contrast": "对比度：白字 {{white}}，黑字 {{black}}",
+    "text": {
+      "light": "适合白字",
+      "dark": "适合黑字"
+    }
+  },
+  "palette": {
+    "title": "调色板",
+    "count": "颜色数量",
+    "export": "导出",
+    "empty": "打开图片后显示调色板",
+    "share": "{{share}}%",
+    "sample": "字"
+  },
+  "exports": {
+    "css": "CSS 变量",
+    "scss": "SCSS 变量",
+    "tailwind": "Tailwind 配置",
+    "json": "JSON 数组",
+    "gpl": "GIMP 调色板（.gpl）",
+    "hex": "HEX 列表"
+  },
+  "errors": {
+    "palette.too_large": "图片过大（超过 200 MB）",
+    "palette.read_failed": "无法读取图片：{{detail}}",
+    "palette.unsupported": "不支持该图片格式：{{detail}}",
+    "palette.out_of_bounds": "该位置超出图片范围",
+    "palette.invalid_count": "颜色数量须在 2 到 24 之间",
+    "palette.invalid_color": "“{{color}}”不是 HEX 颜色"
+  }
+}

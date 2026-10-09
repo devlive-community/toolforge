@@ -1,0 +1,18 @@
+{
+  "id": "org.devlive.toolforge.image-palette",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": ["color picker", "eyedropper", "palette", "dominant colors", "extract colors", "swatches", "hex", "取色", "取色器", "吸管", "调色板", "主色", "配色"],
+  "accent": "pink",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "functions": {
+    "open": {},
+    "palette": {},
+    "pick": {},
+    "export": {}
+  },
+  "sensitive": false
+}

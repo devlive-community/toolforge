@@ -1,0 +1,64 @@
+{
+  "name": "Image Color Picker",
+  "description": "Pick colors from an image and extract its main color palette",
+  "help": [
+    "Open or drop an image (PNG, JPEG, WebP, GIF, BMP, TIFF, ICO). Click anywhere on it to pick that color; use the arrow keys to move one pixel at a time (hold Shift for 10).",
+    "Choose 1 px, or average a 3×3, 5×5 or 9×9 area to smooth out noise in photos. The magnifier shows the pixels around the point.",
+    "Each color is shown as HEX, RGB, HSL and OKLCH, with its contrast against white and black text.",
+    "The palette groups the image's colors in the perceptual OKLab space and lists the main ones by share; transparent pixels are ignored. Export copies it as CSS variables, SCSS, a Tailwind config, JSON, a GIMP palette or plain HEX."
+  ],
+  "functions": {
+    "open": "Open image",
+    "palette": "Extract palette",
+    "pick": "Pick color",
+    "export": "Export palette"
+  },
+  "open": {
+    "filter": "Images"
+  },
+  "image": {
+    "title": "Image",
+    "open": "Open image",
+    "drop": "Drop an image here",
+    "dropHint": "Or click to choose · PNG, JPEG, WebP, GIF, BMP, TIFF",
+    "size": "{{width}} × {{height}}",
+    "hint": "Click to pick a color · arrow keys move one pixel, Shift + arrows ten"
+  },
+  "picked": {
+    "title": "Picked color",
+    "area": "Sample area",
+    "empty": "Click the image to pick a color",
+    "noImage": "Open an image first",
+    "position": "x {{x}}, y {{y}}",
+    "alpha": "opacity {{alpha}}%",
+    "contrast": "Contrast: white {{white}}, black {{black}}",
+    "text": {
+      "light": "use white text",
+      "dark": "use black text"
+    }
+  },
+  "palette": {
+    "title": "Palette",
+    "count": "Number of colors",
+    "export": "Export",
+    "empty": "Open an image to see its palette",
+    "share": "{{share}}%",
+    "sample": "Aa"
+  },
+  "exports": {
+    "css": "CSS variables",
+    "scss": "SCSS variables",
+    "tailwind": "Tailwind config",
+    "json": "JSON array",
+    "gpl": "GIMP palette (.gpl)",
+    "hex": "HEX list"
+  },
+  "errors": {
+    "palette.too_large": "The image is too large (over 200 MB)",
+    "palette.read_failed": "Could not read the image: {{detail}}",
+    "palette.unsupported": "This image format is not supported: {{detail}}",
+    "palette.out_of_bounds": "That point is outside the image",
+    "palette.invalid_count": "Choose between 2 and 24 colors",
+    "palette.invalid_color": "“{{color}}” is not a HEX color"
+  }
+}

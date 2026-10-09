@@ -59,6 +59,7 @@ tfp-date-calculator = { path = "plugins/date-calculator/backend" }
 tfp-number-words = { path = "plugins/number-words/backend" }
 tfp-url-parser = { path = "plugins/url-parser/backend" }
 tfp-json-query = { path = "plugins/json-query/backend" }
+tfp-image-palette = { path = "plugins/image-palette/backend" }
 tfp-port-manager = { path = "plugins/port-manager/backend" }
 tfp-qrcode = { path = "plugins/qrcode/backend" }
 tfp-regex = { path = "plugins/regex/backend" }
@@ -108,6 +109,8 @@ opt-level = 3
 opt-level = 3
 # 图标生成在本 crate 内实例化 image 的泛型缩放，未优化时测试很慢
 [profile.dev.package.tfp-icon-generator]
+opt-level = 3
+[profile.dev.package.tfp-image-palette]
 opt-level = 3
 [profile.release.package.tract-core]
 opt-level = 3
