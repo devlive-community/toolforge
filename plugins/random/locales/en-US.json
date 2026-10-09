@@ -1,0 +1,98 @@
+{
+  "name": "Random",
+  "description": "Random numbers, weighted name draws, shuffling, team splitting, dice and coins, with verifiable seeds",
+  "help": [
+    "Numbers: generate one or more integers in a range, optionally unique and sorted.",
+    "List: one name per line. A draw picks each name at most once; with Weighted on, write “Name*3” to give that name three times the chance. Groups differ in size by at most one.",
+    "By default the operating system's secure random source is used, so every result is different.",
+    "With a seed the result is reproducible: the same seed, list and options always give the same outcome. Announce the seed before drawing (for example today's date or a match score) and anyone can check the result afterwards, proving it was not cherry-picked.",
+    "Seeded mode uses ChaCha20 keyed with SHA-256; the algorithm is versioned so future releases reproduce today's results."
+  ],
+  "functions": {
+    "numbers": "Generate random numbers",
+    "draw": "Draw names",
+    "shuffle": "Shuffle a list",
+    "groups": "Split into groups",
+    "dice": "Roll dice"
+  },
+  "tabs": {
+    "numbers": "Numbers",
+    "list": "Draw & groups",
+    "dice": "Dice & coins"
+  },
+  "options": {
+    "title": "Options"
+  },
+  "seed": {
+    "label": "Seed (optional)",
+    "placeholder": "Leave empty for true randomness",
+    "hint": "With a seed the result is reproducible and others can verify it",
+    "verifiable": "Seed: {{seed}}",
+    "random": "Truly random"
+  },
+  "result": {
+    "title": "Result",
+    "empty": "No result yet",
+    "copy": "Copy"
+  },
+  "numbers": {
+    "range": "Range (inclusive)",
+    "min": "Minimum",
+    "max": "Maximum",
+    "count": "How many",
+    "unique": "No repeats",
+    "sorted": "Sort ascending",
+    "generate": "Generate",
+    "emptyHint": "Set a range and click Generate",
+    "summary": "{{count}} numbers, sum {{sum}}"
+  },
+  "list": {
+    "items": "Names",
+    "lines": "{{count}} items",
+    "placeholder": "One name per line\nAlice\nBob\nCarol",
+    "weightedPlaceholder": "One name per line, *n sets the weight\nAlice*3\nBob\nCarol*2",
+    "mode": "Mode",
+    "modes": {
+      "draw": "Draw",
+      "shuffle": "Shuffle",
+      "groups": "Groups"
+    },
+    "count": "Winners",
+    "weighted": "Weighted (Name*3)",
+    "splitBy": "Split by",
+    "byGroups": "Number of groups",
+    "bySize": "People per group",
+    "start": {
+      "draw": "Draw",
+      "shuffle": "Shuffle",
+      "groups": "Make groups"
+    },
+    "group": "Group {{n}}",
+    "total": "{{count}} names in the list",
+    "emptyHint": "Enter names, then draw, shuffle or split them"
+  },
+  "dice": {
+    "dice": "Dice",
+    "coin": "Coins",
+    "count": "Dice",
+    "coins": "Coins",
+    "sides": "Sides",
+    "roll": "Roll",
+    "flip": "Flip",
+    "heads": "Heads",
+    "tails": "Tails",
+    "emptyHint": "Click the button to roll dice or flip coins",
+    "summary": "{{count}} dice, total {{sum}}",
+    "coinSummary": "{{heads}} heads, {{tails}} tails"
+  },
+  "errors": {
+    "random.too_many": "At most {{max}} at a time",
+    "random.invalid_range": "The minimum cannot be greater than the maximum",
+    "random.invalid_count": "Enter at least 1",
+    "random.not_enough_numbers": "The range has only {{available}} distinct numbers, not enough without repeats",
+    "random.invalid_weight": "Invalid weight “{{line}}”, use a whole number from 1 to 1000",
+    "random.no_items": "The list is empty",
+    "random.not_enough_items": "The list has only {{available}} items, not enough for that",
+    "random.invalid_sides": "A die needs at least 2 sides"
+  }
+}

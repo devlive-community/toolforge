@@ -68,6 +68,7 @@ tfp-image-palette.workspace = true
 tfp-table-converter.workspace = true
 tfp-doc-converter.workspace = true
 tfp-context-menu.workspace = true
+tfp-random.workspace = true
 tfp-port-manager.workspace = true
 tfp-qrcode.workspace = true
 tfp-regex.workspace = true

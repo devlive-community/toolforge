@@ -1,0 +1,40 @@
+{
+  "id": "org.devlive.toolforge.random",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "other",
+  "keywords": [
+    "random",
+    "random number",
+    "lottery",
+    "draw",
+    "raffle",
+    "pick",
+    "shuffle",
+    "team",
+    "group",
+    "dice",
+    "coin",
+    "随机",
+    "随机数",
+    "抽签",
+    "抽奖",
+    "点名",
+    "分组",
+    "打乱",
+    "骰子",
+    "硬币"
+  ],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "numbers": {},
+    "draw": {},
+    "shuffle": {},
+    "groups": {},
+    "dice": {}
+  },
+  "sensitive": false
+}

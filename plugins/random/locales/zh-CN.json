@@ -1,0 +1,98 @@
+{
+  "name": "随机工具",
+  "description": "随机数、名单抽签（可加权）、打乱顺序、随机分组、掷骰子与抛硬币，支持可公开验证的种子",
+  "help": [
+    "随机数：在指定范围内生成一个或多个整数，可选择不重复、从小到大排序。",
+    "名单：每行一个名字。抽签时每人最多被抽中一次；打开“按权重”后可写成“名字*3”，表示中签机会是普通人的 3 倍。分组会尽量让各组人数相差不超过 1。",
+    "默认使用操作系统提供的安全随机源，每次结果都不同。",
+    "填写种子后结果可复现：同样的种子、同样的名单和选项总会得到同样的结果。抽签前先公布种子（例如当天的日期或某场比赛的比分），抽完后任何人都能用同样的种子核对，证明结果没有被挑选。",
+    "种子模式使用 SHA-256 派生的 ChaCha20 随机数，算法版本固定，以后的版本也能复现今天的结果。"
+  ],
+  "functions": {
+    "numbers": "生成随机数",
+    "draw": "抽签",
+    "shuffle": "打乱顺序",
+    "groups": "随机分组",
+    "dice": "掷骰子"
+  },
+  "tabs": {
+    "numbers": "随机数",
+    "list": "抽签与分组",
+    "dice": "骰子与硬币"
+  },
+  "options": {
+    "title": "选项"
+  },
+  "seed": {
+    "label": "种子（可选）",
+    "placeholder": "留空则完全随机",
+    "hint": "填写后结果可复现，他人可以用同一个种子验证",
+    "verifiable": "种子：{{seed}}",
+    "random": "完全随机"
+  },
+  "result": {
+    "title": "结果",
+    "empty": "还没有结果",
+    "copy": "复制"
+  },
+  "numbers": {
+    "range": "范围（包含两端）",
+    "min": "最小值",
+    "max": "最大值",
+    "count": "个数",
+    "unique": "不重复",
+    "sorted": "从小到大排序",
+    "generate": "生成",
+    "emptyHint": "设置范围后点击“生成”",
+    "summary": "共 {{count}} 个，总和 {{sum}}"
+  },
+  "list": {
+    "items": "名单",
+    "lines": "{{count}} 项",
+    "placeholder": "每行一个名字\n张三\n李四\n王五",
+    "weightedPlaceholder": "每行一个名字，*数字 表示权重\n张三*3\n李四\n王五*2",
+    "mode": "方式",
+    "modes": {
+      "draw": "抽签",
+      "shuffle": "打乱",
+      "groups": "分组"
+    },
+    "count": "抽取人数",
+    "weighted": "按权重（名字*3）",
+    "splitBy": "分组方式",
+    "byGroups": "按组数",
+    "bySize": "按每组人数",
+    "start": {
+      "draw": "开始抽签",
+      "shuffle": "打乱顺序",
+      "groups": "开始分组"
+    },
+    "group": "第 {{n}} 组",
+    "total": "名单共 {{count}} 项",
+    "emptyHint": "填写名单后选择抽签、打乱或分组"
+  },
+  "dice": {
+    "dice": "骰子",
+    "coin": "硬币",
+    "count": "骰子个数",
+    "coins": "硬币个数",
+    "sides": "面数",
+    "roll": "掷骰子",
+    "flip": "抛硬币",
+    "heads": "正面",
+    "tails": "反面",
+    "emptyHint": "点击按钮掷骰子或抛硬币",
+    "summary": "{{count}} 个，点数总和 {{sum}}",
+    "coinSummary": "正面 {{heads}} 次，反面 {{tails}} 次"
+  },
+  "errors": {
+    "random.too_many": "一次最多 {{max}} 个",
+    "random.invalid_range": "最小值不能大于最大值",
+    "random.invalid_count": "个数至少为 1",
+    "random.not_enough_numbers": "范围内只有 {{available}} 个不同的数，不够不重复地取",
+    "random.invalid_weight": "权重无效：“{{line}}”，应为 1 到 1000 的整数",
+    "random.no_items": "名单是空的",
+    "random.not_enough_items": "名单只有 {{available}} 项，不够抽取或分组",
+    "random.invalid_sides": "面数至少为 2"
+  }
+}

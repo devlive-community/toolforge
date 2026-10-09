@@ -8064,6 +8064,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-random"
+version = "0.1.0"
+dependencies = [
+ "rand 0.9.5",
+ "rand_chacha 0.9.0",
+ "serde",
+ "serde_json",
+ "sha2 0.11.0",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-regex"
 version = "0.1.0"
 dependencies = [
@@ -8601,6 +8613,7 @@ dependencies = [
  "tfp-pdf",
  "tfp-port-manager",
  "tfp-qrcode",
+ "tfp-random",
  "tfp-regex",
  "tfp-sql-formatter",
  "tfp-ssh-key",
