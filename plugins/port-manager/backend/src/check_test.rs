@@ -52,18 +52,26 @@ fn checks_local_ports() {
     let _guard = PORTS.lock().unwrap_or_else(|e| e.into_inner());
     let open = TcpListener::bind("127.0.0.1:0").unwrap();
     let open_port = open.local_addr().unwrap().port();
-    // 绑定后立即释放得到一个几乎确定关闭的端口
-    let closed_port = TcpListener::bind("127.0.0.1:0")
-        .unwrap()
-        .local_addr()
-        .unwrap()
-        .port();
-    let args = Args {
-        host: "127.0.0.1".into(),
-        ports: format!("{open_port},{closed_port}"),
-        timeout_ms: 500,
+    // 绑定后立即释放得到一个几乎确定关闭的端口；整个工作区的测试并行运行，
+    // 这个端口偶尔会被别的测试立刻占用，此时换一个端口重试
+    let mut attempt = 0;
+    let (report, closed_port) = loop {
+        let closed_port = TcpListener::bind("127.0.0.1:0")
+            .unwrap()
+            .local_addr()
+            .unwrap()
+            .port();
+        let args = Args {
+            host: "127.0.0.1".into(),
+            ports: format!("{open_port},{closed_port}"),
+            timeout_ms: 500,
+        };
+        let report = run(args, &Ctx).unwrap();
+        attempt += 1;
+        if report.open == 1 || attempt >= 5 {
+            break (report, closed_port);
+        }
     };
-    let report = run(args, &Ctx).unwrap();
     assert_eq!(report.address, "127.0.0.1");
     assert_eq!(report.open, 1);
     let find = |port| report.results.iter().find(|r| r.port == port).unwrap();
