@@ -58,6 +58,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Batch Rename** | Rename many files with chained rules (replace / regex, insert, remove, case, numbering, templates with dates and EXIF capture time), a live conflict-checked preview, safe two-phase renaming and undo |
 | **Archive Manager** | Browse, preview and extract ZIP, 7z, TAR and tar.gz / bz2 / xz / zst archives (encrypted ZIP and 7z included) with path-traversal protection, and create ZIP, 7z, tar.gz or tar.xz archives with AES-256 passwords — all in pure Rust |
 | **Format Converter** | JSON ⇄ YAML ⇄ TOML ⇄ CSV with automatic detection, preserved key order and CSV delimiter / header / type options |
+| **Table Converter** | Convert tables between Markdown, CSV, TSV (Excel paste), HTML, JSON, SQL INSERT, LaTeX and bordered text with automatic input detection, CJK-aware column alignment, per-column alignment, header and transpose options |
 | **Base Converter** | Arbitrary-precision integers in bases 2–36, prefix detection, two's complement for 8–128 bits and a clickable 64-bit view |
 | **Color Converter** | HEX / RGB / HSL / HSV / HWB / CMYK / Lab / OKLCH, WCAG contrast checks, tints, shades and harmonies |
 | **Password Generator** | Cryptographically secure passwords with per-type options and exclusions, plus a local strength and crack-time check |
