@@ -65,6 +65,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Background Remover** | Remove image backgrounds with a local AI model (U²-Net lite or IS-Net) running in Rust; models download on first use with resume and SHA-256 verification; transparent PNG or a solid color |
 | **OCR** | Extract Chinese and English text from images and screenshots with PaddleOCR PP-OCRv4 models running in Rust (about 15 MB, downloaded on first use); paste screenshots with ⌘V, see recognized boxes and copy lines |
 | **IP Calculator** | IPv4 / IPv6 subnets: network, broadcast, host range, counts, address type and reverse DNS; subnet splitting, membership check and range to CIDR |
+| **URL Parser** | Split a URL into scheme, user, host (with punycode and Unicode forms), port, path segments, query and fragment, all decoded; edit, add, sort and remove query parameters and rebuild the URL; remove utm_* and other tracking parameters in one click |
 | **HTTP Client** | Send requests with params, headers and JSON / text / form bodies; status, timing, headers and pretty-printed JSON; save responses and copy as cURL |
 | **WebSocket Client** | Connect to ws:// and wss:// servers with custom headers and subprotocols, watch every received and sent frame live, format JSON, and send text, hex / base64 binary or pings with saved snippets |
 | **DNS Lookup** | A / AAAA / CNAME / MX / TXT / NS / SOA / SRV / CAA / PTR records from the system resolver or public DNS, compared side by side with timings; flags proxy fake IPs |
