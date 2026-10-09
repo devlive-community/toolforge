@@ -59,6 +59,7 @@
 | **压缩包管理** | 浏览、预览、解压 ZIP、7z、TAR 及 tar.gz / bz2 / xz / zst（含加密的 ZIP 与 7z），防止路径穿越；创建 ZIP、7z、tar.gz、tar.xz 并可设置 AES-256 密码，全部纯 Rust 实现 |
 | **格式转换** | JSON ⇄ YAML ⇄ TOML ⇄ CSV，自动识别输入格式、保持键顺序，支持 CSV 分隔符、表头与类型推断 |
 | **表格转换** | 在 Markdown、CSV、TSV（Excel 粘贴）、HTML、JSON、SQL INSERT、LaTeX 与文本边框表格之间转换，自动识别输入格式，按中日韩字符宽度对齐，可设置每列对齐、表头与转置 |
+| **文档转换** | Excel 转 Word、Word 转 Excel 在本地完成（工作表与表格互转，数字保持为数值）；Word 转 PDF、PDF 转 Word 调用本机安装的 LibreOffice（自动查找）；支持批量转换，不覆盖已有文件 |
 | **进制转换** | 任意精度整数在 2–36 进制间转换，自动识别前缀，8–128 位补码与可点击的 64 位视图 |
 | **颜色转换** | HEX / RGB / HSL / HSV / HWB / CMYK / Lab / OKLCH 互转，WCAG 对比度检查，明暗色阶与配色 |
 | **密码生成** | 密码学安全的随机密码，可按类型选择与排除字符，并在本地检查强度与破解时间 |
