@@ -115,7 +115,9 @@ while [ $# -gt 0 ]; do
       ;;
     -*) die "unknown option: $1 (see --help)" ;;
     next)
-      [ -z "$TARGET" ] && [ "$START_NEXT_ONLY" -eq 0 ] || die "\`next\` must come first (see --help)"
+      if [ -n "$TARGET" ] || [ "$START_NEXT_ONLY" -ne 0 ]; then
+        die "\`next\` must come first (see --help)"
+      fi
       START_NEXT_ONLY=1
       ;;
     *)
