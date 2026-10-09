@@ -34,6 +34,7 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
     registry.register_for(Arc::new(tfp_color::ColorTool::default()), os);
     registry.register_for(Arc::new(tfp_password::Password::default()), os);
     registry.register_for(Arc::new(tfp_qrcode::QrCodeTool::default()), os);
+    registry.register_for(Arc::new(tfp_barcode::BarcodeTool::default()), os);
     registry.register_for(
         Arc::new(tfp_background_remover::BackgroundRemover::default()),
         os,

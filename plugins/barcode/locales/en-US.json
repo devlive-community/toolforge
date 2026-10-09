@@ -1,0 +1,108 @@
+{
+  "name": "Barcode",
+  "description": "Generate EAN-13, UPC, Code 128, ITF-14, Data Matrix, PDF417 and more with automatic check digits, and read barcodes from images",
+  "help": [
+    "For retail codes (EAN-13 / EAN-8 / UPC-A / ITF-14) you can type the digits without the check digit and it is calculated for you; a full number is verified, and a wrong check digit tells you the correct one.",
+    "Code 128 suits mixed letters and digits such as tracking or asset numbers. Code 39 only has capitals, digits and a few symbols; lowercase input uses Full ASCII mode, which some scanners must enable first.",
+    "Data Matrix, PDF417 and Aztec are 2D codes that hold longer text in any language. For QR codes use the QR Code tool.",
+    "SVG scales without loss and suits print; PNG size depends on pixels per module. Keep the blank quiet zone on both sides when printing.",
+    "On the Scan page, pick or drop an image or read a screenshot from the clipboard; every barcode and QR code in the image is read."
+  ],
+  "functions": {
+    "generate": "Generate a barcode",
+    "save": "Save a barcode image",
+    "decode": "Read barcodes in an image"
+  },
+  "tabs": {
+    "generate": "Generate",
+    "decode": "Scan"
+  },
+  "detect": {
+    "ean13": "Make a barcode for this EAN-13 number",
+    "ean8": "Make a barcode for this EAN-8 number",
+    "upcA": "Make a barcode for this UPC-A number",
+    "image": "Read barcodes in the copied image"
+  },
+  "formats": {
+    "ean13": "EAN-13",
+    "ean8": "EAN-8",
+    "upcA": "UPC-A",
+    "upcE": "UPC-E",
+    "itf": "ITF / ITF-14",
+    "code128": "Code 128",
+    "code39": "Code 39",
+    "code93": "Code 93",
+    "codabar": "Codabar",
+    "dataMatrix": "Data Matrix",
+    "pdf417": "PDF417",
+    "aztec": "Aztec",
+    "qrCode": "QR Code"
+  },
+  "hints": {
+    "ean13": "Retail barcode: 12 digits, the 13th check digit is added",
+    "ean8": "Small-package retail code: 7 digits, check digit added",
+    "upcA": "North American retail code: 11 digits, check digit added",
+    "itf": "Shipping cartons: an even number of digits; 13 digits become ITF-14 with a check digit",
+    "code128": "Letters, digits and common symbols; the most common general-purpose barcode",
+    "code39": "Capital letters, digits and - . $ / + % space",
+    "code93": "More compact than Code 39, all ASCII characters",
+    "codabar": "Digits and - $ : / . +, optionally wrapped in A–D start/stop letters",
+    "dataMatrix": "2D code, tiny; used on electronic parts and medicine",
+    "pdf417": "2D code used on ID cards, boarding passes and waybills",
+    "aztec": "2D code used on train tickets and boarding passes"
+  },
+  "generate": {
+    "content": "Content",
+    "format": "Symbology",
+    "placeholder": "Enter the content to encode",
+    "checkDigit": "Check digit {{digit}} added: {{content}}",
+    "preview": "Preview",
+    "empty": "Enter some content",
+    "saveSvg": "Save SVG",
+    "savePng": "Save PNG",
+    "pixels": "{{width}} × {{height}} px"
+  },
+  "notes": {
+    "code39Extended": "Lowercase or other characters use Code 39 Full ASCII mode"
+  },
+  "options": {
+    "title": "Options",
+    "height": "Bar height (modules)",
+    "scale": "Pixels per module",
+    "dark": "Bar color",
+    "light": "Background",
+    "showText": "Show text under the barcode"
+  },
+  "decode": {
+    "image": "Image",
+    "paste": "Read clipboard",
+    "another": "Another image",
+    "clipboard": "Clipboard image",
+    "drop": "Choose or drop an image",
+    "dropHint": "PNG, JPEG, WebP, GIF or BMP; several barcodes can be read at once",
+    "filter": "Images",
+    "results": "Results",
+    "found": "{{count}} found",
+    "scanning": "Scanning…",
+    "empty": "No image scanned yet"
+  },
+  "errors": {
+    "barcode.empty": "Enter some content",
+    "barcode.invalid_char": "Unsupported character “{{char}}”",
+    "barcode.length": "Expected {{expected}} digits, got {{actual}}",
+    "barcode.check_digit": "Wrong check digit: the last digit should be {{expected}}, not {{actual}}",
+    "barcode.itf_even": "ITF needs an even number of digits (got {{actual}})",
+    "barcode.too_long": "Too long, at most {{max}} digits",
+    "barcode.encode_failed": "Cannot encode: {{detail}}",
+    "barcode.invalid_scale": "Pixels per module must be 1 to {{max}}",
+    "barcode.invalid_height": "Bar height must be {{min}} to {{max}}",
+    "barcode.invalid_margin": "The quiet zone can be at most {{max}}",
+    "barcode.invalid_color": "Invalid color: {{value}}",
+    "barcode.too_large": "Image too large (over {{max}} px); lower the pixels per module",
+    "barcode.render_failed": "Cannot render the image: {{detail}}",
+    "barcode.not_found": "No barcode found in the image",
+    "barcode.decode_failed": "Cannot read the image: {{detail}}",
+    "barcode.clipboard_empty": "There is no image on the clipboard",
+    "barcode.file_too_large": "Image too large, at most {{limit}}"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.barcode",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "encode",
+  "keywords": ["barcode", "bar code", "ean", "ean-13", "ean-8", "upc", "code 128", "code 39", "code 93", "itf", "itf-14", "codabar", "gs1", "data matrix", "pdf417", "aztec", "check digit", "scan", "条形码", "条码", "商品码", "校验位", "识别", "扫码"],
+  "accent": "green",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write", "clipboard:read", "fs:user-selected"],
+  "functions": {
+    "generate": {},
+    "save": {},
+    "decode": {}
+  },
+  "sensitive": false
+}

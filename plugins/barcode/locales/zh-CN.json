@@ -1,0 +1,108 @@
+{
+  "name": "条形码",
+  "description": "生成 EAN-13、UPC、Code 128、ITF-14、Data Matrix、PDF417 等条码并自动补全校验位，识别图片中的条码",
+  "help": [
+    "商品条码（EAN-13 / EAN-8 / UPC-A / ITF-14）可以只输入不含校验位的数字，校验位会自动算出并补上；输入完整号码时会核对校验位，写错了会提示正确的那一位。",
+    "Code 128 适合字母、数字混合的编号（如物流单号、资产编号）；Code 39 只有大写字母、数字和少数符号，输入小写字母会使用扩展模式，部分扫码枪要开启后才能识别。",
+    "Data Matrix、PDF417、Aztec 是二维码制，可以写入较长的文字和中文。二维码请使用「二维码」工具。",
+    "保存为 SVG 可无损缩放，适合印刷；PNG 的大小由“每模块像素”决定。打印时请保留条码两侧的空白（静区）。",
+    "识别页可以选择图片、拖入图片或读取剪贴板中的截图，一张图里的多个条码和二维码会一起识别出来。"
+  ],
+  "functions": {
+    "generate": "生成条码",
+    "save": "保存条码图片",
+    "decode": "识别图片中的条码"
+  },
+  "tabs": {
+    "generate": "生成",
+    "decode": "识别"
+  },
+  "detect": {
+    "ean13": "为这个 EAN-13 商品码生成条码",
+    "ean8": "为这个 EAN-8 商品码生成条码",
+    "upcA": "为这个 UPC-A 商品码生成条码",
+    "image": "识别复制的图片中的条码"
+  },
+  "formats": {
+    "ean13": "EAN-13",
+    "ean8": "EAN-8",
+    "upcA": "UPC-A",
+    "upcE": "UPC-E",
+    "itf": "ITF / ITF-14",
+    "code128": "Code 128",
+    "code39": "Code 39",
+    "code93": "Code 93",
+    "codabar": "Codabar",
+    "dataMatrix": "Data Matrix",
+    "pdf417": "PDF417",
+    "aztec": "Aztec",
+    "qrCode": "QR 码"
+  },
+  "hints": {
+    "ean13": "商品条码：12 位数字，自动补第 13 位校验位",
+    "ean8": "小包装商品条码：7 位数字，自动补校验位",
+    "upcA": "北美商品条码：11 位数字，自动补校验位",
+    "itf": "物流箱码：偶数位数字；输入 13 位时按 ITF-14 补校验位",
+    "code128": "字母、数字和常用符号，最常用的通用条码",
+    "code39": "大写字母、数字和 - . $ / + % 空格",
+    "code93": "比 Code 39 更紧凑，支持全部 ASCII 字符",
+    "codabar": "数字和 - $ : / . +，首尾可写 A–D 作为起止符",
+    "dataMatrix": "二维码制，体积小，常用于电子元件和药品",
+    "pdf417": "二维码制，常用于证件、登机牌和运单",
+    "aztec": "二维码制，常用于车票和登机牌"
+  },
+  "generate": {
+    "content": "内容",
+    "format": "码制",
+    "placeholder": "输入要编码的内容",
+    "checkDigit": "已补校验位 {{digit}}：{{content}}",
+    "preview": "预览",
+    "empty": "请输入内容",
+    "saveSvg": "保存 SVG",
+    "savePng": "保存 PNG",
+    "pixels": "{{width}} × {{height}} 像素"
+  },
+  "notes": {
+    "code39Extended": "含小写字母或其他字符，使用 Code 39 扩展模式"
+  },
+  "options": {
+    "title": "选项",
+    "height": "条高（模块）",
+    "scale": "每模块像素",
+    "dark": "条颜色",
+    "light": "背景色",
+    "showText": "在条码下方显示文字"
+  },
+  "decode": {
+    "image": "图片",
+    "paste": "读取剪贴板",
+    "another": "换一张",
+    "clipboard": "剪贴板图片",
+    "drop": "选择或拖入图片",
+    "dropHint": "支持 PNG、JPEG、WebP、GIF、BMP，可同时识别多个条码",
+    "filter": "图片",
+    "results": "识别结果",
+    "found": "找到 {{count}} 个",
+    "scanning": "正在识别…",
+    "empty": "还没有识别图片"
+  },
+  "errors": {
+    "barcode.empty": "请输入内容",
+    "barcode.invalid_char": "不支持的字符“{{char}}”",
+    "barcode.length": "长度应为 {{expected}} 位，当前 {{actual}} 位",
+    "barcode.check_digit": "校验位不对：最后一位应为 {{expected}}，不是 {{actual}}",
+    "barcode.itf_even": "ITF 需要偶数位数字（当前 {{actual}} 位）",
+    "barcode.too_long": "内容太长，最多 {{max}} 位",
+    "barcode.encode_failed": "无法编码：{{detail}}",
+    "barcode.invalid_scale": "每模块像素应为 1 到 {{max}}",
+    "barcode.invalid_height": "条高应为 {{min}} 到 {{max}}",
+    "barcode.invalid_margin": "静区最大 {{max}}",
+    "barcode.invalid_color": "颜色格式不对：{{value}}",
+    "barcode.too_large": "图片太大（超过 {{max}} 像素），请减小每模块像素",
+    "barcode.render_failed": "无法生成图片：{{detail}}",
+    "barcode.not_found": "图片中没有找到条码",
+    "barcode.decode_failed": "无法读取图片：{{detail}}",
+    "barcode.clipboard_empty": "剪贴板中没有图片",
+    "barcode.file_too_large": "图片太大，最大 {{limit}}"
+  }
+}

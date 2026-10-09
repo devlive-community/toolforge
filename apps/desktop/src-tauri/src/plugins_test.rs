@@ -150,7 +150,7 @@ fn clipboard_samples_suggest_the_right_tool_first() {
     }
 }
 
-/// 剪贴板中是图片时推荐文字识别与二维码识别
+/// 剪贴板中是图片时推荐文字识别、二维码识别与条码识别
 #[test]
 fn clipboard_images_suggest_image_tools() {
     let registry = builtin();
@@ -161,7 +161,11 @@ fn clipboard_images_suggest_image_tools() {
         .collect();
     assert_eq!(
         ids,
-        vec!["org.devlive.toolforge.ocr", "org.devlive.toolforge.qrcode"]
+        vec![
+            "org.devlive.toolforge.ocr",
+            "org.devlive.toolforge.qrcode",
+            "org.devlive.toolforge.barcode"
+        ]
     );
     assert!(registry.detect_image(8, 8).is_empty());
 }
