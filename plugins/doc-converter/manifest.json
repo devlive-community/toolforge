@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.doc-converter",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "convert",
+  "keywords": ["word", "excel", "pdf", "docx", "xlsx", "doc", "xls", "word to pdf", "pdf to word", "excel to word", "word to excel", "office", "libreoffice", "文档转换", "Word 转 PDF", "PDF 转 Word", "Excel 转 Word", "Word 转 Excel", "办公"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected", "process"],
+  "functions": {
+    "engine": {},
+    "convert": { "task": true }
+  },
+  "sensitive": false
+}

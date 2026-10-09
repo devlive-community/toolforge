@@ -1,0 +1,103 @@
+{
+  "name": "文档转换",
+  "description": "Excel 转 Word、Word 转 Excel、Word 转 PDF、PDF 转 Word",
+  "help": [
+    "先选择转换方向，再添加或拖入文件。可一次转换多个文件，新文件保存在原文件旁边（或你选择的文件夹），不会覆盖已有文件。",
+    "Excel 转 Word 与 Word 转 Excel 在 ToolForge 内完成：每个工作表变成 Word 中的“标题 + 表格”；Word 文档中的每个表格变成 Excel 中的一个工作表。没有表格的 Word 文档会逐段写入一列。",
+    "Word 转 PDF 与 PDF 转 Word 使用 LibreOffice，能保留文档排版。安装免费的 LibreOffice 后即可使用，ToolForge 会自动找到它并在后台运行，不会弹出窗口。旧版 .doc、.rtf、.odt 文件也通过 LibreOffice 读取。",
+    "PDF 转 Word 对由文字文档生成的 PDF 效果最好；扫描件中的页面仍是图片，可先用“文字识别”工具处理。",
+    "Word 表格中的数字在 Excel 中写成数值；有前导 0 的编号（如 007）和长身份证号保持为文本。"
+  ],
+  "functions": {
+    "engine": "查找 LibreOffice",
+    "convert": "转换文档"
+  },
+  "modes": {
+    "excelToWord": {
+      "name": "Excel 转 Word",
+      "from": "Excel 工作簿",
+      "engine": "在 ToolForge 内完成，无需 LibreOffice。",
+      "hint": "每个非空工作表变成一个表格；列较多时使用横向页面。"
+    },
+    "wordToExcel": {
+      "name": "Word 转 Excel",
+      "from": "Word 文档",
+      "engine": ".docx 在 ToolForge 内完成；.doc、.rtf、.odt 需要 LibreOffice。",
+      "hint": "每个表格变成一个工作表；没有表格的文档会逐段写入。"
+    },
+    "wordToPdf": {
+      "name": "Word 转 PDF",
+      "from": "Word 文档",
+      "engine": "使用 LibreOffice 以保留排版。",
+      "hint": "本机没有安装的字体会用相近的字体代替。"
+    },
+    "pdfToWord": {
+      "name": "PDF 转 Word",
+      "from": "PDF 文件",
+      "engine": "使用 LibreOffice 重建可编辑的文档。",
+      "hint": "排版用文本框还原，适合版式简单的页面；适合文字型 PDF，扫描件中的页面仍是图片。"
+    }
+  },
+  "engine": {
+    "title": "LibreOffice",
+    "found": "已找到 LibreOffice {{version}}",
+    "missing": "未安装 LibreOffice",
+    "download": "下载 LibreOffice",
+    "required": "转换这些文件需要 LibreOffice，安装后重新打开本工具即可。"
+  },
+  "files": {
+    "title": "文件",
+    "add": "添加文件",
+    "clear": "清空",
+    "remove": "移除",
+    "drop": "拖入{{kind}}",
+    "skipped_one": "已跳过 {{count}} 个其他类型的文件",
+    "skipped_other": "已跳过 {{count}} 个其他类型的文件"
+  },
+  "options": {
+    "title": "选项",
+    "headerRow": "首行加粗作为表头",
+    "sheetTitles": "以工作表名称作为标题",
+    "output": "保存到",
+    "sameFolder": "原文件所在文件夹",
+    "useSameFolder": "改为保存到原文件旁边"
+  },
+  "names": {
+    "table": "表格",
+    "text": "正文"
+  },
+  "result": {
+    "saved": "已保存为 {{name}}",
+    "show": "在文件夹中显示",
+    "summary": "已转换 {{converted}} 个，失败 {{failed}} 个"
+  },
+  "convert_one": "转换 {{count}} 个文件",
+  "convert_other": "转换 {{count}} 个文件",
+  "stages": {
+    "doc.engine": "正在查找 LibreOffice…",
+    "doc.convert": "正在转换…"
+  },
+  "logs": {
+    "doc": {
+      "converting": "正在转换 {{name}}",
+      "converted": "{{name}} → {{output}}",
+      "failed": "{{name}} 转换失败",
+      "done": "已转换 {{converted}} 个，失败 {{failed}} 个",
+      "sheets": "{{count}} 个工作表",
+      "tables": "{{count}} 个表格",
+      "no_tables": "{{name}} 中没有表格，已改为写入段落"
+    }
+  },
+  "errors": {
+    "doc.needs_libreoffice": "这种转换需要 LibreOffice，请从 libreoffice.org 安装后重试。",
+    "doc.engine_failed": "LibreOffice 无法转换该文件：{{detail}}",
+    "doc.engine_timeout": "LibreOffice 超过 {{seconds}} 秒未完成，已停止",
+    "doc.unsupported_input": "该转换方向不支持 .{{ext}} 文件",
+    "doc.read_failed": "无法读取文件：{{detail}}",
+    "doc.write_failed": "无法保存文件：{{detail}}",
+    "doc.empty_workbook": "工作簿中没有数据",
+    "doc.empty_document": "文档中没有文字",
+    "doc.no_files": "请先添加文件",
+    "doc.output_dir_missing": "文件夹 {{path}} 不存在"
+  }
+}

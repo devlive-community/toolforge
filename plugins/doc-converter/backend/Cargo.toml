@@ -1,0 +1,16 @@
+[package]
+name = "tfp-doc-converter"
+description = "ToolForge plugin: convert between Word, Excel and PDF documents"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+calamine = "0.36"
+docx-rs = "0.4"
+jiff = "0.2"
+rust_xlsxwriter = "0.99"

@@ -1,0 +1,103 @@
+{
+  "name": "Document Converter",
+  "description": "Convert Excel to Word, Word to Excel, Word to PDF and PDF to Word",
+  "help": [
+    "Choose a direction, then add or drop files. Several files are converted in one go; the new files are saved next to the originals (or in the folder you choose) and nothing is overwritten.",
+    "Excel → Word and Word → Excel run inside ToolForge. Each worksheet becomes a heading and a table in Word; each table in a Word document becomes a worksheet in Excel. A Word document without tables is copied paragraph by paragraph into one column.",
+    "Word → PDF and PDF → Word use LibreOffice, which keeps the layout of the document. Install the free LibreOffice to use them; ToolForge finds it automatically and runs it in the background without opening a window. Old .doc, .rtf and .odt files are also read through LibreOffice.",
+    "PDF → Word works best for PDFs made from text documents; scanned pages stay images, so run them through the OCR tool first.",
+    "Numbers in Word tables become real numbers in Excel; codes with leading zeros such as 007 and long ID numbers stay text."
+  ],
+  "functions": {
+    "engine": "Find LibreOffice",
+    "convert": "Convert documents"
+  },
+  "modes": {
+    "excelToWord": {
+      "name": "Excel to Word",
+      "from": "Excel workbooks",
+      "engine": "Runs in ToolForge; LibreOffice is not needed.",
+      "hint": "Each non-empty worksheet becomes a table; wide sheets use landscape pages."
+    },
+    "wordToExcel": {
+      "name": "Word to Excel",
+      "from": "Word documents",
+      "engine": "Runs in ToolForge for .docx; .doc, .rtf and .odt need LibreOffice.",
+      "hint": "Each table becomes a worksheet. Documents without tables are copied paragraph by paragraph."
+    },
+    "wordToPdf": {
+      "name": "Word to PDF",
+      "from": "Word documents",
+      "engine": "Uses LibreOffice to keep the layout.",
+      "hint": "Fonts that are not installed on this computer are replaced with similar ones."
+    },
+    "pdfToWord": {
+      "name": "PDF to Word",
+      "from": "PDF files",
+      "engine": "Uses LibreOffice to rebuild an editable document.",
+      "hint": "The layout is rebuilt with text boxes, so editing works best for simple pages. Works best with text PDFs; scanned pages stay as images."
+    }
+  },
+  "engine": {
+    "title": "LibreOffice",
+    "found": "LibreOffice {{version}} found",
+    "missing": "LibreOffice is not installed",
+    "download": "Download LibreOffice",
+    "required": "Install LibreOffice to convert these files, then reopen this tool."
+  },
+  "files": {
+    "title": "Files",
+    "add": "Add files",
+    "clear": "Clear",
+    "remove": "Remove",
+    "drop": "Drop {{kind}} here",
+    "skipped_one": "Skipped {{count}} file of another type",
+    "skipped_other": "Skipped {{count}} files of another type"
+  },
+  "options": {
+    "title": "Options",
+    "headerRow": "Bold first row as header",
+    "sheetTitles": "Add worksheet names as headings",
+    "output": "Save to",
+    "sameFolder": "Next to the original",
+    "useSameFolder": "Save next to the original"
+  },
+  "names": {
+    "table": "Table",
+    "text": "Text"
+  },
+  "result": {
+    "saved": "Saved as {{name}}",
+    "show": "Show in folder",
+    "summary": "Converted {{converted}}, failed {{failed}}"
+  },
+  "convert_one": "Convert {{count}} file",
+  "convert_other": "Convert {{count}} files",
+  "stages": {
+    "doc.engine": "Looking for LibreOffice…",
+    "doc.convert": "Converting…"
+  },
+  "logs": {
+    "doc": {
+      "converting": "Converting {{name}}",
+      "converted": "{{name}} → {{output}}",
+      "failed": "{{name}} could not be converted",
+      "done": "Converted {{converted}}, failed {{failed}}",
+      "sheets": "{{count}} worksheets",
+      "tables": "{{count}} tables",
+      "no_tables": "{{name}} has no tables; copied its paragraphs instead"
+    }
+  },
+  "errors": {
+    "doc.needs_libreoffice": "This conversion needs LibreOffice. Install it from libreoffice.org and try again.",
+    "doc.engine_failed": "LibreOffice could not convert the file: {{detail}}",
+    "doc.engine_timeout": "LibreOffice took longer than {{seconds}} seconds and was stopped",
+    "doc.unsupported_input": "Files of type .{{ext}} are not supported in this direction",
+    "doc.read_failed": "Could not read the file: {{detail}}",
+    "doc.write_failed": "Could not save the file: {{detail}}",
+    "doc.empty_workbook": "The workbook has no data",
+    "doc.empty_document": "The document has no text",
+    "doc.no_files": "Add some files first",
+    "doc.output_dir_missing": "The folder {{path}} does not exist"
+  }
+}

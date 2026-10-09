@@ -66,6 +66,7 @@ tfp-url-parser.workspace = true
 tfp-json-query.workspace = true
 tfp-image-palette.workspace = true
 tfp-table-converter.workspace = true
+tfp-doc-converter.workspace = true
 tfp-port-manager.workspace = true
 tfp-qrcode.workspace = true
 tfp-regex.workspace = true
