@@ -308,9 +308,11 @@ fn walk_zip(
     for index in 0..archive.len() {
         let meta = {
             let entry = archive.by_index_raw(index).map_err(zip_error)?;
-            let normalized = normalize(entry.name());
+            // 没有 UTF-8 标记的中文文件名（Windows 中文系统打包）按 GBK 识别
+            let name = crate::text::name(entry.name_raw(), Some(entry.name()));
+            let normalized = normalize(&name);
             let safe = normalized.is_some();
-            let path = normalized.unwrap_or_else(|| entry.name().to_owned());
+            let path = normalized.unwrap_or(name);
             let (modified, mtime) = entry.last_modified().map_or((None, None), zip_time);
             Meta {
                 path,
@@ -507,7 +509,7 @@ fn walk_stream(
     for entry in archive.entries().map_err(corrupt)? {
         let mut entry = entry.map_err(corrupt)?;
         let raw = entry.path_bytes();
-        let raw = String::from_utf8_lossy(&raw).into_owned();
+        let raw = crate::text::name(&raw, None);
         let header = entry.header();
         let kind = match header.entry_type() {
             tar::EntryType::Directory => Kind::Dir,

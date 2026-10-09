@@ -7464,6 +7464,7 @@ version = "0.1.0"
 dependencies = [
  "bzip2",
  "dunce",
+ "encoding_rs",
  "flate2",
  "jiff",
  "lzma-rust2 0.21.0",

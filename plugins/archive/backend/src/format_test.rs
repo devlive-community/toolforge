@@ -99,3 +99,98 @@ fn reports_corrupt_archives() {
     let err = walk(&path, None, false, &read, &mut |_, _| Ok(Flow::Continue)).unwrap_err();
     assert_eq!(err.code, "archive.corrupt");
 }
+
+/// 按 Windows 中文系统的方式手写一个 ZIP：文件名为 GBK、不设 UTF-8 标记，内容不压缩
+fn gbk_zip(name: &str, body: &[u8]) -> Vec<u8> {
+    let name = encoding_rs::GB18030.encode(name).0.into_owned();
+    let mut crc = flate2::Crc::new();
+    crc.update(body);
+    let crc = crc.sum();
+    let mut out = Vec::new();
+    let u16le = |v: u16| v.to_le_bytes();
+    let u32le = |v: u32| v.to_le_bytes();
+    // 本地文件头：版本 20、标志 0（无 UTF-8 标记）、不压缩
+    out.extend(u32le(0x0403_4b50));
+    out.extend(u16le(20));
+    out.extend(u16le(0));
+    out.extend(u16le(0));
+    out.extend(u16le(0));
+    out.extend(u16le(0x21));
+    out.extend(u32le(crc));
+    out.extend(u32le(body.len() as u32));
+    out.extend(u32le(body.len() as u32));
+    out.extend(u16le(name.len() as u16));
+    out.extend(u16le(0));
+    out.extend(&name);
+    out.extend(body);
+    let central = out.len() as u32;
+    out.extend(u32le(0x0201_4b50));
+    out.extend(u16le(20));
+    out.extend(u16le(20));
+    out.extend(u16le(0));
+    out.extend(u16le(0));
+    out.extend(u16le(0));
+    out.extend(u16le(0x21));
+    out.extend(u32le(crc));
+    out.extend(u32le(body.len() as u32));
+    out.extend(u32le(body.len() as u32));
+    out.extend(u16le(name.len() as u16));
+    out.extend(u16le(0));
+    out.extend(u16le(0));
+    out.extend(u16le(0));
+    out.extend(u16le(0));
+    out.extend(u32le(0));
+    out.extend(u32le(0));
+    out.extend(&name);
+    let size = out.len() as u32 - central;
+    out.extend(u32le(0x0605_4b50));
+    out.extend(u16le(0));
+    out.extend(u16le(0));
+    out.extend(u16le(1));
+    out.extend(u16le(1));
+    out.extend(u32le(size));
+    out.extend(u32le(central));
+    out.extend(u16le(0));
+    out
+}
+
+#[test]
+fn reads_gbk_names_and_contents_from_windows_zips() {
+    let dir = workspace("gbk");
+    let body = encoding_rs::GB18030
+        .encode("数据库地址=本地\n用户=管理员\n")
+        .0
+        .into_owned();
+    let path = write(&dir, "中文.zip", &gbk_zip("资料/说明.txt", &body));
+    assert_eq!(
+        listed(&path),
+        [("资料/说明.txt".to_owned(), body.len() as u64)]
+    );
+    let mut text = None;
+    let read = Arc::new(AtomicU64::new(0));
+    walk(&path, None, true, &read, &mut |_, reader| {
+        let mut bytes = Vec::new();
+        reader.unwrap().read_to_end(&mut bytes).unwrap();
+        text = crate::text::content(&bytes, false);
+        Ok(Flow::Stop)
+    })
+    .unwrap();
+    assert_eq!(text.as_deref(), Some("数据库地址=本地\n用户=管理员\n"));
+    std::fs::remove_dir_all(dir).unwrap();
+}
+
+#[test]
+fn reads_gbk_names_from_tars() {
+    let dir = workspace("gbk-tar");
+    let mut builder = tar::Builder::new(Vec::new());
+    let mut header = tar::Header::new_gnu();
+    header.set_size(2);
+    header.set_mode(0o644);
+    let name = encoding_rs::GB18030.encode("文档.txt").0.into_owned();
+    header.as_old_mut().name[..name.len()].copy_from_slice(&name);
+    header.set_cksum();
+    builder.append(&header, &b"ok"[..]).unwrap();
+    let path = write(&dir, "a.tar", &builder.into_inner().unwrap());
+    assert_eq!(listed(&path), [("文档.txt".to_owned(), 2)]);
+    std::fs::remove_dir_all(dir).unwrap();
+}

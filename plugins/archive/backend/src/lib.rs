@@ -5,6 +5,7 @@ mod catalog;
 mod create;
 mod extract;
 mod format;
+mod text;
 
 use std::collections::VecDeque;
 use std::io::Read;
@@ -125,19 +126,6 @@ fn image_mime(name: &str) -> Option<&'static str> {
 }
 
 /// 看起来像文本：没有 NUL，且是合法 UTF-8（允许在末尾截断多字节字符）
-fn as_text(bytes: &[u8]) -> Option<String> {
-    if bytes.contains(&0) {
-        return None;
-    }
-    match std::str::from_utf8(bytes) {
-        Ok(text) => Some(text.to_owned()),
-        Err(err) if err.error_len().is_none() => {
-            Some(String::from_utf8_lossy(&bytes[..err.valid_up_to()]).into_owned())
-        }
-        Err(_) => None,
-    }
-}
-
 pub struct Archive {
     manifest: Manifest,
     catalogs: Catalogs,
@@ -252,7 +240,7 @@ impl Archive {
                     truncated,
                     size: meta.size,
                 },
-                (None, _) => match as_text(&bytes) {
+                (None, _) => match text::content(&bytes, truncated) {
                     Some(text) => Preview {
                         kind: "text",
                         text: Some(text),
