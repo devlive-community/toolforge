@@ -1,0 +1,54 @@
+{
+  "name": "Number to Words",
+  "description": "Write numbers as RMB amounts in Chinese, Chinese numerals, English words, check amounts, Roman numerals and more",
+  "help": [
+    "Type a number in any form: 1234.56, 1,234.56, 1.5万, 3e6, Chinese numerals such as 一亿二千万, an RMB amount such as 壹仟零肆元伍角, or a Roman numeral such as MCMXCIV. The kind of input is recognised automatically.",
+    "RMB uppercase follows the People's Bank of China writing rules: amounts are rounded to fen, 整 is added after 元 when there are no jiao or fen, and zeros are written once where digits are skipped.",
+    "English words use the US short scale without \"and\"; the check form writes cents as a fraction.",
+    "Roman numerals cover 1 to 3999. Byte sizes are shown in both binary (KiB) and decimal (kB) units.",
+    "Numbers are handled as exact decimal digits, so very long numbers and decimals keep every digit."
+  ],
+  "functions": {
+    "convert": "Convert number"
+  },
+  "input": {
+    "title": "Number",
+    "placeholder": "1234.56, 一千二百, 壹佰元整 or MCMXCIV",
+    "examples": "Try"
+  },
+  "result": {
+    "title": "Written forms",
+    "empty": "Type a number",
+    "emptyHint": "It is written out in every form at once",
+    "none": "—"
+  },
+  "sources": {
+    "arabic": "Number",
+    "chinese": "Chinese numerals",
+    "rmb": "RMB amount",
+    "roman": "Roman numeral"
+  },
+  "outputs": {
+    "rmb": "RMB uppercase",
+    "chineseLower": "Chinese",
+    "chineseUpper": "Chinese uppercase",
+    "english": "English",
+    "check": "Check amount",
+    "roman": "Roman",
+    "thousands": "Thousands",
+    "indian": "Indian grouping",
+    "spaced": "Spaced",
+    "scientific": "Scientific",
+    "bytes": "Bytes"
+  },
+  "errors": {
+    "num.empty": "Type a number",
+    "num.unrecognized": "“{{input}}” is not a number this tool understands",
+    "num.too_long": "The number has too many digits",
+    "num.too_large_chinese": "Chinese numerals here go up to 万亿 (16 digits)",
+    "num.too_large_english": "Too large to spell out in English",
+    "num.rounded_cents": "Rounded to two decimal places",
+    "num.roman_range": "Only whole numbers from 1 to 3999",
+    "num.bytes_integer": "Only for whole, positive numbers"
+  }
+}

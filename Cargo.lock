@@ -7753,6 +7753,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-number-words"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-ocr"
 version = "0.1.0"
 dependencies = [
@@ -8318,6 +8327,7 @@ dependencies = [
  "tfp-log-viewer",
  "tfp-markdown-editor",
  "tfp-mock-data",
+ "tfp-number-words",
  "tfp-ocr",
  "tfp-password",
  "tfp-pdf",

@@ -1,0 +1,15 @@
+{
+  "id": "org.devlive.toolforge.number-words",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "calc",
+  "keywords": ["number to words", "amount in words", "rmb", "chinese numerals", "roman numerals", "check writing", "thousands separator", "scientific notation", "大写", "金额大写", "人民币大写", "数字大写", "中文数字", "罗马数字", "千分位"],
+  "accent": "pink",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "convert": {}
+  },
+  "sensitive": false
+}

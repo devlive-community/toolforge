@@ -1,0 +1,54 @@
+{
+  "name": "数字大写",
+  "description": "把数字写成人民币大写、中文大小写数字、英文读法、支票金额、罗马数字等",
+  "help": [
+    "输入任意形式的数字：1234.56、1,234.56、1.5万、3e6，中文数字如 一亿二千万，人民币大写如 壹仟零肆元伍角，或罗马数字如 MCMXCIV，会自动识别输入类型。",
+    "人民币大写按中国人民银行的书写规范：金额四舍五入到分；只有元没有角分时在元后加“整”；中间有连续的 0 时只写一个“零”。",
+    "英文读法采用美式短级差，不加 and；支票写法把美分写成分数。",
+    "罗马数字支持 1 到 3999。字节大小同时显示二进制（KiB）与十进制（kB）单位。",
+    "数字按精确的十进制位处理，很长的整数和小数也不会丢失精度。"
+  ],
+  "functions": {
+    "convert": "转换数字"
+  },
+  "input": {
+    "title": "数字",
+    "placeholder": "1234.56、一千二百、壹佰元整 或 MCMXCIV",
+    "examples": "试试"
+  },
+  "result": {
+    "title": "各种写法",
+    "empty": "请输入数字",
+    "emptyHint": "会同时显示各种写法",
+    "none": "—"
+  },
+  "sources": {
+    "arabic": "阿拉伯数字",
+    "chinese": "中文数字",
+    "rmb": "人民币大写",
+    "roman": "罗马数字"
+  },
+  "outputs": {
+    "rmb": "人民币大写",
+    "chineseLower": "中文小写",
+    "chineseUpper": "中文大写",
+    "english": "英文",
+    "check": "支票金额",
+    "roman": "罗马数字",
+    "thousands": "千分位",
+    "indian": "印度分组",
+    "spaced": "空格分隔",
+    "scientific": "科学计数法",
+    "bytes": "字节大小"
+  },
+  "errors": {
+    "num.empty": "请输入数字",
+    "num.unrecognized": "无法识别“{{input}}”",
+    "num.too_long": "数字位数太多",
+    "num.too_large_chinese": "中文写法最多到万亿（16 位整数）",
+    "num.too_large_english": "数字太大，无法写成英文",
+    "num.rounded_cents": "已四舍五入到两位小数",
+    "num.roman_range": "只支持 1 到 3999 的整数",
+    "num.bytes_integer": "只适用于正整数"
+  }
+}
