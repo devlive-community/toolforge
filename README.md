@@ -39,6 +39,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | Tool | Description |
 |------|-------------|
 | **JSON Formatter** | Format, minify, validate, escape / unescape, tree view and structural diff; JSON5 support; errors pinpointed to line and column; tree view loads large documents on demand |
+| **JSON Query** | Query and reshape JSON or JSON Lines with jq (jaq engine; output matches jq) or JSONPath with normalized match paths; raw, compact and sorted output, examples, files up to 100 MB and a 10-second time limit |
 | **XML Formatter** | Format, minify and validate; keeps comments, CDATA and declarations; unclosed or mismatched tags reported with line and column |
 | **SQL Formatter** | Beautify and minify; keyword casing, indentation and compact mode; generic SQL / PostgreSQL / SQL Server dialects |
 | **Regex Tester** | Live match and group highlighting with replacement preview; lookaround, backreferences and named groups; common pattern presets |
