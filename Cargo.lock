@@ -7892,10 +7892,14 @@ version = "0.1.0"
 dependencies = [
  "data-encoding",
  "image",
+ "objc2",
+ "objc2-app-kit",
+ "objc2-foundation",
  "resvg",
  "serde",
  "serde_json",
  "tf-plugin-api",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]

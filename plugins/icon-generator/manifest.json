@@ -4,14 +4,57 @@
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "image",
-  "keywords": ["icon", "app icon", "favicon", "ico", "icns", "appiconset", "ios", "android", "mipmap", "macos", "windows", "webmanifest", "图标", "应用图标", "网站图标", "图标生成"],
+  "keywords": [
+    "icon",
+    "app icon",
+    "favicon",
+    "ico",
+    "icns",
+    "appiconset",
+    "ios",
+    "android",
+    "mipmap",
+    "macos",
+    "windows",
+    "webmanifest",
+    "图标",
+    "应用图标",
+    "网站图标",
+    "图标生成",
+    "folder icon",
+    "custom icon",
+    "template",
+    "文件夹图标",
+    "自定义图标",
+    "图标模板",
+    "光盘",
+    "磁盘图标"
+  ],
   "accent": "violet",
-  "locales": ["zh-CN", "en-US"],
-  "permissions": ["fs:user-selected", "clipboard:write"],
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "permissions": [
+    "fs:user-selected",
+    "clipboard:write"
+  ],
   "functions": {
     "inspect": {},
     "render": {},
-    "generate": { "task": true }
+    "generate": {
+      "task": true
+    },
+    "templates": {},
+    "renderTemplate": {},
+    "exportTemplate": {
+      "task": true
+    },
+    "applyIcon": {
+      "task": true
+    },
+    "clearIcon": {},
+    "applySupport": {}
   },
   "sensitive": false
 }

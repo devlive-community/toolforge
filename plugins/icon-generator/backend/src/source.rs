@@ -22,7 +22,7 @@ fn is_svg(path: &Path, bytes: &[u8]) -> bool {
         || (bytes.starts_with(b"<?xml") && bytes.windows(4).take(1024).any(|w| w == b"<svg"))
 }
 
-fn render_svg(bytes: &[u8], longest: u32) -> PluginResult<Source> {
+pub fn render_svg(bytes: &[u8], longest: u32) -> PluginResult<Source> {
     let mut options = usvg::Options::default();
     options.fontdb_mut().load_system_fonts();
     let tree = usvg::Tree::from_data(bytes, &options)

@@ -203,3 +203,90 @@ fn rejects_bad_arguments() {
     );
     std::fs::remove_dir_all(dir).unwrap();
 }
+
+#[test]
+fn lists_and_renders_templates_with_or_without_an_image() {
+    let tool = IconGenerator::default();
+    let list = tool.call("templates", json!({})).unwrap();
+    let list = list.as_array().unwrap();
+    assert_eq!(list.len(), templates::TEMPLATES.len());
+    assert_eq!(list[0]["id"], "folder");
+    assert_eq!(list[0]["group"], "folder");
+    assert!(
+        list[0]["image"]
+            .as_str()
+            .unwrap()
+            .starts_with("data:image/png;base64,")
+    );
+    let dir = dir("templates");
+    let path = logo(&dir);
+    let one = tool
+        .call(
+            "renderTemplate",
+            json!({ "path": path, "template": "cdDisc", "size": 512 }),
+        )
+        .unwrap();
+    assert!(one.as_str().unwrap().len() > 1000);
+    let err = tool
+        .call("renderTemplate", json!({ "template": "nope" }))
+        .unwrap_err();
+    assert_eq!(err.code, "icon.unknown_template");
+}
+
+#[test]
+fn exports_a_template_in_several_formats() {
+    let dir = dir("export");
+    let path = logo(&dir);
+    let tool = IconGenerator::default();
+    let ctx = Ctx::default();
+    let args = json!({ "path": path, "template": "folder", "formats": ["png", "icns", "ico"], "outputDir": dir });
+    let out = tool.run_task("exportTemplate", args.clone(), &ctx).unwrap();
+    let files: Vec<String> = serde_json::from_value(out["files"].clone()).unwrap();
+    assert_eq!(files.len(), 3);
+    assert!(files[0].ends_with("my-app-folder.png"));
+    let png = image::open(&files[0]).unwrap();
+    assert_eq!((png.width(), png.height()), (1024, 1024));
+    let icns = std::fs::read(&files[1]).unwrap();
+    assert_eq!(&icns[..4], b"icns");
+    // 再导出一次不覆盖
+    let again = tool.run_task("exportTemplate", args, &ctx).unwrap();
+    assert!(
+        again["files"][0]
+            .as_str()
+            .unwrap()
+            .ends_with("my-app-folder (1).png")
+    );
+    let none = tool.run_task(
+        "exportTemplate",
+        json!({ "template": "folder", "formats": [], "outputDir": dir }),
+        &ctx,
+    );
+    assert_eq!(none.unwrap_err().code, "icon.no_formats");
+}
+
+#[cfg(target_os = "macos")]
+#[test]
+fn applies_and_clears_icons_on_folders() {
+    let dir = dir("apply");
+    let target = dir.join("Photos");
+    std::fs::create_dir_all(&target).unwrap();
+    let tool = IconGenerator::default();
+    let ctx = Ctx::default();
+    let missing = dir.join("missing").to_string_lossy().into_owned();
+    let out = tool
+        .run_task(
+            "applyIcon",
+            json!({ "template": "folderDark", "targets": [target, missing] }),
+            &ctx,
+        )
+        .unwrap();
+    assert_eq!(
+        (out["applied"].as_u64(), out["total"].as_u64()),
+        (Some(1), Some(2))
+    );
+    assert!(target.join("Icon\r").exists());
+    assert!(ctx.0.lock().unwrap().contains(&"fs.not_found".to_owned()));
+    tool.call("clearIcon", json!({ "targets": [target] }))
+        .unwrap();
+    assert!(!target.join("Icon\r").exists());
+}

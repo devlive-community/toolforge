@@ -1,16 +1,23 @@
 {
   "name": "应用图标生成",
-  "description": "由一张图片或 SVG 生成 Web、iOS、Android、macOS 与 Windows 的整套图标",
+  "description": "由一张图片生成 Web、iOS、Android、macOS、Windows 整套图标，或套用文件夹、磁盘、光盘、相框等模板并直接设为文件夹图标",
   "help": [
     "选择一张至少 1024 × 1024 像素的方形图片，或一个 SVG（每个尺寸都清晰渲染）。非方形图片会居中放置。",
     "留白在图案四周留出空间；圆角作用于 Web、Android 与 Windows 图标。开启背景可填充透明区域。",
     "iOS 图标与 apple-touch-icon 不能透明，因此会加上背景（未设置时为白色）且不带圆角，由系统裁切圆角。Android 圆形图标裁成圆形，macOS 图标按 Apple 模板生成带边距的圆角方块。",
-    "文件保存到图片旁边（或你选择的文件夹）中的新文件夹：Web 网站图标与 site.webmanifest、HTML 代码片段，Xcode 的 AppIcon.appiconset，Android 的 mipmap 文件夹，AppIcon.icns，以及多尺寸 app.ico。"
+    "文件保存到图片旁边（或你选择的文件夹）中的新文件夹：Web 网站图标与 site.webmanifest、HTML 代码片段，Xcode 的 AppIcon.appiconset，Android 的 mipmap 文件夹，AppIcon.icns，以及多尺寸 app.ico。",
+    "「图标模板」页把图片放进文件夹、磁盘、文档、光盘、相片等 37 种模板中，可导出 PNG / ICNS / ICO，也能直接设为文件夹图标（macOS 上还可设到磁盘和任意文件），之后可以恢复默认图标。"
   ],
   "functions": {
     "inspect": "读取图片",
     "render": "预览图标",
-    "generate": "生成图标"
+    "generate": "生成图标",
+    "templates": "列出图标模板",
+    "renderTemplate": "预览图标模板",
+    "exportTemplate": "导出模板图标",
+    "applyIcon": "设置文件夹图标",
+    "clearIcon": "恢复默认图标",
+    "applySupport": "查询可设置图标的对象"
   },
   "source": {
     "title": "图片",
@@ -79,13 +86,21 @@
   },
   "stages": {
     "icon.load": "正在读取图片…",
-    "icon.generate": "正在生成图标…"
+    "icon.generate": "正在生成图标…",
+    "icon.render": "正在渲染模板…",
+    "icon.apply": "正在设置图标…"
   },
   "logs": {
     "icon": {
       "file": "{{path}}",
       "preset_done": "{{preset}}：{{count}} 个文件",
-      "done": "已保存 {{count}} 个文件到 {{path}}"
+      "done": "已保存 {{count}} 个文件到 {{path}}",
+      "applied": "已设置 {{path}}",
+      "apply_failed": "无法设置 {{path}}：{{detail}}",
+      "apply_folder_only": "{{path}} 不是文件夹，当前系统只能给文件夹设置图标"
+    },
+    "fs": {
+      "not_found": "找不到 {{path}}"
     }
   },
   "errors": {
@@ -95,6 +110,91 @@
     "icon.no_presets": "请至少选择一个平台",
     "icon.output_dir_missing": "文件夹 {{path}} 不存在",
     "icon.write_failed": "无法写入 {{path}}：{{detail}}",
-    "icon.encode_failed": "无法编码图标：{{detail}}"
+    "icon.encode_failed": "无法编码图标：{{detail}}",
+    "icon.unknown_template": "没有这个模板：{{id}}",
+    "icon.render_failed": "无法渲染模板：{{detail}}",
+    "icon.no_formats": "请至少选择一种格式",
+    "icon.no_targets": "请选择要设置图标的文件夹",
+    "icon.apply_failed": "无法设置 {{path}} 的图标：{{detail}}",
+    "icon.apply_folder_only": "{{path}} 不是文件夹，当前系统只能给文件夹设置图标"
+  },
+  "tabs": {
+    "sets": "图标集",
+    "templates": "图标模板"
+  },
+  "templates": {
+    "gallery": "模板",
+    "sampleHint": "正在用示例图展示模板，选择或拖入一张图片后即可导出或设置图标",
+    "zoom": "图片大小（%）",
+    "formats": {
+      "png": "PNG",
+      "icns": "ICNS",
+      "ico": "ICO"
+    },
+    "exportRun": "导出 {{formats}}",
+    "exported": "已导出 {{count}} 个文件",
+    "apply": "设为图标",
+    "applyHint": "把图标设置到文件夹上，在文件管理器中显示；可随时恢复默认图标",
+    "applyHintMac": "把图标设置到文件夹、磁盘或任意文件上，在访达中显示；可随时恢复默认图标",
+    "applyFolder": "设置到文件夹…",
+    "applyFile": "设置到文件…",
+    "restore": "恢复默认…",
+    "applied": "已设置 {{count}} 个图标",
+    "applyPartial": "已设置 {{applied}} / {{total}} 个，其余失败",
+    "restored": "已恢复默认图标",
+    "groups": {
+      "folder": "文件夹",
+      "app": "应用与外形",
+      "drive": "磁盘",
+      "document": "文档",
+      "media": "光盘与影音",
+      "photo": "相片",
+      "retro": "复古"
+    },
+    "names": {
+      "folder": "文件夹（居中）",
+      "folderEngraved": "文件夹（雕刻）",
+      "folderDark": "深色文件夹",
+      "folderDarkEngraved": "深色雕刻",
+      "bigSur": "macOS 应用",
+      "ios": "iOS",
+      "android": "Android",
+      "imessage": "iMessage",
+      "circle": "圆（完全）",
+      "circleBorder": "圆（带边）",
+      "square": "正方",
+      "driveGold": "驱动器（金）",
+      "driveSilver": "驱动器（银）",
+      "usb": "U 盘",
+      "sdCard": "SD 卡",
+      "documentFull": "文档（完全）",
+      "document": "文档（居中）",
+      "booklet": "小册子",
+      "dvdCase": "DVD 盒",
+      "movieCase": "盒",
+      "blurayCase": "蓝光盒",
+      "cdCase": "CD 盒",
+      "cdCover": "CD 封面",
+      "cdDisc": "CD 盘",
+      "vinyl": "黑胶",
+      "miniDisc": "迷你碟片",
+      "filmFrame": "影片帧",
+      "floppy": "软盘",
+      "slide": "卡片",
+      "tilted": "倾斜",
+      "stack": "堆叠",
+      "poster": "海报",
+      "polaroid": "拍立得",
+      "stamp": "邮票",
+      "cartridge": "卡带",
+      "cartridge2": "卡带 2",
+      "vcard": "名片"
+    },
+    "rendering": "正在生成预览…",
+    "exportTitle": "导出「{{name}}」（1024 像素）",
+    "noFormat": "请选择导出格式",
+    "separator": "、",
+    "needImage": "请先在上方选择或拖入一张图片",
+    "applyTitle": "把「{{name}}」设为图标"
   }
 }

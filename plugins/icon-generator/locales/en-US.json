@@ -1,16 +1,23 @@
 {
   "name": "App Icon Generator",
-  "description": "Turn one image or SVG into complete icon sets for the web, iOS, Android, macOS and Windows",
+  "description": "Turn one image into icon sets for the web, iOS, Android, macOS and Windows, or drop it into folder, drive, disc and photo templates and set it as a folder icon",
   "help": [
     "Choose a square image of at least 1024 × 1024 pixels, or an SVG (rendered sharply at every size). Other shapes are centred.",
     "Padding adds space around the artwork; corner radius rounds the web, Android and Windows icons. Turn on a background to fill transparent areas.",
     "iOS icons and the Apple touch icon cannot be transparent, so they get a background (white if none is set) and square corners; the system rounds them. Android round icons are cut to a circle, and macOS icons follow Apple's template with a rounded tile and margin.",
-    "The files go into a new folder next to the image (or the folder you choose): web favicons with site.webmanifest and an HTML snippet, an Xcode AppIcon.appiconset, Android mipmap folders, AppIcon.icns, and a multi-size app.ico."
+    "The files go into a new folder next to the image (or the folder you choose): web favicons with site.webmanifest and an HTML snippet, an Xcode AppIcon.appiconset, Android mipmap folders, AppIcon.icns, and a multi-size app.ico.",
+    "The Templates page puts your image into 37 templates such as folders, drives, documents, discs and photos. Export PNG / ICNS / ICO or set it directly as a folder icon (on macOS also on drives and any file), and restore the default icon later."
   ],
   "functions": {
     "inspect": "Read image",
     "render": "Preview icons",
-    "generate": "Generate icons"
+    "generate": "Generate icons",
+    "templates": "List icon templates",
+    "renderTemplate": "Preview an icon template",
+    "exportTemplate": "Export a template icon",
+    "applyIcon": "Set folder icons",
+    "clearIcon": "Restore default icons",
+    "applySupport": "What can get custom icons"
   },
   "source": {
     "title": "Image",
@@ -79,13 +86,21 @@
   },
   "stages": {
     "icon.load": "Reading image…",
-    "icon.generate": "Generating icons…"
+    "icon.generate": "Generating icons…",
+    "icon.render": "Rendering the template…",
+    "icon.apply": "Setting icons…"
   },
   "logs": {
     "icon": {
       "file": "{{path}}",
       "preset_done": "{{preset}}: {{count}} files",
-      "done": "Saved {{count}} files to {{path}}"
+      "done": "Saved {{count}} files to {{path}}",
+      "applied": "Set {{path}}",
+      "apply_failed": "Cannot set {{path}}: {{detail}}",
+      "apply_folder_only": "{{path}} is not a folder; only folders can get icons on this system"
+    },
+    "fs": {
+      "not_found": "{{path}} not found"
     }
   },
   "errors": {
@@ -95,6 +110,91 @@
     "icon.no_presets": "Choose at least one platform",
     "icon.output_dir_missing": "The folder {{path}} does not exist",
     "icon.write_failed": "Could not write {{path}}: {{detail}}",
-    "icon.encode_failed": "Could not encode the icon: {{detail}}"
+    "icon.encode_failed": "Could not encode the icon: {{detail}}",
+    "icon.unknown_template": "No such template: {{id}}",
+    "icon.render_failed": "Cannot render the template: {{detail}}",
+    "icon.no_formats": "Choose at least one format",
+    "icon.no_targets": "Choose a folder to set the icon on",
+    "icon.apply_failed": "Cannot set the icon of {{path}}: {{detail}}",
+    "icon.apply_folder_only": "{{path}} is not a folder; only folders can get icons on this system"
+  },
+  "tabs": {
+    "sets": "Icon sets",
+    "templates": "Templates"
+  },
+  "templates": {
+    "gallery": "Templates",
+    "sampleHint": "Templates are shown with a sample picture; choose or drop an image to export or apply an icon",
+    "zoom": "Image size (%)",
+    "formats": {
+      "png": "PNG",
+      "icns": "ICNS",
+      "ico": "ICO"
+    },
+    "exportRun": "Export {{formats}}",
+    "exported": "{{count}} files exported",
+    "apply": "Use as icon",
+    "applyHint": "Set the icon on a folder so it shows in the file manager; you can restore the default at any time",
+    "applyHintMac": "Set the icon on a folder, a drive or any file so it shows in Finder; you can restore the default at any time",
+    "applyFolder": "Set on folder…",
+    "applyFile": "Set on files…",
+    "restore": "Restore default…",
+    "applied": "{{count}} icons set",
+    "applyPartial": "{{applied}} of {{total}} set, the rest failed",
+    "restored": "Default icon restored",
+    "groups": {
+      "folder": "Folders",
+      "app": "Apps & shapes",
+      "drive": "Drives",
+      "document": "Documents",
+      "media": "Discs & media",
+      "photo": "Photos",
+      "retro": "Retro"
+    },
+    "names": {
+      "folder": "Folder",
+      "folderEngraved": "Folder (engraved)",
+      "folderDark": "Dark folder",
+      "folderDarkEngraved": "Dark engraved",
+      "bigSur": "macOS app",
+      "ios": "iOS",
+      "android": "Android",
+      "imessage": "iMessage",
+      "circle": "Circle",
+      "circleBorder": "Circle with rim",
+      "square": "Square",
+      "driveGold": "Drive (gold)",
+      "driveSilver": "Drive (silver)",
+      "usb": "USB stick",
+      "sdCard": "SD card",
+      "documentFull": "Document (full)",
+      "document": "Document",
+      "booklet": "Booklet",
+      "dvdCase": "DVD case",
+      "movieCase": "Case",
+      "blurayCase": "Blu-ray case",
+      "cdCase": "CD case",
+      "cdCover": "CD cover",
+      "cdDisc": "CD",
+      "vinyl": "Vinyl",
+      "miniDisc": "MiniDisc",
+      "filmFrame": "Film frame",
+      "floppy": "Floppy",
+      "slide": "Card",
+      "tilted": "Tilted",
+      "stack": "Stack",
+      "poster": "Poster",
+      "polaroid": "Instant photo",
+      "stamp": "Stamp",
+      "cartridge": "Cartridge",
+      "cartridge2": "Cartridge 2",
+      "vcard": "Contact card"
+    },
+    "rendering": "Rendering preview…",
+    "exportTitle": "Export “{{name}}” (1024 px)",
+    "noFormat": "Choose a format",
+    "separator": ", ",
+    "needImage": "Choose or drop an image above first",
+    "applyTitle": "Use “{{name}}” as an icon"
   }
 }
