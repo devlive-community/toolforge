@@ -122,6 +122,7 @@ Grab the installer for your platform from [Releases](https://github.com/devlive-
 pnpm install          # install frontend dependencies
 pnpm dev              # run the desktop app in development mode with hot reload
 pnpm build            # build installers
+pnpm icons:generate   # rebuild desktop / tray icons from the TF logo SVG
 
 cargo xtask check     # run exactly the checks CI runs
 cargo xtask check rust|web|rules   # run a subset

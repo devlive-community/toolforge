@@ -122,6 +122,7 @@
 pnpm install          # 安装前端依赖
 pnpm dev              # 启动桌面应用（开发模式，热更新）
 pnpm build            # 构建安装包
+pnpm icons:generate   # 从 TF Logo SVG 重新生成桌面和托盘图标
 
 cargo xtask check     # 运行与 CI 完全一致的全部检查
 cargo xtask check rust|web|rules   # 只运行其中一部分

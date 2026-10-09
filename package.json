@@ -15,6 +15,7 @@
     "typecheck": "pnpm -r --parallel typecheck",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
+    "icons:generate": "node scripts/generate-icons.mjs",
     "check": "cargo xtask check",
     "release": "scripts/release.sh"
   },

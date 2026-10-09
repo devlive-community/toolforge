@@ -82,7 +82,7 @@ export function About() {
   return (
     <div className="mx-auto w-full max-w-4xl animate-fade-in px-8 py-10">
       <header className="flex flex-col items-center text-center">
-        <Logo className="size-20 rounded-[20px] shadow-card" />
+        <Logo className="size-20" />
         <h1 className="mt-5 text-3xl font-semibold tracking-tight text-fg">ToolForge</h1>
         <div className="mt-2 flex items-center gap-2">
           <Badge variant="success">v{info?.version}</Badge>
