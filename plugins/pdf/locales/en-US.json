@@ -27,7 +27,7 @@
     "add": "Add PDF",
     "drop": "Drop PDF files here",
     "dropHint": "Or click to choose · several files are merged in order",
-    "hint": "Drag to reorder · ⌘/Ctrl or Shift to select several",
+    "hint": "Drag to reorder (a bar shows where pages will land) · ⌘/Ctrl or Shift to select several · Esc cancels a drag",
     "rotateLeft": "Rotate left",
     "rotateRight": "Rotate right",
     "duplicate": "Duplicate",
@@ -40,7 +40,8 @@
     "removeFile": "Remove file",
     "export": "Save as PDF ({{count}} pages)",
     "saved": "Saved {{pages}} pages ({{size}})",
-    "show": "Show in folder"
+    "show": "Show in folder",
+    "dropEnd": "Move to the end"
   },
   "metadata": {
     "title": "Document info",

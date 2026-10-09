@@ -27,7 +27,7 @@
     "add": "添加 PDF",
     "drop": "拖入 PDF 文件",
     "dropHint": "也可点击选择 · 多个文件按顺序合并",
-    "hint": "拖动调整顺序 · 按住 ⌘/Ctrl 或 Shift 多选",
+    "hint": "拖动调整顺序（竖线表示落点）· 按住 ⌘/Ctrl 或 Shift 多选 · Esc 取消拖动",
     "rotateLeft": "向左旋转",
     "rotateRight": "向右旋转",
     "duplicate": "复制",
@@ -40,7 +40,8 @@
     "removeFile": "移除文件",
     "export": "保存为 PDF（{{count}} 页）",
     "saved": "已保存 {{pages}} 页（{{size}}）",
-    "show": "在文件夹中显示"
+    "show": "在文件夹中显示",
+    "dropEnd": "移到最后"
   },
   "metadata": {
     "title": "文档信息",

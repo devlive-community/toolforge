@@ -7,6 +7,17 @@ import { FILE_COLORS, fileName, type Metadata, type PageItem, type PdfFile } fro
 
 const THUMB_WIDTH = 180
 const BATCH = 6
+/** 按下后移动超过这个距离才开始拖动，避免影响单击选择 */
+const DRAG_THRESHOLD = 5
+/** 指针离滚动区域上下边缘多近时自动滚动 */
+const SCROLL_EDGE = 48
+
+type Side = 'before' | 'after'
+interface DropTarget {
+  /** 为 null 表示放到最后 */
+  key: string | null
+  side: Side
+}
 
 let nextKey = 0
 const key = () => `p${nextKey++}`
@@ -19,7 +30,13 @@ export function Organize({ dropped }: { dropped: string[] }) {
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [anchor, setAnchor] = useState<string | null>(null)
   const [thumbs, setThumbs] = useState<Record<string, string | null>>({})
-  const [dragging, setDragging] = useState<string | null>(null)
+  // 拖动排序用指针事件实现：Tauri 开启了文件拖放，网页里的 HTML5 拖放事件收不到
+  const [dragging, setDragging] = useState<Set<string> | null>(null)
+  const [target, setTarget] = useState<DropTarget | null>(null)
+  const pressed = useRef<{ key: string; x: number; y: number } | null>(null)
+  const justDragged = useRef(false)
+  const gridRef = useRef<HTMLDivElement>(null)
+  const ghostRef = useRef<HTMLDivElement>(null)
   const [metadata, setMetadata] = useState<Metadata | null>(null)
   const [writeMetadata, setWriteMetadata] = useState(false)
   const task = useTask<{ output: string; pages: number; size: number }>()
@@ -84,6 +101,10 @@ export function Organize({ dropped }: { dropped: string[] }) {
   }
 
   const click = (item: PageItem, event: React.MouseEvent) => {
+    if (justDragged.current) {
+      justDragged.current = false
+      return
+    }
     if (event.shiftKey && anchor) {
       const keys = pages.map((p) => p.key)
       const [from, to] = [keys.indexOf(anchor), keys.indexOf(item.key)].sort((a, b) => a - b)
@@ -117,18 +138,101 @@ export function Organize({ dropped }: { dropped: string[] }) {
     setFiles((prev) => prev.filter((f) => f.id !== id))
     setPages((prev) => prev.filter((p) => p.file !== id))
   }
-  // 拖放：把被拖动的页面（或选中的一组）移到目标页面之前
-  const drop = (target: PageItem) => {
-    if (!dragging || dragging === target.key) return
-    const moving = selected.has(dragging) ? selected : new Set([dragging])
-    if (moving.has(target.key)) return
+  // 把被拖动的页面（或选中的一组）移到目标页面之前或之后
+  const move = (moving: Set<string>, to: DropTarget) => {
+    if (to.key !== null && moving.has(to.key)) return
     setPages((prev) => {
       const moved = prev.filter((p) => moving.has(p.key))
       const rest = prev.filter((p) => !moving.has(p.key))
-      const index = rest.findIndex((p) => p.key === target.key)
+      let index = to.key === null ? rest.length : rest.findIndex((p) => p.key === to.key)
+      if (index < 0) return prev
+      if (to.key !== null && to.side === 'after') index += 1
       return [...rest.slice(0, index), ...moved, ...rest.slice(index)]
     })
   }
+
+  // 窗口事件监听只注册一次，通过 ref 读取最新的选择与移动逻辑
+  const selectedRef = useRef(selected)
+  const moveRef = useRef(move)
+  useEffect(() => {
+    selectedRef.current = selected
+    moveRef.current = move
+  })
+
+  const onPointerDown = (item: PageItem, event: React.PointerEvent) => {
+    if (event.button !== 0 || (event.target as HTMLElement).closest('button')) return
+    pressed.current = { key: item.key, x: event.clientX, y: event.clientY }
+  }
+
+  // 根据指针位置找落点：指在某页的左半边放到它前面，右半边放到它后面；指在空白处放到最后
+  const locate = (x: number, y: number, moving: Set<string>): DropTarget | null => {
+    const element = document.elementFromPoint(x, y) as HTMLElement | null
+    const card = element?.closest<HTMLElement>('[data-page-key]')
+    if (card) {
+      const key = card.dataset.pageKey!
+      if (moving.has(key)) return null
+      const rect = card.getBoundingClientRect()
+      return { key, side: x < rect.left + rect.width / 2 ? 'before' : 'after' }
+    }
+    if (element && gridRef.current?.contains(element)) return { key: null, side: 'after' }
+    return null
+  }
+
+  useEffect(() => {
+    let frame = 0
+    let pointer = { x: 0, y: 0 }
+    let active: Set<string> | null = null
+    const scroll = () => {
+      const area = gridRef.current?.parentElement
+      if (active && area) {
+        const rect = area.getBoundingClientRect()
+        const speed = pointer.y < rect.top + SCROLL_EDGE ? -12 : pointer.y > rect.bottom - SCROLL_EDGE ? 12 : 0
+        if (speed) {
+          area.scrollTop += speed
+          setTarget(locate(pointer.x, pointer.y, active))
+        }
+      }
+      frame = requestAnimationFrame(scroll)
+    }
+    const onMove = (event: PointerEvent) => {
+      pointer = { x: event.clientX, y: event.clientY }
+      const start = pressed.current
+      if (!start) return
+      if (!active) {
+        if (Math.hypot(event.clientX - start.x, event.clientY - start.y) < DRAG_THRESHOLD) return
+        active = selectedRef.current.has(start.key) ? new Set(selectedRef.current) : new Set([start.key])
+        setDragging(active)
+        frame = requestAnimationFrame(scroll)
+      }
+      if (ghostRef.current) ghostRef.current.style.transform = `translate(${event.clientX + 12}px, ${event.clientY + 12}px)`
+      setTarget(locate(event.clientX, event.clientY, active))
+    }
+    const finish = (commit: boolean) => {
+      if (active && commit) {
+        const to = locate(pointer.x, pointer.y, active)
+        if (to) moveRef.current(active, to)
+        justDragged.current = true
+      }
+      pressed.current = null
+      active = null
+      cancelAnimationFrame(frame)
+      setDragging(null)
+      setTarget(null)
+    }
+    const onUp = () => finish(true)
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && active) finish(false)
+    }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+    window.addEventListener('keydown', onKey)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [])
 
   const exportPdf = async () => {
     if (pages.length === 0) return
@@ -150,6 +254,8 @@ export function Organize({ dropped }: { dropped: string[] }) {
   }
 
   const fileOf = useMemo(() => new Map(files.map((f) => [f.id, f])), [files])
+  const ghostItem = dragging ? pages.find((p) => dragging.has(p.key)) : undefined
+  const ghostThumb = ghostItem ? thumbs[`${ghostItem.file}:${ghostItem.page}`] : undefined
 
   return (
     <div className="grid h-full min-h-0 grid-cols-[minmax(0,1fr)_280px] gap-3">
@@ -204,7 +310,11 @@ export function Organize({ dropped }: { dropped: string[] }) {
             <span className="text-xs text-fg-subtle">{t('organize.dropHint')}</span>
           </button>
         ) : (
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3" onClick={(e) => e.target === e.currentTarget && setSelected(new Set())}>
+          <div
+            ref={gridRef}
+            className={cn('grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3', dragging && 'cursor-grabbing')}
+            onClick={(e) => e.target === e.currentTarget && setSelected(new Set())}
+          >
             {pages.map((item, index) => {
               const file = fileOf.get(item.file)
               const thumb = thumbs[`${item.file}:${item.page}`]
@@ -212,18 +322,25 @@ export function Organize({ dropped }: { dropped: string[] }) {
               return (
                 <div
                   key={item.key}
-                  draggable
-                  onDragStart={() => setDragging(item.key)}
-                  onDragEnd={() => setDragging(null)}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={() => drop(item)}
+                  data-page-key={item.key}
+                  onPointerDown={(e) => onPointerDown(item, e)}
                   onClick={(e) => click(item, e)}
                   className={cn(
                     'group relative flex cursor-pointer flex-col gap-1.5 rounded-card border p-2 transition-colors select-none',
                     active ? 'border-primary bg-primary-soft' : 'border-border bg-surface hover:border-border-strong',
-                    dragging === item.key && 'opacity-40',
+                    dragging?.has(item.key) && 'opacity-40',
+                    dragging && 'cursor-grabbing',
                   )}
                 >
+                  {/* 落点提示：页面之间的竖线 */}
+                  {target?.key === item.key && (
+                    <span
+                      className={cn(
+                        'pointer-events-none absolute top-0 bottom-0 z-10 w-1 rounded-full bg-primary shadow-[0_0_0_3px_var(--color-primary-soft)]',
+                        target.side === 'before' ? '-left-2' : '-right-2',
+                      )}
+                    />
+                  )}
                   <div className="flex aspect-[3/4] items-center justify-center overflow-hidden rounded-control bg-surface-2">
                     {thumb ? (
                       <img src={thumb} alt="" draggable={false} className="max-h-full max-w-full shadow-card transition-transform" style={{ transform: `rotate(${item.rotate}deg)` }} />
@@ -249,6 +366,23 @@ export function Organize({ dropped }: { dropped: string[] }) {
                 </div>
               )
             })}
+            {dragging && target?.key === null && (
+              <div className="flex aspect-[3/4] items-center justify-center rounded-card border-2 border-dashed border-primary bg-primary-soft text-xs text-primary-fg">
+                {t('organize.dropEnd')}
+              </div>
+            )}
+          </div>
+        )}
+        {dragging && (
+          <div ref={ghostRef} className="pointer-events-none fixed top-0 left-0 z-50 w-20 opacity-90" style={{ transform: 'translate(-9999px, -9999px)' }}>
+            <div className="relative rounded-control border border-primary bg-surface p-1 shadow-modal">
+              {ghostThumb ? <img src={ghostThumb} alt="" className="w-full" /> : <FileText className="mx-auto size-8 text-fg-subtle" />}
+              {dragging.size > 1 && (
+                <span className="absolute -top-2 -right-2 grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[11px] font-semibold text-fg-on-primary">
+                  {dragging.size}
+                </span>
+              )}
+            </div>
           </div>
         )}
       </Panel>
