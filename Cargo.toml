@@ -57,6 +57,7 @@ tfp-hex-viewer = { path = "plugins/hex-viewer/backend" }
 tfp-folder-compare = { path = "plugins/folder-compare/backend" }
 tfp-date-calculator = { path = "plugins/date-calculator/backend" }
 tfp-number-words = { path = "plugins/number-words/backend" }
+tfp-url-parser = { path = "plugins/url-parser/backend" }
 tfp-port-manager = { path = "plugins/port-manager/backend" }
 tfp-qrcode = { path = "plugins/qrcode/backend" }
 tfp-regex = { path = "plugins/regex/backend" }

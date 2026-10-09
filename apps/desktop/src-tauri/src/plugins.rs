@@ -62,6 +62,7 @@ pub fn builtin() -> PluginRegistry {
     registry.register(Arc::new(tfp_folder_compare::FolderCompare::default()));
     registry.register(Arc::new(tfp_date_calculator::DateCalculator::default()));
     registry.register(Arc::new(tfp_number_words::NumberWords::default()));
+    registry.register(Arc::new(tfp_url_parser::UrlParser::default()));
     registry
 }
 

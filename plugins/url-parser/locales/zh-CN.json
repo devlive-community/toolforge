@@ -1,0 +1,73 @@
+{
+  "name": "URL 解析",
+  "description": "拆分 URL 的各个部分，解码并编辑查询参数，去掉跟踪参数",
+  "help": [
+    "粘贴或输入 URL，会拆分为协议、用户、主机、端口、路径、查询与片段，所有百分号编码都会解码。没有协议时按 https:// 处理（localhost:8080 也可以）。",
+    "国际化域名同时显示 Punycode 与 Unicode 写法；没写端口时显示该协议的默认端口。",
+    "查询参数可以修改、添加、删除和排序，底部显示重新生成的 URL。可选择空格写成 %20 还是 +（表单格式），然后复制或应用到输入框。",
+    "“去掉跟踪参数”会清除 utm_* 以及常见的点击、分享参数（fbclid、gclid、spm、vd_source 等），保留其余参数。",
+    "剪贴板里有链接时，可以从命令面板直接打开本工具。"
+  ],
+  "functions": {
+    "parse": "解析 URL",
+    "build": "生成 URL",
+    "strip_tracking": "去掉跟踪参数"
+  },
+  "detect": {
+    "url": "指向 {{host}} 的链接"
+  },
+  "input": {
+    "title": "URL",
+    "placeholder": "https://example.com/path?key=value",
+    "paste": "粘贴",
+    "assumed": "没有写协议，按 https:// 处理。",
+    "empty": "粘贴一个 URL",
+    "emptyHint": "会拆分出各个部分与参数"
+  },
+  "parts": {
+    "title": "组成部分",
+    "href": "URL",
+    "readable": "解码后",
+    "scheme": "协议",
+    "username": "用户",
+    "password": "密码",
+    "host": "主机",
+    "hostUnicode": "Unicode 主机",
+    "port": "端口",
+    "defaultPort": "该协议的默认端口",
+    "redundantPort": "与默认端口相同，可以省略",
+    "origin": "源",
+    "path": "路径",
+    "segments": "路径段",
+    "query": "查询",
+    "fragment": "片段"
+  },
+  "hostKinds": {
+    "domain": "域名",
+    "ipv4": "IPv4 地址",
+    "ipv6": "IPv6 地址"
+  },
+  "params": {
+    "title": "查询参数",
+    "empty": "没有查询参数",
+    "emptyHint": "点击 + 添加",
+    "key": "名称",
+    "value": "值",
+    "tracking": "跟踪",
+    "duplicate": "重复",
+    "remove": "删除",
+    "add": "添加参数",
+    "sort": "按名称排序",
+    "strip_one": "去掉 {{count}} 个跟踪参数",
+    "strip_other": "去掉 {{count}} 个跟踪参数",
+    "stripHint": "去掉 utm_* 以及常见的点击、分享参数",
+    "stripped_one": "已去掉 {{count}} 个跟踪参数",
+    "stripped_other": "已去掉 {{count}} 个跟踪参数",
+    "plus": "空格写成 +",
+    "apply": "应用"
+  },
+  "errors": {
+    "url.empty": "请输入 URL",
+    "url.invalid": "不是有效的 URL：{{detail}}"
+  }
+}

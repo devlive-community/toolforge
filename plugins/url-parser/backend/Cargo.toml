@@ -1,0 +1,15 @@
+[package]
+name = "tfp-url-parser"
+description = "ToolForge plugin: split URLs into parts, edit query parameters and strip tracking"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+idna = "1"
+percent-encoding = "2"
+url = "2"

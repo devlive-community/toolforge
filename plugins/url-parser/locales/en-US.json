@@ -1,0 +1,73 @@
+{
+  "name": "URL Parser",
+  "description": "Split a URL into its parts, decode and edit query parameters, and remove tracking parameters",
+  "help": [
+    "Paste or type a URL; it is split into scheme, user, host, port, path, query and fragment with every percent-encoded part decoded. Without a scheme, https:// is assumed (localhost:8080 also works).",
+    "Internationalised domain names are shown in both punycode and Unicode, and the default port of the scheme is shown when none is given.",
+    "Query parameters can be edited, added, removed and sorted; the rebuilt URL appears at the bottom. Choose whether spaces become %20 or + (form style), then copy it or apply it to the input.",
+    "Remove tracking clears utm_* and common click and share parameters (fbclid, gclid, spm, vd_source and more) and keeps everything else.",
+    "A link on the clipboard can open this tool from the command palette."
+  ],
+  "functions": {
+    "parse": "Parse URL",
+    "build": "Build URL",
+    "strip_tracking": "Remove tracking"
+  },
+  "detect": {
+    "url": "Link to {{host}}"
+  },
+  "input": {
+    "title": "URL",
+    "placeholder": "https://example.com/path?key=value",
+    "paste": "Paste",
+    "assumed": "No scheme given, so https:// is assumed.",
+    "empty": "Paste a URL",
+    "emptyHint": "It is split into its parts and parameters"
+  },
+  "parts": {
+    "title": "Parts",
+    "href": "URL",
+    "readable": "Decoded",
+    "scheme": "Scheme",
+    "username": "User",
+    "password": "Password",
+    "host": "Host",
+    "hostUnicode": "Unicode host",
+    "port": "Port",
+    "defaultPort": "Default port of the scheme",
+    "redundantPort": "Same as the default, could be left out",
+    "origin": "Origin",
+    "path": "Path",
+    "segments": "Segments",
+    "query": "Query",
+    "fragment": "Fragment"
+  },
+  "hostKinds": {
+    "domain": "Domain name",
+    "ipv4": "IPv4 address",
+    "ipv6": "IPv6 address"
+  },
+  "params": {
+    "title": "Query parameters",
+    "empty": "No query parameters",
+    "emptyHint": "Add one with +",
+    "key": "Key",
+    "value": "Value",
+    "tracking": "Tracking",
+    "duplicate": "Repeated",
+    "remove": "Remove",
+    "add": "Add parameter",
+    "sort": "Sort by key",
+    "strip_one": "Remove {{count}} tracking",
+    "strip_other": "Remove {{count}} tracking",
+    "stripHint": "Remove utm_* and common click and share parameters",
+    "stripped_one": "Removed {{count}} tracking parameter",
+    "stripped_other": "Removed {{count}} tracking parameters",
+    "plus": "Spaces as +",
+    "apply": "Apply"
+  },
+  "errors": {
+    "url.empty": "Enter a URL",
+    "url.invalid": "This is not a valid URL: {{detail}}"
+  }
+}

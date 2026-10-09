@@ -7934,6 +7934,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-url-parser"
+version = "0.1.0"
+dependencies = [
+ "idna",
+ "percent-encoding",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "url",
+]
+
+[[package]]
 name = "tfp-uuid"
 version = "0.1.0"
 dependencies = [
@@ -8343,6 +8355,7 @@ dependencies = [
  "tfp-timestamp",
  "tfp-unicode",
  "tfp-unit-converter",
+ "tfp-url-parser",
  "tfp-uuid",
  "tfp-websocket",
  "tfp-xml-formatter",

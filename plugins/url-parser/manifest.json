@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.url-parser",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "network",
+  "keywords": ["url", "uri", "link", "query string", "query parameters", "parse url", "utm", "tracking", "punycode", "idn", "链接", "网址", "参数", "解析", "跟踪参数"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:read", "clipboard:write"],
+  "functions": {
+    "parse": {},
+    "build": {},
+    "strip_tracking": {}
+  },
+  "sensitive": false
+}
