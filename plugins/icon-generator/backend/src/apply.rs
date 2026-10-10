@@ -189,10 +189,8 @@ mod win {
             return (String::new(), false);
         };
         if let Some(rest) = bytes.strip_prefix(&[0xff, 0xfe]) {
-            let units: Vec<u16> = rest
-                .chunks_exact(2)
-                .map(|c| u16::from_le_bytes([c[0], c[1]]))
-                .collect();
+            let (pairs, _) = rest.as_chunks::<2>();
+            let units: Vec<u16> = pairs.iter().map(|c| u16::from_le_bytes(*c)).collect();
             (String::from_utf16_lossy(&units), true)
         } else {
             (String::from_utf8_lossy(&bytes).into_owned(), false)
