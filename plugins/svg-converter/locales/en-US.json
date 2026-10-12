@@ -1,0 +1,76 @@
+{
+  "name": "SVG Converter",
+  "description": "Batch-convert SVG vector graphics to PNG, JPEG or WebP bitmaps at any size without quality loss",
+  "help": [
+    "Rasterizes SVG files in Rust and writes PNG (transparency preserved), JPEG or WebP; files never leave your computer.",
+    "Vector graphics stay sharp when scaled: resize by percentage (up to 1000%) or fit within width/height, larger than the original is fine.",
+    "Open or drop one or more SVG files; conversions run one by one with real-time logs.",
+    "JPEG has no transparency, so transparent areas are flattened onto white."
+  ],
+  "functions": {
+    "convert": "Convert"
+  },
+  "files": {
+    "title": "SVG files",
+    "add": "Add",
+    "drop": "Drop SVG files or click to open",
+    "dropHint": "Multiple files can be selected at once",
+    "remove": "Remove",
+    "filter": "SVG",
+    "progress": "Converting {{done}} / {{total}}",
+    "cancel": "Cancel",
+    "start": "Start conversion",
+    "clear": "Clear"
+  },
+  "options": {
+    "title": "Options",
+    "format": "Output format",
+    "quality": "JPEG quality",
+    "resize": "Size",
+    "output": "Output folder",
+    "sameDir": "Same as source",
+    "resetDir": "Reset",
+    "suffix": "Filename suffix"
+  },
+  "resize": {
+    "none": "Original",
+    "scale": "Scale",
+    "fit": "Fit",
+    "percent": "Scale percent",
+    "maxWidth": "Max width",
+    "maxHeight": "Max height",
+    "hint": "Vectors stay sharp when enlarged, so the output may be larger than the original"
+  },
+  "results": {
+    "title": "Results",
+    "summary": "{{count}} / {{total}} converted in {{ms}} ms",
+    "cancelled": "Cancelled",
+    "running": "Converting…",
+    "empty": "No results yet",
+    "emptyHint": "Add SVG files and start the conversion",
+    "reveal": "Reveal in folder"
+  },
+  "logs": {
+    "title": "Live log",
+    "empty": "Logs appear here once the conversion starts",
+    "jumpLatest": "Jump to latest",
+    "svg": {
+      "file_start": "[{{index}}/{{count}}] Converting {{file}}",
+      "file_done": "{{file}} → {{output}} {{width}}×{{height}}, {{after, number}} bytes in {{ms}} ms",
+      "file_failed": "Skipped {{file}}: {{code}}"
+    }
+  },
+  "stages": {
+    "svg.convert": "Converting SVG…"
+  },
+  "errors": {
+    "svg.no_files": "Add at least one SVG file",
+    "svg.output_dir_missing": "The output folder does not exist: {{path}}",
+    "svg.file_too_large": "The file is larger than {{limit}}",
+    "svg.pixels_too_large": "The output is too large ({{width}} × {{height}})",
+    "svg.invalid": "The SVG could not be parsed: {{detail}}",
+    "svg.render_failed": "The SVG could not be rendered: {{detail}}",
+    "svg.encode_failed": "The image could not be encoded: {{detail}}",
+    "svg.io": "File I/O failed: {{path}}: {{detail}}"
+  }
+}

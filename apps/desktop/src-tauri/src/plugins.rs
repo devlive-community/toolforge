@@ -86,6 +86,7 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
     registry.register_for(Arc::new(tfp_context_menu::ContextMenu::default()), os);
     registry.register_for(Arc::new(tfp_random::RandomTool::default()), os);
     registry.register_for(Arc::new(tfp_xlsx_viewer::XlsxViewer::default()), os);
+    registry.register_for(Arc::new(tfp_svg_converter::SvgConverter::default()), os);
     registry
 }
 
