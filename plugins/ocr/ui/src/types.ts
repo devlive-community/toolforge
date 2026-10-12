@@ -7,7 +7,8 @@ export interface Line {
   h: number
 }
 
-export interface Output {
+export interface ImageOutput {
+  kind: 'image'
   name: string | null
   width: number
   height: number
@@ -17,4 +18,20 @@ export interface Output {
   elapsedMs: number
 }
 
-export type Source = { kind: 'file'; path: string } | { kind: 'clipboard' }
+export interface PageText {
+  page: number
+  lines: Line[]
+  text: string
+}
+
+export interface PdfOutput {
+  kind: 'pdf'
+  name: string | null
+  pages: PageText[]
+  text: string
+  elapsedMs: number
+}
+
+export type Output = ImageOutput | PdfOutput
+
+export type Source = { kind: 'file'; path: string } | { kind: 'pdf'; path: string } | { kind: 'clipboard' }

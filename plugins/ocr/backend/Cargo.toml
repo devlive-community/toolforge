@@ -12,5 +12,9 @@ serde_json.workspace = true
 tf-plugin-api.workspace = true
 arboard = "3"
 data-encoding = "2"
+hayro = "0.7"
 image = { version = "0.25", default-features = false, features = ["bmp", "gif", "jpeg", "png", "tiff", "webp"] }
 tract-onnx = "0.23"
+
+[dev-dependencies]
+lopdf = "0.45"

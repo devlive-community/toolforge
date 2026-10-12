@@ -6,7 +6,9 @@ import type { Output, Source } from './types'
 
 const MODELS = ['ppocr-v4-det', 'ppocr-v4-rec']
 const IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp', 'bmp', 'gif', 'tif', 'tiff']
-const isImage = (path: string) => IMAGE_EXTENSIONS.includes(path.split('.').pop()?.toLowerCase() ?? '')
+const INPUT_EXTENSIONS = [...IMAGE_EXTENSIONS, 'pdf']
+const isPdf = (path: string) => path.split('.').pop()?.toLowerCase() === 'pdf'
+const isInput = (path: string) => isPdf(path) || IMAGE_EXTENSIONS.includes(path.split('.').pop()?.toLowerCase() ?? '')
 
 export function OcrTool() {
   const { t, errorMessage } = usePlugin()
@@ -19,6 +21,8 @@ export function OcrTool() {
   const [showBoxes, setShowBoxes] = useState(true)
   const [active, setActive] = useState<number | null>(null)
   const [downloadAll, setDownloadAll] = useState(false)
+  // 最近一次识别的输入类型，决定进度文案与结果布局
+  const [input, setInput] = useState<'pdf' | 'image' | 'clipboard' | null>(null)
 
   const missing = MODELS.filter((id) => !resources.get(id)?.installed)
   const ready = resources.items !== null && missing.length === 0
@@ -41,6 +45,8 @@ export function OcrTool() {
       return
     }
     setActive(null)
+    setEdited(null)
+    setInput(source.kind === 'clipboard' ? 'clipboard' : source.kind === 'pdf' ? 'pdf' : 'image')
     task.start('recognize', { source })
   }
 
@@ -49,8 +55,8 @@ export function OcrTool() {
   }, [task.status, task.error, errorMessage])
 
   const onDrop = useEffectEvent((paths: string[]) => {
-    const path = paths.find(isImage)
-    if (path) recognize({ kind: 'file', path })
+    const path = paths.find(isInput)
+    if (path) recognize(isPdf(path) ? { kind: 'pdf', path } : { kind: 'file', path })
   })
   useEffect(() => {
     const off = host.onFileDrop({ drop: onDrop, over: setHovering })
@@ -80,15 +86,25 @@ export function OcrTool() {
 
   const pick = async () => {
     try {
-      const path = await host.dialog.openFile([{ name: t('source.filter'), extensions: IMAGE_EXTENSIONS }])
-      if (path) recognize({ kind: 'file', path })
+      const path = await host.dialog.openFile([{ name: t('source.filter'), extensions: INPUT_EXTENSIONS }])
+      if (path) recognize(isPdf(path) ? { kind: 'pdf', path } : { kind: 'file', path })
     } catch (error) {
       toast.error(errorMessage(error))
     }
   }
 
   const progress = task.progress && task.progress.total > 0 ? (task.progress.done / task.progress.total) * 100 : null
-  const confidence = result && result.lines.length > 0 ? result.lines.reduce((sum, line) => sum + line.score, 0) / result.lines.length : null
+  const image = result?.kind === 'image' ? result : null
+  const pdf = result?.kind === 'pdf' ? result : null
+  // PDF 进度按页计数，其他阶段显示固定文案
+  const pdfProgress = input === 'pdf' && task.progress && task.progress.total > 0
+  const stageText =
+    pdfProgress && (task.stage === 'ocr.render' || task.stage === 'ocr.detect' || task.stage === 'ocr.recognize')
+      ? t('stages.pages', { done: task.progress?.done ?? 0, total: task.progress?.total ?? 0 })
+      : task.stage === 'ocr.recognize' && task.progress
+        ? t('stages.lines', { done: task.progress.done, total: task.progress.total })
+        : t(`stages.${task.stage ?? 'ocr.load'}`)
+  const confidence = image && image.lines.length > 0 ? image.lines.reduce((sum, line) => sum + line.score, 0) / image.lines.length : null
 
   return (
     <div className="grid h-full min-h-0 grid-cols-[minmax(260px,300px)_minmax(0,1fr)] gap-3">
@@ -133,13 +149,9 @@ export function OcrTool() {
           </div>
           {task.running && (
             <div className="space-y-1.5 pt-1">
-              <Progress value={task.stage === 'ocr.recognize' ? progress : null} />
+              <Progress value={task.stage === 'ocr.recognize' || pdfProgress ? progress : null} />
               <div className="flex items-center justify-between gap-2">
-                <p className="text-xs text-fg-muted tabular-nums">
-                  {task.stage === 'ocr.recognize' && task.progress
-                    ? t('stages.lines', { done: task.progress.done, total: task.progress.total })
-                    : t(`stages.${task.stage ?? 'ocr.load'}`)}
-                </p>
+                <p className="text-xs text-fg-muted tabular-nums">{stageText}</p>
                 <Button size="sm" variant="ghost" onClick={task.cancel}>
                   <Square />
                   {t('source.cancel')}
@@ -151,12 +163,26 @@ export function OcrTool() {
         </Panel>
       </div>
 
-      {result ? (
+      {pdf ? (
+        <Panel
+          icon={<ScanText />}
+          title={<span className="truncate">{pdf.name ?? t('result.clipboard')}</span>}
+          extra={<Badge>{t('result.pdfPages', { count: pdf.pages.length })}</Badge>}
+          actions={<CopyButton text={text} label={t('common:copy')} variant="outline" disabled={!text} />}
+          footer={<span className="tabular-nums">{t('result.elapsed', { ms: pdf.elapsedMs })}</span>}
+        >
+          {pdf.text === '' && pdf.pages.every((page) => page.text === '') ? (
+            <Empty icon={<TextSelect />} title={t('result.empty')} />
+          ) : (
+            <CodeEditor value={text} onChange={(value) => setEdited({ taskId: task.taskId, text: value })} language="text" lineWrapping aria-label={t('result.text')} />
+          )}
+        </Panel>
+      ) : image ? (
         <div className="grid min-h-0 grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-3">
           <Panel
             icon={<ScanText />}
-            title={<span className="truncate">{result.name ?? t('result.clipboard')}</span>}
-            extra={<Badge>{t('result.size', { width: result.width, height: result.height })}</Badge>}
+            title={<span className="truncate">{image.name ?? t('result.clipboard')}</span>}
+            extra={<Badge>{t('result.size', { width: image.width, height: image.height })}</Badge>}
             actions={
               <label className="flex items-center gap-1.5 text-xs text-fg-muted">
                 <Switch size="sm" checked={showBoxes} onCheckedChange={setShowBoxes} aria-label={t('result.boxes')} />
@@ -166,10 +192,10 @@ export function OcrTool() {
             bodyClassName="flex items-center justify-center overflow-auto bg-surface-2 p-3"
           >
             <div className="relative max-h-full max-w-full">
-              <img src={result.preview} alt={result.name ?? ''} className="block max-h-[calc(100vh-16rem)] max-w-full object-contain" />
+              <img src={image.preview} alt={image.name ?? ''} className="block max-h-[calc(100vh-16rem)] max-w-full object-contain" />
               {showBoxes && (
-                <svg className="absolute inset-0 size-full" viewBox={`0 0 ${result.width} ${result.height}`} preserveAspectRatio="none">
-                  {result.lines.map((line, index) => (
+                <svg className="absolute inset-0 size-full" viewBox={`0 0 ${image.width} ${image.height}`} preserveAspectRatio="none">
+                  {image.lines.map((line, index) => (
                     <rect
                       key={index}
                       x={line.x}
@@ -197,7 +223,7 @@ export function OcrTool() {
             title={t('result.text')}
             extra={
               <span className="flex items-center gap-1.5">
-                <Badge>{t('result.lines', { count: result.lines.length })}</Badge>
+                <Badge>{t('result.lines', { count: image.lines.length })}</Badge>
                 {confidence !== null && (
                   <Tooltip content={t('result.confidenceHint')}>
                     <Badge variant={confidence > 0.9 ? 'success' : 'warning'}>{t('result.confidence', { value: Math.round(confidence * 100) })}</Badge>
@@ -206,9 +232,9 @@ export function OcrTool() {
               </span>
             }
             actions={<CopyButton text={text} label={t('common:copy')} variant="outline" disabled={!text} />}
-            footer={<span className="tabular-nums">{t('result.elapsed', { ms: result.elapsedMs })}</span>}
+            footer={<span className="tabular-nums">{t('result.elapsed', { ms: image.elapsedMs })}</span>}
           >
-            {result.lines.length === 0 ? (
+            {image.lines.length === 0 ? (
               <Empty icon={<TextSelect />} title={t('result.empty')} />
             ) : (
               <CodeEditor value={text} onChange={(value) => setEdited({ taskId: task.taskId, text: value })} language="text" lineWrapping aria-label={t('result.text')} />

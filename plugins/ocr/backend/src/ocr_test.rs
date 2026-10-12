@@ -135,12 +135,15 @@ fn recognizes_text_with_real_models() {
         },
     };
     let output = recognize(args, &engines, &ctx).unwrap();
-    println!("{}\n({} ms)", output.text, output.elapsed_ms);
+    let Output::Image(image) = output else {
+        panic!("expected an image result");
+    };
+    println!("{}\n({} ms)", image.text, image.elapsed_ms);
     // 识别模型通常会省略中英文之间的空格
-    assert!(output.text.contains("开发者工具箱"), "{}", output.text);
-    assert!(output.text.contains("Version 0.1.5"), "{}", output.text);
-    assert!(output.text.contains("English"), "{}", output.text);
-    assert!(output.preview.starts_with("data:image/jpeg;base64,"));
+    assert!(image.text.contains("开发者工具箱"), "{}", image.text);
+    assert!(image.text.contains("Version 0.1.5"), "{}", image.text);
+    assert!(image.text.contains("English"), "{}", image.text);
+    assert!(image.preview.starts_with("data:image/jpeg;base64,"));
     assert_eq!(
         *ctx.logs.lock().unwrap(),
         vec!["ocr.model_loaded", "ocr.regions", "ocr.done"]
@@ -152,6 +155,46 @@ fn recognizes_text_with_real_models() {
         },
     };
     let again = recognize(args, &engines, &ctx).unwrap();
+    let Output::Image(again) = again else {
+        panic!("expected an image result");
+    };
     println!("second run: {} ms", again.elapsed_ms);
-    assert_eq!(again.text, output.text);
+    assert_eq!(again.text, image.text);
+}
+
+/// 需要真实模型：`TOOLFORGE_OCR_MODELS=<含两个 onnx 的目录> TOOLFORGE_OCR_PDF=<pdf> cargo test -p tfp-ocr -- --ignored`
+#[test]
+#[ignore]
+fn recognizes_pdf_pages_with_real_models() {
+    let (Some(models), Some(sample)) = (
+        std::env::var_os("TOOLFORGE_OCR_MODELS"),
+        std::env::var_os("TOOLFORGE_OCR_PDF"),
+    ) else {
+        return;
+    };
+    let ctx = Ctx {
+        models: Some(PathBuf::from(models)),
+        ..Default::default()
+    };
+    let engines = Engines::default();
+    let args = Args {
+        source: Source::Pdf {
+            path: sample.to_string_lossy().into_owned(),
+        },
+    };
+    let output = recognize(args, &engines, &ctx).unwrap();
+    let Output::Pdf(pdf) = output else {
+        panic!("expected a pdf result");
+    };
+    assert!(!pdf.pages.is_empty());
+    println!(
+        "pages: {}, characters: {}, {} ms",
+        pdf.pages.len(),
+        pdf.text.chars().count(),
+        pdf.elapsed_ms
+    );
+    assert_eq!(
+        ctx.logs.lock().unwrap().last().map(String::as_str),
+        Some("ocr.done")
+    );
 }

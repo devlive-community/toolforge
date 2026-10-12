@@ -8075,7 +8075,9 @@ version = "0.1.0"
 dependencies = [
  "arboard",
  "data-encoding",
+ "hayro",
  "image",
+ "lopdf",
  "serde",
  "serde_json",
  "tf-plugin-api",

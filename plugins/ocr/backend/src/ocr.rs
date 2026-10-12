@@ -1,4 +1,5 @@
-//! 识别流程：读取图片（文件或剪贴板）→ 检测文字区域 → 逐行识别 → 按阅读顺序拼接文本。
+//! 识别流程：读取图片（文件或剪贴板）或逐页渲染 PDF → 检测文字区域 →
+//! 逐行识别 → 按阅读顺序拼接文本。
 
 use std::io::{Cursor, Read};
 use std::sync::Mutex;
@@ -18,15 +19,18 @@ use crate::recognize::{self, MIN_SCORE};
 pub const DETECTOR: &str = "ppocr-v4-det";
 pub const RECOGNIZER: &str = "ppocr-v4-rec";
 const MAX_FILE: u64 = 50 * 1024 * 1024;
-const MAX_PIXELS: u64 = 40_000_000;
+pub const MAX_PIXELS: u64 = 40_000_000;
 const PREVIEW: u32 = 1600;
 /// 并行识别的线程数上限
 const MAX_WORKERS: usize = 8;
+const PDF_MAX_FILE: u64 = 200 * 1024 * 1024;
+const PDF_MAX_PAGES: usize = 200;
 
 #[derive(Debug, Deserialize)]
 #[serde(tag = "kind", rename_all = "camelCase")]
 pub enum Source {
     File { path: String },
+    Pdf { path: String },
     Clipboard,
 }
 
@@ -45,7 +49,7 @@ pub struct Line {
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Output {
+pub struct ImageOutput {
     pub name: Option<String>,
     pub width: u32,
     pub height: u32,
@@ -53,6 +57,31 @@ pub struct Output {
     pub lines: Vec<Line>,
     pub text: String,
     pub elapsed_ms: u64,
+}
+
+/// PDF 的单页结果；区域坐标是页面渲染后的像素坐标
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PageText {
+    pub page: u32,
+    pub lines: Vec<Line>,
+    pub text: String,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PdfOutput {
+    pub name: Option<String>,
+    pub pages: Vec<PageText>,
+    pub text: String,
+    pub elapsed_ms: u64,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(tag = "kind", rename_all = "camelCase")]
+pub enum Output {
+    Image(ImageOutput),
+    Pdf(PdfOutput),
 }
 
 fn decode_failed(err: impl std::fmt::Display) -> PluginError {
@@ -171,36 +200,19 @@ fn recognize_line(
     }))
 }
 
-pub fn recognize(args: Args, engines: &Engines, ctx: &dyn TaskContext) -> PluginResult<Output> {
-    let start = Instant::now();
-    let detector = ctx.resource_path(DETECTOR)?;
-    let recognizer = ctx.resource_path(RECOGNIZER)?;
-
-    ctx.stage("ocr.load");
-    let (image, name) = match &args.source {
-        Source::File { path } => (
-            load_file(path, ctx)?,
-            std::path::Path::new(path)
-                .file_name()
-                .map(|n| n.to_string_lossy().into_owned()),
-        ),
-        Source::Clipboard => (load_clipboard()?, None),
-    };
-    let (engine, fresh) = engines.get(&detector, &recognizer)?;
-    if fresh {
-        ctx.log(
-            LogLevel::Info,
-            "ocr.model_loaded",
-            json!({ "ms": start.elapsed().as_millis() as u64 }),
-        );
-    }
-
+/// 检测文字区域并并行识别一张图；返回 (宽, 高, 按阅读顺序的行)
+fn detect_and_recognize(
+    engine: &Engine,
+    image: &RgbImage,
+    keys: &[&str],
+    ctx: &dyn TaskContext,
+) -> PluginResult<(u32, u32, Vec<Line>)> {
     ctx.stage("ocr.detect");
     let (width, height) = image.dimensions();
     let (det_w, det_h) = detect::input_size(width, height);
     let (prob, shape) = run(
         &engine.detector(det_w, det_h)?,
-        detect::input(&image, det_w, det_h),
+        detect::input(image, det_w, det_h),
     )?;
     let (map_h, map_w) = (shape[2], shape[3]);
     let regions = detect::regions(&prob, map_w, map_h, width, height);
@@ -214,7 +226,6 @@ pub fn recognize(args: Args, engines: &Engines, ctx: &dyn TaskContext) -> Plugin
     }
 
     ctx.stage("ocr.recognize");
-    let keys = recognize::characters();
     let total = regions.len() as u64;
     // 各行相互独立：多线程并行识别，执行计划可以在线程间共享
     let workers = std::thread::available_parallelism()
@@ -238,7 +249,7 @@ pub fn recognize(args: Args, engines: &Engines, ctx: &dyn TaskContext) -> Plugin
                     {
                         break;
                     }
-                    match recognize_line(&engine, &image, region, keys) {
+                    match recognize_line(engine, image, region, keys) {
                         Ok(Some(line)) => recognized
                             .lock()
                             .unwrap_or_else(|e| e.into_inner())
@@ -267,13 +278,55 @@ pub fn recognize(args: Args, engines: &Engines, ctx: &dyn TaskContext) -> Plugin
     recognized.sort_by_key(|(index, _)| *index);
     let lines: Vec<Line> = recognized.into_iter().map(|(_, line)| line).collect();
     ctx.progress(total, total);
+    Ok((width, height, lines))
+}
+
+/// 先校验输入再加载模型：坏图与缺资源的错误优先级一致
+fn load_engine(
+    engines: &Engines,
+    detector: &std::path::Path,
+    recognizer: &std::path::Path,
+    ctx: &dyn TaskContext,
+    start: Instant,
+) -> PluginResult<std::sync::Arc<Engine>> {
+    let (engine, fresh) = engines.get(detector, recognizer)?;
+    if fresh {
+        ctx.log(
+            LogLevel::Info,
+            "ocr.model_loaded",
+            json!({ "ms": start.elapsed().as_millis() as u64 }),
+        );
+    }
+    Ok(engine)
+}
+
+fn recognize_image(
+    args: Args,
+    engines: &Engines,
+    detector: &std::path::Path,
+    recognizer: &std::path::Path,
+    ctx: &dyn TaskContext,
+    start: Instant,
+) -> PluginResult<ImageOutput> {
+    let (image, name) = match &args.source {
+        Source::File { path } => (
+            load_file(path, ctx)?,
+            std::path::Path::new(path)
+                .file_name()
+                .map(|n| n.to_string_lossy().into_owned()),
+        ),
+        _ => (load_clipboard()?, None),
+    };
+    let engine = load_engine(engines, detector, recognizer, ctx, start)?;
+    let (width, height, lines) =
+        detect_and_recognize(&engine, &image, recognize::characters(), ctx)?;
     let elapsed_ms = start.elapsed().as_millis() as u64;
     ctx.log(
         LogLevel::Info,
         "ocr.done",
         json!({ "lines": lines.len(), "ms": elapsed_ms }),
     );
-    Ok(Output {
+    Ok(ImageOutput {
         name,
         width,
         height,
@@ -282,6 +335,94 @@ pub fn recognize(args: Args, engines: &Engines, ctx: &dyn TaskContext) -> Plugin
         lines,
         elapsed_ms,
     })
+}
+
+/// 逐页渲染并识别整个 PDF；单页渲染失败时跳过并记录警告
+fn recognize_pdf(
+    path: &str,
+    engines: &Engines,
+    detector: &std::path::Path,
+    recognizer: &std::path::Path,
+    ctx: &dyn TaskContext,
+    start: Instant,
+) -> PluginResult<PdfOutput> {
+    let doc = crate::pdf::PdfDoc::open(path)?;
+    let total = doc.page_count();
+    if total == 0 {
+        return Err(PluginError::new("ocr.pdf_empty"));
+    }
+    if total > PDF_MAX_PAGES {
+        return Err(PluginError::new("ocr.pdf_too_many_pages").with("limit", PDF_MAX_PAGES as u64));
+    }
+    let name = std::path::Path::new(path)
+        .file_name()
+        .map(|n| n.to_string_lossy().into_owned());
+    let engine = load_engine(engines, detector, recognizer, ctx, start)?;
+    let keys = recognize::characters();
+    let mut pages = Vec::new();
+    for index in 0..total {
+        if ctx.is_cancelled() {
+            return Err(cancelled());
+        }
+        ctx.stage("ocr.render");
+        let page = index as u32 + 1;
+        let (lines, text) = match doc.render_page(index) {
+            Ok(image) => {
+                let (_, _, lines) = detect_and_recognize(&engine, &image, keys, ctx)?;
+                let text = join(&lines);
+                ctx.log(
+                    LogLevel::Info,
+                    "ocr.page_done",
+                    json!({ "page": page, "lines": lines.len() }),
+                );
+                (lines, text)
+            }
+            Err(err) => {
+                ctx.log(
+                    LogLevel::Warn,
+                    "ocr.page_failed",
+                    json!({ "page": page, "detail": err.code }),
+                );
+                (Vec::new(), String::new())
+            }
+        };
+        pages.push(PageText { page, lines, text });
+        ctx.progress(index as u64 + 1, total as u64);
+    }
+    let text = pages
+        .iter()
+        .map(|p| p.text.as_str())
+        .collect::<Vec<_>>()
+        .join("\n\n");
+    let elapsed_ms = start.elapsed().as_millis() as u64;
+    ctx.log(
+        LogLevel::Info,
+        "ocr.pdf_done",
+        json!({ "pages": pages.len(), "ms": elapsed_ms }),
+    );
+    Ok(PdfOutput {
+        name,
+        pages,
+        text,
+        elapsed_ms,
+    })
+}
+
+pub fn recognize(args: Args, engines: &Engines, ctx: &dyn TaskContext) -> PluginResult<Output> {
+    let start = Instant::now();
+    let detector = ctx.resource_path(DETECTOR)?;
+    let recognizer = ctx.resource_path(RECOGNIZER)?;
+
+    ctx.stage("ocr.load");
+    match &args.source {
+        Source::Pdf { path } => {
+            if ctx.file_size(path)? > PDF_MAX_FILE {
+                return Err(PluginError::new("ocr.file_too_large").with("limit", "200 MB"));
+            }
+            recognize_pdf(path, engines, &detector, &recognizer, ctx, start).map(Output::Pdf)
+        }
+        _ => recognize_image(args, engines, &detector, &recognizer, ctx, start).map(Output::Image),
+    }
 }
 
 #[cfg(test)]

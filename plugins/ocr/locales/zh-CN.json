@@ -1,10 +1,11 @@
 {
   "name": "文字识别",
-  "description": "离线识别图片与截图中的中英文文字",
+  "description": "离线识别图片、截图与 PDF 中的中英文文字",
   "help": [
-    "在本机用 Rust 运行 PaddleOCR PP-OCRv4 模型，图片不会离开你的电脑。",
+    "在本机用 Rust 运行 PaddleOCR PP-OCRv4 模型，文件不会离开你的电脑。",
     "首次使用需下载两个模型（共约 15 MB），支持断点续传与镜像回退，并用 SHA-256 校验。",
-    "打开或拖入图片，或按 ⌘/Ctrl+V 识别剪贴板中的截图。",
+    "打开或拖入图片或 PDF，或按 ⌘/Ctrl+V 识别剪贴板中的截图。",
+    "PDF 按页识别，最多 200 页，结果包含全文与每一页的文字。",
     "鼠标悬停在框上可查看文字，点击即可复制该行；识别结果可以先编辑再复制。"
   ],
   "functions": {
@@ -27,40 +28,46 @@
     "downloadAll": "下载模型"
   },
   "source": {
-    "title": "图片",
-    "drop": "拖入图片或点击打开",
+    "title": "图片与 PDF",
+    "drop": "拖入图片或 PDF，或点击打开",
     "dropHint": "也可以按 ⌘/Ctrl+V 粘贴截图",
-    "open": "打开图片",
+    "open": "打开文件",
     "paste": "粘贴截图",
-    "filter": "图片",
+    "filter": "图片与 PDF",
     "cancel": "取消"
   },
   "stages": {
     "ocr": {
       "load": "正在加载…",
+      "render": "正在渲染页面…",
       "detect": "正在定位文字…",
       "recognize": "正在识别文字…"
     },
-    "lines": "正在识别 {{done}} / {{total}} 行"
+    "lines": "正在识别 {{done}} / {{total}} 行",
+    "pages": "正在识别 {{done}} / {{total}} 页"
   },
   "result": {
     "placeholder": "识别出的文字会显示在这里",
-    "placeholderHint": "打开图片或粘贴截图开始识别",
+    "placeholderHint": "打开图片、PDF 或粘贴截图开始识别",
     "clipboard": "剪贴板图片",
     "size": "{{width}} × {{height}}",
     "boxes": "显示文字框",
     "text": "文字",
     "lines": "{{count}} 行",
+    "pdfPages": "{{count}} 页",
     "confidence": "置信度 {{value}}%",
     "confidenceHint": "所有识别行的平均置信度",
-    "empty": "这张图片中没有找到文字",
+    "empty": "没有找到文字",
     "elapsed": "识别用时 {{ms}} 毫秒"
   },
   "logs": {
     "ocr": {
       "model_loaded": "模型加载用时 {{ms}} 毫秒",
       "regions": "找到 {{count}} 个文字区域",
-      "done": "识别出 {{lines}} 行，用时 {{ms}} 毫秒"
+      "page_done": "第 {{page}} 页完成，识别 {{lines}} 行",
+      "page_failed": "第 {{page}} 页识别失败：{{detail}}，已跳过",
+      "done": "识别出 {{lines}} 行，用时 {{ms}} 毫秒",
+      "pdf_done": "识别 {{pages}} 页，用时 {{ms}} 毫秒"
     }
   },
   "detect": {
@@ -73,6 +80,10 @@
     "ocr.unsupported": "不支持的图片格式",
     "ocr.file_too_large": "图片超过 {{limit}}",
     "ocr.too_many_pixels": "图片尺寸过大（{{width}} × {{height}}）",
-    "ocr.clipboard_empty": "剪贴板中没有图片"
+    "ocr.clipboard_empty": "剪贴板中没有图片",
+    "ocr.pdf_failed": "无法打开 PDF：{{detail}}",
+    "ocr.pdf_page": "无法渲染 PDF 页面",
+    "ocr.pdf_empty": "PDF 中没有页面",
+    "ocr.pdf_too_many_pages": "PDF 页数超过 {{limit}} 页"
   }
 }

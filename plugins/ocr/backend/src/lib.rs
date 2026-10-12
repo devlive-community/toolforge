@@ -4,6 +4,7 @@
 mod detect;
 mod engine;
 mod ocr;
+mod pdf;
 mod recognize;
 
 use serde_json::Value;
