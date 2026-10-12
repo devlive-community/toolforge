@@ -83,6 +83,7 @@ tfp-unicode.workspace = true
 tfp-unit-converter.workspace = true
 tfp-uuid.workspace = true
 tfp-websocket.workspace = true
+tfp-xlsx-viewer.workspace = true
 tfp-xml-formatter.workspace = true
 zip = { version = "4", default-features = false, features = ["deflate"] }
 

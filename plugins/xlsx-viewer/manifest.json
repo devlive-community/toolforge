@@ -1,0 +1,18 @@
+{
+  "id": "org.devlive.toolforge.xlsx-viewer",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["xlsx", "xls", "excel", "ods", "spreadsheet", "table", "viewer", "filter", "sort", "export", "表格", "工作簿", "查看", "筛选", "排序", "导出"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "open": { "task": true },
+    "rows": {},
+    "stats": {},
+    "export": { "task": true }
+  },
+  "sensitive": false
+}

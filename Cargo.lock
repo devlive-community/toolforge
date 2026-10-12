@@ -8304,6 +8304,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-xlsx-viewer"
+version = "0.1.0"
+dependencies = [
+ "calamine",
+ "csv",
+ "jiff",
+ "rust_xlsxwriter",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-xml-formatter"
 version = "0.1.0"
 dependencies = [
@@ -8696,6 +8709,7 @@ dependencies = [
  "tfp-url-parser",
  "tfp-uuid",
  "tfp-websocket",
+ "tfp-xlsx-viewer",
  "tfp-xml-formatter",
  "zip 4.6.1",
 ]

@@ -1,0 +1,109 @@
+{
+  "name": "Spreadsheet Viewer",
+  "description": "Open xlsx / xlsm / xlsb / xls / ods workbooks, switch sheets, then sort, search, filter and export",
+  "help": [
+    "Supports xlsx, xlsm, xlsb, xls and ods up to 512 MB. The workbook is parsed by Rust and kept locally; the front end reads it page by page and scrolls smoothly.",
+    "Merged cells show their value in the top-left cell; formulas display their calculated results; dates and times are converted to readable text automatically.",
+    "Click a sheet tab to switch. Click a column header to sort. Open a column's details to see statistics and its most frequent values, and to add filters.",
+    "Export the current sheet's view, sorted and filtered, as CSV, TSV, JSON or a Markdown table."
+  ],
+  "functions": {
+    "open": "Open workbook",
+    "rows": "Read rows",
+    "stats": "Column statistics",
+    "export": "Export"
+  },
+  "open": {
+    "drop": "Drop a spreadsheet file, or click to open",
+    "hint": "Up to 512 MB · xlsx, xlsm, xlsb, xls, ods",
+    "filter": "Spreadsheets",
+    "workbook": "Workbook",
+    "another": "Open",
+    "close": "Close",
+    "cancel": "Cancel"
+  },
+  "stages": {
+    "xlsx": {
+      "read": "Reading file…",
+      "parse": "Parsing sheets…",
+      "export": "Exporting…"
+    }
+  },
+  "logs": {
+    "xlsx": {
+      "loaded": "Loaded {{sheets}} sheets, {{rows}} rows × {{columns}} columns in {{ms}} ms",
+      "exported": "Exported {{rows}} rows to {{path}}"
+    }
+  },
+  "options": {
+    "header": "Header row"
+  },
+  "table": {
+    "sheets": "{{count}} sheets",
+    "sheetsNav": "Sheets",
+    "search": "Search all cells",
+    "rows": "{{formatted}} rows",
+    "filtered": "{{shown}} of {{total}} rows",
+    "columns": "{{count}} columns",
+    "column": "Column {{n}}",
+    "empty": "No rows match",
+    "loaded": "Loaded in {{ms}} ms",
+    "details": "Column details",
+    "sortAsc": "Sorted ascending",
+    "sortDesc": "Sorted descending"
+  },
+  "kinds": {
+    "empty": "Empty",
+    "integer": "Integer",
+    "float": "Number",
+    "boolean": "Boolean",
+    "date": "Date",
+    "text": "Text"
+  },
+  "filters": {
+    "add": "Add filter",
+    "value": "Value",
+    "clear": "Clear filters",
+    "remove": "Remove filter",
+    "ops": {
+      "contains": "contains",
+      "equals": "equals",
+      "notEquals": "does not equal",
+      "greater": "greater than",
+      "less": "less than",
+      "empty": "is empty",
+      "notEmpty": "is not empty"
+    }
+  },
+  "stats": {
+    "count": "Rows",
+    "empty": "Empty",
+    "distinct": "Distinct",
+    "capped": "{{count}}+",
+    "min": "Min",
+    "max": "Max",
+    "mean": "Mean",
+    "sum": "Sum",
+    "length": "Length",
+    "lengthRange": "{{min}} – {{max}} characters",
+    "top": "Most frequent",
+    "only": "Show only this value",
+    "close": "Close"
+  },
+  "export": {
+    "title": "Export",
+    "csv": "CSV",
+    "tsv": "TSV",
+    "json": "JSON",
+    "markdown": "Markdown table",
+    "done": "Exported {{count}} rows"
+  },
+  "errors": {
+    "xlsx.read_failed": "The workbook could not be read: {{detail}}",
+    "xlsx.invalid_sheet": "Sheet {{sheet}} does not exist",
+    "xlsx.invalid_column": "Column {{column}} does not exist",
+    "xlsx.table_expired": "This workbook was closed to free memory; open it again",
+    "xlsx.too_large": "The file is larger than {{limit}}",
+    "xlsx.empty_workbook": "The workbook has no content"
+  }
+}

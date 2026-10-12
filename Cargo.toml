@@ -78,6 +78,7 @@ tfp-unicode = { path = "plugins/unicode/backend" }
 tfp-unit-converter = { path = "plugins/unit-converter/backend" }
 tfp-uuid = { path = "plugins/uuid/backend" }
 tfp-websocket = { path = "plugins/websocket/backend" }
+tfp-xlsx-viewer = { path = "plugins/xlsx-viewer/backend" }
 tfp-xml-formatter = { path = "plugins/xml-formatter/backend" }
 
 [profile.release]
