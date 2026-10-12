@@ -1,0 +1,94 @@
+{
+  "name": "图片拼接",
+  "description": "把多张图片横向、纵向或网格拼成一张图，支持间距、背景色与透明",
+  "help": [
+    "全部处理在本机 Rust 完成，文件不会离开你的电脑。",
+    "按添加顺序拼接，可以用上移 / 下移调整每张图的位置。",
+    "横向按行拼接时可选上 / 中 / 下对齐，纵向按列拼接时可选左 / 中 / 右对齐，网格每格居中。",
+    "PNG 与 WebP 保留透明，JPEG 没有透明，透明背景会自动换成白色。"
+  ],
+  "functions": {
+    "stitch": "拼接图片"
+  },
+  "files": {
+    "title": "图片",
+    "add": "添加",
+    "drop": "拖入图片或点击打开",
+    "dropHint": "按添加顺序拼接，可稍后调整",
+    "remove": "移除",
+    "moveUp": "上移",
+    "moveDown": "下移",
+    "filter": "图片",
+    "cancel": "取消",
+    "start": "开始拼接",
+    "clear": "清空"
+  },
+  "options": {
+    "title": "选项",
+    "layout": "布局",
+    "align": "对齐",
+    "columns": "列数",
+    "gap": "间距（像素）",
+    "background": "背景",
+    "format": "输出格式",
+    "quality": "JPEG 质量",
+    "output": "输出目录",
+    "sameDir": "与第一张图相同",
+    "resetDir": "恢复默认",
+    "name": "文件名"
+  },
+  "layout": {
+    "horizontal": "横向",
+    "vertical": "纵向",
+    "grid": "网格",
+    "gridHint": "每列宽取该列最大图宽，每行高取该行最大图高，图片在格内居中"
+  },
+  "align": {
+    "start": "起点",
+    "center": "居中",
+    "end": "终点"
+  },
+  "background": {
+    "transparent": "透明",
+    "white": "白色",
+    "black": "黑色",
+    "custom": "自定义",
+    "hex": "颜色（#RRGGBB 或 #RRGGBBAA）",
+    "jpegHint": "JPEG 不支持透明，输出时会使用白色背景"
+  },
+  "result": {
+    "title": "拼接结果",
+    "summary": "{{width}} × {{height}}",
+    "cancelled": "已取消",
+    "running": "正在拼接…",
+    "empty": "还没有拼接结果",
+    "emptyHint": "添加至少两张图片并开始拼接",
+    "reveal": "在文件夹中显示",
+    "elapsed": "用时 {{ms}} 毫秒"
+  },
+  "logs": {
+    "title": "实时日志",
+    "empty": "开始拼接后，日志会实时显示在这里",
+    "jumpLatest": "跳到最新",
+    "stitch": {
+      "image_loaded": "[{{index}}/{{count}}] 已读取 {{file}}（{{width}} × {{height}}）",
+      "done": "已生成 {{output}}：{{count}} 张图拼为 {{width}} × {{height}}，{{bytes, number}} 字节，耗时 {{ms}} ms"
+    }
+  },
+  "stages": {
+    "stitch.decode": "正在读取图片…",
+    "stitch.compose": "正在拼接…",
+    "stitch.encode": "正在编码…"
+  },
+  "errors": {
+    "stitch.too_few": "至少需要两张图片",
+    "stitch.too_many": "一次最多拼接 {{limit}} 张图片",
+    "stitch.output_dir_missing": "输出目录不存在：{{path}}",
+    "stitch.file_too_large": "图片超过 {{limit}}",
+    "stitch.pixels_too_large": "拼接结果过大（{{width}} × {{height}}）",
+    "stitch.invalid_color": "无效的颜色：{{color}}",
+    "stitch.decode_failed": "图片解码失败：{{detail}}",
+    "stitch.encode_failed": "图片编码失败：{{detail}}",
+    "stitch.io": "文件读写失败：{{path}}：{{detail}}"
+  }
+}

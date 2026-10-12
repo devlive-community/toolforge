@@ -7953,6 +7953,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-image-stitcher"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "image",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-ip-calculator"
 version = "0.1.0"
 dependencies = [
@@ -8693,6 +8704,7 @@ dependencies = [
  "tfp-image-converter",
  "tfp-image-info",
  "tfp-image-palette",
+ "tfp-image-stitcher",
  "tfp-ip-calculator",
  "tfp-json-formatter",
  "tfp-json-query",
