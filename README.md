@@ -60,6 +60,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Format Converter** | JSON ⇄ YAML ⇄ TOML ⇄ CSV with automatic detection, preserved key order and CSV delimiter / header / type options |
 | **Table Converter** | Convert tables between Markdown, CSV, TSV (Excel paste), HTML, JSON, SQL INSERT, LaTeX and bordered text with automatic input detection, CJK-aware column alignment, per-column alignment, header and transpose options |
 | **Document Converter** | Excel → Word and Word → Excel in pure Rust (sheets become tables and tables become sheets, numbers stay numbers), plus Word → PDF and PDF → Word through a locally installed LibreOffice, found automatically; batch conversion that never overwrites |
+| **.env Editor** | Edit dotenv files as a table — comments, blank lines, order and quoting preserved, export toggles, inline comments, escaped values (\n, \"), duplicate and invalid key validation; exports a matching .env.example with values cleared |
 | **Base Converter** | Arbitrary-precision integers in bases 2–36, prefix detection, two's complement for 8–128 bits and a clickable 64-bit view |
 | **Color Converter** | HEX / RGB / HSL / HSV / HWB / CMYK / Lab / OKLCH, WCAG contrast checks, tints, shades and harmonies |
 | **Password Generator** | Cryptographically secure passwords with per-type options and exclusions, plus a local strength and crack-time check |
