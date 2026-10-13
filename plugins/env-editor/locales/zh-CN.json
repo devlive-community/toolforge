@@ -1,0 +1,57 @@
+{
+  "name": ".env 编辑器",
+  "description": "以表格编辑 .env 文件：保留注释、空行、顺序与引号风格，支持导出 .env.example",
+  "help": [
+    "解析与保存全部在本机完成，文件不会离开你的电脑。",
+    "注释、空行与无法识别的行原样保留；变量顺序不变，可以编辑键、值与行内注释。",
+    "值以转义形式显示（\\n、\\\"、\\\\），与多数 dotenv 加载器的规则一致。",
+    "开头的开关等价于 export 前缀；保存会拒绝重复的键和非法键名。",
+    "导出示例会生成同名 .example 文件（.env → .env.example），值清空、注释保留。"
+  ],
+  "dialog": {
+    "filter": "环境变量文件"
+  },
+  "state": {
+    "loading": "正在打开…",
+    "drop": "拖入 .env 或点击打开",
+    "dropHint": "支持 .env、.env.local、.env.production 等",
+    "dirty": "未保存",
+    "clean": "已保存",
+    "count": "{{count}} 个变量"
+  },
+  "actions": {
+    "save": "保存",
+    "openOther": "打开其他",
+    "exportExample": "导出示例",
+    "addEntry": "添加变量",
+    "addComment": "添加注释"
+  },
+  "row": {
+    "export": "export 前缀",
+    "key": "键名",
+    "value": "值",
+    "valuePlaceholder": "值（转义以 \\n \\\" \\\\ 表示）",
+    "comment": "注释行",
+    "inlineComment": "行内注释",
+    "commentPlaceholder": "注释",
+    "multiline": "值在源文件中跨多行",
+    "duplicate": "这个键在文件中重复出现",
+    "duplicateShort": "重复",
+    "delete": "删除此行"
+  },
+  "warn": {
+    "invalidKey": "有键名不符合规则（字母或下划线开头，仅含字母、数字、下划线、点），保存前请修正",
+    "duplicate": "存在重复的键：{{keys}}"
+  },
+  "toast": {
+    "saved": "已保存",
+    "example": "已生成 {{path}}"
+  },
+  "errors": {
+    "env.file_too_large": "文件超过 {{limit}}",
+    "env.io": "文件读写失败：{{path}}：{{detail}}",
+    "env.invalid_key": "键名不符合规则：{{key}}",
+    "env.duplicate_key": "存在重复的键：{{key}}",
+    "env.example_exists": "示例文件已存在：{{path}}"
+  }
+}

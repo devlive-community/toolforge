@@ -1,0 +1,57 @@
+{
+  "name": ".env Editor",
+  "description": "Edit dotenv files as a table while keeping comments, order and quoting; export .env.example",
+  "help": [
+    "Parsing and saving run locally in Rust; files never leave your computer.",
+    "Comments, blank lines and unrecognizable lines are preserved as-is; variable order never changes and keys, values and inline comments are editable.",
+    "Values are shown escaped (\\n, \\\", \\\\) following the rules used by most dotenv loaders.",
+    "The leading switch toggles the export prefix; saving rejects duplicate or invalid keys.",
+    "Exporting generates a matching .example file (.env → .env.example) with values cleared and comments kept."
+  ],
+  "dialog": {
+    "filter": "Environment files"
+  },
+  "state": {
+    "loading": "Opening…",
+    "drop": "Drop a .env file or click to open",
+    "dropHint": "Supports .env, .env.local, .env.production and more",
+    "dirty": "Unsaved changes",
+    "clean": "Saved",
+    "count": "{{count}} variables"
+  },
+  "actions": {
+    "save": "Save",
+    "openOther": "Open other",
+    "exportExample": "Export example",
+    "addEntry": "Add variable",
+    "addComment": "Add comment"
+  },
+  "row": {
+    "export": "export prefix",
+    "key": "Key",
+    "value": "Value",
+    "valuePlaceholder": "Value (escaped as \\n \\\" \\\\)",
+    "comment": "Comment line",
+    "inlineComment": "Inline comment",
+    "commentPlaceholder": "Comment",
+    "multiline": "This value spans multiple lines in the file",
+    "duplicate": "This key appears more than once",
+    "duplicateShort": "Dup",
+    "delete": "Delete this line"
+  },
+  "warn": {
+    "invalidKey": "Some keys are invalid (start with a letter or underscore; letters, digits, underscores and dots only) — fix them before saving",
+    "duplicate": "Duplicate keys: {{keys}}"
+  },
+  "toast": {
+    "saved": "Saved",
+    "example": "Generated {{path}}"
+  },
+  "errors": {
+    "env.file_too_large": "The file is larger than {{limit}}",
+    "env.io": "File I/O failed: {{path}}: {{detail}}",
+    "env.invalid_key": "Invalid key: {{key}}",
+    "env.duplicate_key": "Duplicate key: {{key}}",
+    "env.example_exists": "The example file already exists: {{path}}"
+  }
+}

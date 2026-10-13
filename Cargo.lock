@@ -7818,6 +7818,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-env-editor"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-folder-compare"
 version = "0.1.0"
 dependencies = [
@@ -8694,6 +8703,7 @@ dependencies = [
  "tfp-doc-converter",
  "tfp-duplicate-finder",
  "tfp-encoder",
+ "tfp-env-editor",
  "tfp-folder-compare",
  "tfp-format-converter",
  "tfp-hash",
