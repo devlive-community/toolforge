@@ -44,11 +44,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       ref={ref}
       type={type}
-      className={cn(buttonVariants({ variant, size, block }), className)}
+      className={cn(
+        buttonVariants({ variant, size, block }),
+        // 加载中只显示加载图标：隐藏按钮自带的图标，图标按钮的尺寸也不变
+        loading && '[&>svg:not([data-button-spinner])]:hidden',
+        className,
+      )}
       disabled={disabled || loading}
+      aria-busy={loading || undefined}
       {...props}
     >
-      {loading && <Spinner />}
+      {loading && <Spinner data-button-spinner="" />}
       {children}
     </button>
   ),
