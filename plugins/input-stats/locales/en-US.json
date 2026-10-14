@@ -120,7 +120,12 @@
     "MediaPlayPause": "Play / pause",
     "MediaTrackNext": "Next track",
     "MediaTrackPrevious": "Previous track",
-    "MediaStop": "Stop"
+    "MediaStop": "Stop",
+    "MediaFastForward": "Fast forward",
+    "MediaRewind": "Rewind",
+    "BrightnessUp": "Brightness +",
+    "BrightnessDown": "Brightness -",
+    "Eject": "Eject"
   },
   "mouse": {
     "heatmap": "Screen click heatmap",

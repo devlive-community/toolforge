@@ -83,6 +83,24 @@ fn every_platform_covers_the_main_block() {
 }
 
 #[test]
+fn mac_special_keys_follow_the_ev_keymap_table() {
+    assert_eq!(mac_special(0), "AudioVolumeUp");
+    assert_eq!(mac_special(1), "AudioVolumeDown");
+    assert_eq!(mac_special(2), "BrightnessUp");
+    assert_eq!(mac_special(3), "BrightnessDown");
+    assert_eq!(mac_special(7), "AudioVolumeMute");
+    assert_eq!(mac_special(14), "Eject");
+    assert_eq!(mac_special(16), "MediaPlayPause");
+    assert_eq!(mac_special(17), "MediaTrackNext");
+    assert_eq!(mac_special(18), "MediaTrackPrevious");
+    assert_eq!(mac_special(19), "MediaFastForward");
+    assert_eq!(mac_special(20), "MediaRewind");
+    // 表外的特殊键（对比度、背光等）不编造名字
+    assert_eq!(mac_special(11), UNIDENTIFIED);
+    assert_eq!(mac_special(21), UNIDENTIFIED);
+}
+
+#[test]
 fn combos_need_a_command_modifier() {
     assert_eq!(combo(META, "KeyC").as_deref(), Some("Meta+KeyC"));
     assert_eq!(

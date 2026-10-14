@@ -7,7 +7,8 @@ use std::sync::mpsc;
 use std::sync::mpsc::Sender;
 
 use objc2::rc::autoreleasepool;
-use objc2_app_kit::NSWorkspace;
+use objc2_app_kit::{NSEvent, NSWorkspace};
+use std::ptr::NonNull;
 use tf_plugin_api::{PluginError, PluginResult};
 
 use super::{Permission, Sink, Stopper};
@@ -85,6 +86,10 @@ const LEFT_DRAGGED: u32 = 6;
 const RIGHT_DRAGGED: u32 = 7;
 const KEY_DOWN: u32 = 10;
 const FLAGS_CHANGED: u32 = 12;
+// NSEventTypeSystemDefined：亮度 / 音量 / 播放控制等功能层按键走这个类型
+const SYSTEM_DEFINED: u32 = 14;
+// NSEventSubtypeAUXControlButtons：媒体与特殊功能键
+const AUX_CONTROL_BUTTONS: i16 = 8;
 const SCROLL_WHEEL: u32 = 22;
 const OTHER_DOWN: u32 = 25;
 const OTHER_DRAGGED: u32 = 27;
@@ -201,6 +206,29 @@ extern "C" fn on_event(_: Ref, kind: u32, event: Ref, user: *mut c_void) -> Ref 
                 });
             }
         }
+        SYSTEM_DEFINED => {
+            // 用 NSEvent 包装读取 subtype 与 data1，解析方式与 Hammerspoon 一致
+            let pressed = unsafe {
+                autoreleasepool(|_| {
+                    let raw = NonNull::new(event)?;
+                    let sys = NSEvent::eventWithEventRef(raw)?;
+                    if sys.subtype().0 != AUX_CONTROL_BUTTONS {
+                        return None;
+                    }
+                    let data1 = sys.data1();
+                    // 高 16 位是键值；低 16 位里第 8 位为 0x0A 表示按下，第 0 位是自动重复
+                    let down = (data1 & 0xFF00) >> 8 == 0x0A;
+                    let repeat = data1 & 0x1 != 0;
+                    (down && !repeat).then_some((data1 & 0xFFFF_0000) >> 16)
+                })
+            };
+            if let Some(key) = pressed {
+                send(Event::Key {
+                    code: keymap::mac_special(key as i64),
+                    mods: 0,
+                });
+            }
+        }
         LEFT_DOWN | RIGHT_DOWN | OTHER_DOWN => {
             let button = match kind {
                 LEFT_DOWN => Button::Left,
@@ -273,6 +301,7 @@ fn run_tap(sink: Sink, ready: Sender<Option<SendRef>>) {
         RIGHT_DRAGGED,
         KEY_DOWN,
         FLAGS_CHANGED,
+        SYSTEM_DEFINED,
         SCROLL_WHEEL,
         OTHER_DOWN,
         OTHER_DRAGGED,

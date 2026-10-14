@@ -173,6 +173,30 @@ pub fn mac(keycode: u16) -> &'static str {
     }
 }
 
+/// macOS 系统事件（NSEvent subtype 8）里的特殊键码 → W3C 名称。
+///
+/// 亮度、音量、播放控制等功能层按键不走普通 keyDown，键值是 IOKit
+/// `ev_keymap.h` 的 `NX_KEYTYPE_*`，与 `mac()` 的虚拟键码是两套编号。
+/// CapsLock / Help / NumLock 不在此表：它们的物理键本来就产生普通事件，
+/// 这里再算会重复计数。
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+pub fn mac_special(key: i64) -> &'static str {
+    match key {
+        0 => "AudioVolumeUp",
+        1 => "AudioVolumeDown",
+        2 => "BrightnessUp",
+        3 => "BrightnessDown",
+        7 => "AudioVolumeMute",
+        14 => "Eject",
+        16 => "MediaPlayPause",
+        17 => "MediaTrackNext",
+        18 => "MediaTrackPrevious",
+        19 => "MediaFastForward",
+        20 => "MediaRewind",
+        _ => UNIDENTIFIED,
+    }
+}
+
 /// Windows 扫描码（Set 1），`extended` 对应 `LLKHF_EXTENDED`（E0 前缀）
 #[cfg_attr(not(windows), allow(dead_code))]
 pub fn windows(scan: u32, extended: bool) -> &'static str {

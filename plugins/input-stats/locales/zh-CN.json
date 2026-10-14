@@ -118,7 +118,12 @@
     "MediaPlayPause": "播放 / 暂停",
     "MediaTrackNext": "下一曲",
     "MediaTrackPrevious": "上一曲",
-    "MediaStop": "停止播放"
+    "MediaStop": "停止播放",
+    "MediaFastForward": "快进",
+    "MediaRewind": "快退",
+    "BrightnessUp": "亮度 +",
+    "BrightnessDown": "亮度 -",
+    "Eject": "推出"
   },
   "mouse": {
     "heatmap": "屏幕点击热力图",
