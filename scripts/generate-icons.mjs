@@ -8,9 +8,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const icons = join(root, 'apps/desktop/src-tauri/icons')
-const source = join(icons, 'logo.svg')
-const monogram = readFileSync(source, 'utf8').match(/<g id="tf-monogram">([\s\S]*?)<\/g>/)
-if (!monogram) throw new Error('logo.svg must contain the tf-monogram group')
+const source = join(icons, 'logo.png')
 const desktop = join(root, 'apps/desktop')
 const require = createRequire(join(desktop, 'package.json'))
 const cli = require.resolve('@tauri-apps/cli/tauri.js')
@@ -24,7 +22,15 @@ const generate = (input, destination, sizes = []) => {
 
 try {
   generate(source, output)
-  // Copy desktop resources only; Tauri also generates unused mobile icon sets.
+  // macOS recolors a template icon from its alpha channel, without a colored tile.
+  const trayImage = readFileSync(join(output, 'Square44x44Logo.png')).toString('base64')
+  const traySource = join(output, 'tray.svg')
+  const trayOutput = join(output, 'tray')
+  writeFileSync(traySource,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44"><defs><mask id="alpha" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="44" height="44"><image href="data:image/png;base64,${trayImage}" width="44" height="44"/></mask></defs><rect width="44" height="44" fill="black" mask="url(#alpha)"/></svg>\n`)
+  generate(traySource, trayOutput, [44])
+
+  // Copy desktop resources only after all exports succeed.
   for (const name of [
     '32x32.png', '64x64.png', '128x128.png', '128x128@2x.png', 'icon.png',
     'icon.icns', 'icon.ico', 'StoreLogo.png',
@@ -32,13 +38,6 @@ try {
   ]) {
     copyFileSync(join(output, name), join(icons, name))
   }
-
-  // macOS recolors a template icon from its alpha channel, without a colored tile.
-  const traySource = join(output, 'tray.svg')
-  const trayOutput = join(output, 'tray')
-  writeFileSync(traySource,
-    `<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 1024 1024">${monogram[1].replace(/fill="[^"]+"/g, 'fill="black"')}</svg>\n`)
-  generate(traySource, trayOutput, [44])
   copyFileSync(join(trayOutput, '44x44.png'), join(icons, 'tray-template.png'))
 } finally {
   rmSync(output, { recursive: true, force: true })

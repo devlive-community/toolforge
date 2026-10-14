@@ -1,5 +1,5 @@
 import { cn } from '@toolforge/ui'
-import logo from '../../src-tauri/icons/logo.svg'
+import logo from '../../src-tauri/icons/logo.png'
 
 export function Logo({ className }: { className?: string }) {
   return (

@@ -1,5 +1,5 @@
 <div align="center">
-<img src="apps/desktop/src-tauri/icons/logo.svg" width="96" />
+<img src="apps/desktop/src-tauri/icons/logo.png" width="96" />
 
 <h1>ToolForge</h1>
 
@@ -137,7 +137,7 @@ Grab the installer for your platform from [Releases](https://github.com/devlive-
 pnpm install          # install frontend dependencies
 pnpm dev              # run the desktop app in development mode with hot reload
 pnpm build            # build installers
-pnpm icons:generate   # rebuild desktop / tray icons from the TF logo SVG
+pnpm icons:generate   # rebuild desktop / tray icons from the selected TF logo PNG
 
 cargo xtask check     # run exactly the checks CI runs
 cargo xtask check rust|web|rules   # run a subset
