@@ -179,3 +179,76 @@ fn skips_plugins_for_other_platforms() {
     );
     assert!(everywhere.supports("linux") && everywhere.supports("windows"));
 }
+
+/// 记录服务生命周期调用的插件
+struct Service {
+    manifest: Manifest,
+    fail: bool,
+    events: std::sync::Mutex<Vec<String>>,
+}
+
+impl Service {
+    fn new(id: &str, service: bool, fail: bool) -> Arc<Self> {
+        let manifest = Manifest::from_static(&format!(
+            r#"{{"id":"{id}","version":"1.0.0","name":"n","description":"d",
+                "category":"system","service":{service}}}"#
+        ));
+        Arc::new(Self {
+            manifest,
+            fail,
+            events: Default::default(),
+        })
+    }
+
+    fn events(&self) -> Vec<String> {
+        self.events.lock().unwrap().clone()
+    }
+}
+
+impl ToolPlugin for Service {
+    fn manifest(&self) -> &Manifest {
+        &self.manifest
+    }
+
+    fn call(&self, function: &str, _: Value) -> PluginResult<Value> {
+        Err(unknown_function(function))
+    }
+
+    fn start_service(&self, ctx: Arc<dyn ServiceContext>) -> PluginResult<()> {
+        assert!(ctx.data_dir().is_dir());
+        let name = ctx.data_dir().file_name().unwrap().to_string_lossy();
+        self.events.lock().unwrap().push(format!("start {name}"));
+        if self.fail {
+            return Err(tf_plugin_api::PluginError::new("service.failed"));
+        }
+        Ok(())
+    }
+
+    fn stop_service(&self) {
+        self.events.lock().unwrap().push("stop".into());
+    }
+}
+
+#[test]
+fn starts_and_stops_only_declared_services() {
+    let root = std::env::temp_dir().join(format!("tf-services-{}", std::process::id()));
+    let stats = Service::new("stats", true, false);
+    let broken = Service::new("broken", true, true);
+    let plain = Service::new("plain", false, false);
+    let mut registry = PluginRegistry::new();
+    registry.register(broken.clone());
+    registry.register(stats.clone());
+    registry.register(plain.clone());
+
+    // 一个服务启动失败不影响后面的服务
+    registry.start_services(&root);
+    assert_eq!(broken.events(), vec!["start broken"]);
+    assert_eq!(stats.events(), vec!["start stats"]);
+    assert!(plain.events().is_empty());
+    assert!(!root.join("plain").exists());
+
+    registry.stop_services();
+    assert_eq!(stats.events(), vec!["start stats", "stop"]);
+    assert!(plain.events().is_empty());
+    std::fs::remove_dir_all(&root).unwrap();
+}

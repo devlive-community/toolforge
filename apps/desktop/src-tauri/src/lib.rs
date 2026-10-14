@@ -28,6 +28,13 @@ pub struct AppState {
     pub log: &'static AppLog,
 }
 
+/// 停止插件后台服务；重启前也要调用，因为重启不会触发 RunEvent::Exit
+pub fn stop_services(app: &tauri::AppHandle) {
+    if let Some(state) = app.try_state::<AppState>() {
+        state.plugins.stop_services();
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -70,9 +77,11 @@ pub fn run() {
                 let locale = prefs.get("locale").and_then(|v| v.as_str()).unwrap_or("en");
                 app.set_menu(menu::build(app.handle(), locale)?)?;
             }
+            let plugins = Arc::new(plugins::builtin());
+            plugins.start_services(&data_dir.join("plugins"));
             app.manage(AppState {
                 store,
-                plugins: Arc::new(plugins::builtin()),
+                plugins,
                 tasks,
                 resources,
                 log,
@@ -123,6 +132,8 @@ pub fn run() {
             RunEvent::ExitRequested {
                 code: None, api, ..
             } if !lifecycle::request_quit(app) => api.prevent_exit(),
+            // 退出前让后台服务把数据落盘
+            RunEvent::Exit => stop_services(app),
             // macOS 点击 Dock 图标时重新显示隐藏的窗口
             #[cfg(target_os = "macos")]
             RunEvent::Reopen { .. } => window::show_main(app),

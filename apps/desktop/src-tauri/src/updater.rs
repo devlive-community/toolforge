@@ -105,5 +105,6 @@ pub async fn update_install(
 pub fn app_restart(app: AppHandle) {
     // 安装更新后的重启不需要退出确认
     app.state::<crate::lifecycle::QuitGuard>().confirm();
+    crate::stop_services(&app);
     app.restart();
 }

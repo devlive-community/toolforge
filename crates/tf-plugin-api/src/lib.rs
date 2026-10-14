@@ -107,6 +107,9 @@ pub struct Manifest {
     /// 支持的系统（macos / windows / linux）；为空表示全部
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub platforms: Vec<String>,
+    /// 是否提供后台服务：为 true 时宿主在应用启动后调用 [`ToolPlugin::start_service`]
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub service: bool,
 }
 
 impl Manifest {
@@ -147,6 +150,12 @@ pub trait TaskContext: Send + Sync {
     fn resource_path(&self, id: &str) -> PluginResult<std::path::PathBuf> {
         Err(PluginError::new("resource.missing").with("id", id))
     }
+}
+
+/// 后台服务的运行环境，由宿主提供。
+pub trait ServiceContext: Send + Sync {
+    /// 插件专属的数据目录（宿主已创建），插件只能在这里持久化自己的数据
+    fn data_dir(&self) -> &std::path::Path;
 }
 
 /// 插件识别出的剪贴板内容：用于在命令面板中推荐工具。
@@ -196,6 +205,16 @@ pub trait ToolPlugin: Send + Sync {
 
     /// 调用插件函数，参数与返回值均为 JSON。
     fn call(&self, function: &str, args: Value) -> PluginResult<Value>;
+
+    /// 启动后台服务：只对 manifest 声明 `service` 的插件、在应用启动后调用一次。
+    /// 必须尽快返回，常驻工作放在插件自己的线程里。
+    fn start_service(&self, ctx: std::sync::Arc<dyn ServiceContext>) -> PluginResult<()> {
+        let _ = ctx;
+        Ok(())
+    }
+
+    /// 应用退出或重启前调用：停止后台工作并把内存中的数据落盘，需要尽快返回；可能被调用多次。
+    fn stop_service(&self) {}
 
     /// 以任务方式运行 manifest 中声明为 `task` 的函数；默认退化为普通调用。
     fn run_task(&self, function: &str, args: Value, ctx: &dyn TaskContext) -> PluginResult<Value> {

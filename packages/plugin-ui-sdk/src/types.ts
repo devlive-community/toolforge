@@ -33,6 +33,8 @@ export interface Manifest {
   resources?: ResourceSpec[]
   /** 支持的系统；为空表示全部 */
   platforms?: ('macos' | 'windows' | 'linux')[]
+  /** 是否提供随应用启动的后台服务 */
+  service?: boolean
 }
 
 export function isAppError(value: unknown): value is AppError {

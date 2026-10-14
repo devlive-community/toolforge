@@ -1,9 +1,10 @@
+use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
 use indexmap::IndexMap;
 use serde::Serialize;
 use serde_json::Value;
-use tf_plugin_api::{DETECT_LIMIT, Detection, Manifest, TaskContext, ToolPlugin};
+use tf_plugin_api::{DETECT_LIMIT, Detection, Manifest, ServiceContext, TaskContext, ToolPlugin};
 
 use crate::{AppError, AppResult};
 
@@ -46,6 +47,14 @@ pub fn preview(text: &str, max: usize) -> String {
         out.push('…');
     }
     out
+}
+
+struct ServiceDir(PathBuf);
+
+impl ServiceContext for ServiceDir {
+    fn data_dir(&self) -> &Path {
+        &self.0
+    }
 }
 
 /// 推荐的最低分数，低于它的识别结果不展示
@@ -144,6 +153,35 @@ impl PluginRegistry {
             .collect();
         suggestions.sort_by_key(|s| std::cmp::Reverse(s.detection.score));
         suggestions
+    }
+
+    /// 启动声明了 `service` 的插件，每个插件的数据目录为 `root/<插件 id>`；
+    /// 单个插件启动失败只记录日志，不影响其他插件和应用启动
+    pub fn start_services(&self, root: &Path) {
+        for (id, plugin) in self.services() {
+            let dir = root.join(id);
+            let started = std::fs::create_dir_all(&dir)
+                .map_err(|e| e.to_string())
+                .and_then(|()| {
+                    plugin
+                        .start_service(Arc::new(ServiceDir(dir)))
+                        .map_err(|e| e.to_string())
+                });
+            if let Err(err) = started {
+                log::warn!("plugin service {id} failed to start: {err}");
+            }
+        }
+    }
+
+    /// 应用退出前停止所有后台服务
+    pub fn stop_services(&self) {
+        for (_, plugin) in self.services() {
+            plugin.stop_service();
+        }
+    }
+
+    fn services(&self) -> impl Iterator<Item = (&String, &Arc<dyn ToolPlugin>)> {
+        self.plugins.iter().filter(|(_, p)| p.manifest().service)
     }
 
     /// 普通调用；声明为任务的函数必须通过 [`Self::run_task`] 运行
