@@ -1,0 +1,23 @@
+{
+  "id": "org.devlive.toolforge.input-stats",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "system",
+  "keywords": ["keyboard", "mouse", "heatmap", "keystrokes", "clicks", "usage", "statistics", "app usage", "键盘", "鼠标", "热力图", "按键", "点击", "统计", "输入", "敲键盘"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["input:listen"],
+  "functions": {
+    "status": {},
+    "set_enabled": {},
+    "request_permission": {},
+    "summary": {},
+    "click_map": {},
+    "apps": {},
+    "set_excluded": {},
+    "clear": {}
+  },
+  "sensitive": true,
+  "service": true
+}

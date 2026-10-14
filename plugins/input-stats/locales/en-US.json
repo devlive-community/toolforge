@@ -1,0 +1,196 @@
+{
+  "name": "Input Stats",
+  "description": "Count your daily keystrokes, mouse clicks and app time, with keyboard and screen click heatmaps",
+  "help": [
+    "Once enabled, stats are collected in the background with ToolForge, even while the window is closed (running in the background). Pause any time in Settings.",
+    "Only the number of presses per key and mouse button is counted. Key order and typed text are never recorded, so nothing you typed can be reconstructed.",
+    "On macOS, allow ToolForge under System Settings → Privacy & Security → Input Monitoring. During secure input such as password fields, the system delivers no keystrokes to any listener.",
+    "On Linux only X11 sessions are supported; Wayland does not allow apps to listen to global input.",
+    "Data stays on this computer. You can exclude apps and clear everything at any time."
+  ],
+  "functions": {
+    "status": "Status",
+    "set_enabled": "Start or pause",
+    "request_permission": "Request permission",
+    "summary": "Summary",
+    "click_map": "Click heatmap",
+    "apps": "Apps",
+    "set_excluded": "Exclude apps",
+    "clear": "Clear data"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "keyboard": "Keyboard",
+    "mouse": "Mouse",
+    "apps": "Apps",
+    "settings": "Settings"
+  },
+  "range": {
+    "label": "Time range",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "week": "7 days",
+    "month": "30 days",
+    "all": "All"
+  },
+  "status": {
+    "capturing": "Recording",
+    "capturingApp": "Recording · {{app}}",
+    "permission": "Needs permission",
+    "starting": "Starting",
+    "paused": "Paused"
+  },
+  "unsupported": {
+    "wayland": "This is a Wayland session, which does not allow apps to listen to global keyboard and mouse input. Switch to an X11 (Xorg) session on the login screen to use this tool.",
+    "no_display": "No graphical session was found (DISPLAY is not set), so input cannot be counted.",
+    "other": "Input statistics are not supported on this system."
+  },
+  "permission": {
+    "message": "Allow ToolForge under System Settings → Privacy & Security → Input Monitoring. Recording starts automatically once allowed; if it does not, restart ToolForge."
+  },
+  "welcome": {
+    "title": "How many keys do you press every day?",
+    "description": "Count keystrokes, mouse clicks and distance, and time spent in each app in the background, with keyboard and screen click heatmaps. Only counts are kept, never what you type, and data stays on this computer.",
+    "start": "Start recording"
+  },
+  "stats": {
+    "keys": "Keystrokes",
+    "clicks": "Mouse clicks",
+    "distance": "Mouse travel",
+    "distanceHint": "Estimated from screen size",
+    "scroll": "Scrolling",
+    "active": "Active time",
+    "peak": "Busiest at {{hour}}:00"
+  },
+  "unit": {
+    "hours": "{{h}} h {{m}} min",
+    "minutes": "{{m}} min",
+    "seconds": "{{s}} s",
+    "km": "{{value}} km",
+    "m": "{{value}} m",
+    "cm": "{{value}} cm",
+    "lines": "{{value}} lines"
+  },
+  "count_one": "{{value}} time",
+  "count_other": "{{value}} times",
+  "overview": {
+    "hourly": "Hours of the day",
+    "hour": "{{hour}}:00",
+    "hourValue": "{{keys}} keys · {{clicks}} clicks",
+    "apps": "Top apps",
+    "daily": "Daily trend",
+    "dayValue": "{{keys}} keys · {{clicks}} clicks · {{active}} active",
+    "privacy": "Only counts are kept, never key order or typed text; data stays on this computer."
+  },
+  "keyboard": {
+    "title": "Keyboard heatmap",
+    "hint": "Darker keys were pressed more; hover to see counts",
+    "layout": "Keyboard layout",
+    "compact": "Laptop",
+    "full": "Full size",
+    "total": "{{value}} presses in total",
+    "distinct_one": "{{count}} key used",
+    "distinct_other": "{{count}} keys used",
+    "others": "Other keys",
+    "top": "Most pressed keys",
+    "combos": "Favorite shortcuts"
+  },
+  "legend": {
+    "less": "Less",
+    "more": "More"
+  },
+  "side": {
+    "left": "Left {{key}}",
+    "right": "Right {{key}}"
+  },
+  "keys": {
+    "Space": "Space",
+    "Unidentified": "Unidentified key",
+    "IntlBackslash": "§ / <",
+    "IntlYen": "¥",
+    "IntlRo": "Ro",
+    "Lang1": "Kana / Han/Yeong",
+    "Lang2": "Eisu / Hanja",
+    "KanaMode": "Kana",
+    "Convert": "Henkan",
+    "NonConvert": "Muhenkan",
+    "AudioVolumeUp": "Volume up",
+    "AudioVolumeDown": "Volume down",
+    "AudioVolumeMute": "Mute",
+    "MediaPlayPause": "Play / pause",
+    "MediaTrackNext": "Next track",
+    "MediaTrackPrevious": "Previous track",
+    "MediaStop": "Stop"
+  },
+  "mouse": {
+    "heatmap": "Screen click heatmap",
+    "hint": "Displays are shown as arranged; hover to see counts",
+    "buttons": "Mouse buttons",
+    "ratio": "Left : right",
+    "ratioHint": "Left clicks per right click"
+  },
+  "buttons": {
+    "left": "Left",
+    "right": "Right",
+    "middle": "Middle",
+    "back": "Back",
+    "forward": "Forward",
+    "other": "Other"
+  },
+  "apps": {
+    "title": "App usage",
+    "hint": "Active time only counts time with keyboard or mouse activity",
+    "name": "App",
+    "active": "Active time",
+    "exclude": "Stop counting this app",
+    "excluded": "Excluded; activity in this app will no longer be counted",
+    "emptyHint": "Once recording starts, active time, keystrokes and clicks per app appear here."
+  },
+  "empty": {
+    "keys": "No keystrokes yet",
+    "combos": "No shortcuts used yet",
+    "apps": "No apps yet",
+    "clicks": "No clicks yet"
+  },
+  "settings": {
+    "title": "Recording",
+    "enable": "Record in the background",
+    "enableHint": "Starts with ToolForge and counts keyboard and mouse usage in the background",
+    "permission": "Input Monitoring permission",
+    "permissionHint": "macOS requires permission to count keyboard and mouse input",
+    "permissionGranted": "Permission granted by the system",
+    "granted": "Granted",
+    "grant": "Grant access",
+    "excluded": "Excluded apps",
+    "excludedEmpty": "No apps are excluded. On the Apps tab, hover an app and click the eye icon to exclude it (for example banking apps or password managers).",
+    "include": "Count {{name}} again",
+    "privacy": "Privacy and data",
+    "clear": "Clear data",
+    "clearHint": "Delete all recorded statistics and keep settings",
+    "clearTitle": "Clear all statistics?",
+    "clearConfirm": "Keystrokes, clicks, app usage and heatmaps for every day will be deleted. This cannot be undone.",
+    "clearAction": "Clear",
+    "cleared": "Statistics cleared"
+  },
+  "privacy": [
+    "Only the number of presses per key and mouse button is counted; key order and typed text are never recorded.",
+    "Click positions are stored only as the screen cell they fall in (about 64 × 36 cells per display); no screenshots are taken.",
+    "Apps are recorded by name and identifier to measure time spent; window titles and contents are never read.",
+    "While an excluded app is in front, nothing is counted.",
+    "Data is stored in a SQLite database in the ToolForge data folder on this computer and never uploaded."
+  ],
+  "errors": {
+    "input_stats": {
+      "database": "Failed to read or write the statistics database: {{detail}}",
+      "not_started": "The statistics service has not started",
+      "invalid_date": "Invalid date: {{date}}",
+      "invalid_range": "Unknown time range: {{range}}",
+      "permission": "Input Monitoring permission is missing",
+      "thread": "Could not start the recording thread",
+      "hook_failed": "Could not install keyboard and mouse hooks",
+      "unsupported": "Input statistics are not supported here",
+      "no_record": "The X server does not support the RECORD extension",
+      "x11": "Failed to connect to the X server: {{detail}}"
+    }
+  }
+}

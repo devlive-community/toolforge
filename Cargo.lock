@@ -7973,6 +7973,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-input-stats"
+version = "0.1.0"
+dependencies = [
+ "indexmap 2.14.2",
+ "jiff",
+ "objc2",
+ "objc2-app-kit",
+ "objc2-foundation",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "windows-sys 0.61.2",
+ "x11rb",
+]
+
+[[package]]
 name = "tfp-ip-calculator"
 version = "0.1.0"
 dependencies = [
@@ -8715,6 +8732,7 @@ dependencies = [
  "tfp-image-info",
  "tfp-image-palette",
  "tfp-image-stitcher",
+ "tfp-input-stats",
  "tfp-ip-calculator",
  "tfp-json-formatter",
  "tfp-json-query",

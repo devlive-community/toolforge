@@ -1,0 +1,194 @@
+{
+  "name": "输入统计",
+  "description": "统计每天敲了多少次键盘、点了多少次鼠标、在哪些应用里忙碌，生成键盘与屏幕点击热力图",
+  "help": [
+    "开启后随 ToolForge 在后台统计，关闭窗口（后台运行）时也会继续；可随时在「设置」中暂停。",
+    "只累加每个键、每个鼠标按键的次数，不记录按键顺序和输入内容，无法还原你打了什么字。",
+    "macOS 需要在「系统设置 → 隐私与安全性 → 输入监控」中允许 ToolForge；输入密码等安全输入时系统不会把按键交给任何监听程序。",
+    "Linux 只支持 X11 会话，Wayland 不允许应用监听全局输入。",
+    "数据只保存在本机，可以排除指定应用，也可以随时清空。"
+  ],
+  "functions": {
+    "status": "状态",
+    "set_enabled": "开启或暂停统计",
+    "request_permission": "请求授权",
+    "summary": "汇总",
+    "click_map": "点击热力图",
+    "apps": "应用列表",
+    "set_excluded": "排除应用",
+    "clear": "清空数据"
+  },
+  "tabs": {
+    "overview": "概览",
+    "keyboard": "键盘",
+    "mouse": "鼠标",
+    "apps": "应用",
+    "settings": "设置"
+  },
+  "range": {
+    "label": "时间范围",
+    "today": "今天",
+    "yesterday": "昨天",
+    "week": "近 7 天",
+    "month": "近 30 天",
+    "all": "全部"
+  },
+  "status": {
+    "capturing": "统计中",
+    "capturingApp": "统计中 · {{app}}",
+    "permission": "等待授权",
+    "starting": "正在启动",
+    "paused": "已暂停"
+  },
+  "unsupported": {
+    "wayland": "当前是 Wayland 会话，系统不允许应用监听全局键盘鼠标输入。请在登录界面切换到 X11（Xorg）会话后使用。",
+    "no_display": "没有检测到图形界面（DISPLAY 未设置），无法统计输入。",
+    "other": "当前系统不支持输入统计。"
+  },
+  "permission": {
+    "message": "需要在「系统设置 → 隐私与安全性 → 输入监控」中允许 ToolForge。授权后会自动开始；如果仍未生效，请重启 ToolForge。"
+  },
+  "welcome": {
+    "title": "看看你每天敲了多少次键盘",
+    "description": "开启后在后台统计按键次数、鼠标点击与移动距离、各应用的使用时长，并生成键盘和屏幕点击热力图。只统计次数，不记录输入内容，数据只保存在本机。",
+    "start": "开始统计"
+  },
+  "stats": {
+    "keys": "按键",
+    "clicks": "鼠标点击",
+    "distance": "鼠标移动",
+    "distanceHint": "按屏幕物理尺寸估算",
+    "scroll": "滚动",
+    "active": "活跃时长",
+    "peak": "{{hour}} 点最忙"
+  },
+  "unit": {
+    "hours": "{{h}} 小时 {{m}} 分",
+    "minutes": "{{m}} 分钟",
+    "seconds": "{{s}} 秒",
+    "km": "{{value}} 公里",
+    "m": "{{value}} 米",
+    "cm": "{{value}} 厘米",
+    "lines": "{{value}} 行"
+  },
+  "count": "{{value}} 次",
+  "overview": {
+    "hourly": "24 小时分布",
+    "hour": "{{hour}} 点",
+    "hourValue": "按键 {{keys}} · 点击 {{clicks}}",
+    "apps": "最常用的应用",
+    "daily": "每日趋势",
+    "dayValue": "按键 {{keys}} · 点击 {{clicks}} · 活跃 {{active}}",
+    "privacy": "只统计次数，不记录按键顺序与输入内容；数据只保存在本机。"
+  },
+  "keyboard": {
+    "title": "键盘热力图",
+    "hint": "颜色越深按得越多，悬停查看次数",
+    "layout": "键盘布局",
+    "compact": "笔记本",
+    "full": "全尺寸",
+    "total": "共 {{value}} 次",
+    "distinct": "用到 {{count}} 个键",
+    "others": "其他按键",
+    "top": "最常按的键",
+    "combos": "常用快捷键"
+  },
+  "legend": {
+    "less": "少",
+    "more": "多"
+  },
+  "side": {
+    "left": "左 {{key}}",
+    "right": "右 {{key}}"
+  },
+  "keys": {
+    "Space": "空格",
+    "Unidentified": "未识别的键",
+    "IntlBackslash": "§ / <",
+    "IntlYen": "¥",
+    "IntlRo": "ろ",
+    "Lang1": "かな / 한/영",
+    "Lang2": "英数 / 한자",
+    "KanaMode": "かな",
+    "Convert": "変換",
+    "NonConvert": "無変換",
+    "AudioVolumeUp": "音量 +",
+    "AudioVolumeDown": "音量 -",
+    "AudioVolumeMute": "静音",
+    "MediaPlayPause": "播放 / 暂停",
+    "MediaTrackNext": "下一曲",
+    "MediaTrackPrevious": "上一曲",
+    "MediaStop": "停止播放"
+  },
+  "mouse": {
+    "heatmap": "屏幕点击热力图",
+    "hint": "按显示器的实际排列显示，悬停查看次数",
+    "buttons": "鼠标按键",
+    "ratio": "左键 : 右键",
+    "ratioHint": "左键点击约为右键的倍数"
+  },
+  "buttons": {
+    "left": "左键",
+    "right": "右键",
+    "middle": "中键",
+    "back": "后退键",
+    "forward": "前进键",
+    "other": "其他按键"
+  },
+  "apps": {
+    "title": "应用使用",
+    "hint": "活跃时长只计算有键盘鼠标操作的时间",
+    "name": "应用",
+    "active": "活跃时长",
+    "exclude": "不再统计此应用",
+    "excluded": "已排除，之后在该应用中的操作不会被统计",
+    "emptyHint": "开始统计后，这里会显示你在各个应用中的活跃时长、按键和点击次数。"
+  },
+  "empty": {
+    "keys": "还没有按键记录",
+    "combos": "还没有使用快捷键",
+    "apps": "还没有应用记录",
+    "clicks": "还没有点击记录"
+  },
+  "settings": {
+    "title": "统计",
+    "enable": "后台统计",
+    "enableHint": "随 ToolForge 启动，在后台统计键盘与鼠标的使用次数",
+    "permission": "输入监控权限",
+    "permissionHint": "macOS 需要授权才能统计键盘与鼠标",
+    "permissionGranted": "已获得系统授权",
+    "granted": "已授权",
+    "grant": "前往授权",
+    "excluded": "排除的应用",
+    "excludedEmpty": "没有排除任何应用。可以在「应用」页中悬停某个应用，点击眼睛图标排除它（例如网银、密码管理器）。",
+    "include": "恢复统计 {{name}}",
+    "privacy": "隐私与数据",
+    "clear": "清空数据",
+    "clearHint": "删除全部统计记录，保留设置",
+    "clearTitle": "清空全部统计数据？",
+    "clearConfirm": "所有日期的按键、点击、应用与热力图数据都会被删除，且无法恢复。",
+    "clearAction": "清空",
+    "cleared": "统计数据已清空"
+  },
+  "privacy": [
+    "只统计每个键、每个鼠标按键被按下的次数，不记录按键顺序，也不记录输入的文字。",
+    "点击位置只记录在屏幕上落在哪个格子（每块屏幕约 64 × 36 格），不截屏。",
+    "应用只记录名称与标识，用于统计使用时长，不读取窗口标题或内容。",
+    "排除名单中的应用在前台时，所有操作都不会被统计。",
+    "数据保存在本机 ToolForge 数据目录中的 SQLite 数据库，不会上传。"
+  ],
+  "errors": {
+    "input_stats": {
+      "database": "读写统计数据库失败：{{detail}}",
+      "not_started": "统计服务还没有启动",
+      "invalid_date": "日期格式不正确：{{date}}",
+      "invalid_range": "未知的时间范围：{{range}}",
+      "permission": "没有输入监控权限",
+      "thread": "无法启动统计线程",
+      "hook_failed": "无法安装键盘鼠标钩子",
+      "unsupported": "当前环境不支持输入统计",
+      "no_record": "X 服务器不支持 RECORD 扩展，无法统计输入",
+      "x11": "连接 X 服务器失败：{{detail}}"
+    }
+  }
+}
