@@ -1,0 +1,78 @@
+@import 'tailwindcss';
+
+/* class 切换深色模式（默认暗色，与桌面端观感一致） */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #fafaf9;
+  --bg-subtle: #f1f1ef;
+  --panel: #ffffff;
+  --border-subtle: #e4e4e0;
+  --border-strong: #cfceca;
+  --fg: #191b1a;
+  --fg-muted: #5c6360;
+  --fg-subtle: #8a908c;
+  --accent: #1c9a4f;
+  --accent-strong: #147a3c;
+  --accent-soft: #e2f4e8;
+  --hover: #ececea;
+  --amber: #b45309;
+}
+
+.dark {
+  --bg: #0b0d0e;
+  --bg-subtle: #101314;
+  --panel: #14171a;
+  --border-subtle: #23282c;
+  --border-strong: #343b40;
+  --fg: #e8ecea;
+  --fg-muted: #9aa4a0;
+  --fg-subtle: #6b736f;
+  --accent: #34c46d;
+  --accent-strong: #4cd181;
+  --accent-soft: #10281a;
+  --hover: #1a1e21;
+  --amber: #f5a623;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-panel: var(--panel);
+  --color-line: var(--border-subtle);
+  --color-line-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-hover: var(--hover);
+  --color-amber: var(--amber);
+  --font-display: var(--font-plex), ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-sans:
+    ui-sans-serif, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+    'Noto Sans SC', 'Helvetica Neue', Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 点阵网格背景：精密工具台的氛围底 */
+.blueprint {
+  background-image: radial-gradient(var(--border-subtle) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--fg);
+}

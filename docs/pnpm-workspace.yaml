@@ -1,0 +1,4 @@
+# docs 是独立于根 workspace 的自包含站点：
+# 独立锁文件使网站构建不受根依赖变动影响（GitHub Pages 单独部署）
+packages:
+  - .

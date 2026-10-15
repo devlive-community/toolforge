@@ -1,6 +1,5 @@
 .claude/
 .Codex/
-docs/ROADMAP.md
 
 # dependencies & build output
 node_modules/
@@ -17,3 +16,9 @@ apps/desktop/src-tauri/gen/
 .vscode/*
 !.vscode/extensions.json
 *.log
+
+# docs 站点构建产物与生成数据
+docs/.next/
+docs/out/
+docs/src/data/*.json
+.web_builder/

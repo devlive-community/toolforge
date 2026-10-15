@@ -1,0 +1,29 @@
+import { RELEASES_URL, REPO_URL, type Lang } from '@/lib/catalog'
+import { dict } from '@/lib/dict'
+
+export function Footer({ lang }: { lang: Lang }) {
+  return (
+    <footer className="border-t border-line">
+      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-xs text-fg-subtle sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <span className="font-display font-medium text-fg-muted">ToolForge</span>
+          <a className="transition-colors hover:text-fg" href={REPO_URL} target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+          <a className="transition-colors hover:text-fg" href={RELEASES_URL} target="_blank" rel="noreferrer">
+            {dict.nav.changelog[lang]}
+          </a>
+          <a
+            className="transition-colors hover:text-fg"
+            href="https://github.com/devlive-community"
+            target="_blank"
+            rel="noreferrer"
+          >
+            devlive-community
+          </a>
+        </div>
+        <p>{dict.footer.built[lang]}</p>
+      </div>
+    </footer>
+  )
+}
