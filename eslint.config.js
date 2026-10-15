@@ -12,7 +12,7 @@ const DATA_LIBS = [
 ]
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/node_modules/**', 'target/**', '**/src-tauri/**', '**/*.config.{js,ts}'] },
+  { ignores: ['**/dist/**', '**/node_modules/**', 'target/**', '**/src-tauri/**', '**/*.config.{js,ts}', 'docs/**'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   reactHooks.configs.flat['recommended-latest'],
