@@ -1,43 +1,11 @@
 import { Download } from 'lucide-react'
 import { release, RELEASES_URL, type Lang } from '@/lib/catalog'
 import { dict } from '@/lib/dict'
-
-type LabelKey = 'appleSilicon' | 'intel' | 'x64' | 'arm64' | 'appimage' | 'deb'
-type Group = { name: 'macos' | 'windows' | 'linux'; items: { labelKey: LabelKey; url: string }[] }
-
-// 平台下载分组：链接来自构建时注入的 release.json（tauri-action 产物按名字匹配）；
-// 资产缺失或 API 不可用时整体回退到 Releases 页面
-function collectGroups(): Group[] {
-  if (release.fallback) return []
-  const a = release.assets
-  const pair = (labelKey: LabelKey, url?: string) => (url ? { labelKey, url } : null)
-  // 先以 Group[] 标注字面量，name 才能收窄为字面量联合（直接链式 filter 会丢失上下文类型）
-  const groups: Group[] = [
-    {
-      name: 'macos',
-      items: [pair('appleSilicon', a.macosApple), pair('intel', a.macosIntel)].filter(
-        (item): item is NonNullable<typeof item> => item !== null,
-      ),
-    },
-    {
-      name: 'windows',
-      items: [pair('x64', a.windowsX64), pair('arm64', a.windowsArm)].filter(
-        (item): item is NonNullable<typeof item> => item !== null,
-      ),
-    },
-    {
-      name: 'linux',
-      items: [pair('appimage', a.linuxAppImage), pair('deb', a.linuxDeb)].filter(
-        (item): item is NonNullable<typeof item> => item !== null,
-      ),
-    },
-  ]
-  return groups.filter((group) => group.items.length > 0)
-}
+import { getDownloadGroups } from '@/lib/downloads'
 
 export function DownloadButtons({ lang, size = 'lg' }: { lang: Lang; size?: 'lg' | 'sm' }) {
   const t = dict.download
-  const groups = collectGroups()
+  const groups = getDownloadGroups()
 
   const cls =
     size === 'lg'
@@ -47,7 +15,7 @@ export function DownloadButtons({ lang, size = 'lg' }: { lang: Lang; size?: 'lg'
   if (groups.length === 0) {
     return (
       <a
-        href={RELEASES_URL}
+        href={RELEASES_URL+'/latest'}
         target="_blank"
         rel="noreferrer"
         className={`${cls} bg-accent text-white hover:bg-accent-strong dark:text-[#04120a]`}

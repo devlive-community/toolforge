@@ -1,5 +1,5 @@
 // 构建前数据管线：扫描 plugins/*/manifest.json 与双语 locales，生成工具目录；
-// 拉取 GitHub Releases 注入下载链接与更新日志。API 不可用时静默回退，构建永不失败。
+// 拉取 GitHub Releases 注入下载链接与更新日志。API 限流时读取公开发布页；均不可用时回退到 Releases 链接。
 //
 // 产物（全部 gitignore，构建时重新生成）：
 //   src/data/catalog.json   工具目录（双语）
@@ -11,13 +11,12 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
+import { loadReleaseData } from './release-data.mjs'
 
 const root = resolve(import.meta.dirname, '..', '..')
 const pluginsDir = join(root, 'plugins')
 const outDataDir = resolve(import.meta.dirname, '..', 'src', 'data')
 const outIconsDir = resolve(import.meta.dirname, '..', 'public', 'icons')
-const repo = 'devlive-community/toolforge'
-const releasesPage = `https://github.com/${repo}/releases/latest`
 
 // 分类标签：目录页的筛选与详情页展示用
 const CATEGORY_LABELS = {
@@ -206,74 +205,17 @@ function scanPlugins(sets) {
   return tools
 }
 
-async function fetchJson(url, timeoutMs = 8000) {
-  const headers = { 'User-Agent': 'toolforge-website' }
-  if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`
-  const response = await fetch(url, { headers, signal: AbortSignal.timeout(timeoutMs) })
-  if (!response.ok) throw new Error(`${response.status}`)
-  return response.json()
-}
-
-// 从资产名匹配平台安装包；tauri-action 的产物名形如
-// ToolForge_0.1.10_aarch64.dmg / _x64-setup.exe / _amd64.AppImage
-function matchAssets(assets) {
-  const pick = (test) =>
-    assets.find((asset) => test.test(asset.name))?.browser_download_url
-  return {
-    macosApple: pick(/aarch64.*\.dmg$|arm64.*\.dmg$/i),
-    macosIntel: pick(/x64.*\.dmg$|intel.*\.dmg$/i),
-    windowsX64: pick(/x64.*setup\.exe$|x64-setup\.exe$/i),
-    windowsArm: pick(/arm64.*setup\.exe$/i),
-    linuxAppImage: pick(/amd64\.appimage$/i),
-    linuxDeb: pick(/amd64\.deb$/i),
-  }
-}
-
-async function fetchReleases(appVersion) {
-  try {
-    const list = await fetchJson(`https://api.github.com/repos/${repo}/releases?per_page=15`)
-    const published = list.filter((item) => !item.draft && !item.prerelease)
-    const latest = published[0] ?? null
-    const compact = published.slice(0, 10).map((item) => ({
-      tag: item.tag_name,
-      name: item.name || item.tag_name,
-      date: (item.published_at ?? '').slice(0, 10),
-      body: item.body ?? '',
-    }))
-    const data = {
-      version: latest?.tag_name?.replace(/^v/, '') ?? appVersion,
-      url: latest?.html_url ?? releasesPage,
-      assets: latest ? matchAssets(latest.assets ?? []) : {},
-      releases: compact,
-      fetchedAt: new Date().toISOString(),
-    }
-    console.log(`[generate-data] latest release: ${data.version}`)
-    return data
-  } catch (error) {
-    // 本地无令牌或网络受限时回退到 Releases 页面链接，构建不失败
-    console.warn(`[generate-data] release fetch failed (${error.message}), using fallback`)
-    return {
-      version: appVersion,
-      url: releasesPage,
-      assets: {},
-      releases: [],
-      fetchedAt: new Date().toISOString(),
-      fallback: true,
-    }
-  }
-}
-
 mkdirSync(outDataDir, { recursive: true })
 mkdirSync(outIconsDir, { recursive: true })
 
-const appVersion = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version
-const release = await fetchReleases(appVersion)
+const release = await loadReleaseData()
+if (!release.fallback) console.log(`[generate-data] latest release: ${release.version}`)
 const sets = releaseStatusSets()
 if (sets) console.log(`[generate-data] status tags: ${sets.prevTag} -> ${sets.latestTag}`)
 const tools = scanPlugins(sets)
-const counts = { released: 0, new: 0, upcoming: 0 }
+const counts = { released: 0, new: 0, updated: 0, upcoming: 0 }
 for (const tool of tools) counts[tool.status] += 1
-console.log(`[generate-data] status: ${counts.released} released, ${counts.new} new, ${counts.upcoming} upcoming`)
+console.log(`[generate-data] status: ${counts.released} released, ${counts.new} new, ${counts.updated} updated, ${counts.upcoming} upcoming`)
 
 writeFileSync(join(outDataDir, 'catalog.json'), JSON.stringify(tools, null, 2))
 writeFileSync(join(outDataDir, 'release.json'), JSON.stringify(release, null, 2))
