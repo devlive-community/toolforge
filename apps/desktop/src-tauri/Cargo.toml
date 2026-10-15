@@ -66,6 +66,7 @@ tfp-date-calculator.workspace = true
 tfp-number-words.workspace = true
 tfp-url-parser.workspace = true
 tfp-json-query.workspace = true
+tfp-json-schema.workspace = true
 tfp-image-palette.workspace = true
 tfp-image-stitcher.workspace = true
 tfp-table-converter.workspace = true

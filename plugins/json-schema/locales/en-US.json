@@ -1,0 +1,117 @@
+{
+  "name": "JSON Schema Validator",
+  "description": "Validate JSON against Draft 2020-12 or Draft 7 with precise error paths",
+  "help": [
+    "Paste JSON and its schema, or open UTF-8 JSON files of up to 2 MiB each. Select the draft, validate, then copy or save the diagnostic report.",
+    "The selected draft is explicit: a conflicting $schema declaration is reported instead of silently changing dialects. Enable format checks to validate built-in formats such as email and date-time; unknown formats remain annotations.",
+    "Only fragment references in the submitted document, such as #/$defs/user, are accepted. External, relative-file and network references are rejected. No schema files or URLs are downloaded automatically.",
+    "Inputs are limited to 2 MiB each, depth 64 and 50,000 JSON nodes. Numbers allow up to 4,096 bytes and exponent magnitude 10,000. Schemas allow 4,096 schema nodes, 256 combinator branches, 128 patterns and 4,096 bytes per pattern. Regular expressions have a 1 MiB compilation budget and 10,000 backtracking steps. Up to 200 diagnostics are returned.",
+    "Validation runs as a background task. Cancellation and the 10-second processing budget are checked between stages and diagnostics; a single schema compilation or validation step must finish before they can take effect.",
+    "Error paths use JSON Pointer. For schema errors, Document path points into your schema and Meta-schema path identifies its rule. Syntax errors can be clicked to jump to their line. Editing inputs marks existing results as outdated.",
+    "Keys are limited to 512 bytes, generated paths to 2,048 bytes, and estimated schema expansion to 100,000 operations with a 16 MiB path-memory budget. Relative $id values, non-empty fragments in $id and duplicate resource IDs are not supported."
+  ],
+  "functions": {
+    "validate": "Validate JSON",
+    "read_file": "Open JSON file"
+  },
+  "detect": {
+    "schema": "JSON Schema 2020-12",
+    "schema7": "JSON Schema Draft 7"
+  },
+  "settings": {
+    "title": "Validation",
+    "draft": "Schema draft",
+    "formats": "Check formats",
+    "hint": "Local processing · fragment references only · 2 MiB per editor · 200 diagnostics maximum"
+  },
+  "drafts": {
+    "2020-12": "Draft 2020-12",
+    "7": "Draft 7"
+  },
+  "samples": {
+    "title": "Examples",
+    "valid": "Valid API payload",
+    "invalid": "Invalid API payload",
+    "refs": "Document references",
+    "tuple": "Tuple and draft differences"
+  },
+  "actions": {
+    "validate": "Validate",
+    "cancel": "Cancel",
+    "cancelling": "Cancellation requested"
+  },
+  "input": {
+    "instance": "JSON instance",
+    "schema": "JSON Schema",
+    "instanceHint": "Paste the JSON to validate",
+    "schemaHint": "Paste a JSON Schema",
+    "clearInstance": "Clear JSON instance",
+    "clearSchema": "Clear schema",
+    "openInstance": "Open JSON instance file",
+    "openSchema": "Open Schema file",
+    "fileFilter": "JSON and text files"
+  },
+  "stages": {
+    "schema.parse": "Parsing inputs",
+    "schema.compile": "Checking and compiling schema",
+    "schema.validate": "Validating JSON"
+  },
+  "status": {
+    "cancelHint": "Cancellation will take effect at the next processing checkpoint",
+    "cancelled": "Validation cancelled. Your inputs have been kept."
+  },
+  "result": {
+    "title": "Diagnostics",
+    "valid": "Valid",
+    "invalid": "Validation failed",
+    "validHint": "The schema is valid and the JSON satisfies its constraints.",
+    "empty": "Ready to validate",
+    "emptyHint": "Paste JSON and a schema, then run validation",
+    "elapsed": "{{ms}} ms",
+    "copy": "Copy report",
+    "count_one": "{{count}} diagnostic",
+    "count_other": "{{count}} diagnostics",
+    "location": "Line {{line}}, column {{column}}",
+    "instancePath": "Instance path",
+    "schemaPath": "Schema rule",
+    "documentPath": "Document path",
+    "metaPath": "Meta-schema rule",
+    "root": "(root)",
+    "stale": "Inputs or options changed. Run validation again to update this report.",
+    "truncated": "Only the first 200 diagnostics are shown.",
+    "pointerHint": "Paths are JSON Pointers. Schema paths identify the failing keyword, including rules reached through local references.",
+    "save": "Save report"
+  },
+  "diagnostics": {
+    "schema": {
+      "invalid_json": "Invalid JSON syntax",
+      "invalid_schema": "Invalid schema",
+      "validation": "Constraint failed",
+      "external_ref": "External reference rejected",
+      "draft_mismatch": "Declaration conflicts with the selected draft",
+      "complexity": "Schema complexity budget exceeded",
+      "pattern_budget": "Too many regular expressions",
+      "pattern_length": "Regular expression is too long",
+      "branch_budget": "Too many combinator branches",
+      "regex_budget": "Regular expression budget exceeded",
+      "regex_failure": "Regular expression evaluation failed",
+      "reference_target": "Reference target is not supported",
+      "work_budget": "Schema expansion budget exceeded",
+      "path_budget": "Error path budget exceeded"
+    }
+  },
+  "errors": {
+    "schema.too_large": "An input exceeds the {{mb}} MiB limit ({{target}}).",
+    "schema.too_deep": "An input exceeds the nesting limit of {{depth}} ({{target}}).",
+    "schema.node_budget": "An input exceeds the {{limit}} JSON-node budget ({{target}}).",
+    "schema.numeric_budget": "A number exceeds the precision budget: 4,096 bytes or exponent magnitude 10,000 ({{target}}).",
+    "schema.time_budget": "The {{seconds}}-second processing budget was exceeded at a checkpoint. Simplify the schema or input.",
+    "schema.file_read": "Could not read the selected file.",
+    "schema.not_file": "Select a regular file.",
+    "schema.file_encoding": "The file must use UTF-8 encoding.",
+    "schema.file_too_large": "The selected file exceeds {{mb}} MiB.",
+    "schema.path_budget": "A JSON key or error path exceeds the supported length ({{target}}).",
+    "schema.work_budget": "The schema or data exceeds the bounded validation-work budget. Simplify the schema or reduce the input.",
+    "schema.reference_target": "A reference target or resource declaration is not supported: {{detail}}"
+  }
+}

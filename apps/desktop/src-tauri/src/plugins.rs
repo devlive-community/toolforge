@@ -80,6 +80,7 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
     registry.register_for(Arc::new(tfp_number_words::NumberWords::default()), os);
     registry.register_for(Arc::new(tfp_url_parser::UrlParser::default()), os);
     registry.register_for(Arc::new(tfp_json_query::JsonQuery::default()), os);
+    registry.register_for(Arc::new(tfp_json_schema::JsonSchema::default()), os);
     registry.register_for(Arc::new(tfp_image_palette::ImagePalette::default()), os);
     registry.register_for(Arc::new(tfp_image_stitcher::ImageStitcher::default()), os);
     registry.register_for(Arc::new(tfp_table_converter::TableConverter::default()), os);

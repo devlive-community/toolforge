@@ -39,6 +39,7 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | Tool | Description |
 |------|-------------|
 | **JSON Formatter** | Format, minify, validate, escape / unescape, tree view and structural diff; JSON5 support; errors pinpointed to line and column; tree view loads large documents on demand |
+| **JSON Schema Validator** | Validate JSON against Draft 2020-12 or Draft 7 offline, with explicit format checks, document references, bounded diagnostics and JSON Pointer paths; open JSON files and save validation reports |
 | **JSON Query** | Query and reshape JSON or JSON Lines with jq (jaq engine; output matches jq) or JSONPath with normalized match paths; raw, compact and sorted output, examples, files up to 100 MB and a 10-second time limit |
 | **XML Formatter** | Format, minify and validate; keeps comments, CDATA and declarations; unclosed or mismatched tags reported with line and column |
 | **SQL Formatter** | Beautify and minify; keyword casing, indentation and compact mode; generic SQL / PostgreSQL / SQL Server dialects |

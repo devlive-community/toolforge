@@ -1,0 +1,13 @@
+{
+  "id": "org.devlive.toolforge.json-schema",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["json schema", "validate", "draft 7", "2020-12", "schema", "校验", "结构", "约束"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "functions": { "read_file": {}, "validate": { "task": true } },
+  "sensitive": false
+}
