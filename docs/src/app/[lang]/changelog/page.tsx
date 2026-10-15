@@ -1,5 +1,6 @@
 import { release, RELEASES_URL, type Lang } from '@/lib/catalog'
 import { dict } from '@/lib/dict'
+import { ReleaseNotes } from '@/components/ReleaseNotes'
 
 // 更新日志：构建时从 GitHub Releases 注入，nightly 定时重建保持新鲜
 export default async function ChangelogPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -44,9 +45,9 @@ export default async function ChangelogPage({ params }: { params: Promise<{ lang
                 </a>
                 <time className="text-xs text-fg-subtle tabular-nums">{item.date}</time>
               </div>
-              <pre className="mt-3 whitespace-pre-wrap font-sans text-[13px] leading-relaxed text-fg-muted">
-                {item.body.trim() || '—'}
-              </pre>
+              <div className="mt-3">
+                {item.body.trim() ? <ReleaseNotes body={item.body} /> : <p className="text-fg-subtle">—</p>}
+              </div>
             </li>
           ))}
         </ol>
