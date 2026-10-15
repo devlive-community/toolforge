@@ -8,6 +8,7 @@
 //   public/icons/<slug>.svg 插件图标
 //   public/icon.png         站点 favicon
 
+import { execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
@@ -49,7 +50,53 @@ function localized(manifest, locale, field) {
   return typeof fallback === 'string' && !fallback.startsWith('i18n:') ? fallback : ''
 }
 
-function scanPlugins() {
+
+  // ── 发布状态：对比最新两个版本 tag 中 plugins/ 的目录集合，不依赖 commit 信息 ──
+// 最新 tag 有、上个 tag 没有 → new（随最新版发布）
+// 当前工作区有、最新 tag 没有 → upcoming（已合入但未随任何版本发布）
+// 两个 tag 都有 → released
+// 只依赖 git：CI 浅克隆时按需浅 fetch 两个 tag；任何一步失败返回 null，
+// 此时所有工具视为已发布（数据不可用时宁可不标，也不整站误标）
+
+// 宽松 semver 比较：剥离 v 前缀后按数字段逐位比较
+function compareVersions(a, b) {
+  const pa = a.replace(/^v/i, '').split('.').map((part) => Number.parseInt(part, 10) || 0)
+  const pb = b.replace(/^v/i, '').split('.').map((part) => Number.parseInt(part, 10) || 0)
+  for (let index = 0; index < Math.max(pa.length, pb.length); index += 1) {
+    const delta = (pa[index] ?? 0) - (pb[index] ?? 0)
+    if (delta !== 0) return delta
+  }
+  return 0
+}
+
+function gitOutput(args) {
+  // git 命令必须在仓库根执行：ls-tree 的 plugins/ pathspec 相对 cwd 解析
+  return execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim()
+}
+
+function releaseStatusSets() {
+  try {
+    const tags = [...gitOutput(['ls-remote', '--tags', '--refs', 'origin']).matchAll(/refs\/tags\/(v\d[\w.]*)$/gm)]
+      .map((match) => match[1])
+      .sort((a, b) => compareVersions(a, b))
+    if (tags.length < 2) return null
+    const [prevTag, latestTag] = tags.slice(-2) // 升序排序后末尾两个为 [次新, 最新]
+    // CI checkout 通常是浅克隆，本地没有 tag 对象时按需补齐（本地已有则无实质开销）
+    execFileSync('git', ['fetch', '--depth=1', '--quiet', 'origin', latestTag, prevTag], { cwd: root, stdio: 'ignore' })
+    const pluginsAt = (tag) =>
+      new Set(
+        gitOutput(['ls-tree', '--name-only', tag, 'plugins/'])
+          .split('\n')
+          .filter(Boolean)
+          .map((line) => line.replace(/^plugins\//, '').replace(/\/$/, '')),
+      )
+    return { latestTag, latestSet: pluginsAt(latestTag), prevTag, prevSet: pluginsAt(prevTag) }
+  } catch {
+    return null
+  }
+}
+
+function scanPlugins(sets) {
   const tools = []
   for (const entry of readdirSync(pluginsDir, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue
@@ -73,6 +120,13 @@ function scanPlugins() {
     }
     if (!name.zh && !name.en) continue
     const category = manifest.category || 'other'
+    const status = !sets
+      ? 'released'
+      : !sets.latestSet.has(slug)
+        ? 'upcoming'
+        : sets.prevSet.has(slug)
+          ? 'released'
+          : 'new'
     tools.push({
       slug,
       name,
@@ -80,6 +134,7 @@ function scanPlugins() {
       category,
       categoryLabel: CATEGORY_LABELS[category] ?? { zh: category, en: category },
       keywords: manifest.keywords ?? [],
+      status,
     })
     // 图标：复制到 public 供站点直接引用
     const icon = join(dir, 'icon.svg')
@@ -151,9 +206,14 @@ async function fetchReleases(appVersion) {
 mkdirSync(outDataDir, { recursive: true })
 mkdirSync(outIconsDir, { recursive: true })
 
-const tools = scanPlugins()
 const appVersion = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version
 const release = await fetchReleases(appVersion)
+const sets = releaseStatusSets()
+if (sets) console.log(`[generate-data] status tags: ${sets.prevTag} -> ${sets.latestTag}`)
+const tools = scanPlugins(sets)
+const counts = { released: 0, new: 0, upcoming: 0 }
+for (const tool of tools) counts[tool.status] += 1
+console.log(`[generate-data] status: ${counts.released} released, ${counts.new} new, ${counts.upcoming} upcoming`)
 
 writeFileSync(join(outDataDir, 'catalog.json'), JSON.stringify(tools, null, 2))
 writeFileSync(join(outDataDir, 'release.json'), JSON.stringify(release, null, 2))

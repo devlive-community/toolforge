@@ -47,10 +47,21 @@ docs/
 
 `scripts/generate-data.mjs` 在 `build` / `dev` 前自动执行：
 
-1. 扫描 `plugins/*/manifest.json` 与 `locales/{zh-CN,en-US}.json`，生成 `src/data/catalog.json`
+1. 扫描 `plugins/*/manifest.json` 与 `locales/{zh-CN,en-US}.json`，对比最新两个版本 tag 自动判定各工具的发布状态，生成 `src/data/catalog.json`
 2. 复制各插件 `icon.svg` 到 `public/icons/<slug>.svg`
 3. 拉取 GitHub Releases：最新版本号、各平台安装包链接（dmg / setup.exe / AppImage / deb）与最近 10 条发布记录
    - 有 `GITHUB_TOKEN` 时不受匿名限流影响；拉取失败自动回退为 Releases 页面链接，构建不失败
+
+## 发布状态（待发布 / 新 角标）
+
+完全自动判定，**不需要维护任何清单、不修改插件代码**。`generate-data.mjs` 通过 git 对比发布状态：
+
+- `git ls-remote --tags` 取最新两个版本 tag（如 `v0.1.9`、`v0.1.8`），`git ls-tree` 分别列出两个 tag 中 `plugins/` 下的插件目录
+- 当前目录有、最新 tag 没有的插件 → **待发布**（已合入但未随任何版本发布）
+- 最新 tag 有、上个 tag 没有的插件 → **新**（随最新版本首次发布）
+- 两个 tag 都有 → 已发布，无角标
+
+工具卡片、首页精选、详情页共用同一状态角标，目录页提供「全部状态 / 已发布 / 新发布 / 待发布」筛选，最新一条发布记录在更新日志页标「最新」。git 不可用（如离线）时全部视为已发布，构建不失败。
 
 ## 部署
 

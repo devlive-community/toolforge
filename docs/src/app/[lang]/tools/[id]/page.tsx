@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, Lightbulb } from 'lucide-react'
-import { catalog, getTool, toolDescription, toolName, type Lang } from '@/lib/catalog'
+import { catalog, getTool, toolDescription, toolName, toolStatus, type Lang } from '@/lib/catalog'
 import { dict } from '@/lib/dict'
+import { StatusBadge } from '@/components/StatusBadge'
 
 // 65 个工具 × 双语，构建时全部静态生成
 export function generateStaticParams() {
@@ -59,7 +60,10 @@ export default async function ToolDetailPage({
           className="size-16 shrink-0 rounded-xl border border-line bg-panel p-3"
         />
         <div className="min-w-0">
-          <h1 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">{name}</h1>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">{name}</h1>
+            <StatusBadge tool={tool} lang={langTag} size="md" />
+          </div>
           <p className="mt-2 font-display text-xs uppercase tracking-wider text-fg-subtle">
             {dict.detail.category[langTag]} · {tool.categoryLabel[langTag]}
           </p>
@@ -67,6 +71,12 @@ export default async function ToolDetailPage({
       </div>
 
       <p className="mt-6 text-[15px] leading-relaxed text-fg-muted">{toolDescription(tool, langTag)}</p>
+
+      {toolStatus(tool) === 'upcoming' && (
+        <p className="mt-4 rounded-lg border border-amber/30 bg-amber/10 px-4 py-3 text-[13px] leading-relaxed text-amber">
+          {dict.detail.upcomingNote[langTag]}
+        </p>
+      )}
 
       {keywords.length > 0 && (
         <section className="mt-8">

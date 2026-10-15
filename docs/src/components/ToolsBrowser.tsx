@@ -3,13 +3,14 @@
 import { useMemo, useState } from 'react'
 import { Search } from 'lucide-react'
 import { ToolCard } from '@/components/ToolCard'
-import { toolName, type Lang, type ToolEntry } from '@/lib/catalog'
+import { toolName, toolStatus, type Lang, type ToolEntry, type ToolStatus } from '@/lib/catalog'
 import { dict } from '@/lib/dict'
 
-// 工具目录：分类筛选 + 关键词搜索（纯客户端，静态托管友好）
+// 工具目录：分类筛选 + 发布状态筛选 + 关键词搜索（纯客户端，静态托管友好）
 export function ToolsBrowser({ tools, lang }: { tools: ToolEntry[]; lang: Lang }) {
   const t = dict.toolsPage
   const [category, setCategory] = useState<string>('all')
+  const [status, setStatus] = useState<'all' | ToolStatus>('all')
   const [query, setQuery] = useState('')
 
   const categories = useMemo(() => {
@@ -22,13 +23,14 @@ export function ToolsBrowser({ tools, lang }: { tools: ToolEntry[]; lang: Lang }
     const needle = query.trim().toLowerCase()
     return tools.filter((tool) => {
       if (category !== 'all' && tool.category !== category) return false
+      if (status !== 'all' && toolStatus(tool) !== status) return false
       if (!needle) return true
       const haystack = [toolName(tool, lang), tool.description[lang], tool.description.en, ...tool.keywords]
         .join(' ')
         .toLowerCase()
       return haystack.includes(needle)
     })
-  }, [tools, category, query, lang])
+  }, [tools, category, status, query, lang])
 
   return (
     <div className="space-y-5">
@@ -58,6 +60,21 @@ export function ToolsBrowser({ tools, lang }: { tools: ToolEntry[]; lang: Lang }
             {item[lang]}
           </Chip>
         ))}
+      </div>
+
+      <div className="flex flex-wrap gap-1.5">
+        <Chip active={status === 'all'} onClick={() => setStatus('all')}>
+          {t.statusAll[lang]}
+        </Chip>
+        <Chip active={status === 'released'} onClick={() => setStatus('released')}>
+          {t.statusReleased[lang]}
+        </Chip>
+        <Chip active={status === 'new'} onClick={() => setStatus('new')}>
+          {t.statusNew[lang]}
+        </Chip>
+        <Chip active={status === 'upcoming'} onClick={() => setStatus('upcoming')}>
+          {t.statusUpcoming[lang]}
+        </Chip>
       </div>
 
       {filtered.length === 0 ? (

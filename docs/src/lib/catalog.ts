@@ -5,6 +5,8 @@ import releaseJson from '@/data/release.json'
 export type Lang = 'zh' | 'en'
 export const LANGS: Lang[] = ['zh', 'en']
 
+export type ToolStatus = 'released' | 'new' | 'upcoming'
+
 export interface ToolEntry {
   slug: string
   name: Record<Lang, string>
@@ -12,6 +14,8 @@ export interface ToolEntry {
   category: string
   categoryLabel: Record<Lang, string>
   keywords: string[]
+  /** 发布状态：数据管线对比最新两个版本 tag 的 plugins/ 集合得出，缺失时视为已发布 */
+  status?: ToolStatus
 }
 
 export interface ReleaseAssetSet {
@@ -33,6 +37,17 @@ export interface ReleaseData {
 
 export const catalog = catalogJson as ToolEntry[]
 export const release = releaseJson as ReleaseData
+
+/**
+ * 工具发布状态：
+ * - released：早已随历史版本发布
+ * - new：随最新版本首次发布（最新 tag 有、上个 tag 没有）
+ * - upcoming：已合入仓库但尚未随任何版本发布（当前目录有、最新 tag 没有）
+ * 由 generate-data.mjs 在构建时计算；数据不可用时一律视为 released，避免整站误标。
+ */
+export function toolStatus(tool: ToolEntry): ToolStatus {
+  return tool.status ?? 'released'
+}
 
 export function getTool(slug: string): ToolEntry | undefined {
   return catalog.find((tool) => tool.slug === slug)

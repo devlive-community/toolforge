@@ -68,7 +68,17 @@ export const dict = {
     all: { zh: '全部', en: 'All' },
     count: { zh: '个工具', en: 'tools' },
     empty: { zh: '没有匹配的工具，换个关键词试试。', en: 'No tools match — try another keyword.' },
+    statusAll: { zh: '全部状态', en: 'All statuses' },
+    statusReleased: { zh: '已发布', en: 'Released' },
+    statusNew: { zh: '新发布', en: 'New' },
+    statusUpcoming: { zh: '待发布', en: 'Upcoming' },
   },
+  badge: {
+    upcoming: { zh: '待发布', en: 'Upcoming' },
+    new: { zh: '新', en: 'New' },
+    latest: { zh: '最新', en: 'Latest' },
+  },
+
   detail: {
     back: { zh: '返回全部工具', en: 'Back to all tools' },
     keywords: { zh: '关键词', en: 'Keywords' },
@@ -80,6 +90,10 @@ export const dict = {
       three: { zh: '打开即可使用，数据全部留在本机。', en: 'Open it — your data stays on the machine.' },
     },
     notFound: { zh: '没有找到这个工具。', en: 'This tool could not be found.' },
+    upcomingNote: {
+      zh: '该工具尚未随稳定版发布，将在未来版本提供。',
+      en: 'This tool is not part of the current stable build yet — it ships in a future release.',
+    },
   },
   changelog: {
     title: { zh: '更新日志', en: 'Changelog' },

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { toolName, type Lang, type ToolEntry } from '@/lib/catalog'
+import { StatusBadge } from '@/components/StatusBadge'
 
 // 工具卡片：目录页与首页精选共用
 export function ToolCard({ tool, lang }: { tool: ToolEntry; lang: Lang }) {
@@ -23,6 +24,7 @@ export function ToolCard({ tool, lang }: { tool: ToolEntry; lang: Lang }) {
             {tool.categoryLabel[lang]}
           </p>
         </div>
+        <StatusBadge tool={tool} lang={lang} />
       </div>
       <p className="line-clamp-2 text-xs leading-relaxed text-fg-muted">
         {tool.description[lang] || tool.description.en}

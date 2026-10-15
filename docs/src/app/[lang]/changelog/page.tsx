@@ -31,7 +31,7 @@ export default async function ChangelogPage({ params }: { params: Promise<{ lang
         </p>
       ) : (
         <ol className="mt-10 space-y-0 border-l border-line pl-6">
-          {releases.map((item) => (
+          {releases.map((item, index) => (
             <li key={item.tag} className="relative pb-10">
               <span className="absolute -left-[31px] top-1.5 size-2.5 rounded-full border-2 border-accent bg-bg" />
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -43,6 +43,11 @@ export default async function ChangelogPage({ params }: { params: Promise<{ lang
                 >
                   {item.name}
                 </a>
+                {index === 0 && (
+                  <span className="inline-flex items-center rounded-full border border-accent/30 bg-accent-soft px-2 py-0.5 text-[10px] font-medium leading-none text-accent-strong">
+                    {dict.badge.latest[langTag]}
+                  </span>
+                )}
                 <time className="text-xs text-fg-subtle tabular-nums">{item.date}</time>
               </div>
               <div className="mt-3">
