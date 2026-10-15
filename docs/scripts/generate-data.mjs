@@ -81,8 +81,17 @@ function releaseStatusSets() {
       .sort((a, b) => compareVersions(a, b))
     if (tags.length < 2) return null
     const [prevTag, latestTag] = tags.slice(-2) // 升序排序后末尾两个为 [次新, 最新]
-    // CI checkout 通常是浅克隆，本地没有 tag 对象时按需补齐（本地已有则无实质开销）
-    execFileSync('git', ['fetch', '--depth=1', '--quiet', 'origin', latestTag, prevTag], { cwd: root, stdio: 'ignore' })
+    // CI checkout 通常是浅克隆且没有 tag 引用：按显式 refspec 浅拉两个 tag
+    // （git fetch <tag> 只写 FETCH_HEAD 不建本地引用，后续 ls-tree 会找不到）
+    execFileSync(
+      'git',
+      [
+        'fetch', '--depth=1', '--quiet', '--no-tags', 'origin',
+        `+refs/tags/${latestTag}:refs/tags/${latestTag}`,
+        `+refs/tags/${prevTag}:refs/tags/${prevTag}`,
+      ],
+      { cwd: root, stdio: 'ignore' },
+    )
     const pluginsAt = (tag) =>
       new Set(
         gitOutput(['ls-tree', '--name-only', tag, 'plugins/'])
@@ -91,7 +100,8 @@ function releaseStatusSets() {
           .map((line) => line.replace(/^plugins\//, '').replace(/\/$/, '')),
       )
     return { latestTag, latestSet: pluginsAt(latestTag), prevTag, prevSet: pluginsAt(prevTag) }
-  } catch {
+  } catch (error) {
+    console.warn(`[generate-data] release status unavailable (${String(error.message).split('\n')[0]}), treating all tools as released`)
     return null
   }
 }
