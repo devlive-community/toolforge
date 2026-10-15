@@ -29,8 +29,8 @@ export async function generateMetadata({
   const zh = lang !== 'en'
   const title = 'ToolForge — ' + (zh ? '桌面工具箱，全部本地运行' : 'The desktop toolbox that stays local')
   const description = zh
-    ? '65 个开箱即用的桌面工具插件：识别、转换、编码、网络、系统信息，全部在本地 Rust 中运行。'
-    : '65 out-of-the-box desktop tools — OCR, converters, encoding, network and system info, all running locally in Rust.'
+    ? '面向开发与日常效率的桌面工具箱：识别、转换、编码、网络与系统工具，本地处理，插件架构。'
+    : 'A desktop toolbox for development and everyday productivity: OCR, converters, encoding, network and system tools, with local processing and independent plugins.'
   const ogImage = { url: '/og-image.png', width: 1200, height: 630, alt: 'ToolForge' }
   return {
     title,

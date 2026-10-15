@@ -20,6 +20,7 @@ cd docs
 corepack pnpm install
 corepack pnpm dev      # 开发服务器
 corepack pnpm build    # 静态导出到 out/
+corepack pnpm test     # 发布数据与直达下载回退的回归检查
 ```
 
 > `docs` 是独立于根 workspace 的自包含站点（自带 `pnpm-workspace.yaml` 与锁文件），
@@ -50,7 +51,7 @@ docs/
 1. 扫描 `plugins/*/manifest.json` 与 `locales/{zh-CN,en-US}.json`，对比最新两个版本 tag 自动判定各工具的发布状态，生成 `src/data/catalog.json`
 2. 复制各插件 `icon.svg` 到 `public/icons/<slug>.svg`
 3. 拉取 GitHub Releases：最新版本号、各平台安装包链接（dmg / setup.exe / AppImage / deb）与最近 10 条发布记录
-   - 有 `GITHUB_TOKEN` 时不受匿名限流影响；拉取失败自动回退为 Releases 页面链接，构建不失败
+   - 有 `GITHUB_TOKEN` 时不受匿名限流影响；API 限流时自动读取 GitHub 最新正式发布页、公开安装包清单与发布订阅源；二者都不可用才回退到 Releases 页面链接，且不把开发版本标为最新正式版
 
 ## 发布状态（待发布 / 新 角标）
 
@@ -72,3 +73,12 @@ docs/
 ## 技术栈
 
 Next.js 15（App Router · 静态导出） · React 19 · Tailwind CSS v4 · TypeScript · GitHub Actions
+
+## 全站页面与下载
+
+- 首页首屏直接展示最新正式版本的 macOS / Windows / Linux 安装包，按架构与格式一键下载；按钮地址来自真实发布资产，不拼接安装包文件名。
+- 工具目录支持关键词、分类、发布状态叠加筛选与每页 15 项分页，工具卡片链接到双语详情页。
+- 工具详情对尚未发布的新工具使用发布日志入口；已有工具的未发布更新与稳定版基础功能分开说明。
+- 发布日志显示真实版本时间线、原文发布说明与可展开历史版本。
+- 各页均支持深浅主题、手机布局与正确的双语 canonical；手机顶部可直接进入工具目录和发布日志。
+- `scripts/release-data.mjs` 独立负责发布 API / 公开页面回退；单元测试覆盖 API 限流、缺失安装包、版本过滤与完全离线。

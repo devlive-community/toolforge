@@ -45,7 +45,6 @@ const components: Components = {
     <blockquote className="my-2 border-l-2 border-line-strong pl-3 text-fg-subtle">{children}</blockquote>
   ),
   img: ({ src, alt }) => (
-    // eslint-disable-next-line @next/next/no-img-element -- 静态导出不用 next/image 优化管线
     <img src={typeof src === 'string' ? src : undefined} alt={alt ?? ''} loading="lazy" className="my-2 max-w-full rounded-lg border border-line" />
   ),
   hr: () => <hr className="my-3 border-line" />,

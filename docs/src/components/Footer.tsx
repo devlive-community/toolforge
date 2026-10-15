@@ -1,4 +1,5 @@
-import { RELEASES_URL, REPO_URL, type Lang } from '@/lib/catalog'
+import Link from 'next/link'
+import { REPO_URL, type Lang } from '@/lib/catalog'
 import { dict } from '@/lib/dict'
 
 export function Footer({ lang }: { lang: Lang }) {
@@ -9,9 +10,9 @@ export function Footer({ lang }: { lang: Lang }) {
         <a className="transition-colors hover:text-fg" href={REPO_URL} target="_blank" rel="noreferrer">
           GitHub
         </a>
-        <a className="transition-colors hover:text-fg" href={RELEASES_URL} target="_blank" rel="noreferrer">
+        <Link className="transition-colors hover:text-fg" href={`/${lang}/changelog/`}>
           {dict.nav.changelog[lang]}
-        </a>
+        </Link>
         <a
           className="transition-colors hover:text-fg"
           href="https://github.com/devlive-community"

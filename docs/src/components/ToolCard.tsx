@@ -1,34 +1,25 @@
 import Link from 'next/link'
-import { toolName, type Lang, type ToolEntry } from '@/lib/catalog'
-import { StatusBadge } from '@/components/StatusBadge'
+import { ArrowUpRight } from 'lucide-react'
+import { toolDescription, toolName, toolStatus, type Lang, type ToolEntry, type ToolStatus } from '@/lib/catalog'
+import styles from './ToolCard.module.css'
 
-// 工具卡片：目录页与首页精选共用
+const labels = {
+  zh: { released: '已发布', new: '新发布', updated: '已更新', upcoming: '待发布' },
+  en: { released: 'Released', new: 'New', updated: 'Updated', upcoming: 'Upcoming' },
+} satisfies Record<Lang, Record<ToolStatus, string>>
+
+// Shared by the catalog and related tools on detail pages.
 export function ToolCard({ tool, lang }: { tool: ToolEntry; lang: Lang }) {
+  const status = toolStatus(tool)
   return (
-    <Link
-      href={`/${lang}/tools/${tool.slug}/`}
-      className="group flex min-w-0 flex-col gap-2.5 rounded-lg border border-line bg-panel p-4 transition-all hover:-translate-y-0.5 hover:border-line-strong hover:shadow-lg focus-visible:outline-2 focus-visible:outline-accent"
-    >
-      <div className="flex items-center gap-3">
-        <img
-          src={`/icons/${tool.slug}.svg`}
-          alt=""
-          width={36}
-          height={36}
-          loading="lazy"
-          className="size-9 shrink-0 rounded-lg border border-line bg-bg-subtle p-1.5 transition-transform group-hover:scale-105"
-        />
-        <div className="min-w-0">
-          <p className="truncate text-[14px] font-medium text-fg">{toolName(tool, lang)}</p>
-          <p className="font-display text-[10px] uppercase tracking-wider text-fg-subtle">
-            {tool.categoryLabel[lang]}
-          </p>
-        </div>
-        <StatusBadge tool={tool} lang={lang} />
+    <Link href={`/${lang}/tools/${tool.slug}/`} className={styles.card}>
+      <div className={styles.top}>
+        <span className={styles.iconBox}><img src={`/icons/${tool.slug}.svg`} alt="" width={23} height={23} loading="lazy" className={styles.icon} /></span>
+        <span className={`${styles.badge} ${status === 'upcoming' ? styles.upcoming : status === 'released' ? styles.released : styles.fresh}`}><span aria-hidden="true" />{labels[lang][status]}</span>
       </div>
-      <p className="line-clamp-2 text-xs leading-relaxed text-fg-muted">
-        {tool.description[lang] || tool.description.en}
-      </p>
+      <h3>{toolName(tool, lang)}</h3>
+      <p className={styles.description}>{toolDescription(tool, lang)}</p>
+      <div className={styles.bottom}><span>{tool.categoryLabel[lang]}</span><ArrowUpRight size={16} aria-hidden="true" /></div>
     </Link>
   )
 }
