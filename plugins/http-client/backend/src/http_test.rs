@@ -353,3 +353,102 @@ fn builds_curl_commands() {
     get.follow_redirects = false;
     assert_eq!(to_curl(get).unwrap(), "curl \\\n  'https://example.com/'");
 }
+
+#[derive(Default)]
+struct LoggedCtx(Mutex<Vec<(String, Value)>>);
+
+impl TaskContext for LoggedCtx {
+    fn log(&self, _: LogLevel, code: &str, params: Value) {
+        self.0.lock().unwrap().push((code.to_owned(), params));
+    }
+    fn progress(&self, _: u64, _: u64) {}
+    fn stage(&self, _: &str) {}
+    fn is_cancelled(&self) -> bool {
+        false
+    }
+    fn open_file(&self, _: &str) -> PluginResult<Box<dyn Read + Send>> {
+        unreachable!()
+    }
+    fn file_size(&self, _: &str) -> PluginResult<u64> {
+        unreachable!()
+    }
+}
+
+#[test]
+fn task_resolves_secret_queries_and_hides_encoded_urls_from_logs() {
+    use tf_plugin_api::ToolPlugin;
+
+    let base = serve();
+    let tool = crate::HttpClient::default();
+    let ctx = LoggedCtx::default();
+    let secret = "top secret & /?";
+    let args = |path: &str| {
+        json!({
+            "method": "GET", "url": format!("{base}/{path}"),
+            "params": [{ "key": "token", "value": "{{token}}" }],
+            "variables": [{ "key": "token", "value": secret, "secret": true }]
+        })
+    };
+    let reply = tool.run_task("send", args("echo"), &ctx).unwrap();
+    let echoed: Value = serde_json::from_str(reply["body"].as_str().unwrap()).unwrap();
+    assert_eq!(echoed["target"], "/echo?token=top+secret+%26+%2F%3F");
+    tool.run_task("send", args("redirect"), &ctx).unwrap();
+    let logs = ctx.0.lock().unwrap();
+    assert!(logs.iter().any(|(code, _)| code == "http.redirect"));
+    for (_, params) in logs.iter() {
+        let serialized = params.to_string();
+        assert!(!serialized.contains(secret));
+        assert!(!serialized.contains("top+secret"));
+        if let Some(url) = params.get("url") {
+            assert_eq!(url, "[redacted]");
+        }
+    }
+}
+
+#[test]
+fn task_errors_do_not_persist_secret_values_in_error_parameters() {
+    let _ = rustls::crypto::ring::default_provider().install_default();
+    use tf_plugin_api::ToolPlugin;
+
+    let tool = crate::HttpClient::default();
+    let error = tool
+        .run_task(
+            "send",
+            json!({
+                "method": "GET", "url": "https://example.com",
+                "headers": [{ "key": "{{token}}", "value": "x" }],
+                "variables": [{ "key": "token", "value": "secret / with spaces", "secret": true }]
+            }),
+            &Ctx,
+        )
+        .unwrap_err();
+    assert_eq!(error.code, "http.invalid_header");
+    assert_eq!(error.params["name"], "[redacted]");
+    let error = network_error(
+        Client::builder()
+            .no_proxy()
+            .build()
+            .unwrap()
+            .get("http://127.0.0.1:1/?token=top+secret")
+            .send()
+            .unwrap_err(),
+    );
+    assert!(!error.to_string().contains("top+secret"));
+}
+
+#[test]
+fn task_accepts_legacy_request_arguments_without_variables() {
+    use tf_plugin_api::ToolPlugin;
+
+    let base = serve();
+    let reply = crate::HttpClient::default()
+        .run_task(
+            "send",
+            json!({
+                "method": "GET", "url": format!("{base}/echo")
+            }),
+            &Ctx,
+        )
+        .unwrap();
+    assert_eq!(reply["status"], 201);
+}

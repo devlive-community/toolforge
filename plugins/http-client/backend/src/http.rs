@@ -39,7 +39,7 @@ pub enum BodyKind {
     Form,
 }
 
-#[derive(Debug, Clone, Default, Deserialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Body {
     #[serde(default)]
@@ -54,7 +54,7 @@ fn default_timeout() -> u64 {
     30_000
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Request {
     pub method: String,
@@ -152,11 +152,8 @@ pub fn normalize_url(raw: &str) -> PluginResult<reqwest::Url> {
             || host.ends_with(".local");
         format!("{}://{trimmed}", if local { "http" } else { "https" })
     };
-    let url = reqwest::Url::parse(&with_scheme).map_err(|e| {
-        PluginError::new("http.invalid_url")
-            .with("url", trimmed)
-            .with("detail", e.to_string())
-    })?;
+    let url = reqwest::Url::parse(&with_scheme)
+        .map_err(|e| PluginError::new("http.invalid_url").with("detail", e.to_string()))?;
     if !matches!(url.scheme(), "http" | "https") {
         return Err(PluginError::new("http.unsupported_scheme").with("scheme", url.scheme()));
     }
@@ -288,6 +285,7 @@ fn client(
 }
 
 fn network_error(err: reqwest::Error) -> PluginError {
+    let err = err.without_url();
     let code = if err.is_timeout() {
         "http.timeout"
     } else if err.is_connect() {
@@ -392,6 +390,15 @@ fn truncate(text: &str) -> (String, bool) {
 }
 
 pub fn send(request: Request, bodies: &Bodies, ctx: &dyn TaskContext) -> PluginResult<Reply> {
+    send_with_redacted_urls(request, bodies, ctx, false)
+}
+
+pub fn send_with_redacted_urls(
+    request: Request,
+    bodies: &Bodies,
+    ctx: &dyn TaskContext,
+    redact_urls: bool,
+) -> PluginResult<Reply> {
     let method = method(&request.method)?;
     let url = build_url(&request)?;
     let mut header_map = headers(&request)?;
@@ -407,7 +414,7 @@ pub fn send(request: Request, bodies: &Bodies, ctx: &dyn TaskContext) -> PluginR
     ctx.log(
         LogLevel::Info,
         "http.request",
-        json!({ "method": method.as_str(), "url": url.as_str() }),
+        json!({ "method": method.as_str(), "url": if redact_urls { "[redacted]" } else { url.as_str() } }),
     );
     let start = Instant::now();
     let mut builder = client.request(method, url).headers(header_map);
@@ -417,7 +424,11 @@ pub fn send(request: Request, bodies: &Bodies, ctx: &dyn TaskContext) -> PluginR
     let mut response = builder.send().map_err(network_error)?;
     let redirects = std::mem::take(&mut *redirects.lock().unwrap_or_else(|e| e.into_inner()));
     for hop in &redirects {
-        ctx.log(LogLevel::Info, "http.redirect", json!({ "url": hop }));
+        ctx.log(
+            LogLevel::Info,
+            "http.redirect",
+            json!({ "url": if redact_urls { "[redacted]" } else { hop } }),
+        );
     }
     let status = response.status();
     ctx.log(

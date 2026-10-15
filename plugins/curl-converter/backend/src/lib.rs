@@ -11,7 +11,7 @@ use tf_plugin_api::{
     Manifest, PluginError, PluginResult, ToolPlugin, parse_args, to_value, unknown_function,
 };
 
-use parse::{Request, Warning};
+pub use parse::{Body, Part, Request, Warning};
 
 const MANIFEST: &str = include_str!("../../manifest.json");
 const MAX_INPUT: usize = 1024 * 1024;
@@ -31,14 +31,7 @@ struct Converted {
 }
 
 fn convert(args: Args) -> PluginResult<Converted> {
-    if args.command.len() > MAX_INPUT {
-        return Err(PluginError::new("curl.too_large").with("limit", "1 MB"));
-    }
-    if args.command.trim().is_empty() {
-        return Err(PluginError::new("curl.empty"));
-    }
-    let tokens = tokenize::tokenize(&args.command)?;
-    let (request, warnings) = parse::parse(&tokens)?;
+    let (request, warnings) = parse_command(&args.command)?;
     let code = match args.language.as_str() {
         "javascript" => emit::javascript(&request),
         "python" => emit::python(&request),
@@ -56,6 +49,29 @@ fn convert(args: Args) -> PluginResult<Converted> {
         request,
         warnings,
     })
+}
+
+fn command_tokens(command: &str) -> PluginResult<Vec<String>> {
+    if command.len() > MAX_INPUT {
+        return Err(PluginError::new("curl.too_large").with("limit", "1 MB"));
+    }
+    if command.trim().is_empty() {
+        return Err(PluginError::new("curl.empty"));
+    }
+    tokenize::tokenize(command)
+}
+
+/// Parse a cURL command as data, without reading files, running a shell, or sending a request.
+/// Other plugins can adapt this model without invoking the converter plugin.
+pub fn parse_command(command: &str) -> PluginResult<(Request, Vec<Warning>)> {
+    parse::parse(&command_tokens(command)?)
+}
+
+/// Like [`parse_command`], retaining option names so adapters can warn about unsupported settings.
+pub fn parse_command_with_options(
+    command: &str,
+) -> PluginResult<(Request, Vec<Warning>, Vec<String>)> {
+    parse::parse_with_options(&command_tokens(command)?)
 }
 
 pub struct CurlConverter {

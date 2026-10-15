@@ -55,6 +55,11 @@ const WEB_STEPS: &[Step] = &[
         program: "pnpm",
         args: &["lint"],
     },
+    Step {
+        name: "web tests",
+        program: "pnpm",
+        args: &["-r", "--if-present", "test"],
+    },
 ];
 
 const BUILD_STEPS: &[Step] = &[Step {

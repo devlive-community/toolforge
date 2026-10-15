@@ -7892,6 +7892,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",
+ "tfp-curl-converter",
  "url",
 ]
 

@@ -280,6 +280,12 @@ fn form_part(spec: &str, literal: bool) -> Option<Part> {
 }
 
 pub fn parse(tokens: &[String]) -> PluginResult<(Request, Vec<Warning>)> {
+    let (request, warnings, _) = parse_with_options(tokens)?;
+    Ok((request, warnings))
+}
+
+/// Include option names for consumers whose request models support fewer cURL settings.
+pub fn parse_with_options(tokens: &[String]) -> PluginResult<(Request, Vec<Warning>, Vec<String>)> {
     let mut args = tokens.iter().map(String::as_str).peekable();
     if args.peek().is_some_and(|first| {
         let name = first.rsplit(['/', '\\']).next().unwrap_or(first);
@@ -303,6 +309,7 @@ pub fn parse(tokens: &[String]) -> PluginResult<(Request, Vec<Warning>)> {
 
     // 展开组合短选项（-sSL、-XPOST）为 (长选项, 值)
     let mut options: Vec<(String, Option<String>)> = Vec::new();
+    let mut option_names = Vec::new();
     let mut positional = false;
     while let Some(arg) = args.next() {
         if positional || !arg.starts_with('-') || arg == "-" {
@@ -340,13 +347,14 @@ pub fn parse(tokens: &[String]) -> PluginResult<(Request, Vec<Warning>)> {
             }
             match short_long(*flag) {
                 Some(long) => options.push((long.to_owned(), None)),
-                None if IGNORED_SHORT.contains(*flag) => {}
+                None if IGNORED_SHORT.contains(*flag) => option_names.push(format!("-{flag}")),
                 None => warnings
                     .push(Warning::new("curl.unknown_option").with("option", format!("-{flag}"))),
             }
         }
     }
 
+    option_names.extend(options.iter().map(|(name, _)| name.clone()));
     for (option, value) in options {
         let value = value.unwrap_or_default();
         match option.as_str() {
@@ -509,7 +517,7 @@ pub fn parse(tokens: &[String]) -> PluginResult<(Request, Vec<Warning>)> {
         }
         .to_owned()
     });
-    Ok((request, warnings))
+    Ok((request, warnings, option_names))
 }
 
 #[cfg(test)]

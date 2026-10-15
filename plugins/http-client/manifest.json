@@ -11,7 +11,11 @@
   "functions": {
     "send": { "task": true },
     "to_curl": {},
-    "save_body": {}
+    "save_body": {},
+    "workspace_validate": {},
+    "new_id": {},
+    "resolve_request": {},
+    "import_curl": {}
   },
   "sensitive": false
 }

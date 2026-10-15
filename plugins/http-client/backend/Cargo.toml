@@ -10,6 +10,7 @@ authors.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 tf-plugin-api.workspace = true
+tfp-curl-converter.workspace = true
 reqwest = { version = "0.13", default-features = false, features = ["blocking", "http2", "rustls-no-provider", "system-proxy"] }
 url = "2"
 rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
