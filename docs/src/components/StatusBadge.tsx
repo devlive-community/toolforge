@@ -6,7 +6,8 @@ import { dict } from '@/lib/dict'
 export function StatusBadge({ tool, lang, size = 'sm' }: { tool: ToolEntry; lang: Lang; size?: 'sm' | 'md' }) {
   const status = toolStatus(tool)
   if (status === 'released') return null
-  const label = status === 'upcoming' ? dict.badge.upcoming[lang] : dict.badge.new[lang]
+  const label =
+    status === 'upcoming' ? dict.badge.upcoming[lang] : status === 'updated' ? dict.badge.updated[lang] : dict.badge.new[lang]
   const pad = size === 'md' ? 'px-2.5 py-1 text-[11px]' : 'px-2 py-0.5 text-[10px]'
   const tone =
     status === 'upcoming'

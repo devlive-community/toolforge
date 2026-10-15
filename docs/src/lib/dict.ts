@@ -71,11 +71,13 @@ export const dict = {
     statusAll: { zh: '全部状态', en: 'All statuses' },
     statusReleased: { zh: '已发布', en: 'Released' },
     statusNew: { zh: '新发布', en: 'New' },
+    statusUpdated: { zh: '已更新', en: 'Updated' },
     statusUpcoming: { zh: '待发布', en: 'Upcoming' },
   },
   badge: {
     upcoming: { zh: '待发布', en: 'Upcoming' },
     new: { zh: '新', en: 'New' },
+    updated: { zh: '已更新', en: 'Updated' },
     latest: { zh: '最新', en: 'Latest' },
   },
 
@@ -93,6 +95,10 @@ export const dict = {
     upcomingNote: {
       zh: '该工具尚未随稳定版发布，将在未来版本提供。',
       en: 'This tool is not part of the current stable build yet — it ships in a future release.',
+    },
+    updatingNote: {
+      zh: '该工具包含尚未随稳定版发布的更新。',
+      en: 'This tool has changes that have not shipped in a stable release yet.',
     },
   },
   changelog: {

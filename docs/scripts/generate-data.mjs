@@ -76,7 +76,7 @@ function gitOutput(args) {
 
 function releaseStatusSets() {
   try {
-    const tags = [...gitOutput(['ls-remote', '--tags', '--refs', 'origin']).matchAll(/refs\/tags\/(v\d[\w.]*)$/gm)]
+    const tags = [...gitOutput(['ls-remote', '--tags', '--refs', 'origin']).matchAll(/refs\/tags\/(v\d[\w.-]*)$/gm)]
       .map((match) => match[1])
       .sort((a, b) => compareVersions(a, b))
     if (tags.length < 2) return null
@@ -99,7 +99,44 @@ function releaseStatusSets() {
           .filter(Boolean)
           .map((line) => line.replace(/^plugins\//, '').replace(/\/$/, '')),
       )
-    return { latestTag, latestSet: pluginsAt(latestTag), prevTag, prevSet: pluginsAt(prevTag) }
+    const latestSet = pluginsAt(latestTag)
+    const prevSet = pluginsAt(prevTag)
+
+    // ── 插件更新检测：约定插件更新时递增 manifest.json 的 version ──
+    // 先用 git diff 缩小到有文件变化的插件，再精确比较 manifest version
+    const slugsTouchedBetween = (from, to) => {
+      const out = new Set()
+      for (const line of gitOutput(['diff', '--name-only', from, to, '--', 'plugins/']).split('\n')) {
+        const slug = line.split('/')[1]
+        if (slug) out.add(slug)
+      }
+      return out
+    }
+    const manifestVersionAt = (tag, slug) => {
+      try {
+        return JSON.parse(gitOutput(['show', `${tag}:plugins/${slug}/manifest.json`])).version ?? ''
+      } catch {
+        return null // 读不到时不参与判定，避免误标
+      }
+    }
+
+    // 两个 tag 都有、version 变化 → updated（随最新版更新发布）
+    const updatedSet = new Set()
+    for (const slug of slugsTouchedBetween(prevTag, latestTag)) {
+      if (!latestSet.has(slug) || !prevSet.has(slug)) continue // 新增/删除不算更新
+      const latest = manifestVersionAt(latestTag, slug)
+      if (latest !== null && latest !== manifestVersionAt(prevTag, slug)) updatedSet.add(slug)
+    }
+
+    // HEAD 的 manifest version 相对最新 tag 变化 → 有未发布更新；记录最新 tag 时的 version
+    const latestVersions = new Map()
+    for (const slug of slugsTouchedBetween(latestTag, 'HEAD')) {
+      if (!latestSet.has(slug)) continue // 新插件由目录集合判定
+      const version = manifestVersionAt(latestTag, slug)
+      if (version !== null) latestVersions.set(slug, version)
+    }
+
+    return { latestTag, latestSet, prevTag, prevSet, updatedSet, latestVersions }
   } catch (error) {
     console.warn(`[generate-data] release status unavailable (${String(error.message).split('\n')[0]}), treating all tools as released`)
     return null
@@ -130,13 +167,25 @@ function scanPlugins(sets) {
     }
     if (!name.zh && !name.en) continue
     const category = manifest.category || 'other'
+    // 当前 manifest version 比最新 tag 新 → 有已合并未发布的更新
+    const updateOnly =
+      sets !== null &&
+      sets.latestSet.has(slug) &&
+      sets.latestVersions.get(slug) !== undefined &&
+      sets.latestVersions.get(slug) !== manifest.version
+    // - upcoming：当前目录最新 tag 没有（新工具未发布），或有未发布的更新
+    // - new：最新 tag 有、上个 tag 没有（随最新版首次发布）
+    // - updated：两个 tag 都有但 version 变化（随最新版更新发布）
+    // - released：其余
     const status = !sets
       ? 'released'
-      : !sets.latestSet.has(slug)
+      : updateOnly || !sets.latestSet.has(slug)
         ? 'upcoming'
-        : sets.prevSet.has(slug)
-          ? 'released'
-          : 'new'
+        : !sets.prevSet.has(slug)
+          ? 'new'
+          : sets.updatedSet.has(slug)
+            ? 'updated'
+            : 'released'
     tools.push({
       slug,
       name,
@@ -145,6 +194,7 @@ function scanPlugins(sets) {
       categoryLabel: CATEGORY_LABELS[category] ?? { zh: category, en: category },
       keywords: manifest.keywords ?? [],
       status,
+      ...(updateOnly ? { updateOnly: true } : {}),
     })
     // 图标：复制到 public 供站点直接引用
     const icon = join(dir, 'icon.svg')

@@ -72,6 +72,9 @@ export function ToolsBrowser({ tools, lang }: { tools: ToolEntry[]; lang: Lang }
         <Chip active={status === 'new'} onClick={() => setStatus('new')}>
           {t.statusNew[lang]}
         </Chip>
+        <Chip active={status === 'updated'} onClick={() => setStatus('updated')}>
+          {t.statusUpdated[lang]}
+        </Chip>
         <Chip active={status === 'upcoming'} onClick={() => setStatus('upcoming')}>
           {t.statusUpcoming[lang]}
         </Chip>

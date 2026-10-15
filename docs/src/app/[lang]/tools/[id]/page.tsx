@@ -74,7 +74,7 @@ export default async function ToolDetailPage({
 
       {toolStatus(tool) === 'upcoming' && (
         <p className="mt-4 rounded-lg border border-amber/30 bg-amber/10 px-4 py-3 text-[13px] leading-relaxed text-amber">
-          {dict.detail.upcomingNote[langTag]}
+          {tool.updateOnly ? dict.detail.updatingNote[langTag] : dict.detail.upcomingNote[langTag]}
         </p>
       )}
 
