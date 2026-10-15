@@ -94,7 +94,6 @@ export const dict = {
     },
   },
   footer: {
-    built: { zh: '用 Next.js 构建 · 部署于 GitHub Pages', en: 'Built with Next.js · Deployed on GitHub Pages' },
     license: { zh: '开源许可', en: 'License' },
   },
   theme: {
