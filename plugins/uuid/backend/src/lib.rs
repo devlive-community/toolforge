@@ -1,8 +1,9 @@
-//! UUID 插件后端：生成 UUID（v1/v3/v4/v5/v7）、ULID、NanoID，并解析已有标识。
+//! UUID 插件后端：生成 UUID（v1/v3/v4/v5/v7）、ULID、NanoID、雪花 ID，并解析已有标识。
 
 mod detect;
 mod generate;
 mod inspect;
+mod snowflake;
 
 use serde_json::Value;
 use tf_plugin_api::{Manifest, PluginResult, ToolPlugin, parse_args, to_value, unknown_function};

@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Empty, Input, Panel } from '@toolforge/ui'
+import { Badge, Empty, Input, Panel } from '@toolforge/ui'
 import { ValueRow, useDebouncedCall, useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { ScanSearch } from 'lucide-react'
-import type { InspectResult } from './types'
+import type { InspectResult, SnowflakeDecoded } from './types'
 
 const localTime = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'medium' })
 
@@ -20,6 +20,17 @@ export function Inspector() {
         <Empty className="p-4" icon={<ScanSearch />} title={t('inspect.hint')} />
       ) : error ? (
         <p className="px-1 text-xs text-danger">{errorMessage(error)}</p>
+      ) : result?.snowflake ? (
+        <div className="-mx-3">
+          <ValueRow label={t('inspect.kind')} value={t('kinds.snowflake')} />
+          <ValueRow label={t('inspect.hex')} value={result.hex} />
+          <p className="px-3 pt-1 text-[11px] text-fg-subtle">{t('snowflake.decodeHint')}</p>
+          <div className="mt-1 space-y-1.5 px-3">
+            {result.snowflake.map((item) => (
+              <SnowflakeRow key={item.preset} item={item} />
+            ))}
+          </div>
+        </div>
       ) : result ? (
         <div className="-mx-3">
           <ValueRow label={t('inspect.kind')} value={result.kind === 'ulid' ? 'ULID' : result.version !== null ? `UUID v${result.version}` : 'UUID'} />
@@ -36,5 +47,28 @@ export function Inspector() {
         </div>
       ) : null}
     </Panel>
+  )
+}
+
+function SnowflakeRow({ item }: { item: SnowflakeDecoded }) {
+  const { t } = usePlugin()
+  const parts = [
+    item.datacenterId !== null && t('snowflake.part.datacenter', { value: item.datacenterId }),
+    t('snowflake.part.worker', { value: item.workerId }),
+    t('snowflake.part.sequence', { value: item.sequence }),
+  ].filter(Boolean)
+  return (
+    <div className={`rounded-control border border-border px-2.5 py-2 text-xs ${item.plausible ? '' : 'opacity-60'}`}>
+      <div className="flex items-center gap-2">
+        <span className="font-medium text-fg">{t(`snowflake.presets.${item.preset}`)}</span>
+        {item.plausible && <Badge variant="success">{t('snowflake.plausible')}</Badge>}
+      </div>
+      <p className="mt-1 font-mono text-[12px] text-fg" data-selectable>
+        {item.timestamp ? localTime.format(item.unixMs) : t('snowflake.outOfRange')}
+      </p>
+      <p className="mt-0.5 font-mono text-[11px] text-fg-muted" data-selectable>
+        {parts.join(' · ')}
+      </p>
+    </div>
   )
 }

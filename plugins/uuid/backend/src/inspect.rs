@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use tf_plugin_api::{PluginError, PluginResult};
 use uuid::{Uuid, Variant};
 
+use crate::snowflake;
+
 #[derive(Deserialize)]
 pub struct Args {
     input: String,
@@ -10,7 +12,7 @@ pub struct Args {
 #[derive(Debug, Serialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Info {
-    /// uuid / ulid
+    /// uuid / ulid / snowflake
     pub kind: &'static str,
     pub canonical: String,
     pub version: Option<usize>,
@@ -21,6 +23,8 @@ pub struct Info {
     pub hex: String,
     pub is_nil: bool,
     pub is_max: bool,
+    /// 雪花 ID 按各预设反解的结果
+    pub snowflake: Option<Vec<snowflake::Decoded>>,
 }
 
 fn variant_name(variant: Variant) -> &'static str {
@@ -63,6 +67,7 @@ pub fn run(args: Args) -> PluginResult<Info> {
             hex: id.simple().to_string(),
             is_nil: id.is_nil(),
             is_max: id.is_max(),
+            snowflake: None,
         });
     }
 
@@ -80,6 +85,23 @@ pub fn run(args: Args) -> PluginResult<Info> {
             hex: format!("{:032x}", u128::from(id)),
             is_nil: id.is_nil(),
             is_max: u128::from(id) == u128::MAX,
+            snowflake: None,
+        });
+    }
+
+    if let Some(decoded) = snowflake::inspect(input) {
+        let id: u64 = input.parse().expect("validated digits");
+        return Ok(Info {
+            kind: "snowflake",
+            canonical: id.to_string(),
+            version: None,
+            variant: None,
+            timestamp: None,
+            unix_ms: None,
+            hex: format!("{id:016x}"),
+            is_nil: false,
+            is_max: false,
+            snowflake: Some(decoded),
         });
     }
 

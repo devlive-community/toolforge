@@ -1,11 +1,12 @@
 {
   "name": "UUID 生成",
-  "description": "生成 UUID（v1/v3/v4/v5/v7）、ULID 与 NanoID，并解析已有标识的版本与时间",
+  "description": "生成 UUID（v1/v3/v4/v5/v7）、ULID、NanoID 与雪花 ID，并解析已有标识的版本与时间",
   "help": [
     "v4 为随机 UUID；v7 以时间戳开头、天然有序，适合作为数据库主键；v1 包含时间（节点 ID 使用随机值，不暴露网卡地址）。",
     "v3 / v5 由「命名空间 + 名称」计算得到，相同输入总是得到相同结果。",
     "ULID 与 NanoID 更短、URL 友好；NanoID 可自定义长度与字符集。",
-    "解析支持 UUID（含花括号、大写、无连字符）与 ULID，可读出其中包含的时间。"
+    "解析支持 UUID（含花括号、大写、无连字符）与 ULID，可读出其中包含的时间。",
+    "雪花 ID 支持 Twitter / MyBatis-Plus、美团 Leaf、百度 UidGenerator、Discord 预设与自定义位布局；解析时粘贴数字 ID 即可按各布局反解时间、机器与序列号。"
   ],
   "kinds": {
     "v4": "UUID v4（随机）",
@@ -14,7 +15,8 @@
     "v5": "UUID v5（SHA-1 命名）",
     "v3": "UUID v3（MD5 命名）",
     "ulid": "ULID",
-    "nanoid": "NanoID"
+    "nanoid": "NanoID",
+    "snowflake": "雪花 ID（Snowflake）"
   },
   "namespaces": {
     "dns": "DNS",
@@ -56,8 +58,8 @@
   },
   "inspect": {
     "title": "解析",
-    "placeholder": "粘贴 UUID 或 ULID…",
-    "hint": "粘贴 UUID 或 ULID 查看版本与时间",
+    "placeholder": "粘贴 UUID、ULID 或雪花 ID…",
+    "hint": "粘贴 UUID、ULID 或雪花 ID 查看版本与时间",
     "kind": "类型",
     "canonical": "标准格式",
     "variant": "变体",
@@ -75,7 +77,44 @@
     "uuid.invalid_namespace": "自定义命名空间不是合法的 UUID",
     "uuid.invalid_size": "长度需在 1 到 {{max}} 之间",
     "uuid.invalid_alphabet": "字符集至少需要 2 个字符",
-    "uuid.invalid": "不是合法的 UUID 或 ULID",
-    "uuid.empty": "请输入要解析的内容"
+    "uuid.invalid": "不是合法的 UUID、ULID 或雪花 ID",
+    "uuid.empty": "请输入要解析的内容",
+    "uuid.snowflake.invalid_layout": "位布局无效：序列号至少 1 位，时间至少保留 20 位",
+    "uuid.snowflake.invalid_datacenter": "数据中心 ID 需在 0 到 {{max}} 之间",
+    "uuid.snowflake.invalid_worker": "机器 ID 需在 0 到 {{max}} 之间",
+    "uuid.snowflake.before_epoch": "当前时间早于起始时间",
+    "uuid.snowflake.overflow": "时间位已用尽，请调整起始时间或增加时间位"
+  },
+  "snowflake": {
+    "preset": "布局预设",
+    "presets": {
+      "twitter": "Twitter / MyBatis-Plus",
+      "leaf": "美团 Leaf",
+      "baidu": "百度 UidGenerator",
+      "discord": "Discord",
+      "custom": "自定义布局"
+    },
+    "epoch": "起始时间（Unix 毫秒）",
+    "epochHint": "ID 中的时间从这个时刻开始计算",
+    "unit": "时间单位",
+    "units": {
+      "ms": "毫秒",
+      "s": "秒"
+    },
+    "datacenterBits": "数据中心位",
+    "workerBits": "机器位",
+    "sequenceBits": "序列号位",
+    "datacenterId": "数据中心 ID",
+    "workerId": "机器 ID",
+    "layout": "64 位 = 1 位符号 + {{time}} 位时间（{{unit}}）+ {{datacenter}} 位数据中心 + {{worker}} 位机器 + {{sequence}} 位序列号",
+    "monotonic": "同一布局连续生成严格递增：同一时刻内序列号累加，用尽后借用下一时刻；时钟回拨时沿用上次时间。",
+    "decodeHint": "按常见布局反解，时间合理的布局已标出",
+    "plausible": "时间合理",
+    "outOfRange": "时间超出范围",
+    "part": {
+      "datacenter": "数据中心 {{value}}",
+      "worker": "机器 {{value}}",
+      "sequence": "序列 {{value}}"
+    }
   }
 }

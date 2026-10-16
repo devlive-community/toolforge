@@ -1,11 +1,12 @@
 {
   "name": "UUID Generator",
-  "description": "Generate UUIDs (v1/v3/v4/v5/v7), ULIDs and NanoIDs, and inspect existing identifiers",
+  "description": "Generate UUIDs (v1/v3/v4/v5/v7), ULIDs, NanoIDs and Snowflake IDs, and inspect existing identifiers",
   "help": [
     "v4 is random; v7 starts with a timestamp and sorts naturally, great for database keys; v1 embeds time (with a random node ID instead of your MAC address).",
     "v3 / v5 are derived from a namespace and a name; the same input always yields the same UUID.",
     "ULID and NanoID are shorter and URL friendly; NanoID supports custom length and alphabet.",
-    "Inspect accepts UUIDs (with braces, uppercase or without hyphens) and ULIDs and reveals embedded timestamps."
+    "Inspect accepts UUIDs (with braces, uppercase or without hyphens) and ULIDs and reveals embedded timestamps.",
+    "Snowflake IDs support Twitter / MyBatis-Plus, Meituan Leaf, Baidu UidGenerator and Discord presets plus custom bit layouts; paste a numeric ID to decode its time, worker and sequence under each layout."
   ],
   "kinds": {
     "v4": "UUID v4 (random)",
@@ -14,7 +15,8 @@
     "v5": "UUID v5 (SHA-1 name)",
     "v3": "UUID v3 (MD5 name)",
     "ulid": "ULID",
-    "nanoid": "NanoID"
+    "nanoid": "NanoID",
+    "snowflake": "Snowflake ID"
   },
   "namespaces": {
     "dns": "DNS",
@@ -56,8 +58,8 @@
   },
   "inspect": {
     "title": "Inspect",
-    "placeholder": "Paste a UUID or ULID…",
-    "hint": "Paste a UUID or ULID to see its version and time",
+    "placeholder": "Paste a UUID, ULID or Snowflake ID…",
+    "hint": "Paste a UUID, ULID or Snowflake ID to see its version and time",
     "kind": "Type",
     "canonical": "Canonical",
     "variant": "Variant",
@@ -75,7 +77,44 @@
     "uuid.invalid_namespace": "The custom namespace is not a valid UUID",
     "uuid.invalid_size": "Length must be between 1 and {{max}}",
     "uuid.invalid_alphabet": "The alphabet needs at least 2 characters",
-    "uuid.invalid": "Not a valid UUID or ULID",
-    "uuid.empty": "Enter something to inspect"
+    "uuid.invalid": "Not a valid UUID, ULID or Snowflake ID",
+    "uuid.empty": "Enter something to inspect",
+    "uuid.snowflake.invalid_layout": "Invalid layout: the sequence needs at least 1 bit and time at least 20 bits",
+    "uuid.snowflake.invalid_datacenter": "Datacenter ID must be between 0 and {{max}}",
+    "uuid.snowflake.invalid_worker": "Worker ID must be between 0 and {{max}}",
+    "uuid.snowflake.before_epoch": "The current time is before the epoch",
+    "uuid.snowflake.overflow": "Time bits exhausted; move the epoch or add time bits"
+  },
+  "snowflake": {
+    "preset": "Layout preset",
+    "presets": {
+      "twitter": "Twitter / MyBatis-Plus",
+      "leaf": "Meituan Leaf",
+      "baidu": "Baidu UidGenerator",
+      "discord": "Discord",
+      "custom": "Custom layout"
+    },
+    "epoch": "Epoch (Unix ms)",
+    "epochHint": "Time inside the ID counts from this moment",
+    "unit": "Time unit",
+    "units": {
+      "ms": "Milliseconds",
+      "s": "Seconds"
+    },
+    "datacenterBits": "Datacenter bits",
+    "workerBits": "Worker bits",
+    "sequenceBits": "Sequence bits",
+    "datacenterId": "Datacenter ID",
+    "workerId": "Worker ID",
+    "layout": "64 bits = 1 sign + {{time}} time ({{unit}}) + {{datacenter}} datacenter + {{worker}} worker + {{sequence}} sequence",
+    "monotonic": "IDs from the same layout strictly increase: the sequence grows within a tick, borrows the next tick when exhausted, and keeps the last time if the clock goes backwards.",
+    "decodeHint": "Decoded with common layouts; plausible times are marked",
+    "plausible": "Plausible",
+    "outOfRange": "Time out of range",
+    "part": {
+      "datacenter": "Datacenter {{value}}",
+      "worker": "Worker {{value}}",
+      "sequence": "Seq {{value}}"
+    }
   }
 }

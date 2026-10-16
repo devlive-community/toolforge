@@ -46,3 +46,12 @@ fn nil_and_invalid() {
     assert_eq!(inspect("not-an-id").unwrap_err().code, "uuid.invalid");
     assert_eq!(inspect("   ").unwrap_err().code, "uuid.empty");
 }
+
+#[test]
+fn decodes_snowflake_numbers() {
+    let info = inspect("175928847299117063").unwrap();
+    assert_eq!(info.kind, "snowflake");
+    assert_eq!(info.hex, "0271065ac1020007");
+    let decoded = info.snowflake.unwrap();
+    assert!(decoded.iter().any(|d| d.plausible));
+}

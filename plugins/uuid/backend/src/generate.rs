@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 use tf_plugin_api::{PluginError, PluginResult};
 use uuid::Uuid;
 
+use crate::snowflake;
+
 pub const MAX_COUNT: usize = 1000;
 const DEFAULT_NANOID_SIZE: usize = 21;
 const MAX_NANOID_SIZE: usize = 256;
@@ -18,6 +20,7 @@ pub enum Kind {
     V7,
     Ulid,
     Nanoid,
+    Snowflake,
 }
 
 #[derive(Debug, Clone, Copy, Default, Deserialize, PartialEq)]
@@ -51,6 +54,7 @@ pub struct Args {
     pub name: String,
     pub nanoid_size: Option<usize>,
     pub nanoid_alphabet: Option<String>,
+    pub snowflake: Option<snowflake::GenerateArgs>,
 }
 
 fn one() -> usize {
@@ -121,6 +125,18 @@ pub fn run(args: Args) -> PluginResult<Output> {
     let deterministic = matches!(args.kind, Kind::V3 | Kind::V5);
     let count = if deterministic { 1 } else { args.count };
 
+    if args.kind == Kind::Snowflake {
+        let options = args
+            .snowflake
+            .as_ref()
+            .ok_or_else(|| PluginError::new("uuid.snowflake.invalid_layout"))?;
+        return Ok(Output {
+            ids: snowflake::generate(options, count)?,
+            deterministic,
+            elapsed_ms: (start.elapsed().as_secs_f64() * 100_000.0).round() / 100.0,
+        });
+    }
+
     let ids = (0..count)
         .map(|_| -> PluginResult<String> {
             Ok(match args.kind {
@@ -149,6 +165,7 @@ pub fn run(args: Args) -> PluginResult<Output> {
                     }
                 }
                 Kind::Nanoid => nanoid(&args)?,
+                Kind::Snowflake => unreachable!("handled above"),
             })
         })
         .collect::<PluginResult<Vec<_>>>()?;

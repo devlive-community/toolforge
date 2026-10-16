@@ -101,3 +101,19 @@ fn validates_count_and_custom_namespace() {
     .unwrap_err();
     assert_eq!(err.code, "uuid.invalid_namespace");
 }
+
+#[test]
+fn snowflake_kind_uses_preset() {
+    let out = run(args(json!({
+        "kind": "snowflake",
+        "count": 10,
+        "snowflake": {"preset": "twitter", "datacenterId": 1, "workerId": 2}
+    })))
+    .unwrap();
+    assert_eq!(out.ids.len(), 10);
+    let id: u64 = out.ids[0].parse().unwrap();
+    assert_eq!((id >> 12) & 31, 2);
+    assert_eq!((id >> 17) & 31, 1);
+    let err = run(args(json!({"kind": "snowflake"}))).unwrap_err();
+    assert_eq!(err.code, "uuid.snowflake.invalid_layout");
+}

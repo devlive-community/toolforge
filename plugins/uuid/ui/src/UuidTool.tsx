@@ -4,7 +4,8 @@ import { CopyButton, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sd
 import { Fingerprint, RefreshCw, SlidersHorizontal } from 'lucide-react'
 import { Field, ToggleRow } from './Field'
 import { Inspector } from './Inspector'
-import { KINDS, NAMESPACES, isNamed, isUuid, type GenerateResult, type Kind, type Namespace } from './types'
+import { SnowflakeSettings, snowflakeArgs } from './Snowflake'
+import { KINDS, NAMESPACES, PRESET_LAYOUTS, isNamed, isUuid, type GenerateResult, type Kind, type Namespace, type SnowflakeOptions } from './types'
 
 export function UuidTool() {
   const { t, errorMessage } = usePlugin()
@@ -18,11 +19,13 @@ export function UuidTool() {
   const [name, setName] = useState('toolforge.dev')
   const [nanoidSize, setNanoidSize] = useState(21)
   const [nanoidAlphabet, setNanoidAlphabet] = useState('')
+  const [snowflake, setSnowflake] = useState<SnowflakeOptions>({ preset: 'twitter', layout: PRESET_LAYOUTS.twitter, datacenterId: 1, workerId: 1 })
   const [nonce, setNonce] = useState(0)
 
-  const args = { kind, count, uppercase, hyphens, braces, namespace, customNamespace, name, nanoidSize, nanoidAlphabet }
+  const snowflakeOptions = kind === 'snowflake' ? snowflakeArgs(snowflake) : undefined
+  const args = { kind, count, uppercase, hyphens, braces, namespace, customNamespace, name, nanoidSize, nanoidAlphabet, snowflake: snowflakeOptions }
   const { result, error, pending } = useDebouncedCall<GenerateResult>('generate', args, [
-    kind, count, uppercase, hyphens, braces, namespace, customNamespace, name, nanoidSize, nanoidAlphabet, nonce,
+    kind, count, uppercase, hyphens, braces, namespace, customNamespace, name, nanoidSize, nanoidAlphabet, JSON.stringify(snowflakeOptions), nonce,
   ])
   const labelWidth = String(result?.ids.length ?? 0).length
 
@@ -91,6 +94,8 @@ export function UuidTool() {
               </Field>
             </>
           )}
+
+          {kind === 'snowflake' && <SnowflakeSettings value={snowflake} onChange={setSnowflake} />}
 
           {(isUuid(kind) || kind === 'ulid') && (
             <div className="rounded-control border border-border px-3 py-1.5">
