@@ -2,7 +2,8 @@ import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { Badge, Button, Checkbox, DropdownMenu, Empty, Input, Panel, SegmentedControl, cn, toast } from '@toolforge/ui'
 import { CopyButton, formatBytes, host, useCopy, useDebouncedCall, usePlugin, usePluginState } from '@toolforge/plugin-ui-sdk'
-import { ArrowDown, ArrowUp, Binary, ClipboardCopy, CornerDownRight, FileSearch, FolderOpen, ScanSearch } from 'lucide-react'
+import { Activity, ArrowDown, ArrowUp, Binary, ClipboardCopy, CornerDownRight, FileSearch, FolderOpen, ScanSearch } from 'lucide-react'
+import { Entropy } from './Entropy'
 
 const ROW = 16
 const ROW_HEIGHT = 22
@@ -52,6 +53,7 @@ function HexViewer() {
   const [target, setTarget] = useState('')
   const [searching, setSearching] = useState(false)
   const [hovering, setHovering] = useState(false)
+  const [showEntropy, setShowEntropy] = useState(false)
   const listRef = useRef<HTMLDivElement>(null)
   const requested = useRef(new Set<number>())
 
@@ -216,10 +218,18 @@ function HexViewer() {
           </>
         )}
         actions={
-          <Button size="sm" onClick={pick}>
-            <FolderOpen />
-            {t('file.open')}
-          </Button>
+          <>
+            {info && size > 0 && (
+              <Button size="sm" variant={showEntropy ? 'soft' : 'outline'} aria-pressed={showEntropy} onClick={() => setShowEntropy((v) => !v)}>
+                <Activity />
+                {t('entropy.toggle')}
+              </Button>
+            )}
+            <Button size="sm" onClick={pick}>
+              <FolderOpen />
+              {t('file.open')}
+            </Button>
+          </>
         }
         footer={
           info && size > 0 && (
@@ -251,6 +261,11 @@ function HexViewer() {
           <Empty icon={<Binary />} title={t('file.empty')} />
         ) : (
           <div className="flex h-full min-h-0 flex-col font-mono text-[12px]">
+            {showEntropy && (
+              <div className="shrink-0 font-sans">
+                <Entropy path={info.path} size={size} cursor={cursor} onJump={(offset) => moveTo(offset, false, 'center')} onSelect={select} />
+              </div>
+            )}
             <div className="flex shrink-0 items-center gap-4 border-b border-border px-3 py-1.5 text-fg-subtle">
               <span style={{ width: `${info.offsetWidth}ch` }}>{t('file.offset')}</span>
               <span className="flex">

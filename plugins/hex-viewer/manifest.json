@@ -4,7 +4,7 @@
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "dev",
-  "keywords": ["hex", "hexdump", "hex viewer", "hex editor", "binary", "bytes", "magic", "file signature", "xxd", "uuid", "varint", "十六进制", "二进制", "字节", "文件头"],
+  "keywords": ["hex", "hexdump", "hex viewer", "hex editor", "binary", "bytes", "magic", "file signature", "xxd", "uuid", "varint", "entropy", "十六进制", "二进制", "字节", "文件头"],
   "accent": "blue",
   "locales": ["zh-CN", "en-US"],
   "permissions": ["fs:user-selected", "clipboard:write"],
@@ -14,7 +14,8 @@
     "inspect": {},
     "find": {},
     "goto": {},
-    "copy": {}
+    "copy": {},
+    "entropy": { "task": true }
   },
   "sensitive": false
 }

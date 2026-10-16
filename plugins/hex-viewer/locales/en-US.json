@@ -8,7 +8,8 @@
     "Go to accepts decimal numbers, hex such as 0x1F0 or 1F0h, and relative offsets such as +16 or -0x10.",
     "Search for text or hex bytes such as DE AD BE EF. Enter finds the next match, Shift + Enter the previous one, and the search wraps around the file.",
     "The data inspector reads the bytes at the cursor as integers, floats, binary, UTF-8 and Unix timestamps in little or big endian. The selection can be copied as hex, Base64, a C array, Python bytes or text.",
-    "The inspector also reads the bytes at the cursor as UUID/GUID (with version and time), protobuf varint and ZigZag, BCD, fixed-point numbers, RGBA8888/RGB565 colors, C strings (up to \\0) and Base64/Base32 runs; little endian reads UUIDs in Windows GUID order, and every value can be copied."
+    "The inspector also reads the bytes at the cursor as UUID/GUID (with version and time), protobuf varint and ZigZag, BCD, fixed-point numbers, RGBA8888/RGB565 colors, C strings (up to \\0) and Base64/Base32 runs; little endian reads UUIDs in Windows GUID order, and every value can be copied.",
+    "Entropy: computes Shannon entropy per block (256 B–64 KB, grown automatically for large files) and draws it across the whole file; click the curve to jump there and select high-entropy regions to find compressed streams or encrypted blocks."
   ],
   "functions": {
     "open": "Open file",
@@ -16,7 +17,8 @@
     "inspect": "Inspect bytes",
     "find": "Find",
     "goto": "Go to offset",
-    "copy": "Copy selection"
+    "copy": "Copy selection",
+    "entropy": "Entropy analysis"
   },
   "file": {
     "title": "Hex",
@@ -111,6 +113,35 @@
     "hex.pattern_too_long": "The search can be at most {{max}} bytes",
     "hex.invalid_offset": "Enter an offset such as 1024, 0x400, 400h or +16",
     "hex.offset_out_of_range": "The offset is outside the file ({{size}} bytes)",
-    "hex.copy_too_large": "Select at most {{max}} bytes to copy"
+    "hex.copy_too_large": "Select at most {{max}} bytes to copy",
+    "hex.empty_file": "The file is empty"
+  },
+  "entropy": {
+    "fn": "Entropy analysis",
+    "toggle": "Entropy",
+    "title": "Entropy",
+    "overall": "Overall {{value}} bits/byte",
+    "block": "{{size}} bytes per block",
+    "blockSize": "Block size",
+    "blocks": {
+      "256": "256 B",
+      "1024": "1 KB",
+      "4096": "4 KB",
+      "65536": "64 KB"
+    },
+    "analyze": "Analyze",
+    "cancel": "Cancel",
+    "hint": "Shannon entropy per block: values near 8 usually mean compressed or encrypted data; text and structures are lower.",
+    "chart": "Entropy curve; click to jump to that offset",
+    "noRegions": "No regions at or above {{threshold}}",
+    "regions": "{{count}} high-entropy regions (≥ {{threshold}}); click to select",
+    "truncated": "Showing the first 200",
+    "region": "{{start}}–{{end}} · {{value}}"
+  },
+  "logs": {
+    "hex": {
+      "entropy_start": "Entropy analysis: {{block}}-byte blocks, {{points}} blocks",
+      "entropy_done": "Done: overall entropy {{overall}}, {{regions}} high-entropy regions"
+    }
   }
 }

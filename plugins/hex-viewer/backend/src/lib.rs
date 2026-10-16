@@ -1,6 +1,7 @@
 //! 十六进制查看插件后端：按需读取任意大小的文件并格式化为十六进制行，识别文件类型，
-//! 查找字节或文本、跳转偏移，用数据检查器解读光标处的字节，并按多种格式复制选区。
+//! 查找字节或文本、跳转偏移，用数据检查器解读光标处的字节，按多种格式复制选区，并按块分析熵。
 
+mod entropy;
 mod file;
 mod inspect;
 mod magic;
@@ -12,7 +13,8 @@ use data_encoding::BASE64;
 use serde::Deserialize;
 use serde_json::{Value, json};
 use tf_plugin_api::{
-    Manifest, PluginError, PluginResult, ToolPlugin, parse_args, to_value, unknown_function,
+    Manifest, PluginError, PluginResult, TaskContext, ToolPlugin, parse_args, to_value,
+    unknown_function,
 };
 
 use search::Mode;
@@ -191,6 +193,13 @@ impl Default for HexViewer {
 impl ToolPlugin for HexViewer {
     fn manifest(&self) -> &Manifest {
         &self.manifest
+    }
+
+    fn run_task(&self, function: &str, args: Value, ctx: &dyn TaskContext) -> PluginResult<Value> {
+        match function {
+            "entropy" => to_value(entropy::run(parse_args(args)?, ctx)?),
+            _ => self.call(function, args),
+        }
     }
 
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {

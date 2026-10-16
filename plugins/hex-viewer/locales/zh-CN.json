@@ -8,7 +8,8 @@
     "跳转支持十进制、0x1F0 或 1F0h 形式的十六进制，以及 +16、-0x10 这样的相对偏移。",
     "可查找文本或十六进制字节（如 DE AD BE EF）。回车查找下一个，Shift + 回车查找上一个，到头后会从另一端继续。",
     "数据检查器按小端或大端，把光标处的字节解读为整数、浮点数、二进制、UTF-8 与 Unix 时间戳。选区可复制为十六进制、Base64、C 数组、Python bytes 或文本。",
-    "数据检查器还会按 UUID/GUID（含版本与时间）、protobuf Varint 与 ZigZag、BCD、定点数、RGBA8888/RGB565 颜色、C 字符串（到 \\0）以及 Base64/Base32 片段解读光标处的字节，小端时 UUID 按 Windows GUID 字节序；每项都可一键复制。"
+    "数据检查器还会按 UUID/GUID（含版本与时间）、protobuf Varint 与 ZigZag、BCD、定点数、RGBA8888/RGB565 颜色、C 字符串（到 \\0）以及 Base64/Base32 片段解读光标处的字节，小端时 UUID 按 Windows GUID 字节序；每项都可一键复制。",
+    "熵：按块（256 B–64 KB，大文件自动放大以控制点数）计算香农熵并绘制全文件曲线，点击曲线跳转到对应偏移，高熵区段列表可一键选中，用于定位压缩流或加密块。"
   ],
   "functions": {
     "open": "打开文件",
@@ -16,7 +17,8 @@
     "inspect": "解读字节",
     "find": "查找",
     "goto": "跳转偏移",
-    "copy": "复制选区"
+    "copy": "复制选区",
+    "entropy": "熵分析"
   },
   "file": {
     "title": "十六进制",
@@ -111,6 +113,35 @@
     "hex.pattern_too_long": "查找内容最多 {{max}} 字节",
     "hex.invalid_offset": "请输入偏移，如 1024、0x400、400h 或 +16",
     "hex.offset_out_of_range": "偏移超出文件范围（共 {{size}} 字节）",
-    "hex.copy_too_large": "一次最多复制 {{max}} 字节"
+    "hex.copy_too_large": "一次最多复制 {{max}} 字节",
+    "hex.empty_file": "文件为空"
+  },
+  "entropy": {
+    "fn": "熵分析",
+    "toggle": "熵",
+    "title": "熵分析",
+    "overall": "整体 {{value}} 位/字节",
+    "block": "每块 {{size}} 字节",
+    "blockSize": "块大小",
+    "blocks": {
+      "256": "256 B",
+      "1024": "1 KB",
+      "4096": "4 KB",
+      "65536": "64 KB"
+    },
+    "analyze": "分析",
+    "cancel": "取消",
+    "hint": "按块计算香农熵：接近 8 通常是压缩或加密数据，明文与结构数据较低。",
+    "chart": "熵曲线，点击跳转到对应偏移",
+    "noRegions": "没有熵不低于 {{threshold}} 的区段",
+    "regions": "{{count}} 个高熵区段（≥ {{threshold}}），点击选中",
+    "truncated": "仅显示前 200 个",
+    "region": "{{start}}–{{end}} · {{value}}"
+  },
+  "logs": {
+    "hex": {
+      "entropy_start": "开始熵分析：块大小 {{block}} 字节，共 {{points}} 块",
+      "entropy_done": "完成：整体熵 {{overall}}，{{regions}} 个高熵区段"
+    }
   }
 }
