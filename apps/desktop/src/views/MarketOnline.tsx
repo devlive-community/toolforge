@@ -18,6 +18,8 @@ interface IndexEntry {
   sha256: string
   size: number
   signed: boolean
+  /** 插件需要的最低应用版本 */
+  minAppVersion?: string | null
 }
 
 interface InstallInfo {
@@ -47,6 +49,7 @@ export function MarketOnline() {
   const errorMessage = useErrorMessage('common')
   const plugins = useApp((s) => s.plugins)
   const openTool = useApp((s) => s.openTool)
+  const appVersion = useApp((s) => s.info?.version ?? '0.0.0')
   const [index, setIndex] = useState<IndexEntry[] | null>(null)
   const [indexError, setIndexError] = useState<AppError | null>(null)
   const [installed, setInstalled] = useState<InstallInfo[]>([])
@@ -148,6 +151,7 @@ export function MarketOnline() {
             const current = installed.find((info) => info.id === entry.id)
             const manifest = pluginById(plugins, entry.id)
             const update = current && newer(entry.version, current.version)
+            const tooOld = !!entry.minAppVersion && newer(entry.minAppVersion, appVersion)
             return (
               <div key={entry.id} className="flex flex-col gap-3 rounded-card border border-border bg-surface p-4 shadow-card">
                 <div className="flex items-start gap-3">
@@ -186,7 +190,8 @@ export function MarketOnline() {
                         <Trash2 />
                       </Button>
                     )}
-                    {(!current || update) && (
+                    {(!current || update) && tooOld && <span className="text-warning">{t('market.online.needsApp', { version: entry.minAppVersion })}</span>}
+                    {(!current || update) && !tooOld && (
                       <Button size="sm" variant="primary" loading={busy === entry.id} disabled={busy !== null} onClick={() => void run({ kind: 'url', entry }, false)}>
                         <CloudDownload />
                         {update ? t('market.online.update', { version: entry.version }) : t('market.online.install')}

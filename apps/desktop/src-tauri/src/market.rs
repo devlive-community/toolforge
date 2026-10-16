@@ -13,10 +13,10 @@ use crate::installed::{Assets, InstallInfo, Installed};
 
 /// 插件列表变化（安装、卸载、启动时加载完成），前端据此刷新
 pub const PLUGINS_CHANGED: &str = "plugins://changed";
-/// 官方插件索引：插件随版本发布（release.yml），与更新器的 latest.json 一样从最新正式版本读取；
+/// 官方插件索引：插件独立于应用版本发布到固定的 plugins 发布（plugins.yml），修复无需等应用发版；
 /// 可用 TOOLFORGE_PLUGIN_INDEX 覆盖（调试用）
 const INDEX_URL: &str =
-    "https://github.com/devlive-community/toolforge/releases/latest/download/registry.json";
+    "https://github.com/devlive-community/toolforge/releases/download/plugins/registry.json";
 const MAX_INDEX: u64 = 2 * 1024 * 1024;
 const MAX_PACKAGE: u64 = tf_package::MAX_PACKAGE as u64;
 

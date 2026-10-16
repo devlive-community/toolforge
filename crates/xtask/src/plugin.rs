@@ -186,9 +186,19 @@ fn localized(
     out
 }
 
-/// 由目录中的 .tfp 生成插件索引 registry.json；url 为 base_url + 文件名
-pub fn index(dir: &Path, base_url: &str) -> Result<PathBuf, String> {
-    let mut plugins = Vec::new();
+/// 由目录中的 .tfp 生成插件索引 registry.json；url 为 base_url + 文件名。
+/// 传入旧索引时在其基础上合并：目录中有的插件替换旧条目，其余旧条目保留。
+pub fn index(dir: &Path, base_url: &str, merge: Option<&Path>) -> Result<PathBuf, String> {
+    let mut plugins: Vec<serde_json::Value> = match merge {
+        Some(path) => {
+            let old: serde_json::Value = serde_json::from_slice(
+                &std::fs::read(path).map_err(|e| format!("{}: {e}", path.display()))?,
+            )
+            .map_err(|e| format!("{}: {e}", path.display()))?;
+            old["plugins"].as_array().cloned().unwrap_or_default()
+        }
+        None => Vec::new(),
+    };
     let mut entries: Vec<_> = std::fs::read_dir(dir)
         .map_err(|e| format!("{}: {e}", dir.display()))?
         .filter_map(Result::ok)
@@ -205,7 +215,11 @@ pub fn index(dir: &Path, base_url: &str) -> Result<PathBuf, String> {
             .unwrap_or_default()
             .to_string_lossy()
             .into_owned();
+        plugins.retain(|p| p["id"] != manifest.id.as_str());
+        let raw: serde_json::Value =
+            serde_json::from_slice(&package.files["manifest.json"]).map_err(|e| e.to_string())?;
         plugins.push(serde_json::json!({
+            "minAppVersion": raw.get("minAppVersion"),
             "id": manifest.id,
             "version": manifest.version,
             "category": manifest.category,
@@ -218,6 +232,7 @@ pub fn index(dir: &Path, base_url: &str) -> Result<PathBuf, String> {
             "signed": matches!(package.trust, tf_package::Trust::Official { .. }),
         }));
     }
+    plugins.sort_by(|a, b| a["id"].as_str().cmp(&b["id"].as_str()));
     let out = dir.join("registry.json");
     let index = serde_json::json!({ "version": 1, "plugins": plugins });
     std::fs::write(

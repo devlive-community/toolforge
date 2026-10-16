@@ -276,7 +276,8 @@
         "untrusted": {
           "unsigned": "Package {{id}} v{{version}} is unsigned, so its origin and integrity cannot be verified.",
           "unknownKey": "Package {{id}} v{{version}} is signed with an unofficial key ({{keyId}}), so the publisher cannot be verified."
-        }
+        },
+        "needsApp": "Requires ToolForge v{{version}} or later"
       }
     }
   },

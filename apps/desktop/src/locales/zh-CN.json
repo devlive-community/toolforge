@@ -274,7 +274,8 @@
         "untrusted": {
           "unsigned": "插件包 {{id}} v{{version}} 没有签名，无法确认来源与完整性。",
           "unknownKey": "插件包 {{id}} v{{version}} 使用非官方密钥（{{keyId}}）签名，无法确认发布者。"
-        }
+        },
+        "needsApp": "需要 ToolForge v{{version}} 及以上"
       }
     }
   },
