@@ -1,6 +1,6 @@
 name: Deploy website
 
-# 工具目录来自 plugins/*/manifest.json（构建时扫描），
+# 工具目录来自 plugins/*/manifest.json 与 market/*/manifest.json（构建时扫描），
 # 因此插件清单变动、版本发布与定时重建都会刷新站点。
 on:
   push:
@@ -8,6 +8,7 @@ on:
     paths:
       - 'docs/**'
       - 'plugins/**'
+      - 'market/**'
       - 'apps/desktop/src-tauri/tauri.conf.json'
       - '.github/workflows/site-deploy.yml'
   release:

@@ -106,6 +106,16 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 
 More tools are on the way.
 
+## 🧩 Online plugins
+
+These tools are WASM plugins installed from the in-app tool market and updated independently of app releases. Tools that used to be built in are installed automatically after upgrading; uninstalled ones stay uninstalled.
+
+| Tool | Description |
+|------|-------------|
+| **SemVer Range Tester** | Parse, compare and sort versions by SemVer 2.0.0 and test them against npm ranges (^, ~, x, hyphen, `||`) with expanded comparator sets, exclusion reasons, a pre-release switch and CSV export |
+| **Test Cards** | Generate payment test card data that follows issuer ranges and Luhn, validate card numbers and look up sourced official sandbox cards |
+| **USCC Validator** | Validate Unified Social Credit Codes offline by GB 32100-2015 — length, characters and check digit — and explain every field |
+
 ## 📦 Download
 
 Grab the installer for your platform from [Releases](https://github.com/devlive-community/toolforge/releases):

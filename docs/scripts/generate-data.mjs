@@ -1,4 +1,4 @@
-// 构建前数据管线：扫描 plugins/*/manifest.json 与双语 locales，生成工具目录；
+// 构建前数据管线：扫描 plugins/*/manifest.json、market/*/manifest.json 与双语 locales，生成工具目录；
 // 拉取 GitHub Releases 注入下载链接与更新日志。API 限流时读取公开发布页；均不可用时回退到 Releases 链接。
 //
 // 产物（全部 gitignore，构建时重新生成）：
@@ -16,6 +16,8 @@ import { collectToolReleaseStatus, toolReleaseStatus } from './tool-status.mjs'
 
 const root = resolve(import.meta.dirname, '..', '..')
 const pluginsDir = join(root, 'plugins')
+// 在线插件独立于应用版本发布，推送即上架，状态一律视为已发布
+const marketDir = join(root, 'market')
 const outDataDir = resolve(import.meta.dirname, '..', 'src', 'data')
 const outIconsDir = resolve(import.meta.dirname, '..', 'public', 'icons')
 
@@ -99,11 +101,12 @@ function releaseStatusSets() {
   }
 }
 
-function scanPlugins(sets) {
+function scanPlugins(baseDir, sets) {
   const tools = []
-  for (const entry of readdirSync(pluginsDir, { withFileTypes: true })) {
+  if (!existsSync(baseDir)) return tools
+  for (const entry of readdirSync(baseDir, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue
-    const dir = join(pluginsDir, entry.name)
+    const dir = join(baseDir, entry.name)
     const manifestPath = join(dir, 'manifest.json')
     if (!existsSync(manifestPath)) continue
     let manifest
@@ -138,7 +141,6 @@ function scanPlugins(sets) {
       writeFileSync(join(outIconsDir, `${slug}.svg`), readFileSync(icon))
     }
   }
-  tools.sort((a, b) => (a.categoryLabel.en + a.name.en).localeCompare(b.categoryLabel.en + b.name.en))
   return tools
 }
 
@@ -149,7 +151,8 @@ const release = await loadReleaseData()
 if (!release.fallback) console.log(`[generate-data] latest release: ${release.version}`)
 const sets = releaseStatusSets()
 if (sets) console.log(`[generate-data] status tags: ${sets.prevTag} -> ${sets.latestTag}`)
-const tools = scanPlugins(sets)
+const tools = [...scanPlugins(pluginsDir, sets), ...scanPlugins(marketDir, null)]
+tools.sort((a, b) => (a.categoryLabel.en + a.name.en).localeCompare(b.categoryLabel.en + b.name.en))
 const counts = { released: 0, new: 0, updated: 0, upcoming: 0 }
 for (const tool of tools) counts[tool.status] += 1
 console.log(`[generate-data] status: ${counts.released} released, ${counts.new} new, ${counts.updated} updated, ${counts.upcoming} upcoming`)
