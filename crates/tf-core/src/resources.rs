@@ -57,7 +57,7 @@ fn io_error(err: std::io::Error, path: &Path) -> PluginError {
         .with("detail", err.to_string())
 }
 
-pub(crate) fn to_hex(bytes: &[u8]) -> String {
+pub fn to_hex(bytes: &[u8]) -> String {
     bytes.iter().map(|b| format!("{b:02x}")).collect()
 }
 
@@ -83,6 +83,34 @@ fn client() -> PluginResult<reqwest::blocking::Client> {
         .timeout(STALL_TIMEOUT)
         .build()
         .map_err(|e| PluginError::new("resource.network").with("detail", e.to_string()))
+}
+
+/// 下载小文件（插件索引、插件包）到内存，超过 max 字节时报错
+pub fn fetch_bytes(url: &str, max: u64) -> PluginResult<Vec<u8>> {
+    if !url.starts_with("https://") && !url.starts_with("http://127.0.0.1") {
+        return Err(PluginError::new("resource.insecure_url").with("url", url));
+    }
+    let network = |e: reqwest::Error| {
+        PluginError::new("resource.network")
+            .with("host", host(url))
+            .with("detail", e.to_string())
+    };
+    let response = client()?.get(url).send().map_err(network)?;
+    let status = response.status();
+    if !status.is_success() {
+        return Err(PluginError::new("resource.http_status")
+            .with("host", host(url))
+            .with("status", status.as_u16()));
+    }
+    let mut body = Vec::new();
+    response
+        .take(max + 1)
+        .read_to_end(&mut body)
+        .map_err(|e| PluginError::new("resource.network").with("detail", e.to_string()))?;
+    if body.len() as u64 > max {
+        return Err(PluginError::new("resource.too_large").with("limit", max));
+    }
+    Ok(body)
 }
 
 impl Resources {

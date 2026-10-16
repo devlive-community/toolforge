@@ -54,6 +54,10 @@ export function App() {
       invoke('app_close_ack', { seq: payload }).catch(() => {})
       useApp.getState().setQuitRequest(payload)
     })
+    // 在线插件加载完成、安装或卸载后刷新插件列表
+    const offPlugins = listen('plugins://changed', () => {
+      void useApp.getState().reloadPlugins()
+    })
     // macOS 菜单中的「关于」「设置」
     const offNavigate = listen<'about' | 'settings'>('app://navigate', ({ payload }) => {
       useApp.getState().navigate({ view: payload })
@@ -69,6 +73,7 @@ export function App() {
     })
     return () => {
       offQuit.then((off) => off())
+      offPlugins.then((off) => off())
       offNavigate.then((off) => off())
       offPalette.then((off) => off())
     }

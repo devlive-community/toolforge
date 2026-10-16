@@ -246,7 +246,38 @@
         "new": "New",
         "updated": "Updated"
       },
-      "onlineSoon": "All tools ship with the app for now; installing and updating third-party plugins online is in development."
+      "tabs": {
+        "tools": "All tools",
+        "online": "Online plugins"
+      },
+      "online": {
+        "hint": "Install optional tools from the official plugin index. Plugins run in a WASM sandbox with only the permissions they declare. You can also install a local .tfp package.",
+        "refresh": "Refresh",
+        "fromFile": "Install from file…",
+        "packageFilter": "ToolForge plugin package",
+        "indexFailed": "Could not load the plugin index",
+        "empty": "No plugins available yet",
+        "official": "Official",
+        "size": "{{kb}} KB",
+        "install": "Install",
+        "update": "Update to v{{version}}",
+        "uninstall": "Uninstall",
+        "installed": "Installed v{{version}}",
+        "uninstalled": "Uninstalled",
+        "local": "Locally installed plugins",
+        "trust": {
+          "official": "Official signature",
+          "unsigned": "Unsigned",
+          "unknownKey": "Unofficial signature"
+        },
+        "confirmTitle": "Install a plugin without an official signature?",
+        "confirmInstall": "Install anyway",
+        "confirmHint": "The plugin runs in a sandbox but can still process data you give it. Only install plugins from sources you trust.",
+        "untrusted": {
+          "unsigned": "Package {{id}} v{{version}} is unsigned, so its origin and integrity cannot be verified.",
+          "unknownKey": "Package {{id}} v{{version}} is signed with an unofficial key ({{keyId}}), so the publisher cannot be verified."
+        }
+      }
     }
   },
   "common": {
@@ -298,7 +329,24 @@
       "resource.checksum_mismatch": "The downloaded file for “{{id}}” failed verification and was discarded",
       "shortcut.invalid": "Invalid shortcut: {{shortcut}}",
       "shortcut.unavailable": "{{shortcut}} is already used by the system or another app",
-      "task.not_rerunnable": "This task has no saved arguments and cannot run again"
+      "task.not_rerunnable": "This task has no saved arguments and cannot run again",
+      "package.invalid": "Invalid plugin package",
+      "package.too_large": "The package exceeds {{mb}} MB",
+      "package.bad_path": "The package contains a disallowed file: {{path}}",
+      "package.missing_file": "The package is missing {{path}}",
+      "package.bad_id": "Invalid plugin id: {{id}}",
+      "package.bad_signature": "Invalid package signature; the content may have been tampered with",
+      "package.bad_key": "Invalid signing key",
+      "package.untrusted": "The package has no official signature",
+      "package.builtin_conflict": "{{id}} clashes with a built-in tool",
+      "package.not_installed": "{{id}} is not installed",
+      "package.checksum_mismatch": "The downloaded package failed its checksum",
+      "market.invalid_index": "Invalid plugin index",
+      "plugin.load_failed": "The plugin failed to load",
+      "plugin.timeout": "The plugin timed out",
+      "plugin.permission_denied": "The plugin lacks the {{detail}} permission",
+      "resource.insecure_url": "Only HTTPS addresses are allowed",
+      "resource.too_large": "The download is too large"
     },
     "logs": {
       "task": {

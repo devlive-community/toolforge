@@ -4,6 +4,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { App } from './App'
 import { initI18n } from './i18n'
 import { registerPluginLocales } from './plugins/modules'
+import { exposeSharedModules } from './plugins/shared'
 import { initialLocale } from './stores/prefs'
 import './styles.css'
 
@@ -17,6 +18,7 @@ window.addEventListener('unhandledrejection', (event) => report(`unhandled rejec
 
 await initI18n(initialLocale())
 registerPluginLocales()
+exposeSharedModules()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

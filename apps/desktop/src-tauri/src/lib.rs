@@ -1,8 +1,10 @@
 mod commands;
 mod diagnostics;
 mod history;
+mod installed;
 mod launcher;
 mod lifecycle;
+mod market;
 mod menu;
 mod plugins;
 mod resources;
@@ -10,6 +12,7 @@ mod tasks;
 mod updater;
 mod window;
 
+use std::collections::HashSet;
 use std::sync::Arc;
 
 use tauri::{Manager, RunEvent};
@@ -27,6 +30,10 @@ pub struct AppState {
     pub tasks: TaskManager,
     pub resources: Arc<Resources>,
     pub log: &'static AppLog,
+    /// 在线安装的插件
+    pub installed: Arc<installed::Installed>,
+    /// 内置插件 id：在线插件不能与之重名
+    pub builtin: Arc<HashSet<String>>,
 }
 
 /// 停止插件后台服务；重启前也要调用，因为重启不会触发 RunEvent::Exit
@@ -49,6 +56,7 @@ pub fn run() {
         .manage(lifecycle::QuitGuard::default())
         .manage(launcher::ActiveShortcut::default())
         .on_menu_event(menu::on_event)
+        .register_uri_scheme_protocol("tfplugin", market::protocol)
         .setup(|app| {
             let data_dir = app.path().app_data_dir()?;
             let log = AppLog::new(data_dir.join("logs"), LOG_BYTES, LOG_FILES).install();
@@ -80,12 +88,23 @@ pub fn run() {
             }
             let plugins = Arc::new(plugins::builtin());
             plugins.start_services(&data_dir.join("plugins"));
+            let builtin: Arc<HashSet<String>> =
+                Arc::new(plugins.manifests().into_iter().map(|m| m.id).collect());
+            let installed = Arc::new(installed::Installed::new(data_dir.join("installed")));
+            market::load_installed(
+                app.handle(),
+                installed.clone(),
+                plugins.clone(),
+                builtin.clone(),
+            );
             app.manage(AppState {
                 store,
                 plugins,
                 tasks,
                 resources,
                 log,
+                installed,
+                builtin,
             });
             launcher::init(app.handle(), &prefs);
             Ok(())
@@ -126,6 +145,12 @@ pub fn run() {
             history::history_clear,
             history::history_settings_get,
             history::history_settings_set,
+            market::plugin_installed,
+            market::plugin_install_file,
+            market::plugin_install_url,
+            market::plugin_uninstall,
+            market::plugin_assets,
+            market::market_index,
             resources::resource_list,
             resources::resource_download,
             resources::resource_delete,

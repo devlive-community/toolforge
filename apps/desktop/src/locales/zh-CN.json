@@ -244,7 +244,38 @@
         "new": "新增",
         "updated": "已更新"
       },
-      "onlineSoon": "目前所有工具都随应用内置；在线安装与更新第三方插件正在开发中。"
+      "tabs": {
+        "tools": "全部工具",
+        "online": "在线插件"
+      },
+      "online": {
+        "hint": "从官方插件索引安装可选工具；插件以 WASM 沙箱运行，只能访问声明的权限。也可以安装本地 .tfp 插件包。",
+        "refresh": "刷新",
+        "fromFile": "从文件安装…",
+        "packageFilter": "ToolForge 插件包",
+        "indexFailed": "无法读取插件索引",
+        "empty": "暂时没有可安装的插件",
+        "official": "官方签名",
+        "size": "{{kb}} KB",
+        "install": "安装",
+        "update": "更新到 v{{version}}",
+        "uninstall": "卸载",
+        "installed": "已安装 v{{version}}",
+        "uninstalled": "已卸载",
+        "local": "本地安装的插件",
+        "trust": {
+          "official": "官方签名",
+          "unsigned": "未签名",
+          "unknownKey": "非官方签名"
+        },
+        "confirmTitle": "安装未经官方签名的插件？",
+        "confirmInstall": "仍然安装",
+        "confirmHint": "插件在沙箱中运行，但仍可能处理你提供给它的数据。只安装你信任来源的插件。",
+        "untrusted": {
+          "unsigned": "插件包 {{id}} v{{version}} 没有签名，无法确认来源与完整性。",
+          "unknownKey": "插件包 {{id}} v{{version}} 使用非官方密钥（{{keyId}}）签名，无法确认发布者。"
+        }
+      }
     }
   },
   "common": {
@@ -296,7 +327,24 @@
       "resource.checksum_mismatch": "“{{id}}”下载的文件校验失败，已丢弃",
       "shortcut.invalid": "无效的快捷键：{{shortcut}}",
       "shortcut.unavailable": "{{shortcut}} 已被系统或其他应用占用",
-      "task.not_rerunnable": "这个任务没有保存参数，无法重新运行"
+      "task.not_rerunnable": "这个任务没有保存参数，无法重新运行",
+      "package.invalid": "插件包无效",
+      "package.too_large": "插件包超过 {{mb}} MB",
+      "package.bad_path": "插件包包含不允许的文件：{{path}}",
+      "package.missing_file": "插件包缺少 {{path}}",
+      "package.bad_id": "插件 id 无效：{{id}}",
+      "package.bad_signature": "插件包签名无效，内容可能被篡改",
+      "package.bad_key": "签名公钥无效",
+      "package.untrusted": "插件包未经官方签名",
+      "package.builtin_conflict": "{{id}} 与内置工具重名，不能安装",
+      "package.not_installed": "{{id}} 没有安装",
+      "package.checksum_mismatch": "下载的插件包校验失败",
+      "market.invalid_index": "插件索引格式无效",
+      "plugin.load_failed": "插件加载失败",
+      "plugin.timeout": "插件处理超时",
+      "plugin.permission_denied": "插件没有 {{detail}} 权限",
+      "resource.insecure_url": "只允许 HTTPS 地址",
+      "resource.too_large": "下载内容过大"
     },
     "logs": {
       "task": {

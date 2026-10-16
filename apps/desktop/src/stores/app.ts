@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import { create } from 'zustand'
 import type { Manifest } from '@toolforge/plugin-ui-sdk'
+import { registerInstalled } from '../plugins/modules'
 import { usePrefs } from './prefs'
 
 export type Route =
@@ -37,6 +38,8 @@ interface AppState {
   quitRequest: number
   setQuitRequest: (seq: number) => void
   load: () => Promise<void>
+  /** 在线插件安装、更新或卸载后重新读取插件列表 */
+  reloadPlugins: () => Promise<void>
   navigate: (route: Route) => void
   openTool: (pluginId: string) => void
   openToolWith: (pluginId: string, text: string, label?: string) => void
@@ -64,10 +67,20 @@ export const useApp = create<AppState>((set, get) => ({
       invoke<string[]>('favorites_list'),
       invoke<string[]>('recent_list'),
     ])
+    await registerInstalled(plugins).catch(() => {})
     set({ info, plugins, favorites, recent, ready: true })
     // 首次启动时把现有工具记为已看过，之后新增或更新的工具在工具市场中标出
     const prefs = usePrefs.getState()
     if (!prefs.seenVersions) prefs.markToolsSeen(plugins)
+  },
+
+  reloadPlugins: async () => {
+    const plugins = await invoke<Manifest[]>('plugin_list')
+    await registerInstalled(plugins).catch(() => {})
+    const route = get().route
+    // 当前打开的插件被卸载时回到首页
+    const gone = route.view === 'tool' && !plugins.some((p) => p.id === route.pluginId)
+    set({ plugins, ...(gone ? { route: { view: 'home' } as Route } : {}) })
   },
 
   navigate: (route) => set({ route, paletteOpen: false }),

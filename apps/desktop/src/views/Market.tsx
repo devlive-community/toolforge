@@ -1,13 +1,14 @@
 import { useMemo, useState } from 'react'
-import { Badge, Button, Drawer, Empty, Input, SegmentedControl, Select, Switch, cn } from '@toolforge/ui'
+import { Badge, Button, Drawer, Empty, Input, SegmentedControl, Select, Switch, Tabs, cn } from '@toolforge/ui'
 import type { Manifest } from '@toolforge/plugin-ui-sdk'
-import { PackageSearch, Search, SquareArrowOutUpRight, Store } from 'lucide-react'
+import { CloudDownload, LayoutGrid, PackageSearch, Search, SquareArrowOutUpRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { CATEGORIES } from '../lib/categories'
 import { ToolTile } from '../plugins/ToolIcon'
 import { usePluginText } from '../plugins/usePluginText'
 import { useApp } from '../stores/app'
 import { toolStatus, usePrefs, type ToolStatus } from '../stores/prefs'
+import { MarketOnline } from './MarketOnline'
 import { Page } from './Page'
 
 type Filter = 'all' | 'changed' | 'hidden'
@@ -123,6 +124,7 @@ export function Market() {
   const [category, setCategory] = useState('all')
   const [filter, setFilter] = useState<Filter>('all')
   const [selected, setSelected] = useState<Manifest | null>(null)
+  const [tab, setTab] = useState<'tools' | 'online'>('tools')
 
   const changed = plugins.filter((p) => toolStatus(p, seen) !== 'seen')
   const list = useMemo(
@@ -138,6 +140,20 @@ export function Market() {
 
   return (
     <Page title={t('nav.market')} description={t('market.subtitle', { count: plugins.length })}>
+      <div className="mb-5">
+        <Tabs
+          value={tab}
+          onValueChange={setTab}
+          items={[
+            { value: 'tools', label: t('market.tabs.tools'), icon: <LayoutGrid /> },
+            { value: 'online', label: t('market.tabs.online'), icon: <CloudDownload /> },
+          ]}
+        />
+      </div>
+      {tab === 'online' ? (
+        <MarketOnline />
+      ) : (
+        <>
       <div className="mb-5 flex flex-wrap items-center gap-3">
         <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('market.search')} aria-label={t('market.search')} leading={<Search />} wrapperClassName="min-w-60 flex-1" />
         <Select<string>
@@ -196,10 +212,8 @@ export function Market() {
           })}
         </div>
       )}
-      <p className="mt-6 flex items-center gap-2 text-xs text-fg-subtle">
-        <Store className="size-3.5" />
-        {t('market.onlineSoon')}
-      </p>
+        </>
+      )}
       <Detail manifest={selected} onClose={() => setSelected(null)} />
     </Page>
   )
