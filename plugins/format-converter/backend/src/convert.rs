@@ -5,7 +5,7 @@ use serde_json::Value;
 use tf_plugin_api::{PluginError, PluginResult};
 
 use crate::csvfmt::{self, Delimiter};
-use crate::tomlfmt;
+use crate::{inifmt, propsfmt, tomlfmt, xmlfmt};
 
 const MAX_INPUT: usize = 10 * 1024 * 1024;
 
@@ -17,6 +17,11 @@ pub enum Format {
     Yaml,
     Toml,
     Csv,
+    Xml,
+    Ini,
+    Properties,
+    /// 仅作为输入；作为输出时与 JSON 相同
+    Json5,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -67,6 +72,22 @@ pub struct Args {
     pub options: Options,
 }
 
+/// 转换中的有损情况：code 由前端翻译，path 指出位置
+#[derive(Debug, Clone, Serialize, PartialEq)]
+pub struct Warning {
+    pub code: &'static str,
+    pub path: String,
+}
+
+impl Warning {
+    pub fn new(code: &'static str, path: &str) -> Self {
+        Self {
+            code,
+            path: path.to_owned(),
+        }
+    }
+}
+
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Output {
@@ -75,11 +96,12 @@ pub struct Output {
     pub from: Format,
     /// 顶层数组的元素数（CSV 为行数）
     pub records: Option<usize>,
+    pub warnings: Vec<Warning>,
     pub elapsed_ms: f64,
 }
 
 /// 字节偏移 → 1 起始的行列号
-fn line_col(input: &str, offset: usize) -> (usize, usize) {
+pub(crate) fn line_col(input: &str, offset: usize) -> (usize, usize) {
     let before = &input[..input.floor_char_boundary(offset.min(input.len()))];
     let line = before.matches('\n').count() + 1;
     let column = before
@@ -91,27 +113,51 @@ fn line_col(input: &str, offset: usize) -> (usize, usize) {
     (line, column)
 }
 
-/// 猜测输入格式：{ / [ 开头为 JSON，TOML 表头或 key = value 为 TOML，
+/// 猜测输入格式：< 开头为 XML；{ / [ 开头为 JSON（不合法但符合 JSON5 时为 JSON5）；
+/// TOML 表头或 key = value 能按 TOML 解析时为 TOML，否则有节为 INI、无节为 properties；
 /// 首行含分隔符且不像 YAML 映射时为 CSV，其余视为 YAML
 pub fn detect(input: &str) -> Format {
     let trimmed = input.trim_start();
-    if trimmed.starts_with('{')
-        || trimmed.starts_with('[') && serde_json::from_str::<Value>(trimmed).is_ok()
-    {
+    if trimmed.starts_with('<') {
+        return Format::Xml;
+    }
+    let json_like = trimmed.starts_with('{') || trimmed.starts_with('[');
+    if json_like && serde_json::from_str::<serde::de::IgnoredAny>(trimmed).is_ok() {
         return Format::Json;
     }
-    let first = trimmed
-        .lines()
-        .find(|l| !l.trim().is_empty() && !l.trim_start().starts_with('#'))
-        .unwrap_or("");
+    if json_like && json5::from_str::<serde::de::IgnoredAny>(trimmed).is_ok() {
+        return Format::Json5;
+    }
+    if trimmed.starts_with('{') || trimmed.starts_with("//") || trimmed.starts_with("/*") {
+        return Format::Json;
+    }
+    let content = |l: &&str| {
+        let l = l.trim_start();
+        !l.is_empty() && !l.starts_with('#') && !l.starts_with(';') && !l.starts_with('!')
+    };
+    let first = trimmed.lines().find(content).unwrap_or("");
     let is_toml_line = |l: &str| {
         let l = l.trim();
         (l.starts_with('[') && l.ends_with(']'))
             || l.split_once('=')
                 .is_some_and(|(k, _)| !k.trim().is_empty() && !k.contains(':'))
     };
-    if is_toml_line(first) && toml::from_str::<toml::Table>(input).is_ok() {
-        return Format::Toml;
+    if is_toml_line(first) {
+        if toml::from_str::<toml::Table>(input).is_ok() {
+            return Format::Toml;
+        }
+        let has_section = trimmed.lines().filter(content).any(|l| {
+            let l = l.trim();
+            l.starts_with('[') && l.ends_with(']')
+        });
+        return if has_section {
+            Format::Ini
+        } else {
+            Format::Properties
+        };
+    }
+    if trimmed.starts_with('!') {
+        return Format::Properties;
     }
     let looks_yaml = first.contains(": ")
         || first.trim_end().ends_with(':')
@@ -123,7 +169,12 @@ pub fn detect(input: &str) -> Format {
     Format::Yaml
 }
 
-fn parse(input: &str, format: Format, options: &Options) -> PluginResult<Value> {
+fn parse(
+    input: &str,
+    format: Format,
+    options: &Options,
+    warnings: &mut Vec<Warning>,
+) -> PluginResult<Value> {
     match format {
         Format::Json | Format::Auto => serde_json::from_str(input).map_err(|e| {
             PluginError::new("format.json_invalid")
@@ -171,13 +222,30 @@ fn parse(input: &str, format: Format, options: &Options) -> PluginResult<Value> 
             options.header,
             options.infer_types,
         ),
+        Format::Json5 => json5::from_str(input).map_err(|e| {
+            let mut err = PluginError::new("format.json5_invalid").with("detail", e.to_string());
+            if let Some(pos) = e.position() {
+                err = err
+                    .with("line", pos.line + 1)
+                    .with("column", pos.column + 1);
+            }
+            err
+        }),
+        Format::Xml => xmlfmt::parse(input, options.infer_types),
+        Format::Ini => inifmt::parse(input, options.infer_types),
+        Format::Properties => propsfmt::parse(input, options.infer_types, warnings),
     }
 }
 
-fn serialize(value: &Value, format: Format, options: &Options) -> PluginResult<String> {
+fn serialize(
+    value: &Value,
+    format: Format,
+    options: &Options,
+    warnings: &mut Vec<Warning>,
+) -> PluginResult<String> {
     let failed = |e: String| PluginError::new("format.serialize_failed").with("detail", e);
     match format {
-        Format::Json | Format::Auto => {
+        Format::Json | Format::Json5 | Format::Auto => {
             if options.minify {
                 return serde_json::to_string(value).map_err(|e| failed(e.to_string()));
             }
@@ -203,6 +271,17 @@ fn serialize(value: &Value, format: Format, options: &Options) -> PluginResult<S
             toml::to_string_pretty(&table).map_err(|e| failed(e.to_string()))
         }
         Format::Csv => csvfmt::write(value, options.delimiter).map(|(text, _)| text),
+        Format::Xml => xmlfmt::write(
+            value,
+            if options.minify {
+                0
+            } else {
+                options.indent.clamp(1, 8)
+            },
+            warnings,
+        ),
+        Format::Ini => inifmt::write(value, warnings),
+        Format::Properties => propsfmt::write(value, warnings),
     }
 }
 
@@ -244,12 +323,15 @@ pub fn run(args: Args) -> PluginResult<Output> {
     } else {
         args.from
     };
-    let value = parse(&args.input, from, &args.options)?;
-    let output = serialize(&value, args.to, &args.options)?;
+    let mut warnings = Vec::new();
+    let value = parse(&args.input, from, &args.options, &mut warnings)?;
+    let output = serialize(&value, args.to, &args.options, &mut warnings)?;
+    warnings.dedup();
     Ok(Output {
         output,
         from,
         records: value.as_array().map(Vec::len),
+        warnings,
         elapsed_ms: (start.elapsed().as_secs_f64() * 100_000.0).round() / 100.0,
     })
 }

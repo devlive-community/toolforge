@@ -155,3 +155,33 @@ fn minified_json_output() {
     .unwrap();
     assert_eq!(output.output, r#"{"a":1,"b":["x"]}"#);
 }
+
+#[test]
+fn detects_new_formats() {
+    assert_eq!(detect("<a>1</a>"), Format::Xml);
+    assert_eq!(detect("{a: 1, // c\n b: 'x',}"), Format::Json5);
+    assert_eq!(detect("[server]\nhost = localhost\n"), Format::Ini);
+    assert_eq!(detect("; c\n[s]\nk = v w\n"), Format::Ini);
+    assert_eq!(
+        detect("server.port=8080\napp.name=ToolForge Pro\n"),
+        Format::Properties
+    );
+    assert_eq!(detect("# c\nserver.port = 8080\n"), Format::Toml);
+    assert_eq!(detect("{\"a\":1}"), Format::Json);
+}
+
+#[test]
+fn converts_xml_json5_ini_properties() {
+    let json = out("<a x=\"1\"><b>2</b></a>", Format::Auto, Format::Json);
+    assert_eq!(json, "{\n  \"a\": {\n    \"@x\": 1,\n    \"b\": 2\n  }\n}");
+    let yaml = out("{a: 1, b: [1, 2,], /* c */}", Format::Json5, Format::Yaml);
+    assert_eq!(yaml, "a: 1\nb:\n- 1\n- 2\n");
+    let props = out("[s]\nk = v\n", Format::Ini, Format::Properties);
+    assert_eq!(props, "s.k=v\n");
+    let toml_text = out("s.k=v\n", Format::Properties, Format::Toml);
+    assert_eq!(toml_text, "[s]\nk = \"v\"\n");
+    let result = convert(r#"{"r":{"l":[1]}}"#, Format::Json, Format::Xml).unwrap();
+    assert_eq!(result.warnings[0].code, "xml_single_array");
+    let err = convert("{a: }", Format::Json5, Format::Json).unwrap_err();
+    assert_eq!(err.code, "format.json5_invalid");
+}

@@ -8053,6 +8053,8 @@ name = "tfp-format-converter"
 version = "0.1.0"
 dependencies = [
  "csv",
+ "json5",
+ "quick-xml 0.42.0",
  "serde",
  "serde_json",
  "serde_yaml_ng",

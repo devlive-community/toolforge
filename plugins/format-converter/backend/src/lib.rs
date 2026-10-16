@@ -1,9 +1,12 @@
-//! 格式转换插件后端：JSON / YAML / TOML / CSV 通过统一的 JSON 数据模型互转。
+//! 格式转换插件后端：JSON / JSON5 / YAML / TOML / CSV / XML / INI / properties 通过统一的 JSON 数据模型互转。
 
 mod convert;
 mod csvfmt;
 mod detect;
+mod inifmt;
+mod propsfmt;
 mod tomlfmt;
+mod xmlfmt;
 
 use serde_json::Value;
 use tf_plugin_api::{Manifest, PluginResult, ToolPlugin, parse_args, to_value, unknown_function};

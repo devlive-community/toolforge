@@ -1,18 +1,25 @@
 {
   "name": "Format Converter",
-  "description": "Convert between JSON, YAML, TOML and CSV with automatic input detection and preserved key order",
+  "description": "Convert between JSON, JSON5, YAML, TOML, CSV, XML, INI and properties with auto detection and preserved key order",
   "help": [
     "Choose “Auto detect” to paste any format; the detected format appears below the input.",
     "Multi-document YAML (---) becomes an array; TOML date-times are kept as strings.",
     "TOML has no null and needs a table at the top level; the exact path is reported when that happens.",
-    "For CSV pick the delimiter, whether the first row is a header and whether to infer numbers / booleans; nested objects become a.b columns when converting to CSV."
+    "For CSV pick the delimiter, whether the first row is a header and whether to infer numbers / booleans; nested objects become a.b columns when converting to CSV.",
+    "XML attributes map to @name; text becomes #text when an element also has attributes or children; repeated children become arrays and empty elements become null. A single child reads back as an object, not an array.",
+    "Dots in INI section names mean nesting ([server.tls]) and key[] = v builds arrays; properties keys are rebuilt into nested data from dots and [n] indexes and flattened to a.b[0].c on output.",
+    "JSON5 (comments, single quotes, trailing commas) is input only; choose JSON when you need JSON5 output."
   ],
   "formats": {
     "auto": "Auto detect",
     "json": "JSON",
     "yaml": "YAML",
     "toml": "TOML",
-    "csv": "CSV"
+    "csv": "CSV",
+    "xml": "XML",
+    "ini": "INI",
+    "properties": "Properties",
+    "json5": "JSON5"
   },
   "from": "Input format",
   "to": "Output format",
@@ -36,7 +43,7 @@
   "output": "Output ({{format}})",
   "sample": "Sample",
   "open": "Open file",
-  "placeholder": "Paste JSON, YAML, TOML or CSV…",
+  "placeholder": "Paste JSON, YAML, TOML, CSV, XML, INI or properties…",
   "detected": "Detected {{format}}",
   "records": "{{count}} records",
   "elapsed": "{{ms}} ms",
@@ -57,6 +64,26 @@
     "format.toml_number": "TOML cannot represent the number at {{path}}",
     "format.toml_root": "The top level must be an object to convert to TOML",
     "format.csv_shape": "CSV output needs an array of objects or rows",
-    "format.serialize_failed": "Failed to produce output"
+    "format.serialize_failed": "Failed to produce output",
+    "format.xml_invalid": "XML syntax error near line {{line}}, column {{column}}",
+    "format.json5_invalid": "JSON5 syntax error near line {{line}}, column {{column}}",
+    "format.ini_invalid": "Invalid INI on line {{line}}",
+    "format.properties_invalid": "Invalid properties on line {{line}}",
+    "format.xml_name": "\"{{name}}\" is not a valid XML name (at {{path}})",
+    "format.xml_attribute": "XML attributes must be simple values (at {{path}})",
+    "format.xml_nested_array": "XML cannot hold an array directly inside an array (at {{path}})",
+    "format.ini_root": "The top level must be an object to convert to INI",
+    "format.properties_root": "The top level must be an object or array to convert to properties"
+  },
+  "fileFilter": "Data and config files",
+  "warningCount_one": "{{count}} lossy spot",
+  "warningCount_other": "{{count}} lossy spots",
+  "warnings": {
+    "xml_single_array": "A one-item array written as XML reads back as a single value",
+    "xml_wrapped_root": "XML needs a single root element; wrapped in <root>",
+    "ini_array_objects": "INI has no arrays of objects; written as indexed sections",
+    "dropped_nested_array": "INI cannot hold nested arrays; skipped",
+    "empty_container": "Empty arrays or objects cannot be represented; omitted",
+    "properties_conflict": "Key conflicts with an existing level; kept as a flat key"
   }
 }

@@ -25,7 +25,7 @@ impl Delimiter {
 }
 
 /// 推断单元格类型：整数、浮点数、布尔、空值，其余为字符串
-fn infer(cell: &str) -> Value {
+pub(crate) fn infer(cell: &str) -> Value {
     let trimmed = cell.trim();
     match trimmed {
         "" => Value::Null,

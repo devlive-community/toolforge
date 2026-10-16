@@ -1,18 +1,25 @@
 {
   "name": "格式转换",
-  "description": "JSON、YAML、TOML 与 CSV 互相转换，自动识别输入格式并保持键的顺序",
+  "description": "JSON、JSON5、YAML、TOML、CSV、XML、INI 与 properties 互相转换，自动识别输入格式并保持键的顺序",
   "help": [
     "输入格式选择「自动识别」即可直接粘贴任意格式，识别结果显示在输入框底部。",
     "YAML 多文档（---）会转为数组；TOML 中的日期时间保留为字符串。",
     "TOML 无法表示 null，也要求顶层必须是表，遇到时会指出具体路径。",
-    "CSV 可选择分隔符、是否含表头与是否推断数字 / 布尔类型；转为 CSV 时嵌套对象会展开为 a.b 列。"
+    "CSV 可选择分隔符、是否含表头与是否推断数字 / 布尔类型；转为 CSV 时嵌套对象会展开为 a.b 列。",
+    "XML 的属性映射为 @名称，元素同时有属性或子元素时文本映射为 #text，同名子元素合并为数组，空元素为 null；只有一个子元素时读回会变成对象而不是数组。",
+    "INI 节名中的点号表示嵌套（[server.tls]），key[] = v 表示数组；properties 按点号与 [n] 下标还原嵌套，写出时展平为 a.b[0].c。",
+    "JSON5 支持注释、单引号、尾逗号等写法，只作为输入；需要 JSON5 输出时选 JSON 即可。"
   ],
   "formats": {
     "auto": "自动识别",
     "json": "JSON",
     "yaml": "YAML",
     "toml": "TOML",
-    "csv": "CSV"
+    "csv": "CSV",
+    "xml": "XML",
+    "ini": "INI",
+    "properties": "Properties",
+    "json5": "JSON5"
   },
   "from": "输入格式",
   "to": "输出格式",
@@ -36,7 +43,7 @@
   "output": "输出（{{format}}）",
   "sample": "示例",
   "open": "打开文件",
-  "placeholder": "粘贴 JSON、YAML、TOML 或 CSV…",
+  "placeholder": "粘贴 JSON、YAML、TOML、CSV、XML、INI 或 properties…",
   "detected": "识别为 {{format}}",
   "records": "{{count}} 条记录",
   "elapsed": "耗时 {{ms}}ms",
@@ -57,6 +64,25 @@
     "format.toml_number": "TOML 无法表示 {{path}} 处的数字",
     "format.toml_root": "转换为 TOML 时顶层必须是对象",
     "format.csv_shape": "转换为 CSV 需要对象数组或二维数组",
-    "format.serialize_failed": "生成输出失败"
+    "format.serialize_failed": "生成输出失败",
+    "format.xml_invalid": "XML 第 {{line}} 行第 {{column}} 列附近有语法错误",
+    "format.json5_invalid": "JSON5 第 {{line}} 行第 {{column}} 列附近有语法错误",
+    "format.ini_invalid": "INI 第 {{line}} 行格式错误",
+    "format.properties_invalid": "properties 第 {{line}} 行格式错误",
+    "format.xml_name": "「{{name}}」不能作为 XML 名称（位于 {{path}}）",
+    "format.xml_attribute": "XML 属性只能是简单值（位于 {{path}}）",
+    "format.xml_nested_array": "XML 无法表示数组中直接嵌套的数组（位于 {{path}}）",
+    "format.ini_root": "转换为 INI 时顶层必须是对象",
+    "format.properties_root": "转换为 properties 时顶层必须是对象或数组"
+  },
+  "fileFilter": "数据与配置文件",
+  "warningCount": "{{count}} 处有损",
+  "warnings": {
+    "xml_single_array": "只有一个元素的数组写成 XML 后，读回会变成单个值",
+    "xml_wrapped_root": "XML 只能有一个根元素，已包裹在 <root> 中",
+    "ini_array_objects": "INI 不支持对象数组，已按下标写成多个节",
+    "dropped_nested_array": "INI 无法表示嵌套数组，已跳过",
+    "empty_container": "空数组或空对象无法表示，已省略",
+    "properties_conflict": "键与已有层级冲突，保留为扁平键"
   }
 }
