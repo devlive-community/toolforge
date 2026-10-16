@@ -1,15 +1,17 @@
 {
   "name": "Password Generator",
-  "description": "Generate strong random passwords and check how hard a password is to crack",
+  "description": "Generate strong random passwords and memorable passphrases, and estimate how hard a password is to crack",
   "help": [
     "Passwords come from the operating system's cryptographically secure random number generator in Rust.",
+    "Passphrases pick random words from built-in offline lists — easy to remember and strong: five English words give about 65 bits; the Chinese list outputs pinyin with the original words as a memory aid.",
     "Entropy is length × log2(character pool); 80+ bits is very strong.",
     "The strength check penalizes common passwords, repeats and keyboard or alphabet sequences; nothing is sent anywhere or stored.",
     "Crack time assumes an offline attacker making 10 billion guesses per second."
   ],
   "functions": {
     "generate": "Generate passwords",
-    "analyze": "Check strength"
+    "analyze": "Check strength",
+    "passphrase": "Generate passphrase"
   },
   "options": {
     "title": "Options",
@@ -23,14 +25,20 @@
     "exclude": "Exclude characters",
     "excludePlaceholder": "Characters never to use",
     "count": "How many",
-    "regenerate": "Regenerate"
+    "regenerate": "Regenerate",
+    "mode": "Mode",
+    "modes": {
+      "chars": "Random characters",
+      "phrase": "Passphrase"
+    }
   },
   "result": {
     "title": "Passwords",
     "empty": "No passwords",
     "copyAll": "Copy all",
     "entropy": "{{bits}} bits · pool {{pool}}",
-    "check": "Check strength"
+    "check": "Check strength",
+    "phraseEntropy": "{{bits}} bits · {{size}}-word list"
   },
   "strength": {
     "title": "Strength check",
@@ -80,6 +88,31 @@
     "password.no_charset": "Select at least one character type with usable characters",
     "password.too_short_for_classes": "Length must be at least {{min}} to include every selected type",
     "password.empty": "Enter a password",
-    "password.too_long": "The password is longer than {{limit}} characters"
+    "password.too_long": "The password is longer than {{limit}} characters",
+    "password.invalid_words": "Words must be between {{min}} and {{max}}",
+    "password.invalid_separator": "The separator can have at most {{max}} characters"
+  },
+  "phrase": {
+    "words": "Words",
+    "wordlist": "Word list",
+    "wordlists": {
+      "en": "English (EFF, 7772 words)",
+      "zh": "Common Chinese words (pinyin)"
+    },
+    "separator": "Separator",
+    "separators": {
+      "symbol": "{{symbol}}",
+      "space": "Space",
+      "custom": "Custom"
+    },
+    "customPlaceholder": "Up to 8 characters",
+    "case": "Case",
+    "cases": {
+      "lower": "lowercase",
+      "title": "Title Case",
+      "upper": "UPPERCASE",
+      "random": "Random per word"
+    },
+    "appendDigit": "Append a digit"
   }
 }

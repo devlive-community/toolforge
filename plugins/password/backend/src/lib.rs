@@ -1,6 +1,7 @@
-//! 密码插件后端：用密码学安全随机数生成密码，并估算密码强度。
+//! 密码插件后端：用密码学安全随机数生成密码与密码短语，并估算密码强度。
 
 mod generate;
+mod passphrase;
 mod strength;
 
 use serde_json::Value;
@@ -28,6 +29,7 @@ impl ToolPlugin for Password {
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
         match function {
             "generate" => to_value(generate::generate(parse_args(args)?)?),
+            "passphrase" => to_value(passphrase::generate(parse_args(args)?)?),
             "analyze" => to_value(strength::analyze(parse_args(args)?)?),
             other => Err(unknown_function(other)),
         }

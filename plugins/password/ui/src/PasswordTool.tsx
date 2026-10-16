@@ -1,10 +1,15 @@
 import { useState, type ReactNode } from 'react'
-import { Badge, Button, Empty, Input, NumberInput, Panel, Spinner, Switch, Tooltip, cn } from '@toolforge/ui'
+import { Badge, Button, Empty, Input, NumberInput, Panel, SegmentedControl, Select, Spinner, Switch, Tooltip, cn } from '@toolforge/ui'
 import { CopyButton, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { Eye, EyeOff, KeyRound, RefreshCw, ShieldCheck, SlidersHorizontal, TriangleAlert } from 'lucide-react'
-import type { Generated, Report } from './types'
+import type { Generated, Phrase, Report } from './types'
 
 const LENGTHS = [12, 16, 24, 32, 64]
+const SEPARATORS = ['-', '_', '.', ' ', 'custom'] as const
+type Mode = 'chars' | 'phrase'
+type Wordlist = 'en' | 'zh'
+type Case = 'lower' | 'title' | 'upper' | 'random'
+type Separator = (typeof SEPARATORS)[number]
 const SCORE_TONE = ['bg-danger', 'bg-danger', 'bg-warning', 'bg-success', 'bg-success']
 const SCORE_TEXT = ['text-danger', 'text-danger', 'text-warning', 'text-success', 'text-success']
 
@@ -29,13 +34,27 @@ export function PasswordTool() {
   const [requireEach, setRequireEach] = useState(true)
   const [exclude, setExclude] = useState('')
   const [nonce, setNonce] = useState(0)
+  const [mode, setMode] = useState<Mode>('chars')
+  const [words, setWords] = useState(5)
+  const [wordlist, setWordlist] = useState<Wordlist>('en')
+  const [separatorKind, setSeparatorKind] = useState<Separator>('-')
+  const [customSeparator, setCustomSeparator] = useState('')
+  const [wordCase, setWordCase] = useState<Case>('lower')
+  const [appendDigit, setAppendDigit] = useState(true)
   const [check, setCheck] = useState('')
   const [reveal, setReveal] = useState(false)
 
   const options = { length, count, upper, lower, digits, symbols, excludeAmbiguous, requireEach, exclude }
-  const { result, error, pending } = useDebouncedCall<Generated>('generate', options, [
-    length, count, upper, lower, digits, symbols, excludeAmbiguous, requireEach, exclude, nonce,
+  const chars = useDebouncedCall<Generated>(mode === 'chars' ? 'generate' : null, mode === 'chars' ? options : null, [
+    mode, length, count, upper, lower, digits, symbols, excludeAmbiguous, requireEach, exclude, nonce,
   ])
+  const separator = separatorKind === 'custom' ? customSeparator : separatorKind
+  const phraseOptions = { words, count, wordlist, separator, case: wordCase, appendDigit }
+  const phrase = useDebouncedCall<Phrase>(mode === 'phrase' ? 'passphrase' : null, mode === 'phrase' ? phraseOptions : null, [
+    mode, words, count, wordlist, separator, wordCase, appendDigit, nonce,
+  ])
+  const { result, error, pending } = mode === 'chars' ? chars : phrase
+  const hints = mode === 'phrase' ? phrase.result?.hints : null
   const analyzed = useDebouncedCall<Report>(check ? 'analyze' : null, check ? { password: check } : null, [check])
   const report = check && !analyzed.error ? analyzed.result : null
 
@@ -49,46 +68,108 @@ export function PasswordTool() {
   return (
     <div className="grid h-full min-h-0 grid-cols-[minmax(300px,360px)_minmax(0,1fr)] gap-3">
       <Panel icon={<SlidersHorizontal />} title={t('options.title')} bodyClassName="space-y-4 overflow-auto p-4">
-        <div className="space-y-1.5">
-          <p className="text-xs font-medium text-fg-muted">{t('options.length')}</p>
-          <NumberInput value={length} onValueChange={setLength} min={4} max={256} className="w-full" aria-label={t('options.length')} />
-          <div className="flex gap-1">
-            {LENGTHS.map((value) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => setLength(value)}
-                className={cn(
-                  'flex-1 rounded-control border px-1.5 py-0.5 text-[11px] tabular-nums outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring',
-                  value === length ? 'border-primary bg-primary-soft text-primary-fg' : 'border-border text-fg-muted hover:bg-hover',
-                )}
-              >
-                {value}
-              </button>
-            ))}
-          </div>
-        </div>
+        <SegmentedControl<Mode>
+          value={mode}
+          onValueChange={setMode}
+          className="flex w-full [&>button]:flex-1"
+          aria-label={t('options.mode')}
+          options={[
+            { value: 'chars', label: t('options.modes.chars') },
+            { value: 'phrase', label: t('options.modes.phrase') },
+          ]}
+        />
+        {mode === 'phrase' ? (
+          <>
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-fg-muted">{t('phrase.words')}</p>
+              <NumberInput value={words} onValueChange={setWords} min={3} max={20} className="w-full" aria-label={t('phrase.words')} />
+            </div>
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-fg-muted">{t('phrase.wordlist')}</p>
+              <Select<Wordlist>
+                value={wordlist}
+                onValueChange={setWordlist}
+                className="w-full"
+                aria-label={t('phrase.wordlist')}
+                options={[
+                  { value: 'en', label: t('phrase.wordlists.en') },
+                  { value: 'zh', label: t('phrase.wordlists.zh') },
+                ]}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-fg-muted">{t('phrase.separator')}</p>
+              <SegmentedControl<Separator>
+                value={separatorKind}
+                onValueChange={setSeparatorKind}
+                className="flex w-full [&>button]:flex-1"
+                aria-label={t('phrase.separator')}
+                options={SEPARATORS.map((value) => ({ value, label: t(`phrase.separators.${value === ' ' ? 'space' : value === 'custom' ? 'custom' : 'symbol'}`, { symbol: value }) }))}
+              />
+              {separatorKind === 'custom' && (
+                <Input value={customSeparator} onChange={(event) => setCustomSeparator(event.target.value)} maxLength={8} className="font-mono" placeholder={t('phrase.customPlaceholder')} aria-label={t('phrase.separators.custom')} />
+              )}
+            </div>
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-fg-muted">{t('phrase.case')}</p>
+              <Select<Case>
+                value={wordCase}
+                onValueChange={setWordCase}
+                className="w-full"
+                aria-label={t('phrase.case')}
+                options={(['lower', 'title', 'upper', 'random'] as const).map((value) => ({ value, label: t(`phrase.cases.${value}`) }))}
+              />
+            </div>
+            <div className="rounded-control border border-border px-3 py-1.5">
+              <ToggleRow label={t('phrase.appendDigit')}>
+                <Switch size="sm" checked={appendDigit} onCheckedChange={setAppendDigit} aria-label={t('phrase.appendDigit')} />
+              </ToggleRow>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-fg-muted">{t('options.length')}</p>
+              <NumberInput value={length} onValueChange={setLength} min={4} max={256} className="w-full" aria-label={t('options.length')} />
+              <div className="flex gap-1">
+                {LENGTHS.map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setLength(value)}
+                    className={cn(
+                      'flex-1 rounded-control border px-1.5 py-0.5 text-[11px] tabular-nums outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring',
+                      value === length ? 'border-primary bg-primary-soft text-primary-fg' : 'border-border text-fg-muted hover:bg-hover',
+                    )}
+                  >
+                    {value}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        <div className="rounded-control border border-border px-3 py-1.5">
-          {classes.map(([key, checked, set]) => (
-            <ToggleRow key={key} label={t(`options.${key}`)}>
-              <Switch size="sm" checked={checked} onCheckedChange={set} aria-label={t(`options.${key}`)} />
-            </ToggleRow>
-          ))}
-        </div>
-        <div className="rounded-control border border-border px-3 py-1.5">
-          <ToggleRow label={t('options.excludeAmbiguous')}>
-            <Switch size="sm" checked={excludeAmbiguous} onCheckedChange={setExcludeAmbiguous} aria-label={t('options.excludeAmbiguous')} />
-          </ToggleRow>
-          <ToggleRow label={t('options.requireEach')}>
-            <Switch size="sm" checked={requireEach} onCheckedChange={setRequireEach} aria-label={t('options.requireEach')} />
-          </ToggleRow>
-        </div>
+            <div className="rounded-control border border-border px-3 py-1.5">
+              {classes.map(([key, checked, set]) => (
+                <ToggleRow key={key} label={t(`options.${key}`)}>
+                  <Switch size="sm" checked={checked} onCheckedChange={set} aria-label={t(`options.${key}`)} />
+                </ToggleRow>
+              ))}
+            </div>
+            <div className="rounded-control border border-border px-3 py-1.5">
+              <ToggleRow label={t('options.excludeAmbiguous')}>
+                <Switch size="sm" checked={excludeAmbiguous} onCheckedChange={setExcludeAmbiguous} aria-label={t('options.excludeAmbiguous')} />
+              </ToggleRow>
+              <ToggleRow label={t('options.requireEach')}>
+                <Switch size="sm" checked={requireEach} onCheckedChange={setRequireEach} aria-label={t('options.requireEach')} />
+              </ToggleRow>
+            </div>
 
-        <div className="space-y-1.5">
-          <p className="text-xs font-medium text-fg-muted">{t('options.exclude')}</p>
-          <Input value={exclude} onChange={(event) => setExclude(event.target.value)} className="font-mono" placeholder={t('options.excludePlaceholder')} aria-label={t('options.exclude')} />
-        </div>
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-fg-muted">{t('options.exclude')}</p>
+              <Input value={exclude} onChange={(event) => setExclude(event.target.value)} className="font-mono" placeholder={t('options.excludePlaceholder')} aria-label={t('options.exclude')} />
+            </div>
+          </>
+        )}
         <div className="space-y-1.5">
           <p className="text-xs font-medium text-fg-muted">{t('options.count')}</p>
           <NumberInput value={count} onValueChange={setCount} min={1} max={500} className="w-full" aria-label={t('options.count')} />
@@ -108,7 +189,14 @@ export function PasswordTool() {
             pending ? (
               <Spinner className="size-3.5 text-fg-subtle" />
             ) : (
-              result && !error && <Badge variant="success">{t('result.entropy', { bits: result.entropy, pool: result.poolSize })}</Badge>
+              result &&
+              !error && (
+                <Badge variant="success">
+                  {mode === 'phrase' && phrase.result
+                    ? t('result.phraseEntropy', { bits: phrase.result.entropy, size: phrase.result.wordlistSize })
+                    : chars.result && t('result.entropy', { bits: chars.result.entropy, pool: chars.result.poolSize })}
+                </Badge>
+              )
             )
           }
           actions={result && !error && <CopyButton text={result.passwords.join('\n')} label={t('result.copyAll')} variant="outline" />}
@@ -122,7 +210,10 @@ export function PasswordTool() {
             <ol className="font-mono text-[13px]" data-selectable>
               {result.passwords.map((password, index) => (
                 <li key={`${index}-${password}`} className="group flex items-center gap-2 rounded-control px-3 py-1.5 hover:bg-hover">
-                  <code className="min-w-0 flex-1 break-all text-fg">{password}</code>
+                  <div className="min-w-0 flex-1">
+                    <code className="block break-all text-fg">{password}</code>
+                    {hints?.[index] && <span className="block font-sans text-[11px] text-fg-subtle">{hints[index]}</span>}
+                  </div>
                   <Tooltip content={t('result.check')}>
                     <Button
                       size="icon-sm"

@@ -4,6 +4,13 @@ export interface Generated {
   entropy: number
 }
 
+export interface Phrase {
+  passwords: string[]
+  hints: string[] | null
+  wordlistSize: number
+  entropy: number
+}
+
 export interface Report {
   length: number
   classes: { upper: boolean; lower: boolean; digits: boolean; symbols: boolean; other: boolean }
