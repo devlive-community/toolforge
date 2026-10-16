@@ -1,22 +1,26 @@
 {
   "name": "Hash",
-  "description": "Compute MD5, SHA, SM3 and CRC32 digests and HMACs of text and files; large files run as tasks with live logs",
+  "description": "Compute MD5, SHA, SM3 and CRC32 digests and HMACs of text and files; large files run as tasks with live logs; create checksum manifests for folders and verify them in bulk",
   "help": [
     "Text digests and HMACs update as you type; file hashing runs as a background task you can cancel and review in the task center.",
     "HMAC keys can be entered as text, hex or Base64, and a pasted MAC is checked in constant time.",
     "Each file is read once while every selected algorithm is computed.",
     "Drag files onto the window to add them.",
-    "Everything runs in the local Rust engine; file contents never leave your machine."
+    "Everything runs in the local Rust engine; file contents never leave your machine.",
+    "Manifest: create sha256sum / md5sum compatible checksum manifests for a folder, or import a manifest (GNU or BSD style) and verify every entry in parallel in the background, marking OK / FAILED / MISSING. Large files are read in chunks."
   ],
   "functions": {
     "hash_files": "Hash files",
     "hash_text": "Hash text",
-    "hmac_text": "HMAC"
+    "hmac_text": "HMAC",
+    "manifest_create": "Create checksum manifest",
+    "manifest_verify": "Verify files against a manifest"
   },
   "tabs": {
     "text": "Text",
     "files": "Files",
-    "hmac": "HMAC"
+    "hmac": "HMAC",
+    "manifest": "Manifest"
   },
   "allAlgorithms": "All",
   "uppercase": "Uppercase",
@@ -49,7 +53,10 @@
   },
   "stages": {
     "hash.scan": "Scanning files…",
-    "hash.compute": "Computing digests…"
+    "hash.compute": "Computing digests…",
+    "hash.manifest_read": "Reading manifest…",
+    "hash.manifest_verify": "Verifying files…",
+    "hash.manifest_write": "Writing manifest…"
   },
   "logs": {
     "hash": {
@@ -57,13 +64,22 @@
       "file_start": "[{{index}}/{{count}}] Hashing {{file}} ({{size, number}} bytes)",
       "digest": "{{file}} {{algorithm}} = {{digest}}",
       "file_done": "Finished {{file}} in {{ms}} ms",
-      "file_failed": "Skipped {{file}}: {{code}}"
+      "file_failed": "Skipped {{file}}: {{code}}",
+      "manifest_loaded": "Manifest has {{count}} entries using {{algorithm}}; {{invalid}} lines not recognized",
+      "manifest_missing": "Missing {{file}}",
+      "manifest_mismatch": "Mismatch {{file}}",
+      "manifest_done": "Done: {{ok}} OK, {{failed}} mismatched, {{missing}} missing",
+      "manifest_written": "Wrote manifest {{path}} ({{count}} entries)"
     }
   },
   "errors": {
     "hash.no_files": "Add some files first",
     "hash.no_algorithms": "Select at least one algorithm",
-    "hmac.invalid_key": "The key is not valid {{encoding}}"
+    "hmac.invalid_key": "The key is not valid {{encoding}}",
+    "hash.manifest_empty": "No recognizable entries in the manifest",
+    "hash.manifest_algorithm": "Cannot tell which algorithm the manifest uses; pick one manually",
+    "hash.manifest_too_large": "The manifest is larger than {{mb}} MB",
+    "hash.manifest_no_files": "The folder has no files"
   },
   "hmac": {
     "key": "Secret key",
@@ -83,5 +99,37 @@
     "mismatch": "Does not match",
     "verified": "Matches {{algorithm}}",
     "notVerified": "No selected algorithm produces this value"
+  },
+  "manifest": {
+    "title": "Checksum manifest",
+    "verify": "Verify",
+    "create": "Create",
+    "file": "Manifest file",
+    "pickFile": "Choose a .sha256 / .md5 manifest…",
+    "dir": "Folder",
+    "pickDir": "Choose a folder to checksum…",
+    "algorithm": "Algorithm",
+    "auto": "Auto detect",
+    "recursive": "Include subfolders",
+    "verifyHint": "Paths are relative to the manifest's folder. Accepts the GNU format used by sha256sum and the BSD format (SHA256 (file) = digest).",
+    "createHint": "Written in GNU text format, verifiable with sha256sum -c; paths are relative to where the manifest is saved.",
+    "startVerify": "Verify",
+    "startCreate": "Choose location and create",
+    "filter": "Checksum manifest",
+    "result": "Results",
+    "empty": "Nothing run yet",
+    "emptyHint": "Choose a manifest to verify, or a folder to create one",
+    "status": {
+      "ok": "OK",
+      "failed": "Failed",
+      "missing": "Missing",
+      "error": "Error"
+    },
+    "expected": "Expected",
+    "actual": "Actual",
+    "truncated": "Showing the first 5000 entries (problems first); see the log for everything",
+    "saved": "Saved to {{path}}",
+    "invalidLines": "Unrecognized lines: {{lines}}",
+    "elapsed": "{{ms}} ms"
   }
 }

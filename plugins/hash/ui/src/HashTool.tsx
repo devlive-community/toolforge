@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Checkbox, Switch, Tabs } from '@toolforge/ui'
 import { usePlugin } from '@toolforge/plugin-ui-sdk'
-import { Files, KeyRound, Type } from 'lucide-react'
+import { Files, KeyRound, ListChecks, Type } from 'lucide-react'
 import { FileHash } from './FileHash'
 import { HmacText } from './HmacText'
+import { Manifest } from './Manifest'
 import { TextHash } from './TextHash'
 import { ALGORITHMS, ALGORITHM_LABELS, type Algorithm } from './types'
 
@@ -11,7 +12,7 @@ const DEFAULT_ALGORITHMS: Algorithm[] = ['md5', 'sha1', 'sha256', 'sha512']
 
 export function HashTool() {
   const { t } = usePlugin()
-  const [tab, setTab] = useState<'text' | 'hmac' | 'files'>('text')
+  const [tab, setTab] = useState<'text' | 'hmac' | 'files' | 'manifest'>('text')
   const [selected, setSelected] = useState<Algorithm[]>(DEFAULT_ALGORITHMS)
   const [uppercase, setUppercase] = useState(false)
 
@@ -30,9 +31,11 @@ export function HashTool() {
             { value: 'text', label: t('tabs.text'), icon: <Type /> },
             { value: 'hmac', label: t('tabs.hmac'), icon: <KeyRound /> },
             { value: 'files', label: t('tabs.files'), icon: <Files /> },
+            { value: 'manifest', label: t('tabs.manifest'), icon: <ListChecks /> },
           ]}
           aria-label={t('name')}
         />
+        {tab !== 'manifest' && (
         <div className="flex min-h-11 flex-1 flex-wrap items-center gap-x-4 gap-y-2 rounded-card border border-border bg-surface px-4 py-2 shadow-card">
           <Checkbox
             checked={algorithms.length === ALGORITHMS.length}
@@ -52,11 +55,13 @@ export function HashTool() {
             <Switch size="sm" checked={uppercase} onCheckedChange={setUppercase} aria-label={t('uppercase')} />
           </label>
         </div>
+        )}
       </div>
       <div className="min-h-0 flex-1">
         {tab === 'text' && <TextHash algorithms={algorithms} uppercase={uppercase} />}
         {tab === 'hmac' && <HmacText algorithms={algorithms} uppercase={uppercase} />}
         {tab === 'files' && <FileHash algorithms={algorithms} uppercase={uppercase} />}
+        {tab === 'manifest' && <Manifest />}
       </div>
     </div>
   )

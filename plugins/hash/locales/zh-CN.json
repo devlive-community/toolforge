@@ -1,22 +1,26 @@
 {
   "name": "哈希计算",
-  "description": "计算文本与文件的 MD5、SHA、SM3、CRC32 等摘要与 HMAC，大文件以任务方式运行并实时显示日志",
+  "description": "计算文本与文件的 MD5、SHA、SM3、CRC32 等摘要与 HMAC，大文件以任务方式运行并实时显示日志；可为目录生成校验和清单并批量校验",
   "help": [
     "文本摘要与 HMAC 随输入实时计算；文件哈希作为后台任务运行，可随时取消并在任务中心查看。",
     "HMAC 密钥支持文本、十六进制与 Base64，粘贴的 MAC 以常量时间比较校验。",
     "文件只读取一次即可同时计算所有选中的算法。",
     "可以把文件直接拖入窗口添加。",
-    "所有计算都在本地 Rust 引擎完成，文件内容不会离开本机。"
+    "所有计算都在本地 Rust 引擎完成，文件内容不会离开本机。",
+    "清单：为目录生成 sha256sum / md5sum 兼容的校验和清单，或导入清单（GNU 或 BSD 格式）在后台多线程逐条校验，标出 OK / FAILED / MISSING；大文件分块读取。"
   ],
   "functions": {
     "hash_files": "批量计算文件哈希",
     "hash_text": "计算文本哈希",
-    "hmac_text": "HMAC"
+    "hmac_text": "HMAC",
+    "manifest_create": "生成校验和清单",
+    "manifest_verify": "按清单校验文件"
   },
   "tabs": {
     "text": "文本",
     "files": "文件",
-    "hmac": "HMAC"
+    "hmac": "HMAC",
+    "manifest": "清单"
   },
   "allAlgorithms": "全部",
   "uppercase": "大写",
@@ -49,7 +53,10 @@
   },
   "stages": {
     "hash.scan": "正在扫描文件…",
-    "hash.compute": "正在计算摘要…"
+    "hash.compute": "正在计算摘要…",
+    "hash.manifest_read": "正在读取清单…",
+    "hash.manifest_verify": "正在校验文件…",
+    "hash.manifest_write": "正在写入清单…"
   },
   "logs": {
     "hash": {
@@ -57,13 +64,22 @@
       "file_start": "[{{index}}/{{count}}] 开始计算 {{file}}（{{size, number}} 字节）",
       "digest": "{{file}} {{algorithm}} = {{digest}}",
       "file_done": "完成 {{file}}，耗时 {{ms}}ms",
-      "file_failed": "跳过 {{file}}：{{code}}"
+      "file_failed": "跳过 {{file}}：{{code}}",
+      "manifest_loaded": "清单共 {{count}} 条，算法 {{algorithm}}，{{invalid}} 行无法识别",
+      "manifest_missing": "缺失 {{file}}",
+      "manifest_mismatch": "不匹配 {{file}}",
+      "manifest_done": "校验完成：{{ok}} 个通过，{{failed}} 个不匹配，{{missing}} 个缺失",
+      "manifest_written": "已写入清单 {{path}}（{{count}} 条）"
     }
   },
   "errors": {
     "hash.no_files": "请先添加文件",
     "hash.no_algorithms": "请至少选择一种算法",
-    "hmac.invalid_key": "密钥不是有效的 {{encoding}} 编码"
+    "hmac.invalid_key": "密钥不是有效的 {{encoding}} 编码",
+    "hash.manifest_empty": "清单中没有可识别的条目",
+    "hash.manifest_algorithm": "无法确定清单使用的算法，请手动选择",
+    "hash.manifest_too_large": "清单文件超过 {{mb}} MB",
+    "hash.manifest_no_files": "目录中没有文件"
   },
   "hmac": {
     "key": "密钥",
@@ -83,5 +99,37 @@
     "mismatch": "不一致",
     "verified": "与 {{algorithm}} 一致",
     "notVerified": "所选算法都不能得到该值"
+  },
+  "manifest": {
+    "title": "校验和清单",
+    "verify": "校验清单",
+    "create": "生成清单",
+    "file": "清单文件",
+    "pickFile": "选择 .sha256 / .md5 等清单…",
+    "dir": "目录",
+    "pickDir": "选择要生成清单的目录…",
+    "algorithm": "算法",
+    "auto": "自动识别",
+    "recursive": "包含子目录",
+    "verifyHint": "清单中的路径相对清单所在目录；支持 sha256sum 等工具的 GNU 格式与 BSD 格式（SHA256 (文件) = 摘要）。",
+    "createHint": "清单为 GNU 文本格式，可用 sha256sum -c 校验；路径相对清单保存位置。",
+    "startVerify": "开始校验",
+    "startCreate": "选择保存位置并生成",
+    "filter": "校验和清单",
+    "result": "结果",
+    "empty": "尚未运行",
+    "emptyHint": "选择清单开始校验，或选择目录生成清单",
+    "status": {
+      "ok": "通过",
+      "failed": "不匹配",
+      "missing": "缺失",
+      "error": "出错"
+    },
+    "expected": "期望",
+    "actual": "实际",
+    "truncated": "仅显示前 5000 条（异常条目优先），完整记录见日志",
+    "saved": "已保存到 {{path}}",
+    "invalidLines": "无法识别的行：{{lines}}",
+    "elapsed": "耗时 {{ms}}ms"
   }
 }

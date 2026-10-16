@@ -8069,6 +8069,7 @@ dependencies = [
  "crc32fast",
  "data-encoding",
  "digest 0.11.3",
+ "dunce",
  "hex",
  "hmac 0.13.0",
  "md-5 0.11.0",
@@ -8079,6 +8080,7 @@ dependencies = [
  "sha3",
  "sm3",
  "tf-plugin-api",
+ "walkdir",
 ]
 
 [[package]]

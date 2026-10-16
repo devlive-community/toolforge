@@ -44,3 +44,29 @@ export interface HmacReport {
   keyBytes: number
   elapsedMs: number
 }
+
+export const MANIFEST_ALGORITHMS = ['sha256', 'sha512', 'sha1', 'md5', 'sha224', 'sha384', 'sha3_256', 'sha3_512', 'sm3'] as const
+export type ManifestAlgorithm = (typeof MANIFEST_ALGORITHMS)[number]
+export const MANIFEST_EXTENSIONS: Record<ManifestAlgorithm, string> = {
+  md5: 'md5',
+  sha1: 'sha1',
+  sha224: 'sha224',
+  sha256: 'sha256',
+  sha384: 'sha384',
+  sha512: 'sha512',
+  sha3_256: 'sha3-256',
+  sha3_512: 'sha3-512',
+  sm3: 'sm3',
+}
+
+export type ManifestStatus = 'ok' | 'failed' | 'missing' | 'error'
+
+export interface ManifestReport {
+  algorithm: Algorithm
+  entries: { path: string; status: ManifestStatus; expected: string | null; actual: string | null; error: AppError | null }[]
+  truncated: boolean
+  summary: { ok: number; failed: number; missing: number; errors: number; invalidLines: number[] }
+  totalBytes: number
+  elapsedMs: number
+  output: string | null
+}
