@@ -9,6 +9,7 @@ members = [
     "crates/tf-wasm",
     "crates/xtask",
     "plugins/*/backend",
+    "market/*/backend",
 ]
 exclude = ["crates/tf-wasm/fixture"]
 

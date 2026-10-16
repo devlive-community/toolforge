@@ -2,3 +2,4 @@ packages:
   - apps/*
   - packages/*
   - plugins/*/ui
+  - market/*/ui

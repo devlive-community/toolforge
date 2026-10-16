@@ -48,7 +48,7 @@ export default tseslint.config(
   },
   {
     // 界面文案必须走 i18n：JSX 文本中不得出现写死的自然语言
-    files: ['apps/**/*.tsx', 'plugins/**/*.tsx'],
+    files: ['apps/**/*.tsx', 'plugins/**/*.tsx', 'market/**/*.tsx'],
     plugins: { i18next },
     rules: {
       'i18next/no-literal-string': [

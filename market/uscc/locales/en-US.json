@@ -1,0 +1,169 @@
+{
+  "name": "USCC Validator",
+  "description": "Validate Unified Social Credit Codes offline by GB 32100-2015 — length, characters and check digit — and explain every field",
+  "help": [
+    "Follows GB 32100-2015 and Amendment No.1: 18 characters, digits and uppercase letters except I O Z S V, and an 18th character computed from the first 17 by weighted sum modulo 31. Errors point at the position and show the expected check digit.",
+    "Splits the registration authority, organization type, region code, subject identifier and check digit. Authorities or types missing from the built-in tables are marked for review instead of failing. Only province names are built in; city and county codes are shown for manual review.",
+    "Accepts multi-line text and a CSV column. Surrounding blanks, inner spaces, lowercase and full-width characters are normalized and clearly flagged; source files are never modified. Copy or export results as CSV / JSON.",
+    "Passing only means the code follows the coding rules; it does not prove the organization exists, operates normally or has any credit status."
+  ],
+  "functions": {
+    "validate": "Validate codes",
+    "export": "Export report"
+  },
+  "detect": {
+    "uscc": "Unified Social Credit Code"
+  },
+  "input": {
+    "title": "Input",
+    "mode": "Input mode",
+    "lines": "Lines",
+    "csv": "CSV",
+    "open": "Open file",
+    "filter": "Text and spreadsheets",
+    "column": "Code column",
+    "columnPlaceholder": "Name or number",
+    "placeholder": "One Unified Social Credit Code per line, or paste CSV"
+  },
+  "result": {
+    "title": "Results",
+    "empty": "Enter codes to see results",
+    "rules": "Rules: {{rules}}",
+    "disclaimer": "Passing only means the code follows GB 32100-2015; it does not prove the organization exists or has any credit status."
+  },
+  "summary": {
+    "valid": "{{count}} valid",
+    "unconfirmed": "{{count}} to review",
+    "invalid": "{{count}} invalid",
+    "empty": "{{count}} blank"
+  },
+  "status": {
+    "valid": "Valid",
+    "unconfirmed": "Table unconfirmed",
+    "invalid": "Invalid"
+  },
+  "problems": {
+    "length": "{{found}} characters; 18 are required",
+    "char": "Character {{position}} \"{{found}}\" is not allowed (digits or uppercase letters except I O Z S V)",
+    "check": "Check digit should be \"{{expected}}\", found \"{{found}}\""
+  },
+  "fields": {
+    "department": "Registration authority",
+    "category": "Organization type",
+    "region": "Region",
+    "subject": "Subject identifier",
+    "check": "Check digit",
+    "unknown": "Not in the table; review needed",
+    "province": "{{name}} (city/county to review)",
+    "regionUnknown": "Region not built in; review needed",
+    "orgCheck": "The GB 11714 organization code check digit should be {{expected}}"
+  },
+  "changes": {
+    "trimmed": "trimmed blanks",
+    "removedSpaces": "removed inner spaces",
+    "uppercased": "uppercased",
+    "fullwidth": "converted full-width"
+  },
+  "row": {
+    "line": "Line {{line}}",
+    "normalized": "Normalized: {{changes}}",
+    "separator": ", ",
+    "raw": "Original"
+  },
+  "export": {
+    "title": "Export",
+    "copyCsv": "Copy CSV",
+    "saveCsv": "Save CSV…",
+    "copyJson": "Copy JSON",
+    "saveJson": "Save JSON…"
+  },
+  "departments": {
+    "establishment": "Institutional establishment",
+    "foreign_affairs": "Foreign affairs",
+    "justice": "Justice administration",
+    "culture": "Culture",
+    "civil_affairs": "Civil affairs",
+    "tourism": "Tourism",
+    "religion": "Religious affairs",
+    "trade_union": "Trade unions",
+    "industry_commerce": "Market regulation (industry & commerce)",
+    "military": "CMC reform and establishment office",
+    "agriculture": "Agriculture",
+    "other": "Other"
+  },
+  "categories": {
+    "common": {
+      "organ": "Government organ",
+      "institution": "Public institution",
+      "mass_organization": "Mass organization under the central establishment office",
+      "other": "Other",
+      "foreign_news_agency": "Resident foreign news agency",
+      "law_firm": "Law firm",
+      "notary": "Notary office",
+      "legal_service": "Grassroots legal service office",
+      "forensic": "Forensic institution",
+      "arbitration": "Arbitration commission",
+      "foreign_culture_center": "Foreign cultural center in China",
+      "social_group": "Social group",
+      "private_non_enterprise": "Private non-enterprise unit",
+      "foundation": "Foundation",
+      "foreign_tourism_office": "Resident foreign tourism office",
+      "hmt_tourism_office": "Resident tourism office of Hong Kong, Macao or Taiwan",
+      "religious_venue": "Religious venue",
+      "religious_school": "Religious school",
+      "grassroots_union": "Grassroots trade union",
+      "enterprise": "Enterprise",
+      "individual_business": "Individual business",
+      "farmer_cooperative": "Farmers' cooperative",
+      "military_institution": "Military public institution",
+      "group_collective": "Group-level collective economic organization",
+      "village_collective": "Village-level collective economic organization",
+      "township_collective": "Township-level collective economic organization"
+    }
+  },
+  "provinces": {
+    "national": "National",
+    "beijing": "Beijing",
+    "tianjin": "Tianjin",
+    "hebei": "Hebei",
+    "shanxi": "Shanxi",
+    "inner_mongolia": "Inner Mongolia",
+    "liaoning": "Liaoning",
+    "jilin": "Jilin",
+    "heilongjiang": "Heilongjiang",
+    "shanghai": "Shanghai",
+    "jiangsu": "Jiangsu",
+    "zhejiang": "Zhejiang",
+    "anhui": "Anhui",
+    "fujian": "Fujian",
+    "jiangxi": "Jiangxi",
+    "shandong": "Shandong",
+    "henan": "Henan",
+    "hubei": "Hubei",
+    "hunan": "Hunan",
+    "guangdong": "Guangdong",
+    "guangxi": "Guangxi",
+    "hainan": "Hainan",
+    "chongqing": "Chongqing",
+    "sichuan": "Sichuan",
+    "guizhou": "Guizhou",
+    "yunnan": "Yunnan",
+    "tibet": "Tibet",
+    "shaanxi": "Shaanxi",
+    "gansu": "Gansu",
+    "qinghai": "Qinghai",
+    "ningxia": "Ningxia",
+    "xinjiang": "Xinjiang",
+    "taiwan": "Taiwan",
+    "hong_kong": "Hong Kong",
+    "macao": "Macao"
+  },
+  "errors": {
+    "uscc.too_large": "Larger than {{mb}} MB",
+    "uscc.too_many": "At most {{max}} lines",
+    "uscc.column_not_found": "No \"{{column}}\" column in the CSV",
+    "uscc.csv_invalid": "Could not parse the CSV",
+    "uscc.invalid_delimiter": "Invalid delimiter",
+    "uscc.export_failed": "Export failed"
+  }
+}

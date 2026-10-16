@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.uscc",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "text",
+  "keywords": ["uscc", "unified social credit code", "credit code", "gb 32100", "统一社会信用代码", "信用代码", "校验", "企业"],
+  "accent": "green",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write", "fs:user-selected"],
+  "functions": {
+    "validate": { "history": true },
+    "export": {}
+  },
+  "sensitive": false
+}

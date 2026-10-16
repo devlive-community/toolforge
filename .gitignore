@@ -4,6 +4,7 @@
 # dependencies & build output
 node_modules/
 dist/
+.tf-build/
 target/
 # WASM 测试夹具独立构建，锁文件随测试生成
 crates/tf-wasm/fixture/Cargo.lock

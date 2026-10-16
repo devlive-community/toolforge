@@ -1,0 +1,169 @@
+{
+  "name": "统一社会信用代码校验",
+  "description": "按 GB 32100-2015 离线批量校验统一社会信用代码的长度、字符与校验位，并拆分解释各字段",
+  "help": [
+    "按 GB 32100-2015 及第 1 号修改单校验：18 位、只使用数字和不含 I O Z S V 的大写字母、第 18 位为前 17 位加权模 31 得到的校验码；出错时指出具体位置并给出预期校验位。",
+    "拆分登记管理部门、机构类别、登记管理机关行政区划码、主体标识码与校验码；内置码表无法确认的部门或类别标为「待核对」，不直接判为错误。区划只内置省级名称，市县级显示代码供人工核对。",
+    "支持多行文本与 CSV 指定列；首尾空白、中间空格、小写和全角字符会被规范化并明确标出，不会修改原文件。结果可复制或导出为 CSV / JSON。",
+    "校验通过只说明代码符合编码规则，不代表机构真实存在、正常经营或具有某种信用状态。"
+  ],
+  "functions": {
+    "validate": "校验代码",
+    "export": "导出报告"
+  },
+  "detect": {
+    "uscc": "统一社会信用代码"
+  },
+  "input": {
+    "title": "输入",
+    "mode": "输入方式",
+    "lines": "多行文本",
+    "csv": "CSV",
+    "open": "打开文件",
+    "filter": "文本与表格",
+    "column": "代码所在列",
+    "columnPlaceholder": "列名或序号",
+    "placeholder": "每行一个统一社会信用代码，或粘贴 CSV"
+  },
+  "result": {
+    "title": "校验结果",
+    "empty": "输入代码后显示结果",
+    "rules": "规则：{{rules}}",
+    "disclaimer": "校验通过只说明代码符合 GB 32100-2015 编码规则，不代表机构真实存在或具有某种信用状态。"
+  },
+  "summary": {
+    "valid": "通过 {{count}}",
+    "unconfirmed": "待核对 {{count}}",
+    "invalid": "不通过 {{count}}",
+    "empty": "空行 {{count}}"
+  },
+  "status": {
+    "valid": "通过",
+    "unconfirmed": "码表待核对",
+    "invalid": "不通过"
+  },
+  "problems": {
+    "length": "长度为 {{found}} 位，应为 18 位",
+    "char": "第 {{position}} 位「{{found}}」不是允许的字符（数字或不含 I O Z S V 的大写字母）",
+    "check": "校验位应为「{{expected}}」，实际为「{{found}}」"
+  },
+  "fields": {
+    "department": "登记管理部门",
+    "category": "机构类别",
+    "region": "行政区划",
+    "subject": "主体标识码",
+    "check": "校验码",
+    "unknown": "码表中没有，待核对",
+    "province": "{{name}}（市县级待核对）",
+    "regionUnknown": "未内置该区划，待核对",
+    "orgCheck": "按 GB 11714 计算的组织机构代码校验位应为 {{expected}}"
+  },
+  "changes": {
+    "trimmed": "去掉首尾空白",
+    "removedSpaces": "去掉中间空格",
+    "uppercased": "小写转大写",
+    "fullwidth": "全角转半角"
+  },
+  "row": {
+    "line": "第 {{line}} 行",
+    "normalized": "已规范化：{{changes}}",
+    "separator": "、",
+    "raw": "原值"
+  },
+  "export": {
+    "title": "导出",
+    "copyCsv": "复制 CSV",
+    "saveCsv": "保存 CSV…",
+    "copyJson": "复制 JSON",
+    "saveJson": "保存 JSON…"
+  },
+  "departments": {
+    "establishment": "机构编制",
+    "foreign_affairs": "外交",
+    "justice": "司法行政",
+    "culture": "文化",
+    "civil_affairs": "民政",
+    "tourism": "旅游",
+    "religion": "宗教",
+    "trade_union": "工会",
+    "industry_commerce": "工商（市场监管）",
+    "military": "中央军委改革和编制办公室",
+    "agriculture": "农业",
+    "other": "其他"
+  },
+  "categories": {
+    "common": {
+      "organ": "机关",
+      "institution": "事业单位",
+      "mass_organization": "中央编办直接管理机构编制的群众团体",
+      "other": "其他",
+      "foreign_news_agency": "外国常驻新闻机构",
+      "law_firm": "律师执业机构",
+      "notary": "公证处",
+      "legal_service": "基层法律服务所",
+      "forensic": "司法鉴定机构",
+      "arbitration": "仲裁委员会",
+      "foreign_culture_center": "外国在华文化中心",
+      "social_group": "社会团体",
+      "private_non_enterprise": "民办非企业单位",
+      "foundation": "基金会",
+      "foreign_tourism_office": "外国旅游部门常驻代表机构",
+      "hmt_tourism_office": "港澳台地区旅游部门常驻内地（大陆）代表机构",
+      "religious_venue": "宗教活动场所",
+      "religious_school": "宗教院校",
+      "grassroots_union": "基层工会",
+      "enterprise": "企业",
+      "individual_business": "个体工商户",
+      "farmer_cooperative": "农民专业合作社",
+      "military_institution": "军队事业单位",
+      "group_collective": "组级集体经济组织",
+      "village_collective": "村级集体经济组织",
+      "township_collective": "乡镇级集体经济组织"
+    }
+  },
+  "provinces": {
+    "national": "国家级",
+    "beijing": "北京市",
+    "tianjin": "天津市",
+    "hebei": "河北省",
+    "shanxi": "山西省",
+    "inner_mongolia": "内蒙古自治区",
+    "liaoning": "辽宁省",
+    "jilin": "吉林省",
+    "heilongjiang": "黑龙江省",
+    "shanghai": "上海市",
+    "jiangsu": "江苏省",
+    "zhejiang": "浙江省",
+    "anhui": "安徽省",
+    "fujian": "福建省",
+    "jiangxi": "江西省",
+    "shandong": "山东省",
+    "henan": "河南省",
+    "hubei": "湖北省",
+    "hunan": "湖南省",
+    "guangdong": "广东省",
+    "guangxi": "广西壮族自治区",
+    "hainan": "海南省",
+    "chongqing": "重庆市",
+    "sichuan": "四川省",
+    "guizhou": "贵州省",
+    "yunnan": "云南省",
+    "tibet": "西藏自治区",
+    "shaanxi": "陕西省",
+    "gansu": "甘肃省",
+    "qinghai": "青海省",
+    "ningxia": "宁夏回族自治区",
+    "xinjiang": "新疆维吾尔自治区",
+    "taiwan": "台湾省",
+    "hong_kong": "香港特别行政区",
+    "macao": "澳门特别行政区"
+  },
+  "errors": {
+    "uscc.too_large": "内容超过 {{mb}} MB",
+    "uscc.too_many": "最多 {{max}} 行",
+    "uscc.column_not_found": "CSV 中没有「{{column}}」列",
+    "uscc.csv_invalid": "CSV 解析失败",
+    "uscc.invalid_delimiter": "分隔符无效",
+    "uscc.export_failed": "导出失败"
+  }
+}
