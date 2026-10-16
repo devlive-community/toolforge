@@ -1,0 +1,63 @@
+{
+  "name": "SemVer 版本范围",
+  "description": "按 SemVer 2.0.0 解析、比较与排序版本，并按 npm 范围语义批量判断哪些版本命中",
+  "help": [
+    "版本优先级遵循 SemVer 2.0.0：预发布版本低于正式版本，数字标识符按数值比较（beta.2 < beta.11），构建元数据不参与比较。",
+    "范围按 npm（node-semver）语义解释，支持比较运算符、空格交集、||、^、~、x / * 通配与连字符范围，并显示展开后的比较集合；不按 Cargo、Maven 或 Python 的规则解释。",
+    "默认情况下预发布版本只在同一 major.minor.patch 的比较器带预发布时才会命中，打开「包含预发布版本」后按普通比较处理。",
+    "非法输入不会被自动修复：前导零、缺少部分、超长输入都会给出明确原因；结果可复制或保存为 CSV。"
+  ],
+  "functions": {
+    "analyze": "分析版本与范围"
+  },
+  "range": {
+    "label": "版本范围",
+    "placeholder": "npm 范围，如 ^1.2.3 || >=2.0.0 <3",
+    "presets": "常用范围",
+    "includePrerelease": "包含预发布版本",
+    "dialect": "npm 方言",
+    "expanded": "展开为",
+    "empty": "未填写范围时只解析与排序版本"
+  },
+  "versions": {
+    "title": "版本列表",
+    "placeholder": "每行一个版本",
+    "hint": "每行一个版本，可带 v 前缀"
+  },
+  "result": {
+    "title": "结果",
+    "match": "命中",
+    "noMatch": "不命中",
+    "prerelease": "预发布版本不在范围的预发布允许列表中",
+    "failed": "不满足 {{comparator}}",
+    "matched": "命中 {{count}} / {{total}}",
+    "invalid": "{{count}} 个非法",
+    "order": "排序",
+    "asc": "升序",
+    "desc": "降序",
+    "copyCsv": "复制 CSV",
+    "saveCsv": "保存 CSV",
+    "empty": "输入版本后显示结果"
+  },
+  "table": {
+    "line": "行",
+    "version": "版本",
+    "parts": "组成",
+    "result": "判断",
+    "equal": "优先级相同",
+    "equalHint": "与相邻版本只差构建元数据，优先级相同",
+    "partsValue": "{{core}} · 预发布 {{pre}} · 构建 {{build}}"
+  },
+  "errors": {
+    "semver.empty": "版本为空",
+    "semver.too_long": "「{{input}}」超过 {{max}} 个字符",
+    "semver.invalid_core": "「{{input}}」需要 major.minor.patch 三个部分",
+    "semver.invalid_number": "「{{input}}」中的「{{part}}」不是数字",
+    "semver.leading_zero": "「{{part}}」不能有前导零",
+    "semver.number_too_large": "「{{part}}」超过 2^53 - 1",
+    "semver.invalid_identifier": "「{{input}}」中的标识符「{{part}}」无效",
+    "semver.invalid_range": "第 {{column}} 列的「{{token}}」不是有效的范围",
+    "semver.range_too_long": "范围超过 {{max}} 个字符",
+    "semver.too_many": "版本最多 {{max}} 个"
+  }
+}

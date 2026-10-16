@@ -1,0 +1,15 @@
+{
+  "id": "org.devlive.toolforge.semver",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["semver", "version", "range", "npm", "caret", "tilde", "compare", "sort", "版本", "语义化版本", "版本范围", "比较"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write", "fs:user-selected"],
+  "functions": {
+    "analyze": {}
+  },
+  "sensitive": false
+}

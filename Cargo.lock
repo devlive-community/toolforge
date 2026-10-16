@@ -8017,9 +8017,11 @@ name = "tfp-encoder"
 version = "0.1.0"
 dependencies = [
  "data-encoding",
+ "flate2",
  "form_urlencoded",
  "html-escape",
  "percent-encoding",
+ "ruzstd",
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -8410,6 +8412,15 @@ name = "tfp-regex"
 version = "0.1.0"
 dependencies = [
  "fancy-regex",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
+name = "tfp-semver"
+version = "0.1.0"
+dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -8976,6 +8987,7 @@ dependencies = [
  "tfp-qrcode",
  "tfp-random",
  "tfp-regex",
+ "tfp-semver",
  "tfp-sql-formatter",
  "tfp-ssh-key",
  "tfp-svg-converter",

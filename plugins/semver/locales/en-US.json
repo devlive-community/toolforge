@@ -1,0 +1,63 @@
+{
+  "name": "SemVer Range Tester",
+  "description": "Parse, compare and sort versions by SemVer 2.0.0 and check which ones satisfy an npm range",
+  "help": [
+    "Precedence follows SemVer 2.0.0: pre-releases sort before releases, numeric identifiers compare as numbers (beta.2 < beta.11) and build metadata is ignored.",
+    "Ranges use npm (node-semver) semantics — comparison operators, space intersections, ||, ^, ~, x / * wildcards and hyphen ranges — and the expanded comparator sets are shown. They are not interpreted as Cargo, Maven or Python rules.",
+    "By default a pre-release only matches when a comparator with the same major.minor.patch has a pre-release; turn on Include pre-releases to compare them normally.",
+    "Invalid input is never auto-fixed: leading zeros, missing parts and overlong input get a clear reason. Copy or save the results as CSV."
+  ],
+  "functions": {
+    "analyze": "Analyze versions and range"
+  },
+  "range": {
+    "label": "Version range",
+    "placeholder": "npm range, e.g. ^1.2.3 || >=2.0.0 <3",
+    "presets": "Common ranges",
+    "includePrerelease": "Include pre-releases",
+    "dialect": "npm dialect",
+    "expanded": "Expands to",
+    "empty": "Without a range, versions are only parsed and sorted"
+  },
+  "versions": {
+    "title": "Versions",
+    "placeholder": "One version per line",
+    "hint": "One version per line; a v prefix is fine"
+  },
+  "result": {
+    "title": "Results",
+    "match": "Match",
+    "noMatch": "No match",
+    "prerelease": "Pre-release is not allowed by any comparator in the range",
+    "failed": "Fails {{comparator}}",
+    "matched": "{{count}} / {{total}} match",
+    "invalid": "{{count}} invalid",
+    "order": "Order",
+    "asc": "Ascending",
+    "desc": "Descending",
+    "copyCsv": "Copy CSV",
+    "saveCsv": "Save CSV",
+    "empty": "Enter versions to see results"
+  },
+  "table": {
+    "line": "Line",
+    "version": "Version",
+    "parts": "Parts",
+    "result": "Result",
+    "equal": "Same precedence",
+    "equalHint": "Differs from its neighbour only in build metadata, so precedence is equal",
+    "partsValue": "{{core}} · pre {{pre}} · build {{build}}"
+  },
+  "errors": {
+    "semver.empty": "Empty version",
+    "semver.too_long": "\"{{input}}\" is longer than {{max}} characters",
+    "semver.invalid_core": "\"{{input}}\" needs major.minor.patch",
+    "semver.invalid_number": "\"{{part}}\" in \"{{input}}\" is not a number",
+    "semver.leading_zero": "\"{{part}}\" must not have leading zeros",
+    "semver.number_too_large": "\"{{part}}\" exceeds 2^53 - 1",
+    "semver.invalid_identifier": "Identifier \"{{part}}\" in \"{{input}}\" is invalid",
+    "semver.invalid_range": "\"{{token}}\" at column {{column}} is not a valid range",
+    "semver.range_too_long": "The range is longer than {{max}} characters",
+    "semver.too_many": "At most {{max}} versions"
+  }
+}
