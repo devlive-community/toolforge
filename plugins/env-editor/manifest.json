@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.env-editor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "dev",
@@ -11,7 +11,10 @@
   "functions": {
     "open": {},
     "save": {},
-    "export_example": {}
+    "export_example": {},
+    "compare": {},
+    "merge_preview": {},
+    "merge": {}
   },
   "sensitive": false
 }

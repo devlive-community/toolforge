@@ -6,7 +6,10 @@
     "注释、空行与无法识别的行原样保留；变量顺序不变，可以编辑键、值与行内注释。",
     "值以转义形式显示（\\n、\\\"、\\\\），与多数 dotenv 加载器的规则一致。",
     "开头的开关等价于 export 前缀；保存会拒绝重复的键和非法键名。",
-    "导出示例会生成同名 .example 文件（.env → .env.example），值清空、注释保留。"
+    "导出示例会生成同名 .example 文件（.env → .env.example），值清空、注释保留。",
+    "对比页可以选择 2–8 个 .env 文件，第一个（星标）为基准：基准有而其它文件没有的是缺失键，反之为额外键；值为空字符串为空值；同一文件出现多次为重复键（以最后一次的值比较）；两边值不同为不同。对比结果不显示任何值。",
+    "合并会把基准中目标文件缺失的键插到目标文件中对应位置（紧随基准里的前一个键），带上键上方的注释，保留 export、引号与行内注释；默认值留空，也可复制基准值。写入前先预览，目标原有的行不改动。",
+    "所有值都按字面比较，不做 $VAR 或 $(命令) 等 shell 展开。"
   ],
   "dialog": {
     "filter": "环境变量文件"
@@ -52,6 +55,53 @@
     "env.io": "文件读写失败：{{path}}：{{detail}}",
     "env.invalid_key": "键名不符合规则：{{key}}",
     "env.duplicate_key": "存在重复的键：{{key}}",
-    "env.example_exists": "示例文件已存在：{{path}}"
+    "env.example_exists": "示例文件已存在：{{path}}",
+    "env.compare_count": "请选择 2 到 {{max}} 个文件进行对比",
+    "env.merge_same": "基准与目标不能是同一个文件"
+  },
+  "tabs": {
+    "edit": "编辑",
+    "compare": "多环境对比"
+  },
+  "compare": {
+    "title": "多环境对比",
+    "add": "添加文件",
+    "drop": "拖入或选择多个 .env 文件进行对比",
+    "rules": "第一个文件为基准，检测缺失键、额外键、空值、重复键与取值不同；只做字面比较，不执行 shell 展开",
+    "needTwo": "至少需要两个文件",
+    "tooMany": "最多对比 {{max}} 个文件，多出的已忽略",
+    "summary": "{{entries}} 个键 · 缺失 {{missing}} · 额外 {{extra}} · 空值 {{empty}}",
+    "setBase": "设为基准",
+    "remove": "移出对比",
+    "filter": "筛选",
+    "onlyIssues": "仅显示有问题的键",
+    "all": "全部 {{count}} 个键",
+    "consistent": "没有发现差异",
+    "absent": "—",
+    "set": "已设置",
+    "issue": {
+      "missing": "缺失",
+      "extra": "额外",
+      "empty": "空值",
+      "duplicate": "重复",
+      "differs": "不同"
+    },
+    "issueHint": {
+      "missing": "基准中有、该文件中没有",
+      "extra": "该文件中有、基准中没有",
+      "empty": "键存在但值为空",
+      "duplicate": "同一文件中出现多次",
+      "differs": "与基准的值不同（不显示具体值）"
+    },
+    "mergeInto": "把基准缺失的键合并到",
+    "pickTarget": "选择目标文件",
+    "fill": "复制基准值",
+    "preview": "预览合并",
+    "previewTitle": "合并到 {{file}}",
+    "previewAdded": "将新增：{{keys}}",
+    "nothingToMerge": "目标文件不缺少基准中的键",
+    "cancel": "取消",
+    "apply": "写入文件",
+    "merged": "已向 {{file}} 添加 {{count}} 个键"
   }
 }

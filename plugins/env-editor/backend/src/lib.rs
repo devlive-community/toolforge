@@ -1,5 +1,6 @@
 //! .env 编辑器插件后端：打开、编辑与保存 dotenv 文件，解析与校验都在本机完成。
 
+mod compare;
 mod document;
 
 use serde::{Deserialize, Serialize};
@@ -54,8 +55,8 @@ struct ExampleResult {
     path: String,
 }
 
-/// 打开并解析文件；值统一转为单行显示转义，UI 编辑后再保存
-fn open_file(path: &str) -> PluginResult<OpenResult> {
+/// 读取并解析文件（值为真实值，未做显示转义）
+fn read_lines(path: &str) -> PluginResult<Vec<document::Line>> {
     let meta = std::fs::metadata(path).map_err(|e| {
         PluginError::new("env.io")
             .with("path", path)
@@ -69,7 +70,12 @@ fn open_file(path: &str) -> PluginResult<OpenResult> {
             .with("path", path)
             .with("detail", e.to_string())
     })?;
-    let lines = document::parse(&text)
+    Ok(document::parse(&text))
+}
+
+/// 打开并解析文件；值统一转为单行显示转义，UI 编辑后再保存
+fn open_file(path: &str) -> PluginResult<OpenResult> {
+    let lines = read_lines(path)?
         .into_iter()
         .map(|line| match line {
             document::Line::Entry {
@@ -151,6 +157,70 @@ fn export_example(args: SaveArgs) -> PluginResult<ExampleResult> {
     Ok(ExampleResult { path: output })
 }
 
+/// 一次最多对比的文件数
+const MAX_COMPARE: usize = 8;
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct CompareArgs {
+    paths: Vec<String>,
+}
+
+fn compare_files(args: CompareArgs) -> PluginResult<compare::Comparison> {
+    if args.paths.len() < 2 || args.paths.len() > MAX_COMPARE {
+        return Err(PluginError::new("env.compare_count").with("max", MAX_COMPARE));
+    }
+    let files = args
+        .paths
+        .iter()
+        .map(|path| read_lines(path))
+        .collect::<PluginResult<Vec<_>>>()?;
+    Ok(compare::compare(&files))
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct MergeArgs {
+    base: String,
+    target: String,
+    /// 复制基准值；默认留空
+    #[serde(default)]
+    fill: bool,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct MergeResult {
+    text: String,
+    added: Vec<String>,
+}
+
+/// 每次都从磁盘重新读取两边，预览与写入使用同一套计算
+fn merge_text(args: &MergeArgs) -> PluginResult<MergeResult> {
+    if args.base == args.target {
+        return Err(PluginError::new("env.merge_same"));
+    }
+    let base = read_lines(&args.base)?;
+    let target = read_lines(&args.target)?;
+    let (lines, added) = compare::merge(&base, &target, args.fill);
+    Ok(MergeResult {
+        text: document::serialize(&lines),
+        added,
+    })
+}
+
+fn merge_files(args: MergeArgs) -> PluginResult<MergeResult> {
+    let result = merge_text(&args)?;
+    if !result.added.is_empty() {
+        std::fs::write(&args.target, &result.text).map_err(|e| {
+            PluginError::new("env.io")
+                .with("path", args.target.as_str())
+                .with("detail", e.to_string())
+        })?;
+    }
+    Ok(result)
+}
+
 impl ToolPlugin for EnvEditor {
     fn manifest(&self) -> &Manifest {
         &self.manifest
@@ -161,6 +231,9 @@ impl ToolPlugin for EnvEditor {
             "open" => to_value(open_file(&parse_args::<PathArgs>(args)?.path)?),
             "save" => to_value(save_file(parse_args::<SaveArgs>(args)?)?),
             "export_example" => to_value(export_example(parse_args::<SaveArgs>(args)?)?),
+            "compare" => to_value(compare_files(parse_args::<CompareArgs>(args)?)?),
+            "merge_preview" => to_value(merge_text(&parse_args::<MergeArgs>(args)?)?),
+            "merge" => to_value(merge_files(parse_args::<MergeArgs>(args)?)?),
             _ => Err(unknown_function(function)),
         }
     }

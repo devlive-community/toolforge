@@ -98,3 +98,49 @@ fn opens_saves_and_exports_examples() {
         .unwrap_err();
     assert_eq!(err.code, "env.example_exists");
 }
+
+#[test]
+fn compares_and_merges_files_on_disk() {
+    let dir = std::env::temp_dir().join(format!("tfp-env-compare-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).unwrap();
+    let base = dir.join(".env.example");
+    let prod = dir.join(".env.production");
+    std::fs::write(&base, "HOST=\nPORT=\n").unwrap();
+    std::fs::write(&prod, "HOST=example.org\n").unwrap();
+    let base = base.to_string_lossy().into_owned();
+    let prod = prod.to_string_lossy().into_owned();
+
+    let plugin = EnvEditor::default();
+    assert!(
+        plugin
+            .call("compare", serde_json::json!({ "paths": [base] }))
+            .is_err()
+    );
+    let result = plugin
+        .call("compare", serde_json::json!({ "paths": [base, prod] }))
+        .unwrap();
+    assert_eq!(
+        result["rows"][1]["issues"],
+        serde_json::json!(["empty", "missing"])
+    );
+
+    let args = serde_json::json!({ "base": base, "target": prod });
+    let preview: MergeResult =
+        serde_json::from_value(plugin.call("merge_preview", args.clone()).unwrap()).unwrap();
+    assert_eq!(preview.added, ["PORT"]);
+    // 预览不写文件
+    assert_eq!(
+        std::fs::read_to_string(&prod).unwrap(),
+        "HOST=example.org\n"
+    );
+
+    plugin.call("merge", args).unwrap();
+    assert_eq!(std::fs::read_to_string(&prod).unwrap(), preview.text);
+    assert!(
+        plugin
+            .call("merge", serde_json::json!({ "base": prod, "target": prod }))
+            .is_err()
+    );
+    std::fs::remove_dir_all(&dir).unwrap();
+}

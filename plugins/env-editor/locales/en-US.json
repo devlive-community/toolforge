@@ -6,7 +6,10 @@
     "Comments, blank lines and unrecognizable lines are preserved as-is; variable order never changes and keys, values and inline comments are editable.",
     "Values are shown escaped (\\n, \\\", \\\\) following the rules used by most dotenv loaders.",
     "The leading switch toggles the export prefix; saving rejects duplicate or invalid keys.",
-    "Exporting generates a matching .example file (.env → .env.example) with values cleared and comments kept."
+    "Exporting generates a matching .example file (.env → .env.example) with values cleared and comments kept.",
+    "The Compare tab takes 2–8 .env files; the first (starred) is the baseline. Keys in the baseline but not in a file are missing, the reverse are extra; an empty string value is empty; a key repeated in one file is duplicate (its last value is compared); different values are marked as differing. No values are ever shown.",
+    "Merging inserts the baseline keys a target lacks right after the preceding baseline key, together with the comments directly above them, keeping export, quoting and inline comments. Values stay empty unless you copy them. You preview before writing, and existing target lines are never changed.",
+    "Values are compared literally; $VAR or $(command) are never shell-expanded."
   ],
   "dialog": {
     "filter": "Environment files"
@@ -52,6 +55,53 @@
     "env.io": "File I/O failed: {{path}}: {{detail}}",
     "env.invalid_key": "Invalid key: {{key}}",
     "env.duplicate_key": "Duplicate key: {{key}}",
-    "env.example_exists": "The example file already exists: {{path}}"
+    "env.example_exists": "The example file already exists: {{path}}",
+    "env.compare_count": "Choose 2 to {{max}} files to compare",
+    "env.merge_same": "The baseline and target must be different files"
+  },
+  "tabs": {
+    "edit": "Edit",
+    "compare": "Compare environments"
+  },
+  "compare": {
+    "title": "Compare environments",
+    "add": "Add files",
+    "drop": "Drop or choose several .env files to compare",
+    "rules": "The first file is the baseline. Detects missing, extra, empty, duplicate and differing keys; compares literally with no shell expansion",
+    "needTwo": "Add at least two files",
+    "tooMany": "Up to {{max}} files can be compared; the rest were ignored",
+    "summary": "{{entries}} keys · {{missing}} missing · {{extra}} extra · {{empty}} empty",
+    "setBase": "Use as baseline",
+    "remove": "Remove from comparison",
+    "filter": "Filter",
+    "onlyIssues": "Only keys with issues",
+    "all": "All {{count}} keys",
+    "consistent": "No differences found",
+    "absent": "—",
+    "set": "Set",
+    "issue": {
+      "missing": "Missing",
+      "extra": "Extra",
+      "empty": "Empty",
+      "duplicate": "Duplicate",
+      "differs": "Differs"
+    },
+    "issueHint": {
+      "missing": "In the baseline but not in this file",
+      "extra": "In this file but not in the baseline",
+      "empty": "Present with an empty value",
+      "duplicate": "Appears more than once in this file",
+      "differs": "Value differs from the baseline (values are not shown)"
+    },
+    "mergeInto": "Merge missing baseline keys into",
+    "pickTarget": "Choose a target file",
+    "fill": "Copy baseline values",
+    "preview": "Preview merge",
+    "previewTitle": "Merge into {{file}}",
+    "previewAdded": "Will add: {{keys}}",
+    "nothingToMerge": "The target already has every baseline key",
+    "cancel": "Cancel",
+    "apply": "Write file",
+    "merged": "Added {{count}} keys to {{file}}"
   }
 }

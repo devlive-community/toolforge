@@ -2,16 +2,14 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Badge, Button, Input, Panel, Spinner, Switch, Tooltip, cn, toast } from '@toolforge/ui'
 import { host, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { FilePlus2, FileText, FileUp, FolderOpen, Save, Trash2, Upload } from 'lucide-react'
-import { KEY_PATTERN, type Line, type OpenResult } from './types'
+import { ENV_EXTENSIONS, KEY_PATTERN, baseName, type Line, type OpenResult } from './types'
 
-const ENV_EXTENSIONS = ['env', 'local', 'dev', 'prod', 'development', 'production', 'staging', 'test', 'example']
-const baseName = (path: string) => path.split(/[\\/]/).pop() ?? path
 const isEnvFile = (path: string) => baseName(path).toLowerCase().startsWith('.env')
 const lineKey = (line: Line) => (line.kind === 'entry' ? line.key : '')
 
 const rowGrid = 'grid grid-cols-[auto_minmax(140px,220px)_minmax(0,1fr)_minmax(120px,180px)_auto] items-center gap-2'
 
-export function EnvEditor() {
+export function EnvEditor({ active }: { active: boolean }) {
   const { t, call, errorMessage } = usePlugin()
   const [path, setPath] = useState<string | null>(null)
   const [lines, setLines] = useState<Line[]>([])
@@ -57,17 +55,18 @@ export function EnvEditor() {
     }
   }
 
-  // onFileDrop 只注册一次，回调经由 ref 转发到最新版本
+  // 仅在当前页可见时注册 onFileDrop，回调经由 ref 转发到最新版本
   const openRef = useRef(open)
   useEffect(() => {
     openRef.current = open
   })
   useEffect(() => {
+    if (!active) return
     const off = host.onFileDrop({ drop: (paths) => void openRef.current(paths.find(isEnvFile) ?? paths[0]), over: setDropping })
     return () => {
       off.then((unlisten) => unlisten())
     }
-  }, [])
+  }, [active])
 
   const save = async () => {
     if (!path) return
