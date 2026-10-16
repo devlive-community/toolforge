@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.csp-inspector",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["csp", "content-security-policy", "security", "header", "policy", "nonce", "sri", "安全", "内容安全策略", "响应头", "策略检查"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "inspect": {},
+    "export": {}
+  },
+  "sensitive": false
+}

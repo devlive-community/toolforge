@@ -1,0 +1,84 @@
+{
+  "name": "CSP 策略检查",
+  "description": "离线解析 Content-Security-Policy 响应头,解释指令回退链与来源匹配,对资源清单逐条给出允许、阻止或无法判定",
+  "help": [
+    "每行写一条策略(一个响应头的值);行首加 report-only: 前缀表示 Content-Security-Policy-Report-Only,只报告不拦截。",
+    "填文档 URL 后 'self' 才能计算;资源清单里逐条填写类型与 URL,内联资源只填 nonce 或 hash。",
+    "匹配支持 'self'、'none'、nonce/hash、scheme 来源(如 data:)、主机来源(端口、通配子域、路径前缀)与 default-src 回退;省略端口时只匹配默认端口。",
+    "strict-dynamic 等依赖执行链的语义会返回「无法判定」而不是假的允许;重复指令按规范只保留第一条;未知指令只提示,不判整条策略失效。不访问资源 URL、不收集线上报告。"
+  ],
+  "functions": {
+    "inspect": "检查策略",
+    "export": "导出报告"
+  },
+  "input": {
+    "policies": "Content-Security-Policy",
+    "placeholder": "default-src 'self'; script-src 'self' 'nonce-abc' https://cdn.example.com",
+    "document": "文档 URL",
+    "documentPlaceholder": "https://example.com/page",
+    "resources": "资源清单",
+    "type": "类型",
+    "url": "URL",
+    "urlPlaceholder": "https://cdn.example.com/app.js",
+    "nonce": "nonce",
+    "hash": "hash",
+    "inline": "内联资源只填 nonce/hash,URL 留空",
+    "add": "添加资源",
+    "remove": "删除",
+    "run": "检查",
+    "empty": "填写策略后点击「检查」"
+  },
+  "types": {
+    "script": "脚本",
+    "style": "样式",
+    "image": "图片",
+    "font": "字体",
+    "connect": "连接(XHR/WS)",
+    "frame": "frame/iframe",
+    "worker": "Worker",
+    "media": "媒体",
+    "object": "插件对象",
+    "manifest": "Manifest"
+  },
+  "result": {
+    "title": "判定结果",
+    "policies": "策略",
+    "reportOnly": "Report-Only",
+    "policyIndex": "策略 {{index}}",
+    "directive": "指令",
+    "matched": "命中",
+    "viaNone": "'none' 禁止全部",
+    "resource": "资源",
+    "inlineResource": "(内联)",
+    "empty": "还没有判定结果",
+    "diagnostics": "策略提示"
+  },
+  "status": {
+    "allowed": "允许",
+    "blocked": "阻止",
+    "undetermined": "无法判定",
+    "unrestricted": "不受限制"
+  },
+  "export": {
+    "markdown": "复制 Markdown",
+    "json": "复制 JSON",
+    "saveMd": "保存 Markdown",
+    "saveJson": "保存 JSON"
+  },
+  "errors": {
+    "csp.no_policies": "请至少填写一条策略",
+    "csp.too_many_policies": "策略最多 {{max}} 条",
+    "csp.too_many_resources": "资源最多 {{max}} 条",
+    "csp.too_large": "策略文本超过 {{kb}} KB 上限",
+    "csp.no_result": "还没有检查结果,先执行一次检查",
+    "csp.invalid_url": "URL 无效:{{detail}}",
+    "csp.unknown_directive": "未知指令 {{name}},可能是新指令,已保留",
+    "csp.duplicate_directive": "指令 {{name}} 重复,按规范只保留第一条",
+    "csp.strict_dynamic": "script-src 含 'strict-dynamic':主机来源对脚本失效,是否放行取决于执行链,静态标记为无法判定",
+    "csp.unsafe_inline_ignored": "{{name}} 同时含 'unsafe-inline' 与 nonce/hash,浏览器会忽略 'unsafe-inline'",
+    "csp.report_only_would_block": "Report-Only 策略 {{index}} 在本会拦截该资源(仅报告)",
+    "csp.self_without_document": "策略使用了 'self',请填写文档 URL 才能计算",
+    "csp.unknown_type": "未知资源类型 {{type}},已按不受限制处理",
+    "csp.undetermined": "存在依赖执行链或缺失信息的部分,静态无法判定"
+  }
+}

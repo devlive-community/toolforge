@@ -1,0 +1,84 @@
+{
+  "name": "CSP Inspector",
+  "description": "Parse Content-Security-Policy headers offline, explain directive fallbacks and source matching, and judge every resource as allowed, blocked or undetermined",
+  "help": [
+    "One policy per line (a single header value); prefix a line with report-only: for Content-Security-Policy-Report-Only, which reports but never blocks.",
+    "Set the document URL so 'self' can be resolved; list resources with their type and URL, or fill nonce/hash only for inline resources.",
+    "Matching covers 'self', 'none', nonce/hash, scheme sources (e.g. data:), host sources (port, wildcard subdomains, path prefixes) and default-src fallbacks; an omitted port matches only the default port.",
+    "Semantics that depend on the execution chain (strict-dynamic) answer \"undetermined\" instead of a fake allow. Duplicate directives keep the first one per spec; unknown directives only get a note. Resource URLs are never fetched and no reports are collected."
+  ],
+  "functions": {
+    "inspect": "Inspect policies",
+    "export": "Export report"
+  },
+  "input": {
+    "policies": "Content-Security-Policy",
+    "placeholder": "default-src 'self'; script-src 'self' 'nonce-abc' https://cdn.example.com",
+    "document": "Document URL",
+    "documentPlaceholder": "https://example.com/page",
+    "resources": "Resources",
+    "type": "Type",
+    "url": "URL",
+    "urlPlaceholder": "https://cdn.example.com/app.js",
+    "nonce": "nonce",
+    "hash": "hash",
+    "inline": "Inline resources: fill nonce/hash and leave the URL empty",
+    "add": "Add resource",
+    "remove": "Remove",
+    "run": "Inspect",
+    "empty": "Fill in a policy and press \"Inspect\""
+  },
+  "types": {
+    "script": "Script",
+    "style": "Style",
+    "image": "Image",
+    "font": "Font",
+    "connect": "Connect (XHR/WS)",
+    "frame": "frame/iframe",
+    "worker": "Worker",
+    "media": "Media",
+    "object": "Plugin object",
+    "manifest": "Manifest"
+  },
+  "result": {
+    "title": "Verdicts",
+    "policies": "Policies",
+    "reportOnly": "Report-Only",
+    "policyIndex": "Policy {{index}}",
+    "directive": "Directive",
+    "matched": "Matched",
+    "viaNone": "'none' blocks everything",
+    "resource": "Resource",
+    "inlineResource": "(inline)",
+    "empty": "No verdicts yet",
+    "diagnostics": "Policy notes"
+  },
+  "status": {
+    "allowed": "Allowed",
+    "blocked": "Blocked",
+    "undetermined": "Undetermined",
+    "unrestricted": "Unrestricted"
+  },
+  "export": {
+    "markdown": "Copy Markdown",
+    "json": "Copy JSON",
+    "saveMd": "Save Markdown",
+    "saveJson": "Save JSON"
+  },
+  "errors": {
+    "csp.no_policies": "Enter at least one policy",
+    "csp.too_many_policies": "At most {{max}} policies",
+    "csp.too_many_resources": "At most {{max}} resources",
+    "csp.too_large": "Policy text exceeds the {{kb}} KB limit",
+    "csp.no_result": "No inspection result yet — run one first",
+    "csp.invalid_url": "Invalid URL: {{detail}}",
+    "csp.unknown_directive": "Unknown directive {{name}} (kept; may be a newer directive)",
+    "csp.duplicate_directive": "Directive {{name}} is duplicated; the first one wins per spec",
+    "csp.strict_dynamic": "script-src contains 'strict-dynamic': host sources are ignored for scripts and the outcome depends on the execution chain, so it is marked undetermined",
+    "csp.unsafe_inline_ignored": "{{name}} has both 'unsafe-inline' and a nonce/hash; browsers ignore 'unsafe-inline'",
+    "csp.report_only_would_block": "Report-Only policy {{index}} would block this resource (report only)",
+    "csp.self_without_document": "The policy uses 'self'; set the document URL to resolve it",
+    "csp.unknown_type": "Unknown resource type {{type}}, treated as unrestricted",
+    "csp.undetermined": "Some parts depend on the execution chain or are missing information, so they cannot be resolved statically"
+  }
+}
