@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { Badge, Button, Empty, Modal, Spinner, toast } from '@toolforge/ui'
+import type { Manifest } from '@toolforge/plugin-ui-sdk'
 import { host, useErrorMessage, type AppError } from '@toolforge/plugin-ui-sdk'
-import { CloudDownload, FileUp, PackageCheck, RefreshCw, ShieldAlert, ShieldCheck, Trash2 } from 'lucide-react'
+import { CloudDownload, FileUp, PackageCheck, RefreshCw, ShieldAlert, ShieldCheck, SquareArrowOutUpRight, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { usePluginText } from '../plugins/usePluginText'
+import { ToolTile } from '../plugins/ToolIcon'
 import { pluginById, useApp } from '../stores/app'
+import { PluginDetail, type PluginDetailInfo, type PluginDetailRow } from './PluginDetail'
 
 interface IndexEntry {
   id: string
@@ -43,6 +46,8 @@ function newer(a: string, b: string) {
 
 type Pending = { kind: 'file'; path: string } | { kind: 'url'; entry: IndexEntry }
 
+type DetailTarget = { kind: 'online'; entry: IndexEntry } | { kind: 'local'; info: InstallInfo }
+
 export function MarketOnline() {
   const { t, i18n } = useTranslation()
   const text = usePluginText()
@@ -55,6 +60,7 @@ export function MarketOnline() {
   const [installed, setInstalled] = useState<InstallInfo[]>([])
   const [busy, setBusy] = useState<string | null>(null)
   const [confirm, setConfirm] = useState<{ pending: Pending; error: AppError } | null>(null)
+  const [detail, setDetail] = useState<DetailTarget | null>(null)
 
   const localized = (values: Record<string, string>) => values[i18n.language] ?? values['en-US'] ?? Object.values(values)[0] ?? ''
 
@@ -114,6 +120,7 @@ export function MarketOnline() {
       await invoke('plugin_uninstall', { pluginId: id })
       toast.success(t('market.online.uninstalled'))
       setInstalled(await invoke<InstallInfo[]>('plugin_installed'))
+      setDetail(null)
     } catch (error) {
       toast.error(errorMessage(error))
     } finally {
@@ -122,6 +129,56 @@ export function MarketOnline() {
   }
 
   const local = installed.filter((info) => !index?.some((entry) => entry.id === info.id))
+
+  // ---- 详情抽屉：在线条目与本地已装插件都映射为同一组字段 ----
+  const detailManifest: Manifest | undefined = detail ? pluginById(plugins, detail.kind === 'online' ? detail.entry.id : detail.info.id) : undefined
+  const detailHelp = detailManifest ? t('help', { ns: detailManifest.id, returnObjects: true, defaultValue: [] }) : []
+  const detailHelpLines = Array.isArray(detailHelp) ? (detailHelp as string[]) : []
+
+  const detailInfo: PluginDetailInfo | null = (() => {
+    if (!detail) return null
+    if (detail.kind === 'online') {
+      const entry = detail.entry
+      return {
+        id: entry.id,
+        name: detailManifest ? text(detailManifest, detailManifest.name) : localized(entry.names),
+        description: detailManifest ? text(detailManifest, detailManifest.description) : localized(entry.descriptions),
+        version: detailManifest?.version ?? entry.version,
+        category: detailManifest?.category ?? entry.category,
+        keywords: detailManifest?.keywords,
+        permissions: detailManifest?.permissions,
+        functionsCount: detailManifest ? Object.keys(detailManifest.functions).length : undefined,
+        platforms: detailManifest?.platforms,
+        sensitive: detailManifest?.sensitive,
+        helpLines: detailHelpLines,
+      }
+    }
+    const manifest = detailManifest
+    return {
+      id: detail.info.id,
+      name: manifest ? text(manifest, manifest.name) : detail.info.id,
+      description: manifest ? text(manifest, manifest.description) : '',
+      version: detail.info.version,
+      category: manifest?.category ?? 'other',
+      keywords: manifest?.keywords,
+      permissions: manifest?.permissions,
+      functionsCount: manifest ? Object.keys(manifest.functions).length : undefined,
+      platforms: manifest?.platforms,
+      sensitive: manifest?.sensitive,
+      helpLines: detailHelpLines,
+    }
+  })()
+
+  const detailRows: PluginDetailRow[] = []
+  if (detail?.kind === 'online') {
+    const entry = detail.entry
+    detailRows.push({ label: t('market.online.packageSize'), value: t('market.online.size', { kb: Math.max(1, Math.round(entry.size / 1024)) }) })
+    if (entry.minAppVersion) {
+      detailRows.push({ label: t('market.online.minApp'), value: t('market.online.needsApp', { version: entry.minAppVersion }) })
+    }
+  } else if (detail) {
+    detailRows.push({ label: t('market.online.installedAt'), value: new Date(detail.info.installedAt).toLocaleString() })
+  }
 
   return (
     <div className="space-y-6">
@@ -162,7 +219,11 @@ export function MarketOnline() {
                       <PackageCheck className="size-5" />
                     </span>
                   )}
-                  <div className="min-w-0 flex-1">
+                  <button
+                    type="button"
+                    onClick={() => setDetail({ kind: 'online', entry })}
+                    className="min-w-0 flex-1 rounded-control text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
                     <div className="flex flex-wrap items-center gap-1.5">
                       <p className="truncate text-sm font-semibold text-fg">{manifest ? text(manifest, manifest.name) : localized(entry.names)}</p>
                       {entry.signed && (
@@ -173,12 +234,12 @@ export function MarketOnline() {
                       )}
                     </div>
                     <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-fg-muted">{localized(entry.descriptions)}</p>
-                  </div>
+                  </button>
                 </div>
                 <div className="mt-auto flex items-center gap-2 text-[11px] text-fg-subtle">
                   <span>{t('market.version', { version: entry.version })}</span>
                   <span>·</span>
-                  <span>{t('market.online.size', { kb: Math.max(1, Math.round(entry.size / 1024)) })}</span>
+                  <span>{t(`category.${entry.category}`, { defaultValue: entry.category })}</span>
                   <div className="ml-auto flex items-center gap-1.5">
                     {current && !update && manifest && (
                       <Button size="sm" variant="ghost" onClick={() => openTool(entry.id)}>
@@ -213,12 +274,16 @@ export function MarketOnline() {
               const manifest = pluginById(plugins, info.id)
               return (
                 <li key={info.id} className="flex items-center gap-3 rounded-card border border-border bg-surface p-3 shadow-card">
-                  <div className="min-w-0 flex-1">
+                  <button
+                    type="button"
+                    onClick={() => setDetail({ kind: 'local', info })}
+                    className="min-w-0 flex-1 rounded-control text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
                     <p className="truncate text-[13px] font-medium text-fg">{manifest ? text(manifest, manifest.name) : info.id}</p>
                     <p className="text-[11px] text-fg-subtle">
                       {t('market.version', { version: info.version })} · {t(`market.online.trust.${info.trust}`)}
                     </p>
-                  </div>
+                  </button>
                   {manifest && (
                     <Button size="sm" variant="ghost" onClick={() => openTool(info.id)}>
                       {t('market.open')}
@@ -233,6 +298,83 @@ export function MarketOnline() {
           </ul>
         </section>
       )}
+
+      <PluginDetail
+        info={detailInfo}
+        icon={
+          detailManifest ? (
+            <ToolTile manifest={detailManifest} size="lg" />
+          ) : detail?.kind === 'online' && detail.entry.icon ? (
+            <span aria-hidden className="tile-green inline-flex size-16 shrink-0 items-center justify-center rounded-tile text-on-tile shadow-tile [&>svg]:size-8" dangerouslySetInnerHTML={{ __html: detail.entry.icon }} />
+          ) : (
+            <span className="tile-green inline-flex size-16 shrink-0 items-center justify-center rounded-tile text-on-tile shadow-tile">
+              <PackageCheck className="size-8" />
+            </span>
+          )
+        }
+        originBadge={
+          detail?.kind === 'online' ? (
+            detail.entry.signed ? (
+              <Badge variant="success">
+                <ShieldCheck className="size-3" />
+                {t('market.online.official')}
+              </Badge>
+            ) : undefined
+          ) : detail ? (
+            <Badge variant={detail.info.trust === 'official' ? 'success' : 'warning'}>{t(`market.online.trust.${detail.info.trust}`)}</Badge>
+          ) : undefined
+        }
+        actions={
+          detail?.kind === 'online' ? (
+            <>
+              {(() => {
+                const entry = detail.entry
+                const current = installed.find((info) => info.id === entry.id)
+                const update = current && newer(entry.version, current.version)
+                const tooOld = !!entry.minAppVersion && newer(entry.minAppVersion, appVersion)
+                return (
+                  <>
+                    {(!current || update) && !tooOld && (
+                      <Button variant="primary" loading={busy === entry.id} disabled={busy !== null} onClick={() => void run({ kind: 'url', entry }, false)}>
+                        <CloudDownload />
+                        {update ? t('market.online.update', { version: entry.version }) : t('market.online.install')}
+                      </Button>
+                    )}
+                    {current && detailManifest && !update && (
+                      <Button variant="ghost" onClick={() => { setDetail(null); openTool(entry.id) }}>
+                        <SquareArrowOutUpRight />
+                        {t('market.open')}
+                      </Button>
+                    )}
+                    {current && (
+                      <Button variant="ghost" disabled={busy !== null} onClick={() => void uninstall(entry.id)}>
+                        <Trash2 />
+                        {t('market.online.uninstall')}
+                      </Button>
+                    )}
+                    {tooOld && <span className="text-xs text-warning">{t('market.online.needsApp', { version: entry.minAppVersion })}</span>}
+                  </>
+                )
+              })()}
+            </>
+          ) : detail ? (
+            <>
+              {detailManifest && (
+                <Button variant="primary" onClick={() => { setDetail(null); openTool(detail.info.id) }}>
+                  <SquareArrowOutUpRight />
+                  {t('market.open')}
+                </Button>
+              )}
+              <Button variant="ghost" disabled={busy !== null} onClick={() => void uninstall(detail.info.id)}>
+                <Trash2 />
+                {t('market.online.uninstall')}
+              </Button>
+            </>
+          ) : undefined
+        }
+        extraRows={detailRows}
+        onClose={() => setDetail(null)}
+      />
 
       <Modal
         open={confirm !== null}

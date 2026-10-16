@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Badge, Button, Drawer, Empty, Input, SegmentedControl, Select, Switch, Tabs, cn } from '@toolforge/ui'
+import { Badge, Button, Empty, Input, SegmentedControl, Select, Switch, Tabs, cn } from '@toolforge/ui'
 import type { Manifest } from '@toolforge/plugin-ui-sdk'
 import { CloudDownload, LayoutGrid, PackageSearch, Search, SquareArrowOutUpRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -10,6 +10,7 @@ import { useApp } from '../stores/app'
 import { toolStatus, usePrefs, type ToolStatus } from '../stores/prefs'
 import { MarketOnline } from './MarketOnline'
 import { Page } from './Page'
+import { PluginDetail } from './PluginDetail'
 
 type Filter = 'all' | 'changed' | 'hidden'
 
@@ -24,98 +25,11 @@ function matches(manifest: Manifest, query: string, text: (m: Manifest, v: strin
     .every((word) => haystack.includes(word))
 }
 
-function Detail({ manifest, onClose }: { manifest: Manifest | null; onClose: () => void }) {
-  const { t } = useTranslation()
-  const text = usePluginText()
-  const openTool = useApp((s) => s.openTool)
-  const hidden = usePrefs((s) => s.hiddenTools)
-  const setHidden = usePrefs((s) => s.setToolHidden)
-  const help = manifest ? t('help', { ns: manifest.id, returnObjects: true, defaultValue: [] }) : []
-  const lines = Array.isArray(help) ? (help as string[]) : []
-
-  return (
-    <Drawer open={manifest !== null} onOpenChange={(open) => !open && onClose()} title={manifest ? text(manifest, manifest.name) : ''} closeLabel={t('common:close')}>
-      {manifest && (
-        <div className="space-y-5 p-4">
-          <div className="flex items-start gap-3">
-            <ToolTile manifest={manifest} size="lg" />
-            <div className="min-w-0 space-y-1.5">
-              <p className="text-[13px] leading-relaxed text-fg-muted">{text(manifest, manifest.description)}</p>
-              <div className="flex flex-wrap gap-1.5">
-                <Badge>{t('market.version', { version: manifest.version })}</Badge>
-                <Badge>{t(`category.${manifest.category}`, { defaultValue: manifest.category })}</Badge>
-                <Badge variant="success">{t('market.builtin')}</Badge>
-                {manifest.sensitive && <Badge variant="warning">{t('market.sensitive')}</Badge>}
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant="primary"
-              onClick={() => {
-                onClose()
-                openTool(manifest.id)
-              }}
-            >
-              <SquareArrowOutUpRight />
-              {t('market.open')}
-            </Button>
-            <label className="ml-auto flex items-center gap-2 text-[13px] text-fg">
-              <Switch size="sm" checked={!hidden.includes(manifest.id)} onCheckedChange={(on) => setHidden(manifest.id, !on)} aria-label={t('market.visible')} />
-              {t('market.visible')}
-            </label>
-          </div>
-          {lines.length > 0 && (
-            <section className="space-y-2">
-              <h3 className="text-xs font-semibold text-fg-muted">{t('market.features')}</h3>
-              <ul className="list-disc space-y-1.5 pl-4 text-[13px] leading-relaxed text-fg">
-                {lines.map((line, index) => (
-                  <li key={index}>{line}</li>
-                ))}
-              </ul>
-            </section>
-          )}
-          <section className="space-y-2 text-xs">
-            <h3 className="font-semibold text-fg-muted">{t('market.details')}</h3>
-            <dl className="grid grid-cols-[96px_minmax(0,1fr)] gap-x-3 gap-y-1.5">
-              <dt className="text-fg-subtle">{t('market.id')}</dt>
-              <dd className="font-mono break-all text-fg" data-selectable>
-                {manifest.id}
-              </dd>
-              <dt className="text-fg-subtle">{t('market.functions')}</dt>
-              <dd className="text-fg">{Object.keys(manifest.functions).length}</dd>
-              <dt className="text-fg-subtle">{t('market.permissions')}</dt>
-              <dd className="flex flex-wrap gap-1">
-                {(manifest.permissions ?? []).length === 0 ? (
-                  <span className="text-fg-muted">{t('market.none')}</span>
-                ) : (
-                  manifest.permissions?.map((permission) => (
-                    <code key={permission} className="rounded-sm bg-surface-2 px-1.5 py-0.5 font-mono text-fg">
-                      {permission}
-                    </code>
-                  ))
-                )}
-              </dd>
-              <dt className="text-fg-subtle">{t('market.platforms')}</dt>
-              <dd className="text-fg">{manifest.platforms?.length ? manifest.platforms.join(' / ') : t('market.allPlatforms')}</dd>
-              {manifest.keywords.length > 0 && (
-                <>
-                  <dt className="text-fg-subtle">{t('market.keywords')}</dt>
-                  <dd className="text-fg-muted">{manifest.keywords.join(' · ')}</dd>
-                </>
-              )}
-            </dl>
-          </section>
-        </div>
-      )}
-    </Drawer>
-  )
-}
-
 export function Market() {
   const { t } = useTranslation()
   const text = usePluginText()
   const plugins = useApp((s) => s.plugins)
+  const openTool = useApp((s) => s.openTool)
   const hidden = usePrefs((s) => s.hiddenTools)
   const seen = usePrefs((s) => s.seenVersions)
   const setHidden = usePrefs((s) => s.setToolHidden)
@@ -137,6 +51,10 @@ export function Market() {
         .sort((a, b) => text(a, a.name).localeCompare(text(b, b.name))),
     [plugins, category, filter, hidden, seen, query, text],
   )
+
+  // 详情抽屉的功能说明来自选中插件的 help 命名空间
+  const help = selected ? t('help', { ns: selected.id, returnObjects: true, defaultValue: [] }) : []
+  const helpLines = Array.isArray(help) ? (help as string[]) : []
 
   return (
     <Page title={t('nav.market')} description={t('market.subtitle', { count: plugins.length })}>
@@ -214,7 +132,46 @@ export function Market() {
       )}
         </>
       )}
-      <Detail manifest={selected} onClose={() => setSelected(null)} />
+      <PluginDetail
+        info={
+          selected && {
+            id: selected.id,
+            name: text(selected, selected.name),
+            description: text(selected, selected.description),
+            version: selected.version,
+            category: selected.category,
+            keywords: selected.keywords,
+            permissions: selected.permissions,
+            functionsCount: Object.keys(selected.functions).length,
+            platforms: selected.platforms,
+            sensitive: selected.sensitive,
+            helpLines,
+          }
+        }
+        icon={selected && <ToolTile manifest={selected} size="lg" />}
+        originBadge={<Badge variant="success">{t('market.builtin')}</Badge>}
+        actions={
+          selected && (
+            <>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  setSelected(null)
+                  openTool(selected.id)
+                }}
+              >
+                <SquareArrowOutUpRight />
+                {t('market.open')}
+              </Button>
+              <label className="ml-auto flex items-center gap-2 text-[13px] text-fg">
+                <Switch size="sm" checked={!hidden.includes(selected.id)} onCheckedChange={(on) => setHidden(selected.id, !on)} aria-label={t('market.visible')} />
+                {t('market.visible')}
+              </label>
+            </>
+          )
+        }
+        onClose={() => setSelected(null)}
+      />
     </Page>
   )
 }
