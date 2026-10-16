@@ -7,7 +7,8 @@
     "Click a byte to move the cursor and Shift-click to select a range. Arrow keys, Page Up / Down and Home / End also move the cursor; hold Shift to select. ⌘ / Ctrl + Home / End jump to the start or end.",
     "Go to accepts decimal numbers, hex such as 0x1F0 or 1F0h, and relative offsets such as +16 or -0x10.",
     "Search for text or hex bytes such as DE AD BE EF. Enter finds the next match, Shift + Enter the previous one, and the search wraps around the file.",
-    "The data inspector reads the bytes at the cursor as integers, floats, binary, UTF-8 and Unix timestamps in little or big endian. The selection can be copied as hex, Base64, a C array, Python bytes or text."
+    "The data inspector reads the bytes at the cursor as integers, floats, binary, UTF-8 and Unix timestamps in little or big endian. The selection can be copied as hex, Base64, a C array, Python bytes or text.",
+    "The inspector also reads the bytes at the cursor as UUID/GUID (with version and time), protobuf varint and ZigZag, BCD, fixed-point numbers, RGBA8888/RGB565 colors, C strings (up to \\0) and Base64/Base32 runs; little endian reads UUIDs in Windows GUID order, and every value can be copied."
   ],
   "functions": {
     "open": "Open file",
@@ -73,7 +74,18 @@
       "f64": "Float64",
       "utf8": "UTF-8",
       "unix32": "Unix time",
-      "unixMs": "Unix ms"
+      "unixMs": "Unix ms",
+      "fixed8_8": "Fixed Q8.8",
+      "fixed16_16": "Fixed Q16.16",
+      "varint": "Varint",
+      "zigzag": "ZigZag",
+      "bcd": "BCD",
+      "uuid": "UUID",
+      "rgba": "RGBA8888",
+      "rgb565": "RGB565",
+      "cstring": "C string",
+      "base64": "Base64",
+      "base32": "Base32"
     }
   },
   "copy": {

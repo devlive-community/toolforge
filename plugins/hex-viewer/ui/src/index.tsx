@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { Badge, Button, Checkbox, DropdownMenu, Empty, Input, Panel, SegmentedControl, cn, toast } from '@toolforge/ui'
-import { formatBytes, host, useCopy, useDebouncedCall, usePlugin, usePluginState } from '@toolforge/plugin-ui-sdk'
+import { CopyButton, formatBytes, host, useCopy, useDebouncedCall, usePlugin, usePluginState } from '@toolforge/plugin-ui-sdk'
 import { ArrowDown, ArrowUp, Binary, ClipboardCopy, CornerDownRight, FileSearch, FolderOpen, ScanSearch } from 'lucide-react'
 
 const ROW = 16
@@ -392,10 +392,17 @@ function HexViewer() {
             <table className="w-full text-xs">
               <tbody>
                 {inspector.result.map((v) => (
-                  <tr key={v.kind} className="border-b border-border last:border-0">
+                  <tr key={v.kind} className="group border-b border-border last:border-0">
                     <th className="w-24 px-3 py-1.5 text-left font-normal text-fg-muted">{t(`inspector.kinds.${v.kind}`)}</th>
-                    <td className="max-w-0 truncate px-3 py-1.5 font-mono text-fg" title={v.value} data-selectable>
+                    <td className="max-w-0 truncate py-1.5 pl-3 font-mono text-fg" title={v.value} data-selectable>
+                      {(v.kind === 'rgba' || v.kind === 'rgb565') && (
+                        // 色块显示的是文件中的数据本身
+                        <span className="mr-1.5 inline-block size-3 rounded-sm border border-border align-[-2px]" style={{ backgroundColor: v.value }} />
+                      )}
                       {v.value}
+                    </td>
+                    <td className="w-8 pr-1.5">
+                      <CopyButton text={v.value} className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100" />
                     </td>
                   </tr>
                 ))}

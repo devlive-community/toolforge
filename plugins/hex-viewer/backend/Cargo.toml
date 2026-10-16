@@ -13,3 +13,4 @@ tf-plugin-api.workspace = true
 data-encoding = "2"
 jiff = "0.2"
 memchr = "2"
+uuid = "1"

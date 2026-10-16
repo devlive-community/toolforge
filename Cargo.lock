@@ -8093,6 +8093,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",
+ "uuid",
 ]
 
 [[package]]

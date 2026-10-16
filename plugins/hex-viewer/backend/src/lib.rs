@@ -199,7 +199,7 @@ impl ToolPlugin for HexViewer {
             "read" => read(parse_args(args)?),
             "inspect" => {
                 let args: InspectArgs = parse_args(args)?;
-                let bytes = file::read_at(&args.path, args.offset, 8)?;
+                let bytes = file::read_at(&args.path, args.offset, inspect::READ_BYTES)?;
                 to_value(inspect::values(&bytes, args.little_endian))
             }
             "find" => {
