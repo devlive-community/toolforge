@@ -19,10 +19,11 @@ fn records_handled_ids_once() {
 #[test]
 fn skips_handled_and_installed_ids() {
     let none = BTreeSet::new();
-    assert_eq!(pending(&none, &none), [SEMVER]);
+    assert_eq!(pending(&none, &none), MIGRATED);
     let ids: BTreeSet<String> = [SEMVER.to_owned()].into();
-    assert!(pending(&ids, &none).is_empty());
-    assert!(pending(&none, &ids).is_empty());
+    assert!(!pending(&ids, &none).contains(&SEMVER));
+    assert!(!pending(&none, &ids).contains(&SEMVER));
+    assert_eq!(pending(&ids, &none).len(), MIGRATED.len() - 1);
 }
 
 #[test]

@@ -20,7 +20,6 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
     registry.register_for(Arc::new(tfp_timestamp::Timestamp::default()), os);
     registry.register_for(Arc::new(tfp_regex::Regex::default()), os);
     registry.register_for(Arc::new(tfp_xml_formatter::XmlFormatter::default()), os);
-    registry.register_for(Arc::new(tfp_sql_formatter::SqlFormatter::default()), os);
     registry.register_for(Arc::new(tfp_encoder::Encoder::default()), os);
     registry.register_for(Arc::new(tfp_jwt::Jwt::default()), os);
     registry.register_for(Arc::new(tfp_text_tools::TextTools::default()), os);

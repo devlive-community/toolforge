@@ -39,6 +39,8 @@ impl ToolPlugin for SqlFormatter {
     }
 }
 
+tf_plugin_guest::export_plugin!(SqlFormatter);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

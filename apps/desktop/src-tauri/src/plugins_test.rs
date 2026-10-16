@@ -117,7 +117,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
         ("192.168.1.0/24", "ip-calculator"),
         ("10.0.0.1", "ip-calculator"),
         ("<a><b>1</b></a>", "xml-formatter"),
-        ("SELECT id FROM users WHERE id = 1", "sql-formatter"),
         ("0xDEADBEEF", "base-converter"),
         ("https://api.github.com/repos/x", "http-client"),
         ("github.com", "dns-lookup"),

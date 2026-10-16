@@ -8255,6 +8255,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-sql-formatter"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "sqlformat",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-test-card"
 version = "0.1.0"
 dependencies = [
@@ -8918,16 +8929,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-sql-formatter"
-version = "0.1.0"
-dependencies = [
- "serde",
- "serde_json",
- "sqlformat",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-ssh-key"
 version = "0.1.0"
 dependencies = [
@@ -9481,7 +9482,6 @@ dependencies = [
  "tfp-qrcode",
  "tfp-random",
  "tfp-regex",
- "tfp-sql-formatter",
  "tfp-ssh-key",
  "tfp-svg-converter",
  "tfp-system-monitor",

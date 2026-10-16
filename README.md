@@ -42,7 +42,6 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **JSON Schema Validator** | Validate JSON against Draft 2020-12 or Draft 7 offline, with explicit format checks, document references, bounded diagnostics and JSON Pointer paths; open JSON files and save validation reports |
 | **JSON Query** | Query and reshape JSON or JSON Lines with jq (jaq engine; output matches jq) or JSONPath with normalized match paths; raw, compact and sorted output, examples, files up to 100 MB and a 10-second time limit |
 | **XML Formatter** | Format, minify and validate; keeps comments, CDATA and declarations; unclosed or mismatched tags reported with line and column |
-| **SQL Formatter** | Beautify and minify; keyword casing, indentation and compact mode; generic SQL / PostgreSQL / SQL Server dialects |
 | **Regex Tester** | Live match and group highlighting with replacement preview; lookaround, backreferences and named groups; common pattern presets |
 | **Hex Viewer** | Open files of any size byte by byte with file-type detection, go to offset, hex or text search, a data inspector (integers, floats, UTF-8, Unix times in either byte order) and copying selections as hex, Base64, a C array or Python bytes |
 | **Timestamp** | Seconds / milliseconds / microseconds / nanoseconds detected automatically; multiple time zones side by side; date strings to timestamps; live clock |
@@ -113,6 +112,7 @@ These tools are WASM plugins installed from the in-app tool market and updated i
 | Tool | Description |
 |------|-------------|
 | **SemVer Range Tester** | Parse, compare and sort versions by SemVer 2.0.0 and test them against npm ranges (^, ~, x, hyphen, `||`) with expanded comparator sets, exclusion reasons, a pre-release switch and CSV export |
+| **SQL Formatter** | Beautify and minify; keyword casing, indentation and compact mode; generic SQL / PostgreSQL / SQL Server dialects |
 | **Test Cards** | Generate payment test card data that follows issuer ranges and Luhn, validate card numbers and look up sourced official sandbox cards |
 | **USCC Validator** | Validate Unified Social Credit Codes offline by GB 32100-2015 — length, characters and check digit — and explain every field |
 | **User-Agent Parser** | Parse browser, engine, OS, device and crawler from User-Agent strings offline with the matching rule shown; summarize UAs in access logs |
