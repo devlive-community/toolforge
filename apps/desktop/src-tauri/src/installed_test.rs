@@ -153,7 +153,9 @@ fn installs_real_package() {
 fn records_localized_names() {
     let installed = temp("names");
     let (info, _) = installed
-        .install(&package("org.example.named", "1.0.0"), None, true, |_| false)
+        .install(&package("org.example.named", "1.0.0"), None, true, |_| {
+            false
+        })
         .unwrap();
     assert_eq!(info.names.get("zh-CN").map(String::as_str), Some("示例"));
     assert_eq!(installed.list()[0].names, info.names);
@@ -161,6 +163,9 @@ fn records_localized_names() {
     let raw = tf_package::open(&package("org.example.raw", "1.0.0")).unwrap();
     let mut plain = raw;
     plain.manifest.name = "Plain".into();
-    assert_eq!(package_names(&plain).get("*").map(String::as_str), Some("Plain"));
+    assert_eq!(
+        package_names(&plain).get("*").map(String::as_str),
+        Some("Plain")
+    );
     std::fs::remove_dir_all(installed.root()).unwrap();
 }
