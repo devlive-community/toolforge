@@ -163,6 +163,9 @@ function PaletteContent() {
   }, [active])
 
   const onKeyDown = (event: KeyboardEvent) => {
+    // 输入法合成中的按键（拼音选字、上下选词、回车确认）不参与导航与打开；
+    // WKWebView 里确认合成的那次回车可能已离开合成状态但 keyCode 仍是 229
+    if (event.nativeEvent.isComposing || event.keyCode === 229) return
     if (event.key === 'ArrowDown') setActive((i) => Math.min(i + 1, results.length - 1))
     else if (event.key === 'ArrowUp') setActive((i) => Math.max(i - 1, 0))
     else if (event.key === 'Enter') results[active]?.run()
