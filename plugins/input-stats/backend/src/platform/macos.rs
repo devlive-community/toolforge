@@ -7,9 +7,7 @@ use std::sync::mpsc;
 use std::sync::mpsc::Sender;
 
 use objc2::rc::autoreleasepool;
-use objc2_app_kit::{NSEvent, NSWorkspace};
-use objc2_core_graphics::CGEvent;
-use std::ptr::NonNull;
+use objc2_app_kit::NSWorkspace;
 use tf_plugin_api::{PluginError, PluginResult};
 
 use super::{Permission, Sink, Stopper};
@@ -103,6 +101,11 @@ const KEY_AUTOREPEAT: u32 = 8;
 const KEYCODE: u32 = 9;
 const SCROLL_FIXED_1: u32 = 93;
 const SCROLL_FIXED_2: u32 = 94;
+
+// NSEvent 对应的私有字段：subtype 与 data1。公开字段 kCGMouseEventSubtype(7)
+// 读不到这些值，映射由 macos_probe_test.rs 双向探测并作回归护栏。
+const SYS_SUBTYPE: u32 = 83;
+const SYS_DATA1: u32 = 149;
 
 // CGEventFlags
 const FLAG_SHIFT: u64 = 0x2_0000;
@@ -208,28 +211,28 @@ extern "C" fn on_event(_: Ref, kind: u32, event: Ref, user: *mut c_void) -> Ref 
             }
         }
         SYSTEM_DEFINED => {
-            // 用 NSEvent 包装读取 subtype 与 data1，解析方式与 Hammerspoon 一致。
-            // 必须用 eventWithCGEvent：eventWithEventRef 接收的是 Carbon EventRef，
-            // 传入 CGEventRef 会让 AppKit 按错误的结构解析，点击窗口等系统事件时直接段错误。
-            let pressed = unsafe {
-                autoreleasepool(|_| {
-                    let raw = NonNull::new(event)?.cast::<CGEvent>();
-                    let sys = NSEvent::eventWithCGEvent(raw.as_ref())?;
-                    if sys.subtype().0 != AUX_CONTROL_BUTTONS {
-                        return None;
-                    }
-                    let data1 = sys.data1();
-                    // 高 16 位是键值；低 16 位里第 8 位为 0x0A 表示按下，第 0 位是自动重复
-                    let down = (data1 & 0xFF00) >> 8 == 0x0A;
-                    let repeat = data1 & 0x1 != 0;
-                    (down && !repeat).then_some((data1 & 0xFFFF_0000) >> 16)
-                })
-            };
-            if let Some(key) = pressed {
-                send(Event::Key {
-                    code: keymap::mac_special(key as i64),
-                    mods: 0,
-                });
+            // 功能层按键（亮度 / 音量 / 播放控制）的 subtype 与 data1 存在
+            // CGEvent 私有字段里，直接读字段解析。绝对不要在这里调用
+            // NSEvent::eventWithCGEvent 转换：新版 macOS 处理 Caps Lock 切换
+            // 输入法的系统事件时会在转换过程中进入 TSM 输入源代码并断言主队列，
+            // tap 线程上直接 SIGTRAP 整个应用（2026-10-16 所有输入框切中英文
+            // 都闪退的原因）。
+            if unsafe { CGEventGetIntegerValueField(event, SYS_SUBTYPE) } as i16
+                != AUX_CONTROL_BUTTONS
+            {
+                return event;
+            }
+            let data1 = unsafe { CGEventGetIntegerValueField(event, SYS_DATA1) };
+            // 高 16 位是键值；低 16 位里第 8 位为 0x0A 表示按下，第 0 位是自动重复
+            let down = (data1 & 0xFF00) >> 8 == 0x0A;
+            let repeat = data1 & 0x1 != 0;
+            if down && !repeat {
+                // 只统计已知功能键：私有字段读不到、或键值不在表内（包括
+                // Caps Lock 切输入法的系统事件）时跳过，不产生 Unidentified 噪声
+                let code = keymap::mac_special((data1 & 0xFFFF_0000) >> 16);
+                if code != keymap::UNIDENTIFIED {
+                    send(Event::Key { code, mods: 0 });
+                }
             }
         }
         LEFT_DOWN | RIGHT_DOWN | OTHER_DOWN => {
@@ -383,3 +386,7 @@ pub fn displays() -> Vec<Display> {
         })
         .collect()
 }
+
+#[cfg(test)]
+#[path = "macos_probe_test.rs"]
+mod macos_probe_test;
