@@ -9,6 +9,8 @@ on:
     branches: [dev]
     paths:
       - "market/*/manifest.json"
+      # 发布逻辑变化时补发尚未发布的版本（已发布的版本会被跳过）
+      - ".github/workflows/plugins.yml"
   workflow_dispatch:
 
 permissions:
