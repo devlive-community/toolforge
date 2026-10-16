@@ -6,8 +6,6 @@ use serde_json::Value;
 pub const MAX_INPUT: usize = 64 * 1024;
 /// 输出摘要的字符数
 pub const OUTPUT_PREVIEW: usize = 500;
-/// 最多保留的记录数
-pub const KEEP: usize = 2000;
 /// 任务参数序列化后超过这个大小就不保存（无法重新运行）
 pub const MAX_TASK_ARGS: usize = 64 * 1024;
 

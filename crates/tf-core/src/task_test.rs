@@ -51,7 +51,7 @@ fn manager() -> (TaskManager, PathBuf) {
         thread::current().id()
     ));
     let store = Arc::new(Store::open_in_memory().unwrap());
-    (TaskManager::new(store, dir.clone(), 100).unwrap(), dir)
+    (TaskManager::new(store, dir.clone()).unwrap(), dir)
 }
 
 #[test]
@@ -86,7 +86,7 @@ fn successful_task_streams_logs_progress_and_result() {
 
     // 日志落盘，记录状态已更新
     assert_eq!(manager.logs(&id).unwrap().len(), 3);
-    assert_eq!(manager.list(10).unwrap()[0].status, "succeeded");
+    assert_eq!(manager.list(10, 0).unwrap()[0].status, "succeeded");
     std::fs::remove_dir_all(dir).ok();
 }
 

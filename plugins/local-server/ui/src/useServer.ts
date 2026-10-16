@@ -4,6 +4,8 @@ import { cancelTask, listTasks, taskLogs, useLogFormatter, usePlugin, useTask } 
 import type { Settings } from './types'
 
 const POLL_MS = 1000
+/** 找回运行中的服务：运行中任务总是最新的，取第一页即可 */
+const LIST_LIMIT = 100
 
 /**
  * 服务任务：本页启动的服务直接接收实时日志；离开工具后仍在运行的服务，
@@ -18,9 +20,9 @@ export function useServer() {
 
   useEffect(() => {
     let alive = true
-    listTasks()
-      .then((records) => {
-        const running = records.find((r) => r.pluginId === manifest.id && r.function === 'serve' && r.status === 'running')
+    listTasks(LIST_LIMIT, 0)
+      .then((page) => {
+        const running = page.records.find((r) => r.pluginId === manifest.id && r.function === 'serve' && r.status === 'running')
         if (alive && running) setAttached({ id: running.id, logs: [] })
       })
       .catch(() => {})
@@ -35,9 +37,9 @@ export function useServer() {
     let alive = true
     const poll = async () => {
       try {
-        const [records, lines] = await Promise.all([listTasks(), taskLogs(attachedId)])
+        const [page, lines] = await Promise.all([listTasks(LIST_LIMIT, 0), taskLogs(attachedId)])
         if (!alive) return
-        const record = records.find((r) => r.id === attachedId)
+        const record = page.records.find((r) => r.id === attachedId)
         if (!record || record.status !== 'running') {
           setAttached(null)
           return

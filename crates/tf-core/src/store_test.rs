@@ -93,7 +93,7 @@ fn task_lifecycle_is_persisted() {
     store
         .task_finish("t1", "failed", 42, Some("fs.not_found"))
         .unwrap();
-    let tasks = store.tasks(10).unwrap();
+    let tasks = store.tasks(10, 0).unwrap();
     assert_eq!(tasks[0].status, "failed");
     assert_eq!(tasks[0].elapsed_ms, Some(42));
     assert_eq!(tasks[0].error_code.as_deref(), Some("fs.not_found"));
@@ -104,19 +104,27 @@ fn running_tasks_become_interrupted() {
     let store = Store::open_in_memory().unwrap();
     store.task_insert(&record("t1", 1)).unwrap();
     assert_eq!(store.tasks_mark_interrupted().unwrap(), 1);
-    assert_eq!(store.tasks(10).unwrap()[0].status, "interrupted");
+    assert_eq!(store.tasks(10, 0).unwrap()[0].status, "interrupted");
 }
 
 #[test]
-fn prune_keeps_latest_tasks() {
+fn tasks_page_through_records() {
     let store = Store::open_in_memory().unwrap();
     for i in 0..5 {
         store.task_insert(&record(&format!("t{i}"), i)).unwrap();
     }
-    let removed = store.tasks_prune(2).unwrap();
-    assert_eq!(removed.len(), 3);
-    let left: Vec<String> = store.tasks(10).unwrap().into_iter().map(|t| t.id).collect();
-    assert_eq!(left, vec!["t4", "t3"]);
+    assert_eq!(store.tasks_count().unwrap(), 5);
+    let page1 = store.tasks(2, 0).unwrap();
+    assert_eq!(page1.len(), 2);
+    assert_eq!(page1[0].id, "t4", "newest first");
+    let page2 = store.tasks(2, 2).unwrap();
+    assert_eq!(page2.len(), 2);
+    assert_eq!(page2[0].id, "t2");
+    let last = store.tasks(2, 4).unwrap();
+    assert_eq!(last.len(), 1);
+    assert_eq!(last[0].id, "t0");
+    // 记录永久保留：不分页裁剪
+    assert_eq!(store.tasks(100, 0).unwrap().len(), 5);
 }
 
 #[test]
@@ -163,8 +171,9 @@ fn history_merges_bursts_and_searches() {
 
     store.history_delete(e).unwrap();
     assert_eq!(store.history_count().unwrap(), 3);
-    assert_eq!(store.history_prune(2).unwrap(), 1);
-    assert_eq!(store.history_clear(Some("json")).unwrap(), 2);
+    assert_eq!(store.history_clear(Some("json")).unwrap(), 3);
+    assert_eq!(store.history_count().unwrap(), 0);
+    // 历史记录永久保留：写入的记录不会因数量被裁剪（上方 all.len() == 4 即验证）
 }
 
 #[test]
@@ -182,9 +191,9 @@ fn task_args_enable_rerun() {
         rerunnable: false,
     };
     store.task_insert(&record).unwrap();
-    assert!(!store.tasks(10).unwrap()[0].rerunnable);
+    assert!(!store.tasks(10, 0).unwrap()[0].rerunnable);
     store.task_set_args("t1", &json!({"paths": ["a"]})).unwrap();
-    assert!(store.tasks(10).unwrap()[0].rerunnable);
+    assert!(store.tasks(10, 0).unwrap()[0].rerunnable);
     let (plugin, function, args) = store.task_args("t1").unwrap().unwrap();
     assert_eq!(
         (plugin.as_str(), function.as_str(), args),

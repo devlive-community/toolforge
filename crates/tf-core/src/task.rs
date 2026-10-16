@@ -261,13 +261,10 @@ pub struct TaskManager {
 }
 
 impl TaskManager {
-    /// 创建管理器；上次未正常结束的任务标记为中断，并清理过旧的任务与日志
-    pub fn new(store: Arc<Store>, log_dir: PathBuf, keep: usize) -> AppResult<Self> {
+    /// 创建管理器；上次未正常结束的任务标记为中断（任务记录与日志永久保留）
+    pub fn new(store: Arc<Store>, log_dir: PathBuf) -> AppResult<Self> {
         std::fs::create_dir_all(&log_dir)?;
         store.tasks_mark_interrupted()?;
-        for id in store.tasks_prune(keep)? {
-            let _ = std::fs::remove_file(log_dir.join(format!("{id}.jsonl")));
-        }
         Ok(Self {
             store,
             resources: None,
@@ -434,8 +431,8 @@ impl TaskManager {
         Ok(ids.len())
     }
 
-    pub fn list(&self, limit: usize) -> AppResult<Vec<TaskRecord>> {
-        self.store.tasks(limit)
+    pub fn list(&self, limit: usize, offset: usize) -> AppResult<Vec<TaskRecord>> {
+        self.store.tasks(limit, offset)
     }
 
     /// 读取任务日志（最多最后 10000 行）

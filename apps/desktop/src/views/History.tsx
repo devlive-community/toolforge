@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { invoke } from '@tauri-apps/api/core'
-import { Badge, Button, Empty, Input, Switch, Tabs, Tooltip, toast } from '@toolforge/ui'
+import { Badge, Button, Empty, Input, Pagination, Switch, Tabs, Tooltip, toast } from '@toolforge/ui'
 import {
   clearTasks,
   host,
@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next'
 import { ToolTile } from '../plugins/ToolIcon'
 import { usePluginText } from '../plugins/usePluginText'
 import { pluginById, useApp } from '../stores/app'
-import { useTasks } from '../stores/tasks'
+import { TASKS_PAGE, useTasks } from '../stores/tasks'
 import { Page } from './Page'
 
 interface Entry {
@@ -53,18 +53,22 @@ function Records() {
   const [query, setQuery] = useState('')
   const [entries, setEntries] = useState<Entry[]>([])
   const [total, setTotal] = useState(0)
-  const [limit, setLimit] = useState(PAGE)
+  const [page, setPage] = useState(1)
   const [enabled, setEnabled] = useState(true)
 
   const load = useCallback(
     () =>
-      invoke<{ entries: Entry[]; total: number }>('history_list', { query, limit, offset: 0 })
-        .then((page) => {
-          setEntries(page.entries)
-          setTotal(page.total)
+      invoke<{ entries: Entry[]; total: number }>('history_list', {
+        query,
+        limit: PAGE,
+        offset: (page - 1) * PAGE,
+      })
+        .then((data) => {
+          setEntries(data.entries)
+          setTotal(data.total)
         })
         .catch(() => {}),
-    [query, limit],
+    [query, page],
   )
 
   useEffect(() => {
@@ -99,7 +103,10 @@ function Records() {
       <div className="flex flex-wrap items-center gap-3">
         <Input
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={(event) => {
+            setQuery(event.target.value)
+            setPage(1)
+          }}
           placeholder={t('history.search')}
           aria-label={t('history.search')}
           leading={<Search />}
@@ -161,13 +168,18 @@ function Records() {
               </li>
             )
           })}
-          {entries.length >= limit && (
-            <li className="flex justify-center pt-2">
-              <Button onClick={() => setLimit((n) => n + PAGE)}>{t('history.more')}</Button>
-            </li>
-          )}
         </ul>
       )}
+      <Pagination
+        page={page}
+        pageSize={PAGE}
+        total={total}
+        onPageChange={setPage}
+        prevLabel={t('pagination.prev')}
+        nextLabel={t('pagination.next')}
+        pageLabel={(n) => t('pagination.page', { page: n })}
+        totalLabel={t('pagination.total', { total })}
+      />
     </div>
   )
 }
@@ -179,13 +191,12 @@ function TaskRow({ task }: { task: TaskRecord }) {
   const manifest = useApp((s) => pluginById(s.plugins, task.pluginId))
   const errorMessage = useErrorMessage(task.pluginId)
   const format = useLogFormatter([task.pluginId, 'common'])
-  const load = useTasks((s) => s.load)
   const setOpen = useTasks((s) => s.setOpen)
 
   const rerun = async () => {
     try {
+      // 新任务由 task://event 的 started 事件实时前置到列表，无需重新加载
       await rerunTask(task.id)
-      await load()
       setOpen(true)
     } catch (error) {
       toast.error(errorMessage(error))
@@ -238,23 +249,31 @@ function TaskRow({ task }: { task: TaskRecord }) {
 function Tasks() {
   const { t } = useTranslation()
   const records = useTasks((s) => s.records)
-  const load = useTasks((s) => s.load)
+  const total = useTasks((s) => s.total)
+  const loadPage = useTasks((s) => s.loadPage)
+  const [page, setPage] = useState(1)
 
   useEffect(() => {
-    void load()
-  }, [load])
+    void loadPage(1)
+  }, [loadPage])
+
+  const changePage = (next: number) => {
+    setPage(next)
+    void loadPage(next)
+  }
 
   const clear = async () => {
     const count = await clearTasks()
     toast.success(t('history.tasksCleared', { count }))
-    await load()
+    setPage(1)
+    await loadPage(1)
   }
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
         <p className="text-xs text-fg-subtle">{t('history.tasksHint')}</p>
-        <Button onClick={() => void clear()} disabled={records.every((r) => r.status === 'running')}>
+        <Button onClick={() => void clear()} disabled={total === 0}>
           <Trash2 />
           {t('history.clearTasks')}
         </Button>
@@ -268,6 +287,16 @@ function Tasks() {
           ))}
         </ul>
       )}
+      <Pagination
+        page={page}
+        pageSize={TASKS_PAGE}
+        total={total}
+        onPageChange={changePage}
+        prevLabel={t('pagination.prev')}
+        nextLabel={t('pagination.next')}
+        pageLabel={(n) => t('pagination.page', { page: n })}
+        totalLabel={t('pagination.total', { total })}
+      />
     </div>
   )
 }

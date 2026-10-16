@@ -238,14 +238,14 @@ impl Store {
         Ok(())
     }
 
-    pub fn tasks(&self, limit: usize) -> AppResult<Vec<TaskRecord>> {
+    pub fn tasks(&self, limit: usize, offset: usize) -> AppResult<Vec<TaskRecord>> {
         let conn = self.conn();
         let mut stmt = conn.prepare(
             "SELECT id, plugin_id, function, status, started_at, finished_at, elapsed_ms, error_code,
                     args IS NOT NULL
-             FROM tasks ORDER BY started_at DESC LIMIT ?1",
+             FROM tasks ORDER BY started_at DESC LIMIT ?1 OFFSET ?2",
         )?;
-        let rows = stmt.query_map([limit as i64], |row| {
+        let rows = stmt.query_map([limit as i64, offset as i64], |row| {
             Ok(TaskRecord {
                 id: row.get(0)?,
                 plugin_id: row.get(1)?,
@@ -269,18 +269,11 @@ impl Store {
         )?)
     }
 
-    /// 只保留最近 `keep` 条任务记录，返回被删除的任务 id（用于清理日志文件）
-    pub fn tasks_prune(&self, keep: usize) -> AppResult<Vec<String>> {
-        let conn = self.conn();
-        let mut stmt =
-            conn.prepare("SELECT id FROM tasks ORDER BY started_at DESC LIMIT -1 OFFSET ?1")?;
-        let ids: Vec<String> = stmt
-            .query_map([keep as i64], |row| row.get(0))?
-            .collect::<Result<_, _>>()?;
-        for id in &ids {
-            conn.execute("DELETE FROM tasks WHERE id = ?1", [id])?;
-        }
-        Ok(ids)
+    pub fn tasks_count(&self) -> AppResult<usize> {
+        let count: i64 = self
+            .conn()
+            .query_row("SELECT COUNT(*) FROM tasks", [], |row| row.get(0))?;
+        Ok(count as usize)
     }
 
     /// 保存任务的启动参数（用于重新运行）
@@ -413,14 +406,6 @@ impl Store {
                 .execute("DELETE FROM history WHERE plugin_id = ?1", [id])?,
             None => self.conn().execute("DELETE FROM history", [])?,
         })
-    }
-
-    /// 只保留最近 keep 条记录
-    pub fn history_prune(&self, keep: usize) -> AppResult<usize> {
-        Ok(self.conn().execute(
-            "DELETE FROM history WHERE id NOT IN (SELECT id FROM history ORDER BY updated_at DESC, id DESC LIMIT ?1)",
-            [keep as i64],
-        )?)
     }
 
     pub fn touch_recent(&self, plugin_id: &str) -> AppResult<()> {

@@ -84,7 +84,7 @@ export function App() {
   }, [i18n.language])
 
   useEffect(() => {
-    useTasks.getState().load().catch(() => {})
+    useTasks.getState().loadPage(1).catch(() => {})
     const unlisten = subscribeTasks((event) => {
       if (event.status === 'succeeded') toast.success(t('tasks.done'))
       else if (event.status === 'failed') toast.error(t('tasks.failed'))

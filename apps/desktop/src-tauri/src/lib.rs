@@ -19,8 +19,6 @@ use std::sync::Arc;
 use tauri::{Manager, RunEvent};
 use tf_core::{AppLog, PluginRegistry, Resources, Store, TaskManager};
 
-/// 保留的任务记录与日志数量
-const TASK_HISTORY: usize = 200;
 /// 应用日志单个文件上限与保留的文件数
 const LOG_BYTES: u64 = 2 * 1024 * 1024;
 const LOG_FILES: usize = 3;
@@ -75,12 +73,8 @@ pub fn run() {
             let store = Arc::new(Store::open(&data_dir.join("toolforge.db"))?);
             let prefs = store.kv_get(commands::PREFS_KEY)?.unwrap_or_default();
             let resources = Arc::new(Resources::new(data_dir.join("resources")));
-            let tasks = TaskManager::new(
-                store.clone(),
-                data_dir.join("logs").join("tasks"),
-                TASK_HISTORY,
-            )?
-            .with_resources(resources.clone());
+            let tasks = TaskManager::new(store.clone(), data_dir.join("logs").join("tasks"))?
+                .with_resources(resources.clone());
             window::create_main(app.handle(), &prefs)?;
             #[cfg(target_os = "macos")]
             {

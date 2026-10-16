@@ -19,6 +19,7 @@ export { LogViewer, type LogEntry, type LogLevel, type LogViewerProps } from './
 export { Markdown, type MarkdownBlock, type MarkdownProps, type MarkdownSpan } from './components/Markdown'
 export { Modal, type ModalProps } from './components/Modal'
 export { NumberInput, type NumberInputProps } from './components/NumberInput'
+export { Pagination, type PaginationProps } from './components/Pagination'
 export { Panel, type PanelProps } from './components/Panel'
 export { Progress, type ProgressProps } from './components/Progress'
 export { SegmentedControl, type SegmentedControlProps } from './components/SegmentedControl'

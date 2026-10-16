@@ -35,9 +35,8 @@ pub fn record(
         return;
     };
     let output = history::output_preview(result);
-    let outcome = store
-        .history_record(plugin_id, function, &input, output.as_deref(), now_millis())
-        .and_then(|_| store.history_prune(history::KEEP));
+    let outcome =
+        store.history_record(plugin_id, function, &input, output.as_deref(), now_millis());
     if let Err(err) = outcome {
         log::warn!("history record failed: {}", err.code);
     }

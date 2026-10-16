@@ -40,6 +40,12 @@ export interface TaskRecord {
   rerunnable: boolean
 }
 
+/** 任务记录分页：当前页记录 + 总数（记录永久保留） */
+export interface TaskPage {
+  records: TaskRecord[]
+  total: number
+}
+
 const wrap = async <T,>(promise: Promise<T>) => {
   try {
     return await promise
@@ -72,5 +78,6 @@ export function rerunTask(taskId: string, onEvent: (event: TaskEvent) => void = 
 export const clearTasks = () => wrap(invoke<number>('task_clear'))
 
 export const cancelTask = (taskId: string) => wrap(invoke<boolean>('task_cancel', { taskId }))
-export const listTasks = () => wrap(invoke<TaskRecord[]>('task_list'))
+export const listTasks = (limit: number, offset: number) =>
+  wrap(invoke<TaskPage>('task_list', { limit, offset }))
 export const taskLogs = (taskId: string) => wrap(invoke<LogLine[]>('task_logs', { taskId }))

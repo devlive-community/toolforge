@@ -107,7 +107,7 @@ pub async fn diagnostics_export(
                 version: m.version,
             })
             .collect(),
-        tasks: state.store.tasks(TASKS)?,
+        tasks: state.store.tasks(TASKS, 0)?,
     };
     // 日志文件从旧到新写入，阅读时顺序自然
     let mut logs = state.log.files();

@@ -10,23 +10,35 @@ interface Live {
 
 interface TasksState {
   records: TaskRecord[]
+  total: number
+  /** 运行中的任务数（由事件维护，与当前所在页无关） */
+  running: number
   live: Record<string, Live>
   open: boolean
   setOpen: (open: boolean) => void
-  load: () => Promise<void>
+  /** 加载指定页（从 1 开始），替换当前页记录 */
+  loadPage: (page: number) => Promise<void>
   apply: (event: TaskEvent) => void
 }
 
+/** 每页任务条数；记录全部常驻后端，页面按页读取 */
+export const TASKS_PAGE = 50
+
 export const useTasks = create<TasksState>((set, get) => ({
   records: [],
+  total: 0,
+  running: 0,
   live: {},
   open: false,
   setOpen: (open) => set({ open }),
 
-  load: async () => set({ records: await listTasks() }),
+  loadPage: async (page) => {
+    const data = await listTasks(TASKS_PAGE, (page - 1) * TASKS_PAGE)
+    set({ records: data.records, total: data.total })
+  },
 
   apply: (event) => {
-    const { records, live } = get()
+    const { records, total, running, live } = get()
     switch (event.type) {
       case 'started':
         set({
@@ -44,6 +56,8 @@ export const useTasks = create<TasksState>((set, get) => ({
             },
             ...records.filter((r) => r.id !== event.taskId),
           ],
+          total: total + 1,
+          running: running + 1,
         })
         break
       case 'progress':
@@ -59,13 +73,14 @@ export const useTasks = create<TasksState>((set, get) => ({
               ? { ...r, status: event.status, elapsedMs: event.elapsedMs, finishedAt: Date.now(), errorCode: event.error?.code ?? null }
               : r,
           ),
+          running: Math.max(0, running - 1),
         })
         break
     }
   },
 }))
 
-export const useRunningCount = () => useTasks((s) => s.records.filter((r) => r.status === 'running').length)
+export const useRunningCount = () => useTasks((s) => s.running)
 
 /** 订阅 Rust 广播的任务事件（不含日志），返回取消订阅函数 */
 export function subscribeTasks(onFinished: (event: Extract<TaskEvent, { type: 'finished' }>) => void) {

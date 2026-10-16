@@ -68,18 +68,17 @@
       "enabled": "记录处理历史",
       "clear": "清空记录",
       "cleared": "已清空 {{count}} 条记录",
-      "privacy": "只保存在本机 SQLite 中；密码、密钥、加解密等敏感工具从不记录。同一工具连续调用 1 分钟内合并为一条，最多保留 2000 条。",
+      "privacy": "只保存在本机 SQLite 中；密码、密钥、加解密等敏感工具从不记录。同一工具连续调用 1 分钟内合并为一条。",
       "empty": "还没有处理记录",
       "emptyHint": "在格式化、编码、正则等工具中处理内容后，会在这里留下记录。",
       "noMatch": "没有匹配的记录",
       "reopen": "带着这段输入打开工具",
       "copyInput": "复制输入",
       "delete": "删除",
-      "more": "加载更多",
       "rerun": "用相同参数重新运行",
       "notRerunnable": "敏感工具或参数过大，未保存参数，无法重新运行",
       "exportLogs": "导出日志",
-      "tasksHint": "耗时任务的运行记录与日志，最多保留 200 条。",
+      "tasksHint": "耗时任务的运行记录与日志，全部永久保留。",
       "clearTasks": "清理已结束的任务",
       "tasksCleared": "已清理 {{count}} 个任务",
       "output": "→ {{output}}"
@@ -171,6 +170,12 @@
         "cancelled": "已取消",
         "interrupted": "已中断"
       }
+    },
+    "pagination": {
+      "prev": "上一页",
+      "next": "下一页",
+      "page": "第 {{page}} 页",
+      "total": "共 {{total}} 条"
     },
     "quit": {
       "title": "退出 ToolForge？",

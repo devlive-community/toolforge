@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Badge, Button, Drawer, Empty, LogViewer, Progress, cn, type LogEntry } from '@toolforge/ui'
+import { Badge, Button, Drawer, Empty, LogViewer, Pagination, Progress, cn, type LogEntry } from '@toolforge/ui'
 import { cancelTask, taskLogs, useErrorMessage, useLogFormatter, type TaskRecord } from '@toolforge/plugin-ui-sdk'
 import { ChevronRight, ListChecks, Square } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { usePluginText } from '../plugins/usePluginText'
 import { pluginById, useApp } from '../stores/app'
-import { useTasks } from '../stores/tasks'
+import { TASKS_PAGE, useTasks } from '../stores/tasks'
 
 const statusVariant = {
   running: 'info',
@@ -109,18 +109,38 @@ function TaskItem({ task }: { task: TaskRecord }) {
 
 export function TaskCenter() {
   const { t } = useTranslation()
-  const { open, setOpen, records } = useTasks()
+  const { open, setOpen, records, total, loadPage } = useTasks()
+  const [page, setPage] = useState(1)
+
+  const changePage = (next: number) => {
+    setPage(next)
+    void loadPage(next)
+  }
 
   return (
     <Drawer open={open} onOpenChange={setOpen} title={t('tasks.title')} closeLabel={t('common:close')}>
       {records.length === 0 ? (
         <Empty icon={<ListChecks />} title={t('tasks.empty')} description={t('tasks.emptyHint')} />
       ) : (
-        <ul>
-          {records.map((task) => (
-            <TaskItem key={task.id} task={task} />
-          ))}
-        </ul>
+        <>
+          <ul>
+            {records.map((task) => (
+              <TaskItem key={task.id} task={task} />
+            ))}
+          </ul>
+          <div className="border-t border-border p-3">
+            <Pagination
+              page={page}
+              pageSize={TASKS_PAGE}
+              total={total}
+              onPageChange={changePage}
+              prevLabel={t('pagination.prev')}
+              nextLabel={t('pagination.next')}
+              pageLabel={(n) => t('pagination.page', { page: n })}
+              totalLabel={t('pagination.total', { total })}
+            />
+          </div>
+        </>
       )}
     </Drawer>
   )

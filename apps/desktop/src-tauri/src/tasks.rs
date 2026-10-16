@@ -2,6 +2,7 @@
 
 use std::sync::Arc;
 
+use serde::Serialize;
 use serde_json::Value;
 use tauri::ipc::Channel;
 use tauri::{AppHandle, Emitter, State};
@@ -11,7 +12,7 @@ use crate::AppState;
 
 /// 全局任务事件（不含日志），任务中心订阅它
 pub const TASK_EVENT: &str = "task://event";
-const TASK_LIST_LIMIT: usize = 100;
+const MAX_PAGE: usize = 200;
 
 pub struct TauriSink {
     channel: Channel<TaskEvent>,
@@ -99,9 +100,18 @@ pub fn task_cancel(state: State<'_, AppState>, task_id: String) -> bool {
     state.tasks.cancel(&task_id)
 }
 
+#[derive(Serialize)]
+pub struct TaskPage {
+    records: Vec<TaskRecord>,
+    total: usize,
+}
+
 #[tauri::command]
-pub fn task_list(state: State<'_, AppState>) -> AppResult<Vec<TaskRecord>> {
-    state.tasks.list(TASK_LIST_LIMIT)
+pub fn task_list(state: State<'_, AppState>, limit: usize, offset: usize) -> AppResult<TaskPage> {
+    Ok(TaskPage {
+        records: state.tasks.list(limit.min(MAX_PAGE), offset)?,
+        total: state.store.tasks_count()?,
+    })
 }
 
 #[tauri::command]
