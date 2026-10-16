@@ -8,6 +8,7 @@ use std::sync::mpsc::Sender;
 
 use objc2::rc::autoreleasepool;
 use objc2_app_kit::{NSEvent, NSWorkspace};
+use objc2_core_graphics::CGEvent;
 use std::ptr::NonNull;
 use tf_plugin_api::{PluginError, PluginResult};
 
@@ -207,11 +208,13 @@ extern "C" fn on_event(_: Ref, kind: u32, event: Ref, user: *mut c_void) -> Ref 
             }
         }
         SYSTEM_DEFINED => {
-            // 用 NSEvent 包装读取 subtype 与 data1，解析方式与 Hammerspoon 一致
+            // 用 NSEvent 包装读取 subtype 与 data1，解析方式与 Hammerspoon 一致。
+            // 必须用 eventWithCGEvent：eventWithEventRef 接收的是 Carbon EventRef，
+            // 传入 CGEventRef 会让 AppKit 按错误的结构解析，点击窗口等系统事件时直接段错误。
             let pressed = unsafe {
                 autoreleasepool(|_| {
-                    let raw = NonNull::new(event)?;
-                    let sys = NSEvent::eventWithEventRef(raw)?;
+                    let raw = NonNull::new(event)?.cast::<CGEvent>();
+                    let sys = NSEvent::eventWithCGEvent(raw.as_ref())?;
                     if sys.subtype().0 != AUX_CONTROL_BUTTONS {
                         return None;
                     }
