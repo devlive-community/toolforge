@@ -162,13 +162,13 @@ pub trait ServiceContext: Send + Sync {
 }
 
 /// 插件识别出的剪贴板内容：用于在命令面板中推荐工具。
-#[derive(Debug, Clone, Serialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Detection {
     /// 0–100，越高越确定
     pub score: u8,
     /// 说明文案的键，由插件在 `detect.<label>` 下翻译
     pub label: String,
-    #[serde(skip_serializing_if = "Map::is_empty")]
+    #[serde(default, skip_serializing_if = "Map::is_empty")]
     pub params: Map<String, Value>,
 }
 

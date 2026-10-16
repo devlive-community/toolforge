@@ -1,0 +1,13 @@
+[package]
+name = "tf-wasm"
+description = "ToolForge host runtime for WASM component plugins"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+wasmtime = { version = "49.0.3", default-features = false, features = ["component-model", "cranelift", "runtime", "std", "parallel-compilation"] }
+wasmtime-wasi = "49.0.3"

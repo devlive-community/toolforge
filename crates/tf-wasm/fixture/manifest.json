@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.wasm-fixture",
+  "version": "0.0.0",
+  "name": "fixture",
+  "description": "fixture",
+  "category": "other",
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "echo": {},
+    "sum": {},
+    "fail": {},
+    "panic": {},
+    "spin": {},
+    "count": { "task": true },
+    "read": { "task": true }
+  }
+}

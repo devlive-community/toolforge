@@ -1,0 +1,16 @@
+# 测试用插件：由 tf-wasm 的测试编译为 wasm32-wasip2 组件，不属于主 workspace
+[package]
+name = "tf-wasm-fixture"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+serde_json = "1"
+tf-plugin-api = { path = "../../tf-plugin-api" }
+tf-plugin-guest = { path = "../../tf-plugin-guest" }
+
+[workspace]

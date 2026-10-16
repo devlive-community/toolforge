@@ -1,0 +1,12 @@
+[package]
+name = "tf-plugin-guest"
+description = "Guest-side bindings that turn a ToolPlugin into a ToolForge WASM component"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+wit-bindgen = "0.57"

@@ -4,9 +4,12 @@ members = [
     "apps/desktop/src-tauri",
     "crates/tf-core",
     "crates/tf-plugin-api",
+    "crates/tf-plugin-guest",
+    "crates/tf-wasm",
     "crates/xtask",
     "plugins/*/backend",
 ]
+exclude = ["crates/tf-wasm/fixture"]
 
 [workspace.package]
 version = "0.1.10"

@@ -1,0 +1,33 @@
+// ToolForge 插件契约：在线安装的插件编译为 wasm32-wasip2 组件，按此世界导出与导入。
+// 参数、结果与日志参数都以 JSON 字符串传递，与原生 ToolPlugin 的语义一一对应。
+package toolforge:plugin@0.1.0;
+
+interface host {
+    enum log-level { debug, info, warn, error }
+
+    /// 插件错误：错误码 + JSON 对象形式的参数，由前端翻译
+    record failure {
+        code: string,
+        params: string,
+    }
+
+    /// 以下函数只在 run-task 期间有效；普通调用中调用会被忽略或返回失败
+    log: func(level: log-level, code: string, params: string);
+    progress: func(done: u64, total: u64);
+    stage: func(code: string);
+    is-cancelled: func() -> bool;
+
+    /// 读取用户选择的文件（需要 fs:user-selected 权限）
+    file-size: func(path: string) -> result<u64, failure>;
+    read-file: func(path: string, offset: u64, length: u32) -> result<list<u8>, failure>;
+}
+
+world plugin {
+    use host.{failure};
+    import host;
+
+    export call: func(function: string, args: string) -> result<string, failure>;
+    export run-task: func(function: string, args: string) -> result<string, failure>;
+    /// 识别剪贴板文本，返回 Detection 的 JSON；不识别时为 none
+    export detect: func(text: string) -> option<string>;
+}

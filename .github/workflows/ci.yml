@@ -46,6 +46,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
+          # tf-wasm 的测试会把夹具插件编译为 WASM 组件
+          targets: wasm32-wasip2
       - uses: Swatinem/rust-cache@v2
       - name: rustfmt, clippy and tests
         run: cargo xtask check rust
