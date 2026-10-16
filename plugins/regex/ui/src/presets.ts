@@ -16,3 +16,12 @@ export const SAMPLE_TEXT = `联系人：张三 <zhangsan@example.com>，电话 1
 备用邮箱 ops+alerts@tool-forge.dev，官网 https://toolforge.dev/docs?lang=zh
 服务器 192.168.1.20 与 10.0.0.255 在 2024-02-29 08:30:00 完成部署
 主题色 #1c9a4f 与 #fff，版本 0.1.0，耗时 12.5 秒`
+
+/** ReDoS 演示：在回溯引擎中会灾难性回溯的经典写法与触发输入 */
+export const REDOS_DEMOS: { key: string; pattern: string; input: string }[] = [
+  { key: 'nested', pattern: String.raw`^(a+)+$`, input: 'aaaaaaaaaaaaaaaaaaaaaaaa!' },
+  { key: 'words', pattern: String.raw`^(\w+\s?)*$`, input: 'an example of a long sentence that ends badly!' },
+  { key: 'alternation', pattern: String.raw`^(\w|\d)+$`, input: '1234567890123456789012345!' },
+  { key: 'email', pattern: String.raw`^([a-zA-Z0-9]+\.?)+@example\.com$`, input: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaa@example' },
+  { key: 'adjacent', pattern: String.raw`^\d+\d+$`, input: '1234567890123456789012345678901234567890x' },
+]

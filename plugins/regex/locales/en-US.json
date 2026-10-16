@@ -1,11 +1,12 @@
 {
   "name": "Regex Tester",
-  "description": "Test regular expressions live: highlight matches, inspect groups and preview replacements, with lookaround and backreferences",
+  "description": "Test regular expressions live: highlight matches, inspect groups and preview replacements, with lookaround and backreferences, and detect catastrophic backtracking risks",
   "help": [
     "Matching runs in the local Rust engine (fancy-regex) with lookahead / lookbehind, backreferences and named groups (?P<name>…).",
     "Flags: i ignore case, m multi-line (^ $ per line), s dot matches newline, x ignore whitespace and # comments.",
     "Click a match on the right to locate it; replacements support $0, $1 and ${name}.",
-    "Runaway backtracking is stopped automatically so the app never hangs."
+    "Runaway backtracking is stopped automatically so the app never hangs.",
+    "Performance tab: statically scans for ReDoS patterns such as nested quantifiers, overlapping alternation and adjacent overlapping quantifiers with rewrite tips, then measures the sample text and auto-generated attack inputs with a step-counting backtracking simulator (behaving like JavaScript, Java or PCRE engines, with step and time limits) to tell linear, polynomial or exponential growth. Everything runs offline."
   ],
   "pattern": {
     "label": "Regular expression",
@@ -62,5 +63,61 @@
     "regex.backtrack_limit": "Too much backtracking, stopped (simplify nested quantifiers)",
     "regex.runtime": "Matching failed",
     "regex.input_too_large": "Text is too large (over {{limit}})"
+  },
+  "redos": {
+    "label": "ReDoS demos",
+    "nested": "Nested quantifier (a+)+",
+    "words": "Words with optional spaces (\\w+\\s?)*",
+    "alternation": "Overlapping alternation (\\w|\\d)+",
+    "email": "Email local part check",
+    "adjacent": "Adjacent quantifiers \\d+\\d+"
+  },
+  "perf": {
+    "title": "Performance",
+    "empty": "Enter a pattern to analyze",
+    "engineLinear": "This tool runs the pattern on a linear-time engine, so it cannot hang here; backtracking engines such as JavaScript, Java, Python and PCRE can, and the risks below apply to them.",
+    "engineBacktracking": "The pattern uses backreferences or lookaround, so this tool also has to backtrack (with a limit); the risks below apply here too.",
+    "static": "Static risk scan",
+    "noFindings": "No known backtracking risk patterns found.",
+    "attack": "Example trigger input:",
+    "severity": {
+      "high": "High",
+      "medium": "Medium"
+    },
+    "kinds": {
+      "nested_quantifier": {
+        "title": "Nested quantifier",
+        "explain": "A quantifier inside a quantifier lets the same text be split between the inner and outer loops in exponentially many ways; on failure the engine tries them all.",
+        "fix": "Tip: drop the inner quantifier (e.g. (a+)+ → a+), use an atomic group (?>…) or possessive quantifier, or end each repetition with a separator the inner part cannot match."
+      },
+      "overlapping_alternation": {
+        "title": "Overlapping alternation",
+        "explain": "Repeated branches can match the same characters, so every character can take a different branch and the combinations explode on failure.",
+        "fix": "Tip: merge the branches into one character class (e.g. (\\w|\\d)+ → \\w+) or make the branches start with mutually exclusive characters."
+      },
+      "adjacent_quantifiers": {
+        "title": "Adjacent overlapping quantifiers",
+        "explain": "Two neighbouring quantifiers can match the same characters, so a failing match tries every split point and time grows polynomially.",
+        "fix": "Tip: merge them (e.g. \\d+\\d+ → \\d{2,}) or make them match disjoint character sets."
+      }
+    },
+    "dynamic": "Dynamic benchmark",
+    "dynamicHint": "Simulates a backtracking engine and counts steps; attack inputs come from the most severe finding, doubling in length.",
+    "unsupported": "The pattern uses features the simulator does not support (such as conditionals or subroutine calls); the benchmark was skipped.",
+    "growth": {
+      "linear": "Linear",
+      "polynomial": "Polynomial",
+      "exponential": "Exponential"
+    },
+    "input": "Input",
+    "steps": "Steps",
+    "time": "Time",
+    "result": "Result",
+    "sample": "Sample text ({{length}} chars)",
+    "sampleTruncated": "First {{length}} chars of sample",
+    "attackRun": "Attack ×{{length}}",
+    "exceeded": "Over {{budget}} steps",
+    "matched": "Match",
+    "noMatch": "No match"
   }
 }

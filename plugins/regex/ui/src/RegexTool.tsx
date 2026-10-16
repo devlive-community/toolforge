@@ -13,17 +13,18 @@ import {
   type EditorMark,
 } from '@toolforge/ui'
 import { CopyButton, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
-import { BookMarked, ChevronDown, FileText, ListFilter, Replace, TriangleAlert } from 'lucide-react'
+import { BookMarked, ChevronDown, FileText, Gauge, ListFilter, Replace, ShieldAlert, TriangleAlert } from 'lucide-react'
 import { MatchList } from './MatchList'
-import { PRESETS, SAMPLE_TEXT } from './presets'
-import { FLAG_KEYS, type Flags, type ReplaceResult, type TestResult } from './types'
+import { Performance } from './Performance'
+import { PRESETS, REDOS_DEMOS, SAMPLE_TEXT } from './presets'
+import { FLAG_KEYS, type AnalyzeResult, type Flags, type ReplaceResult, type TestResult } from './types'
 
 export function RegexTool() {
   const { t, errorMessage } = usePlugin()
   const [pattern, setPattern] = useState(PRESETS[0].pattern)
   const [flags, setFlags] = useState<Flags>({ caseInsensitive: false, multiLine: false, dotAll: false, extended: false })
   const [input, setInput] = useState(SAMPLE_TEXT)
-  const [tab, setTab] = useState<'matches' | 'replace'>('matches')
+  const [tab, setTab] = useState<'matches' | 'replace' | 'performance'>('matches')
   const [replacement, setReplacement] = useState('<$0>')
   const [active, setActive] = useState<number | null>(null)
   const editor = useRef<CodeEditorHandle>(null)
@@ -35,6 +36,12 @@ export function RegexTool() {
     ready && tab === 'replace' ? 'replace' : null,
     { pattern, flags, input, replacement },
     [pattern, flagKey, input, replacement, tab],
+  )
+
+  const analysis = useDebouncedCall<AnalyzeResult>(
+    ready && tab === 'performance' ? 'analyze' : null,
+    { pattern, flags, input },
+    [pattern, flagKey, input, tab],
   )
 
   const result = test.error ? null : test.result
@@ -106,6 +113,25 @@ export function RegexTool() {
               },
             }))}
           />
+          <DropdownMenu
+            trigger={
+              <Button>
+                <ShieldAlert />
+                {t('redos.label')}
+                <ChevronDown />
+              </Button>
+            }
+            items={REDOS_DEMOS.map((demo) => ({
+              key: demo.key,
+              label: t(`redos.${demo.key}`),
+              onSelect: () => {
+                setPattern(demo.pattern)
+                setInput(demo.input)
+                setActive(null)
+                setTab('performance')
+              },
+            }))}
+          />
         </div>
         {test.error && (
           <p className="mt-2 flex items-start gap-1.5 text-xs text-danger">
@@ -157,10 +183,15 @@ export function RegexTool() {
               items={[
                 { value: 'matches', label: t('matches.title', { count: result?.count ?? 0 }), icon: <ListFilter /> },
                 { value: 'replace', label: t('replace.title'), icon: <Replace /> },
+                { value: 'performance', label: t('perf.title'), icon: <Gauge /> },
               ]}
             />
           </div>
-          {tab === 'matches' ? (
+          {tab === 'performance' ? (
+            <div className="min-h-0 flex-1 overflow-auto">
+              <Performance result={analysis.error ? null : analysis.result} error={analysis.error} pending={analysis.pending} />
+            </div>
+          ) : tab === 'matches' ? (
             <div className="min-h-0 flex-1 overflow-auto">
               {result && <MatchList matches={result.matches} active={active} onSelect={select} />}
             </div>

@@ -41,3 +41,29 @@ export interface ReplaceResult {
   count: number
   elapsedMs: number
 }
+
+export interface BenchRun {
+  length: number
+  steps: number
+  exceeded: boolean
+  matched: boolean
+  elapsedMs: number
+}
+
+export interface Finding {
+  kind: 'nested_quantifier' | 'overlapping_alternation' | 'adjacent_quantifiers'
+  severity: 'high' | 'medium'
+  snippet: string
+  attack: string
+}
+
+export interface AnalyzeResult {
+  backtrackingEngine: boolean
+  findings: Finding[]
+  simulated: boolean
+  sample: BenchRun | null
+  sampleTruncated: boolean
+  attacks: BenchRun[]
+  growth: 'linear' | 'polynomial' | 'exponential' | null
+  stepBudget: number
+}

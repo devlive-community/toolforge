@@ -3,6 +3,7 @@
 
 mod engine;
 mod offsets;
+mod redos;
 
 use serde_json::Value;
 use tf_plugin_api::{Manifest, PluginResult, ToolPlugin, parse_args, to_value, unknown_function};
@@ -30,6 +31,7 @@ impl ToolPlugin for Regex {
         match function {
             "test" => to_value(engine::test(parse_args(args)?)?),
             "replace" => to_value(engine::replace(parse_args(args)?)?),
+            "analyze" => to_value(redos::analyze(parse_args(args)?)?),
             other => Err(unknown_function(other)),
         }
     }
