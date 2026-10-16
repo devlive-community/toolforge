@@ -1,0 +1,144 @@
+{
+  "name": "支付测试卡",
+  "description": "生成符合号段与 Luhn 规则的支付测试卡资料，校验卡号，查询有来源的支付平台官方沙箱测试卡",
+  "help": [
+    "本地生成的卡号只满足卡组织号段、长度与 Luhn 规则，用于表单与格式测试，不是已签发的卡，也不是任何支付平台的可用测试卡。",
+    "支付联调请使用「官方沙箱」中的卡号，并配合对应平台的测试密钥；这些卡号来自官方文档，标注了来源与核对日期。",
+    "填写种子后结果可复现（有效期以当前月份为基准），导出的 CSV / JSON 带有 test-only 与 local-format 标记。",
+    "校验只按号段规则识别品牌，通过 Luhn 不代表卡片真实存在、可以支付或会被平台接受。"
+  ],
+  "functions": {
+    "generate": "生成测试卡",
+    "validate": "校验卡号",
+    "sandbox": "官方沙箱测试卡"
+  },
+  "notice": "仅用于开发测试：这里的卡号不能用于真实支付。",
+  "tabs": {
+    "generate": "本地生成",
+    "sandbox": "官方沙箱",
+    "validate": "校验"
+  },
+  "generate": {
+    "title": "生成设置",
+    "brand": "卡组织",
+    "count": "数量",
+    "seed": "随机种子",
+    "seedPlaceholder": "留空则每次不同",
+    "seedHint": "相同种子得到相同卡号、姓名与安全码",
+    "again": "重新生成",
+    "hint": "本地格式测试数据：满足号段、长度与 Luhn，有效期为未来日期，安全码长度匹配卡组织。",
+    "result": "测试资料",
+    "mode": "本地格式测试",
+    "view": "视图",
+    "cards": "卡片",
+    "table": "表格",
+    "testOnly": "仅测试"
+  },
+  "fields": {
+    "number": "卡号",
+    "holder": "持卡人（虚构）",
+    "expiry": "有效期",
+    "cvc": "安全码"
+  },
+  "export": {
+    "title": "导出",
+    "copyCsv": "复制 CSV",
+    "saveCsv": "保存 CSV…",
+    "copyJson": "复制 JSON",
+    "saveJson": "保存 JSON…"
+  },
+  "sandbox": {
+    "title": "官方沙箱测试卡",
+    "docs": "官方文档",
+    "verified": "与官方文档核对于 {{date}}",
+    "hint": "只收录支付平台官方文档明确提供的测试卡，需在对应平台的测试模式下使用；不要修改卡号后再当作该平台的测试卡。",
+    "category": "场景",
+    "all": "全部场景",
+    "search": "搜索卡号或场景",
+    "empty": "没有匹配的测试卡"
+  },
+  "categories": {
+    "success": "成功",
+    "decline": "拒付",
+    "authentication": "3D Secure",
+    "fraud": "风控",
+    "dispute": "争议"
+  },
+  "platforms": {
+    "stripe": "Stripe"
+  },
+  "brands": {
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "amex": "American Express",
+    "discover": "Discover",
+    "jcb": "JCB",
+    "unionpay": "UnionPay",
+    "diners": "Diners Club"
+  },
+  "scenarios": {
+    "visa": "Visa 支付成功",
+    "visaDebit": "Visa 借记卡支付成功",
+    "mastercard": "Mastercard 支付成功",
+    "mastercard2Series": "Mastercard（2 系列号段）支付成功",
+    "mastercardDebit": "Mastercard 借记卡支付成功",
+    "mastercardPrepaid": "Mastercard 预付卡支付成功",
+    "amex": "American Express 支付成功",
+    "discover": "Discover 支付成功",
+    "discoverDebit": "Discover 借记卡支付成功",
+    "diners": "Diners Club 支付成功",
+    "diners14": "Diners Club（14 位）支付成功",
+    "jcb": "JCB 支付成功",
+    "unionpay": "银联支付成功",
+    "unionpayDebit": "银联借记卡支付成功",
+    "unionpay19": "银联（19 位）支付成功",
+    "genericDecline": "通用拒付",
+    "insufficientFunds": "余额不足",
+    "lostCard": "挂失卡",
+    "stolenCard": "被盗卡",
+    "expiredCard": "卡已过期",
+    "incorrectCvc": "安全码错误",
+    "processingError": "处理出错",
+    "incorrectNumber": "卡号错误（Luhn 校验失败）",
+    "velocityExceeded": "超过交易频率限制",
+    "declineAfterAttach": "绑定到客户成功，扣款失败",
+    "authenticateUnlessSetUp": "未设置离线支付时需要认证",
+    "alwaysAuthenticate": "每次都需要认证",
+    "alreadySetUp": "已设置离线支付",
+    "insufficientAfterAuth": "认证后余额不足",
+    "required3ds2": "必须 3D Secure（爱尔兰发卡）",
+    "requiredDeclined": "必须 3D Secure，认证后被拒",
+    "frictionless": "无感认证通过",
+    "alwaysBlocked": "始终被风控拦截",
+    "highestRisk": "最高风险",
+    "elevatedRisk": "风险较高，可能进入人工审核",
+    "cvcCheckFails": "安全码校验失败",
+    "postalCheckFails": "邮编校验失败",
+    "fraudulent": "争议：欺诈",
+    "notReceived": "争议：未收到商品",
+    "inquiry": "争议：询问",
+    "earlyFraudWarning": "早期欺诈预警"
+  },
+  "validate": {
+    "input": "待校验的卡号",
+    "placeholder": "每行一个卡号，可含空格或连字符",
+    "result": "校验结果",
+    "empty": "输入卡号后显示结果",
+    "line": "第 {{line}} 行",
+    "valid": "格式正确",
+    "invalid": "不通过",
+    "sandbox": "这是 {{platform}} 官方测试卡：{{scenario}}",
+    "disclaimer": "只按号段规则识别品牌，不能判断发卡行、账户状态或能否支付。"
+  },
+  "problems": {
+    "characters": "含有数字、空格、连字符以外的字符",
+    "unknownBrand": "无法按号段识别卡组织",
+    "length": "长度为 {{length}} 位，该卡组织应为 {{allowed}} 位",
+    "luhn": "Luhn 校验失败"
+  },
+  "errors": {
+    "card.invalid_count": "数量需在 1 到 {{max}} 之间",
+    "card.too_many": "最多校验 {{max}} 行",
+    "card.export_failed": "导出失败"
+  }
+}

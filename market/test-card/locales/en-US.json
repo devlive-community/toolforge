@@ -1,0 +1,144 @@
+{
+  "name": "Test Cards",
+  "description": "Generate payment test card data that follows issuer ranges and Luhn, validate card numbers and look up sourced official sandbox cards",
+  "help": [
+    "Locally generated numbers only follow issuer ranges, lengths and Luhn for form and format testing; they are not issued cards nor sandbox cards of any payment platform.",
+    "For payment integration use the official sandbox cards with that platform's test keys; they come from official docs with their source and verification date.",
+    "A seed makes results reproducible (expiry dates are relative to the current month); CSV / JSON exports are tagged test-only and local-format.",
+    "Validation only infers the brand from number ranges; passing Luhn does not mean a card exists, can pay or will be accepted."
+  ],
+  "functions": {
+    "generate": "Generate test cards",
+    "validate": "Validate card numbers",
+    "sandbox": "Official sandbox cards"
+  },
+  "notice": "For development testing only: these numbers cannot be used for real payments.",
+  "tabs": {
+    "generate": "Generate",
+    "sandbox": "Official sandbox",
+    "validate": "Validate"
+  },
+  "generate": {
+    "title": "Options",
+    "brand": "Card brand",
+    "count": "Count",
+    "seed": "Seed",
+    "seedPlaceholder": "Leave empty for new results",
+    "seedHint": "The same seed gives the same numbers, names and CVCs",
+    "again": "Regenerate",
+    "hint": "Local format test data: valid ranges, lengths and Luhn, a future expiry and a CVC of the brand's length.",
+    "result": "Test data",
+    "mode": "Local format test",
+    "view": "View",
+    "cards": "Cards",
+    "table": "Table",
+    "testOnly": "Test only"
+  },
+  "fields": {
+    "number": "Number",
+    "holder": "Cardholder (fictional)",
+    "expiry": "Expiry",
+    "cvc": "CVC"
+  },
+  "export": {
+    "title": "Export",
+    "copyCsv": "Copy CSV",
+    "saveCsv": "Save CSV…",
+    "copyJson": "Copy JSON",
+    "saveJson": "Save JSON…"
+  },
+  "sandbox": {
+    "title": "Official sandbox cards",
+    "docs": "Official docs",
+    "verified": "Checked against the official docs on {{date}}",
+    "hint": "Only cards listed in a payment platform's official docs, for use in that platform's test mode. Do not alter them and present them as that platform's test cards.",
+    "category": "Scenario",
+    "all": "All scenarios",
+    "search": "Search number or scenario",
+    "empty": "No matching cards"
+  },
+  "categories": {
+    "success": "Success",
+    "decline": "Decline",
+    "authentication": "3D Secure",
+    "fraud": "Fraud",
+    "dispute": "Dispute"
+  },
+  "platforms": {
+    "stripe": "Stripe"
+  },
+  "brands": {
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "amex": "American Express",
+    "discover": "Discover",
+    "jcb": "JCB",
+    "unionpay": "UnionPay",
+    "diners": "Diners Club"
+  },
+  "scenarios": {
+    "visa": "Visa succeeds",
+    "visaDebit": "Visa debit succeeds",
+    "mastercard": "Mastercard succeeds",
+    "mastercard2Series": "Mastercard (2-series) succeeds",
+    "mastercardDebit": "Mastercard debit succeeds",
+    "mastercardPrepaid": "Mastercard prepaid succeeds",
+    "amex": "American Express succeeds",
+    "discover": "Discover succeeds",
+    "discoverDebit": "Discover debit succeeds",
+    "diners": "Diners Club succeeds",
+    "diners14": "Diners Club (14-digit) succeeds",
+    "jcb": "JCB succeeds",
+    "unionpay": "UnionPay succeeds",
+    "unionpayDebit": "UnionPay debit succeeds",
+    "unionpay19": "UnionPay (19-digit) succeeds",
+    "genericDecline": "Generic decline",
+    "insufficientFunds": "Insufficient funds",
+    "lostCard": "Lost card",
+    "stolenCard": "Stolen card",
+    "expiredCard": "Expired card",
+    "incorrectCvc": "Incorrect CVC",
+    "processingError": "Processing error",
+    "incorrectNumber": "Incorrect number (fails Luhn)",
+    "velocityExceeded": "Velocity limit exceeded",
+    "declineAfterAttach": "Attaching succeeds, charges fail",
+    "authenticateUnlessSetUp": "Authenticate unless set up",
+    "alwaysAuthenticate": "Always authenticate",
+    "alreadySetUp": "Already set up for off-session use",
+    "insufficientAfterAuth": "Insufficient funds after authentication",
+    "required3ds2": "3D Secure required (Ireland-issued)",
+    "requiredDeclined": "3D Secure required, declined after authentication",
+    "frictionless": "Frictionless flow succeeds",
+    "alwaysBlocked": "Always blocked",
+    "highestRisk": "Highest risk",
+    "elevatedRisk": "Elevated risk, may be reviewed",
+    "cvcCheckFails": "CVC check fails",
+    "postalCheckFails": "Postal code check fails",
+    "fraudulent": "Dispute: fraudulent",
+    "notReceived": "Dispute: not received",
+    "inquiry": "Dispute: inquiry",
+    "earlyFraudWarning": "Early fraud warning"
+  },
+  "validate": {
+    "input": "Card numbers",
+    "placeholder": "One number per line; spaces or hyphens are fine",
+    "result": "Results",
+    "empty": "Enter numbers to see results",
+    "line": "Line {{line}}",
+    "valid": "Valid format",
+    "invalid": "Invalid",
+    "sandbox": "Official {{platform}} test card: {{scenario}}",
+    "disclaimer": "Brands are inferred from number ranges only; issuer, account status and ability to pay cannot be determined."
+  },
+  "problems": {
+    "characters": "Contains characters other than digits, spaces or hyphens",
+    "unknownBrand": "No card brand matches this number range",
+    "length": "{{length}} digits; this brand uses {{allowed}}",
+    "luhn": "Fails the Luhn check"
+  },
+  "errors": {
+    "card.invalid_count": "Count must be between 1 and {{max}}",
+    "card.too_many": "At most {{max}} lines",
+    "card.export_failed": "Export failed"
+  }
+}
