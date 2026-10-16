@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.user-agent",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "network",
+  "keywords": ["user agent", "user-agent", "ua", "browser", "crawler", "bot", "spider", "device", "access log", "浏览器", "爬虫", "设备", "访问日志", "UA 解析"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write", "fs:user-selected"],
+  "functions": {
+    "parse": { "history": true },
+    "analyze": {},
+    "export": {}
+  },
+  "sensitive": false
+}

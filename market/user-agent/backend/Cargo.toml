@@ -1,0 +1,19 @@
+[package]
+name = "tfm-user-agent"
+description = "ToolForge market plugin: explainable offline User-Agent parser"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[lib]
+# cdylib 编译为 WASM 组件，rlib 供本机单元测试
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+tf-plugin-guest = { path = "../../../crates/tf-plugin-guest" }
+csv = "1"
+regex = "1"

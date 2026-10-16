@@ -1,0 +1,102 @@
+{
+  "name": "User-Agent 解析",
+  "description": "离线解析 User-Agent 的浏览器、引擎、系统、设备与爬虫，标出命中的规则；批量统计访问日志中的 UA 分布",
+  "help": [
+    "规则库内置在插件中，完全离线；每项结果都标出命中的规则编号与 UA 中被匹配的片段，悬停可查看原始正则，便于核对。",
+    "规则按顺序匹配、第一条命中生效：应用内与套壳浏览器排在 Chrome / Safari 之前；爬虫库覆盖主流搜索引擎、社交预览、AI 抓取、SEO 与监控服务、无头浏览器和常见命令行与 HTTP 库，名称带 bot / crawler / spider 的客户端按通用爬虫兜底。",
+    "UA 可以被任意伪造，识别结果只代表 UA 字符串声称的身份。Chromium 系浏览器冻结了系统版本（Windows 固定为 10.0、macOS 固定为 10.15.7、Android 型号为 K），结果中会给出提示。",
+    "批量模式支持每行一个 UA、CSV 指定列（默认找名为 User-Agent 的列）与 combined 格式访问日志（取第 3 个引号字段）；相同 UA 合并计数，并统计设备、浏览器、系统与爬虫分布，可导出 CSV / JSON。"
+  ],
+  "detect": {
+    "userAgent": "User-Agent 字符串"
+  },
+  "tabs": {
+    "single": "单条解析",
+    "batch": "批量统计"
+  },
+  "single": {
+    "title": "User-Agent",
+    "placeholder": "粘贴 User-Agent 字符串",
+    "current": "当前环境",
+    "empty": "输入 User-Agent 开始解析",
+    "hint": "也可以点击「当前环境」解析本应用内置浏览器的 UA",
+    "unknown": "未识别",
+    "pattern": "规则：{{pattern}}",
+    "botFound": "识别为{{category}}：{{name}}"
+  },
+  "field": {
+    "browser": "浏览器",
+    "engine": "渲染引擎",
+    "os": "操作系统",
+    "device": "设备类型",
+    "ua": "User-Agent"
+  },
+  "device": {
+    "bot": "爬虫 / 自动化",
+    "tv": "电视",
+    "console": "游戏机",
+    "wearable": "可穿戴",
+    "tablet": "平板",
+    "mobile": "手机",
+    "desktop": "桌面",
+    "unknown": "未知"
+  },
+  "botCategory": {
+    "search": "搜索引擎爬虫",
+    "social": "社交链接预览",
+    "ai": "AI 抓取",
+    "seo": "SEO 分析爬虫",
+    "monitor": "监控探测",
+    "tool": "命令行 / HTTP 库",
+    "headless": "无头浏览器",
+    "generic": "其他爬虫"
+  },
+  "notes": {
+    "frozenPlatform": "Chromium 系浏览器冻结了 UA 中的系统版本，这里的系统版本可能不是真实版本（需要 Client Hints 才能获得）。",
+    "windows11": "Windows 10 与 Windows 11 的 UA 都是 Windows NT 10.0，无法区分。",
+    "reducedModel": "Android 精简 UA 把设备型号固定为 K，无法得知真实型号。",
+    "macMayBeIpad": "iPad 默认以桌面模式访问网页，UA 与 Mac 上的 Safari 相同，这里也可能是 iPad。"
+  },
+  "batch": {
+    "input": "输入",
+    "mode": "输入格式",
+    "log": "访问日志",
+    "lines": "每行一个",
+    "csv": "CSV",
+    "open": "打开文件",
+    "filter": "日志与文本文件",
+    "column": "UA 列",
+    "autoColumn": "自动（User-Agent 列）",
+    "placeholder": "粘贴访问日志、UA 列表或 CSV",
+    "logHint": "combined 格式：取每行第 3 个双引号字段",
+    "linesHint": "每行一个 User-Agent，空行与 - 会被跳过",
+    "result": "统计结果",
+    "total": "{{count}} 条",
+    "unique": "{{count}} 种 UA",
+    "bots": "爬虫 {{count}}",
+    "skipped": "{{count}} 行未提取到 UA",
+    "empty": "暂无可统计的 UA",
+    "emptyHint": "粘贴或打开访问日志、UA 列表或 CSV",
+    "botNames": "爬虫与工具",
+    "botCategories": "爬虫类别",
+    "count": "次数",
+    "truncated": "不同的 UA 太多，只显示出现次数最多的 {{count}} 种；统计与导出包含全部。",
+    "moreRows": "表格只显示前 {{count}} 行，导出可获得全部结果。",
+    "rules": "规则库 {{version}}"
+  },
+  "export": {
+    "title": "导出",
+    "copyCsv": "复制 CSV",
+    "saveCsv": "保存 CSV",
+    "copyJson": "复制 JSON",
+    "saveJson": "保存 JSON"
+  },
+  "errors": {
+    "ua.too_large": "输入超过 {{mb}} MB",
+    "ua.too_many": "行数超过 {{max}}",
+    "ua.invalid_delimiter": "分隔符必须是 ASCII 字符",
+    "ua.csv_invalid": "CSV 无法解析：{{detail}}",
+    "ua.column_not_found": "找不到列：{{column}}",
+    "ua.export_failed": "导出失败：{{detail}}"
+  }
+}

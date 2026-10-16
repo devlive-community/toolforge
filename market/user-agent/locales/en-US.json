@@ -1,0 +1,102 @@
+{
+  "name": "User-Agent Parser",
+  "description": "Parse browser, engine, OS, device and crawler from User-Agent strings offline with the matching rule shown; summarize UAs in access logs",
+  "help": [
+    "The rule set ships inside the plugin and works fully offline. Every result shows the matching rule id and the matched part of the UA; hover to see the raw pattern.",
+    "Rules are tried in order and the first match wins: in-app and Chromium-based browsers come before Chrome and Safari. Crawler rules cover major search engines, link previews, AI crawlers, SEO and monitoring services, headless browsers and common command-line and HTTP clients; clients named with bot / crawler / spider fall back to a generic crawler.",
+    "A UA can be spoofed freely, so results only describe what the string claims. Chromium-based browsers freeze the platform version (Windows always 10.0, macOS always 10.15.7, Android model K); results point this out.",
+    "Batch mode accepts one UA per line, a CSV column (defaults to a column named User-Agent) or combined-format access logs (third quoted field). Identical UAs are merged and counted, with device, browser, OS and crawler distributions, exportable as CSV / JSON."
+  ],
+  "detect": {
+    "userAgent": "User-Agent string"
+  },
+  "tabs": {
+    "single": "Parse one",
+    "batch": "Batch statistics"
+  },
+  "single": {
+    "title": "User-Agent",
+    "placeholder": "Paste a User-Agent string",
+    "current": "This app",
+    "empty": "Enter a User-Agent to parse",
+    "hint": "Or click “This app” to parse the UA of the app's built-in browser",
+    "unknown": "Not identified",
+    "pattern": "Rule: {{pattern}}",
+    "botFound": "Identified as {{category}}: {{name}}"
+  },
+  "field": {
+    "browser": "Browser",
+    "engine": "Engine",
+    "os": "Operating system",
+    "device": "Device type",
+    "ua": "User-Agent"
+  },
+  "device": {
+    "bot": "Crawler / automation",
+    "tv": "TV",
+    "console": "Console",
+    "wearable": "Wearable",
+    "tablet": "Tablet",
+    "mobile": "Mobile",
+    "desktop": "Desktop",
+    "unknown": "Unknown"
+  },
+  "botCategory": {
+    "search": "search engine crawler",
+    "social": "link preview",
+    "ai": "AI crawler",
+    "seo": "SEO crawler",
+    "monitor": "monitoring probe",
+    "tool": "command-line / HTTP client",
+    "headless": "headless browser",
+    "generic": "other crawler"
+  },
+  "notes": {
+    "frozenPlatform": "Chromium-based browsers freeze the platform version in the UA, so the OS version here may not be real (Client Hints are needed for that).",
+    "windows11": "Windows 10 and Windows 11 both report Windows NT 10.0 and cannot be told apart.",
+    "reducedModel": "The reduced Android UA fixes the device model to K, so the real model is unknown.",
+    "macMayBeIpad": "iPads browse in desktop mode by default with the same UA as Safari on a Mac, so this may also be an iPad."
+  },
+  "batch": {
+    "input": "Input",
+    "mode": "Input format",
+    "log": "Access log",
+    "lines": "One per line",
+    "csv": "CSV",
+    "open": "Open file",
+    "filter": "Logs and text files",
+    "column": "UA column",
+    "autoColumn": "Auto (User-Agent column)",
+    "placeholder": "Paste an access log, a list of UAs or CSV",
+    "logHint": "Combined format: the third double-quoted field of each line",
+    "linesHint": "One User-Agent per line; blank lines and - are skipped",
+    "result": "Statistics",
+    "total": "{{count}} requests",
+    "unique": "{{count}} distinct UAs",
+    "bots": "{{count}} crawlers",
+    "skipped": "{{count}} lines without a UA",
+    "empty": "No UAs to summarize",
+    "emptyHint": "Paste or open an access log, a list of UAs or CSV",
+    "botNames": "Crawlers and clients",
+    "botCategories": "Crawler categories",
+    "count": "Count",
+    "truncated": "Too many distinct UAs; showing the {{count}} most frequent. Statistics and exports include all of them.",
+    "moreRows": "The table shows the first {{count}} rows; export to get every result.",
+    "rules": "Rules {{version}}"
+  },
+  "export": {
+    "title": "Export",
+    "copyCsv": "Copy CSV",
+    "saveCsv": "Save CSV",
+    "copyJson": "Copy JSON",
+    "saveJson": "Save JSON"
+  },
+  "errors": {
+    "ua.too_large": "Input exceeds {{mb}} MB",
+    "ua.too_many": "More than {{max}} lines",
+    "ua.invalid_delimiter": "The delimiter must be an ASCII character",
+    "ua.csv_invalid": "CSV could not be parsed: {{detail}}",
+    "ua.column_not_found": "Column not found: {{column}}",
+    "ua.export_failed": "Export failed: {{detail}}"
+  }
+}

@@ -8279,6 +8279,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-user-agent"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "regex",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfp-archive"
 version = "0.1.0"
 dependencies = [
