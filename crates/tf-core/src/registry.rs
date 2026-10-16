@@ -1,5 +1,5 @@
 use std::path::{Path, PathBuf};
-use std::sync::Arc;
+use std::sync::{Arc, RwLock, RwLockReadGuard};
 
 use indexmap::IndexMap;
 use serde::Serialize;
@@ -61,9 +61,10 @@ impl ServiceContext for ServiceDir {
 const MIN_SCORE: u8 = 30;
 
 /// 已加载插件的注册表。宿主只通过这里访问插件，不直接依赖任何具体工具。
+/// 内置插件在启动时注册；在线安装的插件在运行中注册与卸载，因此内部加读写锁。
 #[derive(Default)]
 pub struct PluginRegistry {
-    plugins: IndexMap<String, Arc<dyn ToolPlugin>>,
+    plugins: RwLock<IndexMap<String, Arc<dyn ToolPlugin>>>,
 }
 
 impl PluginRegistry {
@@ -71,28 +72,45 @@ impl PluginRegistry {
         Self::default()
     }
 
+    fn read(&self) -> RwLockReadGuard<'_, IndexMap<String, Arc<dyn ToolPlugin>>> {
+        self.plugins.read().unwrap_or_else(|e| e.into_inner())
+    }
+
     /// 注册插件；不支持当前系统的插件（如只适用于 Windows 的工具）直接跳过
-    pub fn register(&mut self, plugin: Arc<dyn ToolPlugin>) {
+    pub fn register(&self, plugin: Arc<dyn ToolPlugin>) {
         self.register_for(plugin, std::env::consts::OS);
     }
 
-    pub fn register_for(&mut self, plugin: Arc<dyn ToolPlugin>, os: &str) {
+    pub fn register_for(&self, plugin: Arc<dyn ToolPlugin>, os: &str) {
         if !plugin.manifest().supports(os) {
             return;
         }
         let id = plugin.manifest().id.clone();
-        self.plugins.insert(id, plugin);
+        self.plugins
+            .write()
+            .unwrap_or_else(|e| e.into_inner())
+            .insert(id, plugin);
+    }
+
+    /// 卸载插件（在线安装的插件被移除或更新时），返回是否存在
+    pub fn unregister(&self, plugin_id: &str) -> bool {
+        self.plugins
+            .write()
+            .unwrap_or_else(|e| e.into_inner())
+            .shift_remove(plugin_id)
+            .is_some()
+    }
+
+    pub fn contains(&self, plugin_id: &str) -> bool {
+        self.read().contains_key(plugin_id)
     }
 
     pub fn manifests(&self) -> Vec<Manifest> {
-        self.plugins
-            .values()
-            .map(|p| p.manifest().clone())
-            .collect()
+        self.read().values().map(|p| p.manifest().clone()).collect()
     }
 
     pub fn get(&self, plugin_id: &str) -> AppResult<Arc<dyn ToolPlugin>> {
-        self.plugins
+        self.read()
             .get(plugin_id)
             .cloned()
             .ok_or_else(|| AppError::new("plugin.not_found").with("plugin", plugin_id))
@@ -116,14 +134,14 @@ impl PluginRegistry {
             return Vec::new();
         }
         let mut suggestions: Vec<Suggestion> = self
-            .plugins
-            .iter()
+            .snapshot()
+            .into_iter()
             .filter_map(|(id, plugin)| {
                 plugin
                     .detect(text)
                     .filter(|d| d.score >= MIN_SCORE)
                     .map(|detection| Suggestion {
-                        plugin_id: id.clone(),
+                        plugin_id: id,
                         detection,
                     })
             })
@@ -139,14 +157,14 @@ impl PluginRegistry {
             return Vec::new();
         }
         let mut suggestions: Vec<Suggestion> = self
-            .plugins
-            .iter()
+            .snapshot()
+            .into_iter()
             .filter_map(|(id, plugin)| {
                 plugin
                     .detect_image(width, height)
                     .filter(|d| d.score >= MIN_SCORE)
                     .map(|detection| Suggestion {
-                        plugin_id: id.clone(),
+                        plugin_id: id,
                         detection,
                     })
             })
@@ -159,7 +177,7 @@ impl PluginRegistry {
     /// 单个插件启动失败只记录日志，不影响其他插件和应用启动
     pub fn start_services(&self, root: &Path) {
         for (id, plugin) in self.services() {
-            let dir = root.join(id);
+            let dir = root.join(&id);
             let started = std::fs::create_dir_all(&dir)
                 .map_err(|e| e.to_string())
                 .and_then(|()| {
@@ -180,8 +198,19 @@ impl PluginRegistry {
         }
     }
 
-    fn services(&self) -> impl Iterator<Item = (&String, &Arc<dyn ToolPlugin>)> {
-        self.plugins.iter().filter(|(_, p)| p.manifest().service)
+    /// 当前插件的快照；检测剪贴板等耗时操作不持有锁
+    fn snapshot(&self) -> Vec<(String, Arc<dyn ToolPlugin>)> {
+        self.read()
+            .iter()
+            .map(|(id, p)| (id.clone(), p.clone()))
+            .collect()
+    }
+
+    fn services(&self) -> Vec<(String, Arc<dyn ToolPlugin>)> {
+        self.snapshot()
+            .into_iter()
+            .filter(|(_, p)| p.manifest().service)
+            .collect()
     }
 
     /// 普通调用；声明为任务的函数必须通过 [`Self::run_task`] 运行

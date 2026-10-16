@@ -22,7 +22,7 @@ fn registry() -> PluginRegistry {
         r#"{"id":"echo","version":"1.0.0","name":"i18n:name","description":"i18n:d",
             "category":"dev","functions":{"echo":{},"long":{"task":true}}}"#,
     );
-    let mut registry = PluginRegistry::new();
+    let registry = PluginRegistry::new();
     registry.register(Arc::new(Echo(manifest)));
     registry
 }
@@ -86,7 +86,7 @@ fn picky(id: &str, needle: &'static str, score: u8) -> Arc<dyn ToolPlugin> {
 
 #[test]
 fn ranks_detections_and_drops_weak_ones() {
-    let mut registry = registry();
+    let registry = registry();
     registry.register(picky("low", "a", 20));
     registry.register(picky("mid", "a", 60));
     registry.register(picky("high", "ab", 90));
@@ -143,7 +143,7 @@ fn viewer(id: &str, score: u8) -> Arc<dyn ToolPlugin> {
 
 #[test]
 fn ranks_image_detections() {
-    let mut registry = registry();
+    let registry = registry();
     registry.register(viewer("qr", 70));
     registry.register(viewer("ocr", 80));
     registry.register(viewer("weak", 10));
@@ -167,7 +167,7 @@ fn skips_plugins_for_other_platforms() {
     );
     assert!(windows_only.supports("windows"));
     assert!(!windows_only.supports("macos"));
-    let mut registry = PluginRegistry::new();
+    let registry = PluginRegistry::new();
     registry.register_for(Arc::new(Echo(windows_only.clone())), "macos");
     assert!(registry.manifests().is_empty());
     assert!(registry.get("winreg").is_err());
@@ -235,7 +235,7 @@ fn starts_and_stops_only_declared_services() {
     let stats = Service::new("stats", true, false);
     let broken = Service::new("broken", true, true);
     let plain = Service::new("plain", false, false);
-    let mut registry = PluginRegistry::new();
+    let registry = PluginRegistry::new();
     registry.register(broken.clone());
     registry.register(stats.clone());
     registry.register(plain.clone());
@@ -251,4 +251,22 @@ fn starts_and_stops_only_declared_services() {
     assert_eq!(stats.events(), vec!["start stats", "stop"]);
     assert!(plain.events().is_empty());
     std::fs::remove_dir_all(&root).unwrap();
+}
+
+#[test]
+fn registers_and_unregisters_at_runtime() {
+    let registry = registry();
+    let before = registry.manifests().len();
+    let shared = std::sync::Arc::new(registry);
+    let worker = {
+        let shared = shared.clone();
+        std::thread::spawn(move || shared.manifests().len())
+    };
+    assert!(worker.join().unwrap() >= before);
+    let first = shared.manifests()[0].id.clone();
+    assert!(shared.contains(&first));
+    assert!(shared.unregister(&first));
+    assert!(!shared.contains(&first));
+    assert!(!shared.unregister(&first));
+    assert_eq!(shared.manifests().len(), before - 1);
 }
