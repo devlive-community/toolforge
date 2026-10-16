@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Badge, Button, Panel, SegmentedControl, cn } from '@toolforge/ui'
 import { useDebouncedCall, usePlugin, usePluginState } from '@toolforge/plugin-ui-sdk'
 import { CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react'
-import type { Cell, Info, Today } from './types'
+import { SchemeSelect } from './SchemeSelect'
+import { toScheme, type Cell, type Info, type StoredScheme, type Today } from './types'
 
 type WeekStart = 'monday' | 'sunday'
 const WEEKDAY_ORDER: Record<WeekStart, number[]> = { monday: [0, 1, 2, 3, 4, 5, 6], sunday: [6, 0, 1, 2, 3, 4, 5] }
@@ -18,13 +19,17 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   )
 }
 
-export function CalendarTab({ today }: { today: Today }) {
+export function CalendarTab({ today, schemes }: { today: Today; schemes: StoredScheme[] }) {
   const { t, errorMessage } = usePlugin()
   const [weekStart, setWeekStart] = usePluginState<WeekStart>('weekStart', 'monday')
   const [view, setView] = useState({ year: today.year, month: today.month })
   const [selected, setSelected] = useState(today.date)
-  const monthArgs = { ...view, mondayFirst: weekStart === 'monday' }
-  const cells = useDebouncedCall<Cell[]>('month', monthArgs, [view.year, view.month, weekStart])
+  const [schemeId, setSchemeId] = usePluginState('calendarScheme', '')
+  const scheme = schemes.find((s) => s.id === schemeId)
+  const schemeArg = scheme ? toScheme(scheme) : undefined
+  const monthArgs = { ...view, mondayFirst: weekStart === 'monday', scheme: schemeArg }
+  const cells = useDebouncedCall<Cell[]>('month', monthArgs, [view.year, view.month, weekStart, schemeArg])
+  const selectedCell = cells.result?.find((cell) => cell.date === selected)
   const info = useDebouncedCall<Info>('info', { date: selected }, [selected])
   const shift = (delta: number) =>
     setView((prev) => {
@@ -44,6 +49,9 @@ export function CalendarTab({ today }: { today: Today }) {
         title={t('calendar.month', { year: view.year, month: view.month })}
         actions={
           <>
+            {schemes.length > 0 && (
+              <SchemeSelect schemes={schemes} value={schemeId} onChange={setSchemeId} label={t('calendar.scheme')} builtins={[{ value: '', label: t('calendar.legalOnly') }]} />
+            )}
             <SegmentedControl<WeekStart>
               size="sm"
               value={weekStart}
@@ -81,16 +89,24 @@ export function CalendarTab({ today }: { today: Today }) {
                 !cell.inMonth && 'opacity-40',
               )}
             >
-              {cell.holiday && (
-                <span className={cn('absolute top-1 right-1.5 text-[10px] font-medium', cell.holiday.work ? 'text-fg-muted' : 'text-success')}>
-                  {t(cell.holiday.work ? 'calendar.work' : 'calendar.rest')}
+              {cell.custom ? (
+                <span className={cn('absolute top-1 right-1.5 text-[10px] font-medium', cell.custom.work ? 'text-fg-muted' : 'text-success')}>
+                  {t(cell.custom.work ? 'calendar.work' : 'calendar.rest')}
                 </span>
+              ) : (
+                cell.holiday &&
+                // 不含法定节假日的方案不标注法定休 / 班
+                (!scheme || scheme.base === 'china') && (
+                  <span className={cn('absolute top-1 right-1.5 text-[10px] font-medium', cell.holiday.work ? 'text-fg-muted' : 'text-success')}>
+                    {t(cell.holiday.work ? 'calendar.work' : 'calendar.rest')}
+                  </span>
+                )
               )}
               <span
                 className={cn(
                   'grid size-8 place-items-center rounded-full text-[15px] tabular-nums',
                   // 调休上班的周末不算休息日
-                  cell.today ? 'bg-primary text-fg-on-primary' : (cell.holiday ? !cell.holiday.work : cell.weekend) ? 'text-danger' : 'text-fg',
+                  cell.today ? 'bg-primary text-fg-on-primary' : (cell.workday !== null ? !cell.workday : cell.holiday ? !cell.holiday.work : cell.weekend) ? 'text-danger' : 'text-fg',
                 )}
               >
                 {cell.day}
@@ -99,7 +115,7 @@ export function CalendarTab({ today }: { today: Today }) {
             </button>
           ))}
         </div>
-        {view.year > today.holidayDataUntil && <p className="shrink-0 pt-2 text-[11px] text-warning">{t('calendar.noHolidayData', { year: today.holidayDataUntil })}</p>}
+        {view.year > today.holidayDataUntil && (!scheme || scheme.base === 'china') && <p className="shrink-0 pt-2 text-[11px] text-warning">{t('calendar.noHolidayData', { year: today.holidayDataUntil })}</p>}
       </Panel>
 
       <Panel title={selected} bodyClassName="overflow-auto p-3">
@@ -111,6 +127,11 @@ export function CalendarTab({ today }: { today: Today }) {
               <p className="text-lg font-semibold text-fg">{t(`weekdays.${d.weekday}`)}</p>
               {d.lunar && <p className="text-[13px] text-fg-muted">{d.lunar.text}</p>}
               <div className="mt-1.5 flex flex-wrap gap-1">
+                {selectedCell?.custom && (
+                  <Badge variant={selectedCell.custom.work ? 'neutral' : 'success'}>
+                    {selectedCell.custom.name ?? scheme?.name} · {t(selectedCell.custom.work ? 'schemes.workDay' : 'schemes.restDay')}
+                  </Badge>
+                )}
                 {d.holiday && (
                   <Badge variant={d.holiday.work ? 'neutral' : 'success'}>
                     {t(`holidays.${d.holiday.index}`)} · {t(d.holiday.work ? 'calendar.workday' : 'calendar.restday')}

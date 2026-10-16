@@ -8,6 +8,7 @@ use tyme4rs::tyme::culture::PHASE_NAMES;
 use tyme4rs::tyme::solar::SolarDay;
 
 use crate::holidays::{self, Holiday};
+use crate::scheme::{CustomDay, Rules};
 
 #[derive(Debug, Serialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -192,10 +193,19 @@ pub struct Cell {
     /// label 是节气或节日，需要突出显示
     pub special: bool,
     pub holiday: Option<Holiday>,
+    /// 所选方案对这一天的覆盖
+    pub custom: Option<CustomDay>,
+    /// 按所选方案是否上班；未选方案时为 None
+    pub workday: Option<bool>,
 }
 
-/// 月历：从包含 1 日的那一周开始，共 6 周
-pub fn month(year: i16, month: i8, monday_first: bool) -> PluginResult<Vec<Cell>> {
+/// 月历：从包含 1 日的那一周开始，共 6 周；scheme 为用来标注的节假日方案
+pub fn month(
+    year: i16,
+    month: i8,
+    monday_first: bool,
+    scheme: Option<&Rules>,
+) -> PluginResult<Vec<Cell>> {
     let first = Date::new(year, month, 1).map_err(|_| PluginError::new("date.out_of_range"))?;
     let start_day = if monday_first {
         Weekday::Monday
@@ -234,6 +244,8 @@ pub fn month(year: i16, month: i8, monday_first: bool) -> PluginResult<Vec<Cell>
             label,
             special,
             holiday: holidays::lookup(day),
+            custom: scheme.and_then(|rules| rules.custom(day).cloned()),
+            workday: scheme.map(|rules| rules.is_workday(day)),
         });
         day = match day.tomorrow() {
             Ok(next) => next,

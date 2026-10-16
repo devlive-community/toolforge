@@ -1,5 +1,6 @@
 use super::*;
 use crate::parse::moment;
+use crate::scheme::{Base, Rules};
 
 fn d(y: i16, m: i8, day: i8) -> Date {
     Date::new(y, m, day).unwrap()
@@ -11,6 +12,7 @@ fn counts_days_and_calendar_spans() {
         moment("2024-01-31").unwrap(),
         moment("2025-03-01").unwrap(),
         false,
+        None,
     )
     .unwrap();
     assert_eq!((diff.years, diff.months, diff.days), (1, 1, 1));
@@ -22,6 +24,7 @@ fn counts_days_and_calendar_spans() {
         moment("2025-03-01").unwrap(),
         moment("2024-01-31").unwrap(),
         false,
+        None,
     )
     .unwrap();
     assert!(back.negative);
@@ -31,6 +34,7 @@ fn counts_days_and_calendar_spans() {
         moment("2025-01-01").unwrap(),
         moment("2025-01-31").unwrap(),
         true,
+        None,
     )
     .unwrap();
     assert_eq!(inclusive.total_days, 31);
@@ -43,6 +47,7 @@ fn includes_times_when_given() {
         moment("2025-01-01 08:00").unwrap(),
         moment("2025-01-02 09:30:15").unwrap(),
         false,
+        None,
     )
     .unwrap();
     assert!(diff.has_time);
@@ -58,24 +63,25 @@ fn includes_times_when_given() {
 #[test]
 fn counts_workdays_with_chinese_holidays() {
     // 2025 年 10 月：国庆中秋 1–8 日放假，9 月 28 日与 10 月 11 日调休上班
-    let october = count_workdays(d(2025, 10, 1), d(2025, 10, 31)).unwrap();
+    let october = count_workdays(d(2025, 10, 1), d(2025, 10, 31), None).unwrap();
     assert_eq!(october.weekdays, 23);
     assert_eq!(october.holidays, 6);
     assert_eq!(october.adjusted, 1);
     assert_eq!(october.china, 18);
     assert!(!october.beyond_data);
-    let late = count_workdays(d(2030, 1, 1), d(2030, 1, 7)).unwrap();
+    let late = count_workdays(d(2030, 1, 1), d(2030, 1, 7), None).unwrap();
     assert!(late.beyond_data);
     assert_eq!(late.china, late.weekdays);
     // 起止顺序无关
     assert_eq!(
-        count_workdays(d(2025, 10, 31), d(2025, 10, 1)).unwrap(),
+        count_workdays(d(2025, 10, 31), d(2025, 10, 1), None).unwrap(),
         october
     );
     let diff = difference(
         moment("2025-10-01").unwrap(),
         moment("2025-10-31").unwrap(),
         true,
+        None,
     )
     .unwrap();
     assert_eq!(diff.workdays.unwrap().china, 18);
@@ -83,6 +89,7 @@ fn counts_workdays_with_chinese_holidays() {
         moment("2025-10-01").unwrap(),
         moment("2025-10-31").unwrap(),
         false,
+        None,
     )
     .unwrap();
     assert_eq!(exclusive.workdays.unwrap().weekdays, 22);
@@ -140,25 +147,56 @@ fn adds_months_with_clamping() {
 #[test]
 fn adds_working_days() {
     // 2025-09-30（周二）之后的第 1 个法定工作日是 10 月 9 日
-    let next = add_workdays(d(2025, 9, 30), 1, Calendar::China).unwrap();
+    let next = add_workdays(d(2025, 9, 30), 1, &Rules::builtin(Base::China)).unwrap();
     assert_eq!(next.result, "2025-10-09");
     assert_eq!(
-        add_workdays(d(2025, 9, 30), 1, Calendar::Weekdays)
+        add_workdays(d(2025, 9, 30), 1, &Rules::builtin(Base::Weekdays))
             .unwrap()
             .result,
         "2025-10-01"
     );
     // 往前数：10 月 13 日（周一）之前第 1 个工作日是调休的 10 月 11 日（周六）
     assert_eq!(
-        add_workdays(d(2025, 10, 13), -1, Calendar::China)
+        add_workdays(d(2025, 10, 13), -1, &Rules::builtin(Base::China))
             .unwrap()
             .result,
         "2025-10-11"
     );
     assert_eq!(
-        add_workdays(d(2025, 10, 13), 0, Calendar::China)
+        add_workdays(d(2025, 10, 13), 0, &Rules::builtin(Base::China))
             .unwrap()
             .result,
         "2025-10-13"
     );
+}
+
+#[test]
+fn counts_workdays_with_a_custom_scheme() {
+    let rules = Rules::from_scheme(&crate::scheme::Scheme {
+        name: "Team".into(),
+        base: Base::China,
+        weekend: vec![6, 7],
+        days: vec![
+            crate::scheme::CustomDay {
+                date: "2025-10-09".into(),
+                work: false,
+                name: None,
+            },
+            crate::scheme::CustomDay {
+                date: "2025-10-18".into(),
+                work: true,
+                name: None,
+            },
+        ],
+    })
+    .unwrap();
+    let october = count_workdays(d(2025, 10, 1), d(2025, 10, 31), Some(&rules)).unwrap();
+    let custom = october.custom.unwrap();
+    // 法定工作日 18 天，减去自定义休息 1 天、加上自定义加班 1 天
+    assert_eq!(custom.workdays, october.china);
+    assert_eq!(custom.rest_days, october.holidays + 1);
+    assert_eq!(custom.work_weekends, october.adjusted + 1);
+    assert!(!custom.beyond_data);
+    let next = add_workdays(d(2025, 10, 8), 1, &rules).unwrap();
+    assert_eq!(next.result, "2025-10-10");
 }

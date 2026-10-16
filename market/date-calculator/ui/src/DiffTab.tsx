@@ -3,7 +3,8 @@ import { Button, Checkbox, Panel } from '@toolforge/ui'
 import { CopyButton, useDebouncedCall, usePlugin, usePluginState } from '@toolforge/plugin-ui-sdk'
 import { ArrowDownUp, Briefcase, Hourglass } from 'lucide-react'
 import { DateInput } from './DateInput'
-import type { Difference } from './types'
+import { SchemeSelect } from './SchemeSelect'
+import { toScheme, type Difference, type StoredScheme } from './types'
 
 function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
@@ -17,13 +18,16 @@ function Stat({ label, value, hint }: { label: string; value: string; hint?: str
   )
 }
 
-export function DiffTab({ today }: { today: string }) {
+export function DiffTab({ today, schemes }: { today: string; schemes: StoredScheme[] }) {
   const { t, errorMessage } = usePlugin()
   const [start, setStart] = useState(today)
   const [end, setEnd] = usePluginState('diffEnd', '')
   const [includeEnd, setIncludeEnd] = usePluginState('includeEnd', false)
-  const args = start.trim() && end.trim() ? { start, end, includeEnd } : null
-  const diff = useDebouncedCall<Difference>(args ? 'diff' : null, args, [start, end, includeEnd])
+  const [schemeId, setSchemeId] = usePluginState('diffScheme', '')
+  const scheme = schemes.find((s) => s.id === schemeId)
+  const schemeArg = scheme ? toScheme(scheme) : undefined
+  const args = start.trim() && end.trim() ? { start, end, includeEnd, scheme: schemeArg } : null
+  const diff = useDebouncedCall<Difference>(args ? 'diff' : null, args, [start, end, includeEnd, schemeArg])
   const r = diff.result
   const n = (value: number) => value.toLocaleString()
 
@@ -49,6 +53,12 @@ export function DiffTab({ today }: { today: string }) {
           <span className="text-[13px] text-fg">{t('diff.includeEnd')}</span>
         </Checkbox>
         <p className="text-[11px] leading-snug text-fg-subtle">{t('diff.hint')}</p>
+        {schemes.length > 0 && (
+          <label className="block space-y-1">
+            <span className="block text-[11px] text-fg-muted">{t('diff.scheme')}</span>
+            <SchemeSelect schemes={schemes} value={schemeId} onChange={setSchemeId} label={t('diff.scheme')} builtins={[{ value: '', label: t('diff.noScheme') }]} />
+          </label>
+        )}
       </Panel>
 
       <Panel title={t('diff.result')} bodyClassName="space-y-4 overflow-auto p-4">
@@ -89,6 +99,13 @@ export function DiffTab({ today }: { today: string }) {
                     hint={t('diff.chinaHint', { holidays: r.workdays.holidays, adjusted: r.workdays.adjusted })}
                   />
                 </div>
+                {r.workdays.custom && scheme && (
+                  <Stat
+                    label={t('diff.custom', { name: scheme.name })}
+                    value={n(r.workdays.custom.workdays)}
+                    hint={t('diff.customHint', { rest: r.workdays.custom.restDays, work: r.workdays.custom.workWeekends })}
+                  />
+                )}
                 {r.workdays.beyondData && <p className="text-[11px] text-warning">{t('diff.beyondData', { year: r.workdays.dataUntil })}</p>}
               </div>
             )}

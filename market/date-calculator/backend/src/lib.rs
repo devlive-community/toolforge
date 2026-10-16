@@ -5,6 +5,7 @@ mod calc;
 mod calendar;
 mod holidays;
 mod parse;
+mod scheme;
 mod zodiac;
 
 use serde::Deserialize;
@@ -12,7 +13,7 @@ use serde_json::{Value, json};
 use tf_plugin_api::{Manifest, PluginResult, ToolPlugin, parse_args, to_value, unknown_function};
 
 use calc::Amount;
-use holidays::Calendar;
+use scheme::{CalendarArg, Scheme};
 
 const MANIFEST: &str = include_str!("../../manifest.json");
 
@@ -23,6 +24,9 @@ struct DiffArgs {
     end: String,
     #[serde(default)]
     include_end: bool,
+    /// 额外按这个节假日方案统计工作日
+    #[serde(default)]
+    scheme: Option<Scheme>,
 }
 
 #[derive(Deserialize)]
@@ -37,7 +41,7 @@ struct WorkdayArgs {
     start: String,
     days: i64,
     #[serde(default)]
-    calendar: Calendar,
+    calendar: CalendarArg,
 }
 
 #[derive(Deserialize)]
@@ -52,6 +56,18 @@ struct MonthArgs {
     month: i8,
     #[serde(default = "yes")]
     monday_first: bool,
+    #[serde(default)]
+    scheme: Option<Scheme>,
+}
+
+#[derive(Deserialize)]
+struct ImportArgs {
+    text: String,
+}
+
+#[derive(Deserialize)]
+struct ExportArgs {
+    scheme: Scheme,
 }
 
 fn yes() -> bool {
@@ -88,10 +104,16 @@ impl ToolPlugin for DateCalculator {
             }
             "diff" => {
                 let args: DiffArgs = parse_args(args)?;
+                let custom = args
+                    .scheme
+                    .as_ref()
+                    .map(scheme::Rules::from_scheme)
+                    .transpose()?;
                 to_value(calc::difference(
                     parse::moment(&args.start)?,
                     parse::moment(&args.end)?,
                     args.include_end,
+                    custom.as_ref(),
                 )?)
             }
             "add" => {
@@ -103,7 +125,7 @@ impl ToolPlugin for DateCalculator {
                 to_value(calc::add_workdays(
                     parse::date(&args.start)?,
                     args.days,
-                    args.calendar,
+                    &args.calendar.rules()?,
                 )?)
             }
             "info" => {
@@ -114,8 +136,20 @@ impl ToolPlugin for DateCalculator {
             "anniversaries" => to_value(zodiac::anniversaries(parse_args(args)?)?),
             "month" => {
                 let args: MonthArgs = parse_args(args)?;
-                to_value(calendar::month(args.year, args.month, args.monday_first)?)
+                let rules = args
+                    .scheme
+                    .as_ref()
+                    .map(scheme::Rules::from_scheme)
+                    .transpose()?;
+                to_value(calendar::month(
+                    args.year,
+                    args.month,
+                    args.monday_first,
+                    rules.as_ref(),
+                )?)
             }
+            "scheme_import" => to_value(scheme::import(&parse_args::<ImportArgs>(args)?.text)?),
+            "scheme_export" => to_value(scheme::export(parse_args::<ExportArgs>(args)?.scheme)?),
             other => Err(unknown_function(other)),
         }
     }

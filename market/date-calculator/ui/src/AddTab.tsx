@@ -3,27 +3,30 @@ import { NumberInput, Panel, SegmentedControl } from '@toolforge/ui'
 import { CopyButton, useDebouncedCall, usePlugin, usePluginState } from '@toolforge/plugin-ui-sdk'
 import { CalendarPlus } from 'lucide-react'
 import { DateInput } from './DateInput'
-import type { Added } from './types'
+import { SchemeSelect } from './SchemeSelect'
+import { toScheme, type Added, type StoredScheme } from './types'
 
 type Mode = 'calendar' | 'workdays'
 type Sign = 'add' | 'subtract'
-type Calendar = 'weekdays' | 'china'
 const UNITS = ['years', 'months', 'weeks', 'days', 'hours', 'minutes'] as const
 type Unit = (typeof UNITS)[number]
 
-export function AddTab({ today }: { today: string }) {
+export function AddTab({ today, schemes }: { today: string; schemes: StoredScheme[] }) {
   const { t, errorMessage } = usePlugin()
   const [start, setStart] = useState(today)
   const [mode, setMode] = usePluginState<Mode>('addMode', 'calendar')
   const [sign, setSign] = useState<Sign>('add')
-  const [calendar, setCalendar] = usePluginState<Calendar>('workCalendar', 'china')
+  // 'china' / 'weekdays' 或用户方案的 id
+  const [calendar, setCalendar] = usePluginState<string>('workCalendar', 'china')
+  const scheme = schemes.find((s) => s.id === calendar)
+  const calendarArg = scheme ? toScheme(scheme) : calendar === 'weekdays' ? 'weekdays' : 'china'
   const [amount, setAmount] = useState<Record<Unit, number>>({ years: 0, months: 0, weeks: 0, days: 30, hours: 0, minutes: 0 })
   const [workdays, setWorkdays] = useState(10)
   const k = sign === 'add' ? 1 : -1
   const signed = Object.fromEntries(UNITS.map((unit) => [unit, amount[unit] * k]))
   const fn = start.trim() ? (mode === 'calendar' ? 'add' : 'add_workdays') : null
-  const args = mode === 'calendar' ? { start, ...signed } : { start, days: workdays * k, calendar }
-  const result = useDebouncedCall<Added>(fn, args, [fn, start, sign, calendar, workdays, ...UNITS.map((u) => amount[u])])
+  const args = mode === 'calendar' ? { start, ...signed } : { start, days: workdays * k, calendar: calendarArg }
+  const result = useDebouncedCall<Added>(fn, args, [fn, start, sign, calendarArg, workdays, ...UNITS.map((u) => amount[u])])
   const r = result.result
 
   return (
@@ -59,12 +62,12 @@ export function AddTab({ today }: { today: string }) {
               <span className="block text-[11px] text-fg-muted">{t('add.workdays')}</span>
               <NumberInput size="sm" value={workdays} min={0} max={50000} onValueChange={setWorkdays} aria-label={t('add.workdays')} />
             </label>
-            <SegmentedControl<Calendar>
-              size="sm"
+            <SchemeSelect
+              schemes={schemes}
               value={calendar}
-              onValueChange={setCalendar}
-              aria-label={t('add.calendar')}
-              options={(['china', 'weekdays'] as Calendar[]).map((value) => ({ value, label: t(`add.calendars.${value}`) }))}
+              onChange={setCalendar}
+              label={t('add.calendar')}
+              builtins={(['china', 'weekdays'] as const).map((value) => ({ value, label: t(`add.calendars.${value}`) }))}
             />
             <p className="text-[11px] leading-snug text-fg-subtle">{t('add.workdaysHint')}</p>
           </div>

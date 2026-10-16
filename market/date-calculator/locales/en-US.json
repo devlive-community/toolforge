@@ -7,7 +7,8 @@
     "Add & subtract: years and months are added first, then weeks, days and times. A date at the end of a month stays at the end, so 31 January plus one month is 28 or 29 February.",
     "Working days mode finds the date N working days before or after the start date, not counting the start date.",
     "Calendar: each day shows its lunar date, solar terms and festivals, with 休 / 班 marking public holidays and make-up workdays. Select a day to see its ISO week, day of year, lunar year, zodiac and more.",
-    "Zodiac: look up the Chinese zodiac and star sign from a Gregorian or lunar birthday, with the difference between counting from Lunar New Year and from Lichun; personality notes are for fun. The calendar details now show the stem-branch year, month and day, the moon phase and almanac do's and don'ts (folklore for reference). Lunar dates: keep lunar birthdays and anniversaries with each year's Gregorian date and a countdown."
+    "Zodiac: look up the Chinese zodiac and star sign from a Gregorian or lunar birthday, with the difference between counting from Lunar New Year and from Lichun; personality notes are for fun. The calendar details now show the stem-branch year, month and day, the moon phase and almanac do's and don'ts (folklore for reference). Lunar dates: keep lunar birthdays and anniversaries with each year's Gregorian date and a countdown.",
+    "Holiday schemes start from China's legal holidays or Monday–Friday, let you choose which days are the weekend, and mark any date as a workday or a day off (company holidays, other countries' holidays, ad-hoc swaps). Adding workdays, the workday count in date differences and the month view can all use a scheme. Schemes are stored locally and can be exported as JSON for your team. Legal holiday data updates with the plugin online."
   ],
   "functions": {
     "today": "Today",
@@ -24,7 +25,8 @@
     "add": "Add & subtract",
     "calendar": "Calendar",
     "birth": "Zodiac",
-    "anniversary": "Lunar dates"
+    "anniversary": "Lunar dates",
+    "schemes": "Holiday schemes"
   },
   "input": {
     "placeholder": "2025-01-31 or 2025-01-31 08:30",
@@ -56,7 +58,11 @@
     "weekdaysHint": "Weekends excluded",
     "china": "Chinese working days",
     "chinaHint": "{{holidays}} holidays off, {{adjusted}} make-up workdays",
-    "beyondData": "Holiday data covers up to {{year}}; later dates only skip weekends."
+    "beyondData": "Holiday data covers up to {{year}}; later dates only skip weekends.",
+    "scheme": "Also count with a scheme",
+    "noScheme": "No scheme",
+    "custom": "With “{{name}}”",
+    "customHint": "{{rest}} weekdays off, {{work}} weekend days worked"
   },
   "add": {
     "title": "Add or subtract",
@@ -103,7 +109,9 @@
     "work": "Work",
     "restday": "day off",
     "workday": "make-up workday",
-    "noHolidayData": "Public holidays are only known up to {{year}}."
+    "noHolidayData": "Public holidays are only known up to {{year}}.",
+    "scheme": "Scheme",
+    "legalOnly": "Legal holidays"
   },
   "info": {
     "fromToday": "From today",
@@ -222,7 +230,12 @@
     "date.out_of_range": "The date is out of the supported range",
     "date.range_too_large": "The range is too long to count working days",
     "date.lunar_invalid": "That lunar date does not exist (month {{month}}, day {{day}})",
-    "date.too_many": "At most {{max}} dates"
+    "date.too_many": "At most {{max}} dates",
+    "scheme.name_required": "The scheme needs a name",
+    "scheme.too_many": "At most {{max}} custom dates",
+    "scheme.invalid_weekday": "Weekend days must be 1–7, got {{day}}",
+    "scheme.invalid_date": "Invalid date: {{date}}",
+    "scheme.invalid_json": "The scheme file is not valid: {{detail}}"
   },
   "phases": {
     "0": "New moon",
@@ -336,5 +349,38 @@
       "noLeap": "This year has no such leap month; the regular month is used.",
       "lastDay": "This month is shorter this year; its last day is used."
     }
+  },
+  "schemes": {
+    "title": "Holiday schemes",
+    "create": "New scheme",
+    "import": "Import scheme",
+    "none": "No schemes yet",
+    "empty": "Choose or create a scheme",
+    "emptyHint": "A scheme starts from legal holidays or Monday–Friday and customizes the weekend and specific workdays or days off",
+    "untitled": "Scheme {{n}}",
+    "summary": "{{base}} · {{count}} custom dates",
+    "bases": {
+      "china": "China legal holidays",
+      "weekdays": "Monday–Friday"
+    },
+    "name": "Name",
+    "base": "Based on",
+    "weekend": "Weekend",
+    "rules": "Order of precedence: custom dates first, then (when based on legal holidays) legal days off and make-up workdays, then the weekend.",
+    "days": "Custom dates ({{count}})",
+    "date": "Date",
+    "kind": "Type",
+    "dayName": "Note (optional)",
+    "addDay": "Add",
+    "noDays": "No custom dates yet; adding the same date again replaces it",
+    "removeDay": "Remove this date",
+    "export": "Export",
+    "exportCopy": "Copy JSON",
+    "exportSave": "Save as file",
+    "delete": "Delete scheme",
+    "imported": "Imported “{{name}}” with {{count}} custom dates",
+    "pick": "Choose a scheme",
+    "workDay": "Workday",
+    "restDay": "Day off"
   }
 }

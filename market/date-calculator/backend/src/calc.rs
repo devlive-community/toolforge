@@ -5,8 +5,9 @@ use jiff::{Span, Unit};
 use serde::{Deserialize, Serialize};
 use tf_plugin_api::{PluginError, PluginResult};
 
-use crate::holidays::{self, Calendar};
+use crate::holidays;
 use crate::parse::{self, Moment};
+use crate::scheme::{Rules, Source};
 
 /// 逐日统计工作日的范围上限（约 300 年）
 const MAX_SCAN_DAYS: i64 = 110_000;
@@ -25,6 +26,19 @@ pub struct Workdays {
     /// 范围超出了节假日数据覆盖的年份
     pub beyond_data: bool,
     pub data_until: i16,
+    /// 按所选节假日方案统计
+    pub custom: Option<CustomCount>,
+}
+
+#[derive(Debug, Default, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct CustomCount {
+    pub workdays: i64,
+    /// 方案中休息的非周末日
+    pub rest_days: i64,
+    /// 方案中上班的周末
+    pub work_weekends: i64,
+    pub beyond_data: bool,
 }
 
 #[derive(Debug, Serialize, PartialEq)]
@@ -49,8 +63,8 @@ pub struct Difference {
     pub workdays: Option<Workdays>,
 }
 
-/// 统计 [from, to] 中的工作日（两端都包含）
-pub fn count_workdays(from: Date, to: Date) -> PluginResult<Workdays> {
+/// 统计 [from, to] 中的工作日（两端都包含）；custom 为所选方案
+pub fn count_workdays(from: Date, to: Date, custom: Option<&Rules>) -> PluginResult<Workdays> {
     let (from, to) = if from <= to { (from, to) } else { (to, from) };
     let span = from
         .until(to)
@@ -65,9 +79,25 @@ pub fn count_workdays(from: Date, to: Date) -> PluginResult<Workdays> {
         adjusted: 0,
         beyond_data: to.year() > holidays::last_year(),
         data_until: holidays::last_year(),
+        custom: custom.map(|rules| CustomCount {
+            beyond_data: rules.beyond_data(to),
+            ..CustomCount::default()
+        }),
     };
     let mut day = from;
     loop {
+        if let (Some(rules), Some(count)) = (custom, result.custom.as_mut()) {
+            let (work, source) = rules.day(day);
+            let weekend = rules.is_weekend(day);
+            if work {
+                count.workdays += 1;
+                if weekend && source != Source::Weekday {
+                    count.work_weekends += 1;
+                }
+            } else if !weekend {
+                count.rest_days += 1;
+            }
+        }
         let weekend = holidays::is_weekend(day);
         if !weekend {
             result.weekdays += 1;
@@ -94,7 +124,12 @@ pub fn count_workdays(from: Date, to: Date) -> PluginResult<Workdays> {
     Ok(result)
 }
 
-pub fn difference(start: Moment, end: Moment, include_end: bool) -> PluginResult<Difference> {
+pub fn difference(
+    start: Moment,
+    end: Moment,
+    include_end: bool,
+    custom: Option<&Rules>,
+) -> PluginResult<Difference> {
     let has_time = start.has_time || end.has_time;
     let negative = end.at < start.at;
     let (a, b) = if negative {
@@ -126,7 +161,7 @@ pub fn difference(start: Moment, end: Moment, include_end: bool) -> PluginResult
         if last < a.date() {
             None
         } else {
-            Some(count_workdays(a.date(), last)?)
+            Some(count_workdays(a.date(), last, custom)?)
         }
     };
     Ok(Difference {
@@ -207,7 +242,7 @@ pub fn add(start: Moment, amount: Amount) -> PluginResult<Added> {
 }
 
 /// 从 start 起（不含当天）往后或往前数 n 个工作日
-pub fn add_workdays(start: Date, n: i64, calendar: Calendar) -> PluginResult<Added> {
+pub fn add_workdays(start: Date, n: i64, rules: &Rules) -> PluginResult<Added> {
     if n.unsigned_abs() > MAX_SCAN_DAYS as u64 / 2 {
         return Err(PluginError::new("date.range_too_large"));
     }
@@ -221,7 +256,7 @@ pub fn add_workdays(start: Date, n: i64, calendar: Calendar) -> PluginResult<Add
             day.yesterday()
         }
         .map_err(out_of_range)?;
-        if holidays::is_workday(day, calendar) {
+        if rules.is_workday(day) {
             left -= 1;
         }
     }

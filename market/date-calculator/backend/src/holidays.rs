@@ -75,13 +75,6 @@ pub fn is_weekend(date: Date) -> bool {
     matches!(date.weekday(), Weekday::Saturday | Weekday::Sunday)
 }
 
-pub fn is_workday(date: Date, calendar: Calendar) -> bool {
-    match (calendar, lookup(date)) {
-        (Calendar::China, Some(holiday)) => holiday.work,
-        _ => !is_weekend(date),
-    }
-}
-
 #[cfg(test)]
 #[path = "holidays_test.rs"]
 mod tests;

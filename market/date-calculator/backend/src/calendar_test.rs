@@ -44,7 +44,7 @@ fn handles_leap_months_and_terms() {
 
 #[test]
 fn builds_month_grids() {
-    let cells = month(2025, 10, true).unwrap();
+    let cells = month(2025, 10, true, None).unwrap();
     assert_eq!(cells.len(), 42);
     // 2025-10-01 是周三，周一开头时前面有两天上个月的日子
     assert_eq!(cells[0].date, "2025-09-29");
@@ -65,7 +65,7 @@ fn builds_month_grids() {
     assert_eq!(cold_dew.label, "寒露");
     let lunar_first = cells.iter().find(|c| c.date == "2025-10-21").unwrap();
     assert_eq!(lunar_first.label, "九月");
-    let sunday_first = month(2025, 10, false).unwrap();
+    let sunday_first = month(2025, 10, false, None).unwrap();
     assert_eq!(sunday_first[0].date, "2025-09-28");
 }
 
@@ -80,4 +80,33 @@ fn info_includes_pillars_phase_and_almanac() {
     // 农历范围外没有这些信息
     let far = info(Date::new(1800, 1, 1).unwrap()).unwrap();
     assert!(far.pillars.is_none() && far.phase.is_none() && far.recommends.is_empty());
+}
+
+#[test]
+fn month_marks_days_with_the_selected_scheme() {
+    let rules = crate::scheme::Rules::from_scheme(&crate::scheme::Scheme {
+        name: "Team".into(),
+        base: crate::scheme::Base::Weekdays,
+        weekend: vec![6, 7],
+        days: vec![crate::scheme::CustomDay {
+            date: "2025-10-09".into(),
+            work: false,
+            name: Some("Offsite".into()),
+        }],
+    })
+    .unwrap();
+    let cells = month(2025, 10, true, Some(&rules)).unwrap();
+    let cell = |date: &str| cells.iter().find(|c| c.date == date).unwrap();
+    assert_eq!(cell("2025-10-09").workday, Some(false));
+    assert_eq!(
+        cell("2025-10-09")
+            .custom
+            .as_ref()
+            .and_then(|c| c.name.as_deref()),
+        Some("Offsite")
+    );
+    // 方案不含法定节假日：国庆照常上班，但法定标注仍保留
+    assert_eq!(cell("2025-10-01").workday, Some(true));
+    assert!(cell("2025-10-01").holiday.is_some());
+    assert!(month(2025, 10, true, None).unwrap()[0].workday.is_none());
 }

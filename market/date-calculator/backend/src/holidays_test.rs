@@ -21,10 +21,8 @@ fn knows_rest_days_and_make_up_workdays() {
             work: true
         })
     );
-    assert!(is_workday(d(2025, 2, 8), Calendar::China));
-    assert!(!is_workday(d(2025, 2, 8), Calendar::Weekdays));
-    assert!(!is_workday(d(2025, 1, 29), Calendar::China));
-    assert!(is_workday(d(2025, 1, 29), Calendar::Weekdays));
+    assert!(is_weekend(d(2025, 2, 8)));
+    assert!(!is_weekend(d(2025, 1, 29)));
     assert_eq!(lookup(d(2025, 3, 3)), None);
     assert!(last_year() >= 2026);
 }

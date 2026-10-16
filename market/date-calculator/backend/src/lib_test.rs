@@ -34,3 +34,45 @@ fn exposes_every_function() {
         "date.invalid"
     );
 }
+
+#[test]
+fn accepts_holiday_schemes() {
+    let scheme = json!({
+        "name": "Weekend Fri-Sat",
+        "base": "weekdays",
+        "weekend": [5, 6],
+        "days": [{ "date": "2025-10-07", "work": false, "name": "Local" }]
+    });
+    let work = call(
+        "add_workdays",
+        json!({ "start": "2025-10-02", "days": 3, "calendar": scheme }),
+    )
+    .unwrap();
+    // 10-03 周五、10-04 周六为周末，10-07 自定义休息
+    assert_eq!(work["result"], "2025-10-08");
+    let diff = call(
+        "diff",
+        json!({ "start": "2025-10-01", "end": "2025-10-31", "includeEnd": true, "scheme": scheme }),
+    )
+    .unwrap();
+    assert_eq!(diff["workdays"]["custom"]["restDays"], 1);
+    let month = call(
+        "month",
+        json!({ "year": 2025, "month": 10, "scheme": scheme }),
+    )
+    .unwrap();
+    assert!(month[0]["workday"].is_boolean());
+
+    let text = call("scheme_export", json!({ "scheme": scheme })).unwrap();
+    let imported = call("scheme_import", json!({ "text": text })).unwrap();
+    assert_eq!(imported["weekend"], json!([5, 6]));
+    assert_eq!(imported["days"][0]["name"], "Local");
+    for function in ["scheme_import", "scheme_export"] {
+        assert!(
+            DateCalculator::default()
+                .manifest()
+                .functions
+                .contains_key(function)
+        );
+    }
+}

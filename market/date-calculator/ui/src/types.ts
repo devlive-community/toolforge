@@ -10,6 +10,7 @@ export interface Workdays {
   adjusted: number
   beyondData: boolean
   dataUntil: number
+  custom: { workdays: number; restDays: number; workWeekends: number; beyondData: boolean } | null
 }
 
 export interface Difference {
@@ -66,6 +67,8 @@ export interface Cell {
   label: string
   special: boolean
   holiday: Holiday | null
+  custom: CustomDay | null
+  workday: boolean | null
 }
 
 export interface Today {
@@ -114,3 +117,26 @@ export interface Upcoming {
   days: number
   adjusted: 'noLeap' | 'lastDay' | null
 }
+
+export type Base = 'china' | 'weekdays'
+
+export interface CustomDay {
+  date: string
+  work: boolean
+  name?: string
+}
+
+export interface Scheme {
+  name: string
+  base: Base
+  /** 周末：1 = 周一 … 7 = 周日 */
+  weekend: number[]
+  days: CustomDay[]
+}
+
+/** 保存在插件状态中的方案（带本地 id） */
+export interface StoredScheme extends Scheme {
+  id: string
+}
+
+export const toScheme = ({ id: _id, ...scheme }: StoredScheme): Scheme => scheme
