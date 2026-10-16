@@ -6,6 +6,7 @@ mod launcher;
 mod lifecycle;
 mod market;
 mod menu;
+mod migration;
 mod plugins;
 mod resources;
 mod tasks;
