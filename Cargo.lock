@@ -8245,6 +8245,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-date-calculator"
+version = "0.1.0"
+dependencies = [
+ "jiff",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+ "tyme4rs",
+]
+
+[[package]]
 name = "tfm-i18n-diff"
 version = "0.1.0"
 dependencies = [
@@ -8471,17 +8483,6 @@ dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",
-]
-
-[[package]]
-name = "tfp-date-calculator"
-version = "0.1.0"
-dependencies = [
- "jiff",
- "serde",
- "serde_json",
- "tf-plugin-api",
- "tyme4rs",
 ]
 
 [[package]]
@@ -9456,7 +9457,6 @@ dependencies = [
  "tfp-crypto",
  "tfp-csv-viewer",
  "tfp-curl-converter",
- "tfp-date-calculator",
  "tfp-disk-usage",
  "tfp-dns-lookup",
  "tfp-doc-converter",

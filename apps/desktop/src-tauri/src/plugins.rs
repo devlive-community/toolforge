@@ -75,7 +75,6 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
     registry.register_for(Arc::new(tfp_icon_generator::IconGenerator::default()), os);
     registry.register_for(Arc::new(tfp_hex_viewer::HexViewer::default()), os);
     registry.register_for(Arc::new(tfp_folder_compare::FolderCompare::default()), os);
-    registry.register_for(Arc::new(tfp_date_calculator::DateCalculator::default()), os);
     registry.register_for(Arc::new(tfp_number_words::NumberWords::default()), os);
     registry.register_for(Arc::new(tfp_url_parser::UrlParser::default()), os);
     registry.register_for(Arc::new(tfp_json_query::JsonQuery::default()), os);

@@ -121,6 +121,8 @@ impl ToolPlugin for DateCalculator {
     }
 }
 
+tf_plugin_guest::export_plugin!(DateCalculator);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;
