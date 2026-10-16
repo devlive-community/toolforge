@@ -1,6 +1,8 @@
-//! Offline JSON Schema validation with explicit dialects and bounded inputs.
+//! Offline JSON Schema validation with explicit dialects and bounded inputs,
+//! plus schema inference from JSON samples.
 
 mod guard;
+mod infer;
 mod source;
 mod validate;
 mod work;
@@ -57,6 +59,7 @@ impl ToolPlugin for JsonSchema {
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
         match function {
             "read_file" => to_value(source::read(parse_args(args)?)?),
+            "infer" => to_value(infer::run(parse_args(args)?)?),
             other => Err(unknown_function(other)),
         }
     }

@@ -1,8 +1,9 @@
 {
   "name": "JSON Schema 校验器",
-  "description": "使用 Draft 2020-12 或 Draft 7 校验 JSON，定位结构约束与错误路径",
+  "description": "使用 Draft 2020-12 或 Draft 7 校验 JSON，定位结构约束与错误路径，也能从 JSON 样例生成 Schema",
   "help": [
     "在双编辑器中粘贴内容，或打开每份不超过 2 MiB 的 UTF-8 JSON 文件。选择草案后开始校验，可复制或保存诊断报告。",
+    "从样例生成：用左侧的一个或多个 JSON 样例推断 Schema，合并多种类型（type 数组或 anyOf）、识别所有样例都有的必填字段、合并数组元素结构、推断 date-time、email、uri 等格式，少量重复取值推断为 enum；生成后可直接校验。",
     "草案版本以你的选择为准；$schema 声明与选择不一致时会报错。开启格式校验后检查 email、date-time 等内置格式；未知格式仍作为注解。",
     "只接受提交文档内的片段引用，例如 #/$defs/user。外部、相对文件和网络引用均拒绝，不会自动读取文件或下载 Schema。",
     "每侧输入最多 2 MiB、嵌套 64 层和 50,000 个 JSON 节点。数字最多 4,096 字节，指数绝对值最多 10,000。Schema 最多 4,096 个结构节点、256 个组合分支、128 个正则表达式；每个表达式最多 4,096 字节、编译预算 1 MiB、回溯最多 10,000 步。最多返回 200 条诊断。",
@@ -12,7 +13,8 @@
   ],
   "functions": {
     "validate": "校验 JSON",
-    "read_file": "打开 JSON 文件"
+    "read_file": "打开 JSON 文件",
+    "infer": "从样例生成 Schema"
   },
   "detect": {
     "schema": "JSON Schema 2020-12",
@@ -112,6 +114,17 @@
     "schema.file_too_large": "所选文件超过 {{mb}} MiB 上限。",
     "schema.path_budget": "JSON 键或错误路径的长度超出支持范围（{{target}}）。",
     "schema.work_budget": "Schema 或数据超出有限计算预算，请简化 Schema 或缩小输入。",
-    "schema.reference_target": "不支持该引用目标或资源声明：{{detail}}"
+    "schema.reference_target": "不支持该引用目标或资源声明：{{detail}}",
+    "schema.infer_syntax": "样例第 {{line}} 行第 {{column}} 列附近有语法错误",
+    "schema.infer_not_array": "选择了按数组拆分，但样例顶层不是数组",
+    "schema.infer_empty": "没有可用的样例",
+    "schema.infer_too_many": "样例超过 {{limit}} 个"
+  },
+  "infer": {
+    "title": "从样例生成",
+    "document": "把左侧 JSON 作为一个样例",
+    "array": "把顶层数组的每一项作为样例",
+    "lines": "按行读取 JSON Lines 样例",
+    "done": "已根据 {{count}} 个样例生成 Schema"
   }
 }

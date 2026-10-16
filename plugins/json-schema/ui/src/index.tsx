@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Badge, Button, CodeEditor, DropdownMenu, Empty, Panel, Progress, Select, Switch, toast, type CodeEditorHandle } from '@toolforge/ui'
 import { CopyButton, host, useLaunchInput, usePlugin, usePluginState, useTask } from '@toolforge/plugin-ui-sdk'
-import { BookOpen, Braces, CheckCheck, CircleAlert, Download, FileJson, FolderOpen, Play, Square, X } from 'lucide-react'
+import { BookOpen, Braces, CheckCheck, CircleAlert, Download, FileJson, FolderOpen, Play, Sparkles, Square, X } from 'lucide-react'
 import { sample } from './samples'
-import type { Diagnostic, Draft, Report, Submission } from './types'
+import type { Diagnostic, Draft, InferResult, InferSplit, Report, Submission } from './types'
 
 function JsonSchema() {
   const { t, call, errorMessage } = usePlugin()
@@ -43,6 +43,16 @@ function JsonSchema() {
       const path = await host.dialog.saveFile('schema-report.json', [{ name: t('input.fileFilter'), extensions: ['json'] }])
       if (path) { await host.fs.writeText(path, text); toast.success(t('common:saved')) }
     } catch (error) { toast.error(errorMessage(error)) }
+  }
+
+  const infer = async (split: InferSplit) => {
+    try {
+      const result = await call<InferResult>('infer', { input: instance, split, draft, enums: true })
+      change('schema', result.schema)
+      toast.success(t('infer.done', { count: result.samples }))
+    } catch (error) {
+      toast.error(errorMessage(error))
+    }
   }
 
   useLaunchInput((text, label) => {
@@ -99,6 +109,11 @@ function JsonSchema() {
             { key: 'invalid', label: t('samples.invalid'), onSelect: () => choose('invalid') },
             { key: 'refs', label: t('samples.refs'), onSelect: () => choose('refs') },
             { key: 'tuple', label: t('samples.tuple'), onSelect: () => choose('tuple') },
+          ]} />
+          <DropdownMenu placement="bottom-start" trigger={<Button size="sm" disabled={!instance.trim()}><Sparkles />{t('infer.title')}</Button>} items={[
+            { key: 'document', label: t('infer.document'), onSelect: () => void infer('document') },
+            { key: 'array', label: t('infer.array'), onSelect: () => void infer('array') },
+            { key: 'lines', label: t('infer.lines'), onSelect: () => void infer('lines') },
           ]} />
           <span className="ml-auto flex items-center gap-2">
             {task.running ? <Button size="sm" onClick={cancel} disabled={cancelRequested}><Square />{t(cancelRequested ? 'actions.cancelling' : 'actions.cancel')}</Button> : (

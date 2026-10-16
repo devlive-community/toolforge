@@ -1,8 +1,9 @@
 {
   "name": "JSON Schema Validator",
-  "description": "Validate JSON against Draft 2020-12 or Draft 7 with precise error paths",
+  "description": "Validate JSON with Draft 2020-12 or Draft 7, pinpoint constraint failures, and generate schemas from JSON samples",
   "help": [
     "Paste JSON and its schema, or open UTF-8 JSON files of up to 2 MiB each. Select the draft, validate, then copy or save the diagnostic report.",
+    "Infer from samples: build a schema from one or more JSON samples on the left — merging types (type arrays or anyOf), marking fields present in every sample as required, merging array item shapes, detecting formats such as date-time, email and uri, and turning a few repeated values into enums. Validate right away afterwards.",
     "The selected draft is explicit: a conflicting $schema declaration is reported instead of silently changing dialects. Enable format checks to validate built-in formats such as email and date-time; unknown formats remain annotations.",
     "Only fragment references in the submitted document, such as #/$defs/user, are accepted. External, relative-file and network references are rejected. No schema files or URLs are downloaded automatically.",
     "Inputs are limited to 2 MiB each, depth 64 and 50,000 JSON nodes. Numbers allow up to 4,096 bytes and exponent magnitude 10,000. Schemas allow 4,096 schema nodes, 256 combinator branches, 128 patterns and 4,096 bytes per pattern. Regular expressions have a 1 MiB compilation budget and 10,000 backtracking steps. Up to 200 diagnostics are returned.",
@@ -12,7 +13,8 @@
   ],
   "functions": {
     "validate": "Validate JSON",
-    "read_file": "Open JSON file"
+    "read_file": "Open JSON file",
+    "infer": "Generate schema from samples"
   },
   "detect": {
     "schema": "JSON Schema 2020-12",
@@ -112,6 +114,17 @@
     "schema.file_too_large": "The selected file exceeds {{mb}} MiB.",
     "schema.path_budget": "A JSON key or error path exceeds the supported length ({{target}}).",
     "schema.work_budget": "The schema or data exceeds the bounded validation-work budget. Simplify the schema or reduce the input.",
-    "schema.reference_target": "A reference target or resource declaration is not supported: {{detail}}"
+    "schema.reference_target": "A reference target or resource declaration is not supported: {{detail}}",
+    "schema.infer_syntax": "Sample syntax error near line {{line}}, column {{column}}",
+    "schema.infer_not_array": "Split by array was chosen but the sample is not an array",
+    "schema.infer_empty": "No samples to infer from",
+    "schema.infer_too_many": "More than {{limit}} samples"
+  },
+  "infer": {
+    "title": "Infer from samples",
+    "document": "Use the JSON on the left as one sample",
+    "array": "Use each top-level array item as a sample",
+    "lines": "Read JSON Lines, one sample per line",
+    "done": "Generated a schema from {{count}} samples"
   }
 }

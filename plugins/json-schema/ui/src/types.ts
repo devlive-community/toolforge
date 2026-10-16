@@ -22,3 +22,8 @@ export interface Submission {
   draft: Draft
   validateFormats: boolean
 }
+export type InferSplit = 'document' | 'array' | 'lines'
+export interface InferResult {
+  schema: string
+  samples: number
+}
