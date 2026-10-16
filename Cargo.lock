@@ -8257,6 +8257,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-editorconfig"
+version = "0.1.0"
+dependencies = [
+ "regex",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-gitignore"
 version = "0.1.0"
 dependencies = [

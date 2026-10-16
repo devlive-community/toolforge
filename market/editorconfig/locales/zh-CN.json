@@ -1,0 +1,77 @@
+{
+  "name": "EditorConfig 检查",
+  "description": "解释某个文件最终生效的 .editorconfig 规则：命中的 section、每个属性的值与来源行、被覆盖与 unset 的过程",
+  "help": [
+    "按 EditorConfig 规范 0.17 计算：从目标文件所在目录逐级向上读取 .editorconfig，遇到 root = true 停止；越近的文件优先，同一文件中靠后的 section 优先；值为 unset 会删除继承来的属性。",
+    "glob 支持 * / ** / ? / [abc] / [!abc] / {a,b}（可嵌套）/ {1..10} 数字范围与 \\ 转义；不含 / 的 glob 匹配任意层级的文件名，含 / 的相对于配置所在目录。",
+    "规范推导会单独标出：indent_style = tab 且未设 indent_size 时 indent_size 为 tab；indent_size 为数字且未设 tab_width 时 tab_width 跟随。未设置的标准属性明确显示「未设置」，不代入任何编辑器的默认值。",
+    "标准属性的值不合规范时保留原文并标红；max_line_length 及各编辑器的扩展属性单独标为扩展，不当作错误。目标文件可以尚不存在，只按路径计算。",
+    "只读取所选项目目录内的配置，不会向上读取项目目录之外的文件；到项目根仍未遇到 root = true 时会提示结果可能不完整。也可以粘贴一份配置按项目根计算。工具只读，不修改配置也不格式化源码。"
+  ],
+  "input": {
+    "title": "检查范围",
+    "mode": "配置来源",
+    "project": "项目目录",
+    "paste": "粘贴配置",
+    "root": "项目目录",
+    "rootPlaceholder": "选择项目根目录",
+    "choose": "选择",
+    "rootHint": "只读取该目录及其子目录中的 .editorconfig",
+    "pasted": "按项目根的 .editorconfig 计算",
+    "targets": "目标文件（相对项目目录，每行一个）",
+    "targetsPlaceholder": "src/main.ts",
+    "targetsHint": "文件可以尚不存在",
+    "addFiles": "选择文件",
+    "inspect": "检查"
+  },
+  "kind": {
+    "extension": "扩展",
+    "derived": "推导"
+  },
+  "result": {
+    "title": "生效规则",
+    "spec": "规范 {{version}}",
+    "empty": "还没有结果",
+    "emptyHint": "选择项目目录、填写目标文件后点击「检查」",
+    "chain": "读取顺序：{{list}}",
+    "noFiles": "没有找到 .editorconfig",
+    "incomplete": "到项目目录仍未遇到 root = true，项目目录之外可能还有配置未读取，结果上下文不完整。",
+    "noProperties": "没有任何属性作用于这个文件",
+    "property": "属性",
+    "value": "最终值",
+    "source": "来源（被覆盖的值在下方）",
+    "unsetValue": "未设置",
+    "invalidHint": "不是规范允许的值，编辑器可能忽略",
+    "derived": "按规范推导",
+    "removedByUnset": "被 unset 删除",
+    "notSet": "未设置的标准属性：",
+    "showSections": "查看全部 {{count}} 个 section 的匹配情况",
+    "hideSections": "收起 section 列表",
+    "overriddenBy": "{{value}} ← {{file}}:{{line}} [{{section}}]",
+    "sourceText": "{{file}}:{{line}} [{{section}}]"
+  },
+  "problems": {
+    "title": "配置问题 {{count}} 项",
+    "invalidLine": "无法识别的行",
+    "pairOutsideSection": "section 之前只能写 root",
+    "invalidRoot": "root 只能是 true 或 false",
+    "emptySection": "空的 section",
+    "invalidGlob": "无法解析的 glob",
+    "item": "{{file}}:{{line}} {{problem}}"
+  },
+  "export": {
+    "title": "导出",
+    "copyMarkdown": "复制 Markdown",
+    "saveMarkdown": "保存 Markdown",
+    "copyJson": "复制 JSON",
+    "saveJson": "保存 JSON"
+  },
+  "errors": {
+    "ec.absolute_path": "目标需要相对项目目录的路径：{{path}}",
+    "ec.outside_root": "{{path}} 不在项目目录内",
+    "ec.empty_path": "目标路径为空",
+    "ec.no_targets": "请至少填写一个目标文件",
+    "ec.too_many": "一次最多检查 {{max}} 个文件",
+    "ec.export_failed": "导出失败：{{detail}}"
+  }
+}

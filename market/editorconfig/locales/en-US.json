@@ -1,0 +1,77 @@
+{
+  "name": "EditorConfig Inspector",
+  "description": "Explain which .editorconfig rules apply to a file: matching sections, each property's value and source line, and what was overridden or unset",
+  "help": [
+    "Follows EditorConfig specification 0.17: .editorconfig files are read from the file's directory upwards until one has root = true; nearer files win, later sections in a file win, and unset removes an inherited property.",
+    "Globs support * / ** / ? / [abc] / [!abc] / {a,b} (nestable) / {1..10} numeric ranges and \\ escapes. A glob without / matches file names at any depth; one with / is relative to the config's directory.",
+    "Specification-defined derivations are marked separately: indent_style = tab without indent_size gives indent_size = tab, and a numeric indent_size without tab_width sets tab_width. Standard properties that are not set show “not set” instead of any editor's default.",
+    "Invalid values of standard properties are kept verbatim and flagged; max_line_length and editor-specific extensions are listed as extensions, not errors. Target files may not exist yet; only the path matters.",
+    "Only configuration inside the chosen project folder is read, never above it; if no root = true is found by the project root, the result is marked as possibly incomplete. You can also paste a single configuration to use as the project root's file. The tool is read-only and never changes configuration or source files."
+  ],
+  "input": {
+    "title": "Scope",
+    "mode": "Configuration source",
+    "project": "Project folder",
+    "paste": "Pasted config",
+    "root": "Project folder",
+    "rootPlaceholder": "Choose the project root",
+    "choose": "Choose",
+    "rootHint": "Only .editorconfig files in this folder and below are read",
+    "pasted": "Used as the project root's .editorconfig",
+    "targets": "Target files (relative to the project, one per line)",
+    "targetsPlaceholder": "src/main.ts",
+    "targetsHint": "Files do not need to exist yet",
+    "addFiles": "Choose files",
+    "inspect": "Inspect"
+  },
+  "kind": {
+    "extension": "extension",
+    "derived": "derived"
+  },
+  "result": {
+    "title": "Effective rules",
+    "spec": "Spec {{version}}",
+    "empty": "No results yet",
+    "emptyHint": "Choose a project folder, list target files and click Inspect",
+    "chain": "Read order: {{list}}",
+    "noFiles": "no .editorconfig found",
+    "incomplete": "No root = true was found up to the project folder; configuration above it may exist but was not read, so the result may be incomplete.",
+    "noProperties": "No property applies to this file",
+    "property": "Property",
+    "value": "Final value",
+    "source": "Source (overridden values below)",
+    "unsetValue": "not set",
+    "invalidHint": "Not a value allowed by the specification; editors may ignore it",
+    "derived": "Derived by the specification",
+    "removedByUnset": "Removed by unset",
+    "notSet": "Standard properties not set:",
+    "showSections": "Show how all {{count}} sections matched",
+    "hideSections": "Hide sections",
+    "overriddenBy": "{{value}} ← {{file}}:{{line}} [{{section}}]",
+    "sourceText": "{{file}}:{{line}} [{{section}}]"
+  },
+  "problems": {
+    "title": "{{count}} configuration problems",
+    "invalidLine": "Unrecognized line",
+    "pairOutsideSection": "Only root may appear before the first section",
+    "invalidRoot": "root must be true or false",
+    "emptySection": "Empty section",
+    "invalidGlob": "Glob could not be parsed",
+    "item": "{{file}}:{{line}} {{problem}}"
+  },
+  "export": {
+    "title": "Export",
+    "copyMarkdown": "Copy Markdown",
+    "saveMarkdown": "Save Markdown",
+    "copyJson": "Copy JSON",
+    "saveJson": "Save JSON"
+  },
+  "errors": {
+    "ec.absolute_path": "Targets must be relative to the project folder: {{path}}",
+    "ec.outside_root": "{{path}} is outside the project folder",
+    "ec.empty_path": "Empty target path",
+    "ec.no_targets": "Enter at least one target file",
+    "ec.too_many": "At most {{max}} files at a time",
+    "ec.export_failed": "Export failed: {{detail}}"
+  }
+}

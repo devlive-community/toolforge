@@ -1,0 +1,18 @@
+{
+  "id": "org.devlive.toolforge.editorconfig",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["editorconfig", ".editorconfig", "indent", "indentation", "end of line", "charset", "code style", "缩进", "换行", "代码风格", "编码"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write", "fs:user-selected"],
+  "functions": {
+    "chain": {},
+    "relative": {},
+    "resolve": { "history": true },
+    "report": {}
+  },
+  "sensitive": false
+}

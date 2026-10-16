@@ -109,8 +109,9 @@ These tools are WASM plugins installed from the in-app tool market and updated i
 
 | Tool | Description |
 |------|-------------|
-| **Date Calculator** | Days, weeks and years-months-days between dates (with times); add or subtract time with end-of-month handling; count or add working days Monday to Friday or by the Chinese public holiday schedule with make-up workdays; a month calendar with lunar dates, solar terms and festivals; custom holiday schemes (own weekend days, company or regional days off and swaps) can be imported and exported as JSON. |
 | **.gitignore Generator** | Search offline language, framework, editor and OS templates; save reusable custom templates in ToolForge's database, combine rules without changing negation order, and copy or save with LF or CRLF line endings |
+| **Date Calculator** | Days, weeks and years-months-days between dates (with times); add or subtract time with end-of-month handling; count or add working days Monday to Friday or by the Chinese public holiday schedule with make-up workdays; a month calendar with lunar dates, solar terms and festivals; custom holiday schemes (own weekend days, company or regional days off and swaps) can be imported and exported as JSON. |
+| **EditorConfig Inspector** | Explain which .editorconfig rules apply to a file: matching sections, each property's value and source line, and what was overridden or unset |
 | **i18n Key Diff** | Compare translation files for missing, extra, empty, untranslated, placeholder-mismatched and duplicate keys, and fill them back in the original format |
 | **LCOV Coverage Viewer** | Open lcov.info offline to browse line, function and branch coverage by directory and file, with hit counts and uncovered ranges on the source |
 | **SemVer Range Tester** | Parse, compare and sort versions by SemVer 2.0.0 and test them against npm ranges (^, ~, x, hyphen, `||`) with expanded comparator sets, exclusion reasons, a pre-release switch and CSV export |
