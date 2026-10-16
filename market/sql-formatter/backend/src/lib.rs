@@ -1,7 +1,10 @@
-//! SQL 格式化插件后端：基于 sqlformat 的格式化，以及保留字符串内容的压缩。
+//! SQL 格式化插件（在线安装插件）：基于 sqlformat 的格式化（补充 MySQL、SQLite、Oracle、BigQuery 方言写法），
+//! 以及保留字符串内容的压缩。
 
 mod detect;
+mod dialect;
 mod format;
+mod protect;
 mod scan;
 
 use serde_json::Value;

@@ -5,7 +5,7 @@ import { Minimize, Sparkles } from 'lucide-react'
 
 type Indent = '2' | '4' | 'tab'
 type KeywordCase = 'upper' | 'lower' | 'preserve'
-type Dialect = 'generic' | 'postgresql' | 'sqlserver'
+type Dialect = 'generic' | 'postgresql' | 'sqlserver' | 'mysql' | 'sqlite' | 'oracle' | 'bigquery'
 
 interface SqlResult extends FormatterResult {
   stats: { lines: number; chars: number; statements: number }
@@ -52,6 +52,10 @@ function SqlFormatter() {
               { value: 'generic', label: t('dialectGeneric') },
               { value: 'postgresql', label: t('dialectPostgresql') },
               { value: 'sqlserver', label: t('dialectSqlserver') },
+              { value: 'mysql', label: t('dialectMysql') },
+              { value: 'sqlite', label: t('dialectSqlite') },
+              { value: 'oracle', label: t('dialectOracle') },
+              { value: 'bigquery', label: t('dialectBigquery') },
             ]}
           />
           <Select<KeywordCase>

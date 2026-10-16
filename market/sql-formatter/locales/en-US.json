@@ -1,8 +1,9 @@
 {
   "name": "SQL Formatter",
-  "description": "Beautify and minify SQL with keyword casing, indentation and PostgreSQL / SQL Server dialects",
+  "description": "Beautify and minify SQL with keyword casing, indentation and PostgreSQL, SQL Server, MySQL, SQLite, Oracle and BigQuery dialects",
   "help": [
-    "Supports generic SQL, PostgreSQL (arrays, $$ strings) and SQL Server ([identifiers], @variables).",
+    "Supports generic SQL, PostgreSQL (arrays, $$ strings), SQL Server ([identifiers], @variables), MySQL (backticks, # comments, \\ escapes, ON DUPLICATE KEY UPDATE), SQLite ([identifiers], ?1 parameters, ON CONFLICT), Oracle (q'[...]' strings, :bind variables, CONNECT BY / START WITH, the / terminator of PL/SQL blocks) and BigQuery (triple-quoted and r'' strings, ARRAY<...> / STRUCT<...> types, QUALIFY, # comments).",
+    "Dialect-specific keywords (such as GLOB in SQLite, PRIOR in Oracle and UNNEST in BigQuery) follow the keyword case option too; statements inside PL/SQL blocks are not indented further.",
     "Keywords can be uppercased, lowercased or preserved; “Compact” keeps short argument lists on one line.",
     "Minify removes comments and collapses whitespace while leaving strings and quoted identifiers untouched."
   ],
@@ -28,6 +29,10 @@
   "dialectGeneric": "Generic SQL",
   "dialectPostgresql": "PostgreSQL",
   "dialectSqlserver": "SQL Server",
+  "dialectMysql": "MySQL",
+  "dialectSqlite": "SQLite",
+  "dialectOracle": "Oracle",
+  "dialectBigquery": "BigQuery",
   "compact": "Compact",
   "statements": "{{count}} statements",
   "detect": {

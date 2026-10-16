@@ -1,10 +1,11 @@
 use std::time::Instant;
 
 use serde::{Deserialize, Serialize};
-use sqlformat::{Dialect, FormatOptions, Indent, QueryParams};
+use sqlformat::{FormatOptions, Indent, QueryParams};
 use tf_plugin_api::{PluginError, PluginResult};
 
-use crate::scan;
+use crate::dialect::DialectKind;
+use crate::{protect, scan};
 
 const MAX_INPUT: usize = 5 * 1024 * 1024;
 
@@ -19,22 +20,13 @@ pub enum IndentKind {
     Tab,
 }
 
-#[derive(Debug, Clone, Copy, Default, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum KeywordCase {
     #[default]
     Upper,
     Lower,
     Preserve,
-}
-
-#[derive(Debug, Clone, Copy, Default, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum DialectKind {
-    #[default]
-    Generic,
-    Postgresql,
-    Sqlserver,
 }
 
 #[derive(Deserialize)]
@@ -61,6 +53,8 @@ fn one() -> u8 {
 #[derive(Deserialize)]
 pub struct MinifyArgs {
     input: String,
+    #[serde(default)]
+    dialect: DialectKind,
 }
 
 #[derive(Debug, Serialize, PartialEq)]
@@ -89,10 +83,10 @@ fn check(input: &str) -> PluginResult<()> {
     Ok(())
 }
 
-fn output(input: &str, output: String, start: Instant) -> Output {
+fn output(input: &str, dialect: DialectKind, output: String, start: Instant) -> Output {
     Output {
         stats: Stats {
-            statements: scan::count_statements(input),
+            statements: scan::count_statements(input, dialect),
             lines: output.lines().count().max(1),
             chars: output.chars().count(),
         },
@@ -104,12 +98,13 @@ fn output(input: &str, output: String, start: Instant) -> Output {
 pub fn format(args: FormatArgs) -> PluginResult<Output> {
     check(&args.input)?;
     let start = Instant::now();
+    let (indent, unit) = match args.indent {
+        IndentKind::Two => (Indent::Spaces(2), "  "),
+        IndentKind::Four => (Indent::Spaces(4), "    "),
+        IndentKind::Tab => (Indent::Tabs, "\t"),
+    };
     let options = FormatOptions {
-        indent: match args.indent {
-            IndentKind::Two => Indent::Spaces(2),
-            IndentKind::Four => Indent::Spaces(4),
-            IndentKind::Tab => Indent::Tabs,
-        },
+        indent,
         uppercase: match args.keyword_case {
             KeywordCase::Upper => Some(true),
             KeywordCase::Lower => Some(false),
@@ -118,22 +113,21 @@ pub fn format(args: FormatArgs) -> PluginResult<Output> {
         lines_between_queries: args.lines_between_queries.clamp(1, 3),
         max_inline_arguments: args.compact.then_some(60),
         max_inline_top_level: args.compact.then_some(60),
-        dialect: match args.dialect {
-            DialectKind::Generic => Dialect::Generic,
-            DialectKind::Postgresql => Dialect::PostgreSql,
-            DialectKind::Sqlserver => Dialect::SQLServer,
-        },
+        dialect: args.dialect.engine(),
         ..FormatOptions::default()
     };
-    let formatted = sqlformat::format(&args.input, &QueryParams::None, &options);
-    Ok(output(&args.input, formatted, start))
+    let protected = protect::protect(&args.input, args.dialect);
+    let formatted = sqlformat::format(&protected.text, &QueryParams::None, &options);
+    let formatted = protect::case_keywords(&formatted, args.dialect, args.keyword_case);
+    let formatted = protected.restore(&formatted, args.dialect, args.keyword_case, unit);
+    Ok(output(&args.input, args.dialect, formatted, start))
 }
 
 pub fn minify(args: MinifyArgs) -> PluginResult<Output> {
     check(&args.input)?;
     let start = Instant::now();
-    let minified = scan::minify(&args.input);
-    Ok(output(&args.input, minified, start))
+    let minified = scan::minify(&args.input, args.dialect);
+    Ok(output(&args.input, args.dialect, minified, start))
 }
 
 #[cfg(test)]

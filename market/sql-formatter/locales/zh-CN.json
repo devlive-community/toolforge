@@ -1,8 +1,9 @@
 {
   "name": "SQL 格式化",
-  "description": "美化与压缩 SQL，支持关键字大小写、缩进与 PostgreSQL / SQL Server 方言",
+  "description": "美化与压缩 SQL，支持关键字大小写、缩进，以及 PostgreSQL、SQL Server、MySQL、SQLite、Oracle 与 BigQuery 方言",
   "help": [
-    "格式化支持通用 SQL、PostgreSQL（数组、$$ 字符串）与 SQL Server（[标识符]、@变量）。",
+    "格式化支持通用 SQL、PostgreSQL（数组、$$ 字符串）、SQL Server（[标识符]、@变量）、MySQL（反引号、# 注释、\\ 转义、ON DUPLICATE KEY UPDATE）、SQLite（[标识符]、?1 参数、ON CONFLICT）、Oracle（q'[...]' 字符串、:绑定变量、CONNECT BY / START WITH、PL/SQL 的 / 终止行）与 BigQuery（三引号与 r'' 字符串、ARRAY<...> / STRUCT<...> 类型、QUALIFY、# 注释）。",
+    "各方言特有的关键字（如 SQLite 的 GLOB、Oracle 的 PRIOR、BigQuery 的 UNNEST）同样按大小写选项输出；PL/SQL 块内部的语句不额外缩进。",
     "关键字可转为大写、小写或保持原样；「紧凑」会把较短的参数列表保持在一行。",
     "压缩会删除注释、合并空白，字符串与引号标识符中的内容保持不变。"
   ],
@@ -28,6 +29,10 @@
   "dialectGeneric": "通用 SQL",
   "dialectPostgresql": "PostgreSQL",
   "dialectSqlserver": "SQL Server",
+  "dialectMysql": "MySQL",
+  "dialectSqlite": "SQLite",
+  "dialectOracle": "Oracle",
+  "dialectBigquery": "BigQuery",
   "compact": "紧凑",
   "statements": "{{count}} 条语句",
   "detect": {
