@@ -51,6 +51,10 @@ export interface Info {
   term: { index: number; day: number } | null
   festivals: string[]
   holiday: Holiday | null
+  pillars: [string, string, string] | null
+  phase: number | null
+  recommends: string[]
+  avoids: string[]
 }
 
 export interface Cell {
@@ -69,4 +73,44 @@ export interface Today {
   year: number
   month: number
   holidayDataUntil: number
+}
+
+export interface LunarDate {
+  year: number
+  month: number
+  day: number
+  leap: boolean
+}
+
+export interface ConstellationRange {
+  index: number
+  start: [number, number]
+  end: [number, number]
+}
+
+export interface Birth {
+  date: string
+  lunar: string
+  zodiacLunarYear: number
+  lunarYearGanzhi: string
+  zodiacLichun: number
+  lichunYearGanzhi: string
+  lichun: string
+  springFestival: string
+  constellation: number
+  constellations: ConstellationRange[]
+}
+
+export interface Anniversary {
+  name: string
+  month: number
+  day: number
+  leap: boolean
+}
+
+export interface Upcoming {
+  date: string
+  lunar: string
+  days: number
+  adjusted: 'noLeap' | 'lastDay' | null
 }

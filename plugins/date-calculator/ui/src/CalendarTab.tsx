@@ -140,9 +140,32 @@ export function CalendarTab({ today }: { today: Today }) {
                     </Row>
                   )}
                   <Row label={t('info.constellation')}>{t(`constellations.${d.constellation}`)}</Row>
+                  {d.pillars && <Row label={t('info.pillars')}>{t('info.pillarsValue', { year: d.pillars[0], month: d.pillars[1], day: d.pillars[2] })}</Row>}
+                  {d.phase !== null && <Row label={t('info.phase')}>{t(`phases.${d.phase}`)}</Row>}
                 </>
               )}
             </div>
+            {(d.recommends.length > 0 || d.avoids.length > 0) && (
+              <div className="space-y-1.5 rounded-control bg-surface-2 p-2.5 text-xs">
+                {d.recommends.length > 0 && (
+                  <p>
+                    <span className="mr-1.5 font-medium text-success">{t('info.recommends')}</span>
+                    <span className="text-fg" data-selectable>
+                      {d.recommends.join(' ')}
+                    </span>
+                  </p>
+                )}
+                {d.avoids.length > 0 && (
+                  <p>
+                    <span className="mr-1.5 font-medium text-danger">{t('info.avoids')}</span>
+                    <span className="text-fg" data-selectable>
+                      {d.avoids.join(' ')}
+                    </span>
+                  </p>
+                )}
+                <p className="text-[11px] text-fg-subtle">{t('info.almanacNote')}</p>
+              </div>
+            )}
           </div>
         ) : null}
       </Panel>

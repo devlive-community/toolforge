@@ -6,7 +6,8 @@
     "Working days are counted Monday to Friday, and also by the Chinese public holiday schedule, which skips holidays and counts the weekend make-up workdays. Holiday data is published one year at a time; later years fall back to plain weekends.",
     "Add & subtract: years and months are added first, then weeks, days and times. A date at the end of a month stays at the end, so 31 January plus one month is 28 or 29 February.",
     "Working days mode finds the date N working days before or after the start date, not counting the start date.",
-    "Calendar: each day shows its lunar date, solar terms and festivals, with 休 / 班 marking public holidays and make-up workdays. Select a day to see its ISO week, day of year, lunar year, zodiac and more."
+    "Calendar: each day shows its lunar date, solar terms and festivals, with 休 / 班 marking public holidays and make-up workdays. Select a day to see its ISO week, day of year, lunar year, zodiac and more.",
+    "Zodiac: look up the Chinese zodiac and star sign from a Gregorian or lunar birthday, with the difference between counting from Lunar New Year and from Lichun; personality notes are for fun. The calendar details now show the stem-branch year, month and day, the moon phase and almanac do's and don'ts (folklore for reference). Lunar dates: keep lunar birthdays and anniversaries with each year's Gregorian date and a countdown."
   ],
   "functions": {
     "today": "Today",
@@ -14,12 +15,16 @@
     "add": "Add to date",
     "add_workdays": "Add working days",
     "info": "Day details",
-    "month": "Month calendar"
+    "month": "Month calendar",
+    "birth": "Zodiac lookup",
+    "anniversaries": "Lunar date countdown"
   },
   "tabs": {
     "diff": "Difference",
     "add": "Add & subtract",
-    "calendar": "Calendar"
+    "calendar": "Calendar",
+    "birth": "Zodiac",
+    "anniversary": "Lunar dates"
   },
   "input": {
     "placeholder": "2025-01-31 or 2025-01-31 08:30",
@@ -121,7 +126,13 @@
     "term": "Solar term",
     "termStarts": "{{term}} begins today",
     "termDay": "{{term}}, day {{day}}",
-    "constellation": "Star sign"
+    "constellation": "Star sign",
+    "pillars": "Stems & branches",
+    "pillarsValue": "{{year}} year · {{month}} month · {{day}} day",
+    "phase": "Moon phase",
+    "recommends": "Auspicious",
+    "avoids": "Avoid",
+    "almanacNote": "From the traditional Chinese almanac; folklore for reference only."
   },
   "weekdays": {
     "0": "Monday",
@@ -209,6 +220,121 @@
   "errors": {
     "date.invalid": "“{{input}}” is not a valid date; use a form such as 2025-01-31 or 2025-01-31 08:30",
     "date.out_of_range": "The date is out of the supported range",
-    "date.range_too_large": "The range is too long to count working days"
+    "date.range_too_large": "The range is too long to count working days",
+    "date.lunar_invalid": "That lunar date does not exist (month {{month}}, day {{day}})",
+    "date.too_many": "At most {{max}} dates"
+  },
+  "phases": {
+    "0": "New moon",
+    "1": "Waxing crescent",
+    "2": "First quarter",
+    "3": "Waxing gibbous",
+    "4": "Full moon",
+    "5": "Waning gibbous",
+    "6": "Last quarter",
+    "7": "Waning crescent"
+  },
+  "lunar": {
+    "year": "Lunar year",
+    "month": "Lunar month",
+    "day": "Lunar day",
+    "leap": "Leap month",
+    "months": {
+      "1": "Month 1",
+      "2": "Month 2",
+      "3": "Month 3",
+      "4": "Month 4",
+      "5": "Month 5",
+      "6": "Month 6",
+      "7": "Month 7",
+      "8": "Month 8",
+      "9": "Month 9",
+      "10": "Month 10",
+      "11": "Month 11",
+      "12": "Month 12"
+    },
+    "days": {
+      "1": "Day 1",
+      "2": "Day 2",
+      "3": "Day 3",
+      "4": "Day 4",
+      "5": "Day 5",
+      "6": "Day 6",
+      "7": "Day 7",
+      "8": "Day 8",
+      "9": "Day 9",
+      "10": "Day 10",
+      "11": "Day 11",
+      "12": "Day 12",
+      "13": "Day 13",
+      "14": "Day 14",
+      "15": "Day 15",
+      "16": "Day 16",
+      "17": "Day 17",
+      "18": "Day 18",
+      "19": "Day 19",
+      "20": "Day 20",
+      "21": "Day 21",
+      "22": "Day 22",
+      "23": "Day 23",
+      "24": "Day 24",
+      "25": "Day 25",
+      "26": "Day 26",
+      "27": "Day 27",
+      "28": "Day 28",
+      "29": "Day 29",
+      "30": "Day 30"
+    }
+  },
+  "birth": {
+    "title": "Zodiac & star sign",
+    "kind": "Birthday calendar",
+    "solar": "Gregorian",
+    "lunar": "Lunar",
+    "birthday": "Birthday",
+    "converted": "Gregorian {{date}} · {{lunar}}",
+    "zodiac": "Chinese zodiac",
+    "constellation": "Star sign",
+    "byLunarYear": "By Lunar New Year · {{ganzhi}} year",
+    "bySolar": "By Gregorian date",
+    "differs": "This day falls after Lichun ({{lichunDate}}) but before Lunar New Year ({{spring}}): it is the {{lunar}} by Lunar New Year and the {{lichun}} by Lichun (stem-branch year {{ganzhi}}). Most people count from Lunar New Year; Chinese astrology counts from Lichun.",
+    "same": "Lichun is {{lichunDate}} and Lunar New Year is {{spring}}; both conventions give the same zodiac.",
+    "table": "Star sign dates",
+    "range": "{{sm}}/{{sd}} – {{em}}/{{ed}}",
+    "yours": "Yours",
+    "entertainment": "Personality notes are for entertainment only, not scientific findings."
+  },
+  "traits": {
+    "0": "Passionate and direct, quick to act, loves a challenge.",
+    "1": "Steady and grounded, values security and comfort.",
+    "2": "Curious and quick-witted, a natural communicator.",
+    "3": "Caring and sensitive, devoted to family.",
+    "4": "Confident and generous, enjoys the spotlight.",
+    "5": "Careful and precise, strives for perfection.",
+    "6": "Graceful and easygoing, values fairness and harmony.",
+    "7": "Intense and determined, deeply perceptive.",
+    "8": "Optimistic and free-spirited, loves to explore.",
+    "9": "Practical and disciplined, patient and goal-driven.",
+    "10": "Independent and inventive, values friendship.",
+    "11": "Sensitive and romantic, empathetic and imaginative."
+  },
+  "anniversary": {
+    "title": "Lunar birthdays & anniversaries",
+    "name": "Name",
+    "namePlaceholder": "e.g. Mom's birthday",
+    "date": "Lunar date (yearly)",
+    "add": "Add",
+    "unnamed": "Untitled",
+    "empty": "No dates yet",
+    "emptyHint": "Add lunar birthdays or anniversaries to see each year's Gregorian date and a countdown.",
+    "every": "Every year on lunar {{leap}} {{month}} {{day}}",
+    "today": "Today",
+    "inDays_one": "In {{count}} day",
+    "inDays_other": "In {{count}} days",
+    "remove": "Remove",
+    "adjusted": {
+      "noLeap": "This year has no such leap month; the regular month is used.",
+      "lastDay": "This month is shorter this year; its last day is used."
+    }
   }
 }

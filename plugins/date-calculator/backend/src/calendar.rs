@@ -1,9 +1,10 @@
-//! 某一天的详细信息（星期、周数、农历、节气、节日、法定节假日）与月历。
+//! 某一天的详细信息（星期、周数、农历、节气、节日、法定节假日、干支、月相、宜忌）与月历。
 
 use jiff::civil::{Date, Weekday};
 use serde::Serialize;
 use tf_plugin_api::{PluginError, PluginResult};
 use tyme4rs::tyme::Culture;
+use tyme4rs::tyme::culture::PHASE_NAMES;
 use tyme4rs::tyme::solar::SolarDay;
 
 use crate::holidays::{self, Holiday};
@@ -51,6 +52,13 @@ pub struct Info {
     /// 节日名称（中文）
     pub festivals: Vec<String>,
     pub holiday: Option<Holiday>,
+    /// 干支：年（按立春）、月（按节气）、日
+    pub pillars: Option<[String; 3]>,
+    /// 月相序号（新月 = 0，共 8 个）
+    pub phase: Option<u8>,
+    /// 黄历宜忌（中文数据，传统习俗仅供参考）
+    pub recommends: Vec<String>,
+    pub avoids: Vec<String>,
 }
 
 /// 农历换算支持的范围
@@ -98,9 +106,33 @@ pub fn today() -> Date {
 pub fn info(date: Date) -> PluginResult<Info> {
     let out_of_range = |_| PluginError::new("date.out_of_range");
     let iso = date.iso_week_date();
-    let (lunar_info, term, fest, constellation) = if in_lunar_range(date) {
+    let (lunar_info, term, fest, constellation, almanac) = if in_lunar_range(date) {
         let day = solar(date);
         let term = day.get_term_day();
+        let cycle = day.get_sixty_cycle_day();
+        let phase_name = day.get_phase().get_name();
+        let lunar_day = day.get_lunar_day();
+        let almanac = Almanac {
+            pillars: Some([
+                cycle.get_year().get_name(),
+                cycle.get_month().get_name(),
+                cycle.get_sixty_cycle().get_name(),
+            ]),
+            phase: PHASE_NAMES
+                .iter()
+                .position(|n| *n == phase_name)
+                .map(|i| i as u8),
+            recommends: lunar_day
+                .get_recommends()
+                .iter()
+                .map(|t| t.get_name())
+                .collect(),
+            avoids: lunar_day
+                .get_avoids()
+                .iter()
+                .map(|t| t.get_name())
+                .collect(),
+        };
         (
             Some(lunar(&day)),
             Some(Term {
@@ -109,9 +141,10 @@ pub fn info(date: Date) -> PluginResult<Info> {
             }),
             festivals(&day),
             day.get_constellation().get_index() as u8,
+            almanac,
         )
     } else {
-        (None, None, Vec::new(), 0)
+        (None, None, Vec::new(), 0, Almanac::default())
     };
     Ok(Info {
         date: date.strftime("%Y-%m-%d").to_string(),
@@ -131,7 +164,19 @@ pub fn info(date: Date) -> PluginResult<Info> {
         term,
         festivals: fest,
         holiday: holidays::lookup(date),
+        pillars: almanac.pillars,
+        phase: almanac.phase,
+        recommends: almanac.recommends,
+        avoids: almanac.avoids,
     })
+}
+
+#[derive(Default)]
+struct Almanac {
+    pillars: Option<[String; 3]>,
+    phase: Option<u8>,
+    recommends: Vec<String>,
+    avoids: Vec<String>,
 }
 
 #[derive(Debug, Serialize, PartialEq)]

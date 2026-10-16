@@ -1,10 +1,11 @@
 //! 日期计算插件后端：两个日期之间的天数与年月日、工作日（含中国法定节假日与调休），
-//! 日期加减与按工作日推算，以及带农历、节气、节日的月历。
+//! 日期加减与按工作日推算，带农历、节气、节日、干支、月相与宜忌的月历，生肖星座查询与农历纪念日倒计时。
 
 mod calc;
 mod calendar;
 mod holidays;
 mod parse;
+mod zodiac;
 
 use serde::Deserialize;
 use serde_json::{Value, json};
@@ -109,6 +110,8 @@ impl ToolPlugin for DateCalculator {
                 let args: DateArgs = parse_args(args)?;
                 to_value(calendar::info(parse::date(&args.date)?)?)
             }
+            "birth" => to_value(zodiac::birth(parse_args(args)?)?),
+            "anniversaries" => to_value(zodiac::anniversaries(parse_args(args)?)?),
             "month" => {
                 let args: MonthArgs = parse_args(args)?;
                 to_value(calendar::month(args.year, args.month, args.monday_first)?)

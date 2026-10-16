@@ -68,3 +68,16 @@ fn builds_month_grids() {
     let sunday_first = month(2025, 10, false).unwrap();
     assert_eq!(sunday_first[0].date, "2025-09-28");
 }
+
+#[test]
+fn info_includes_pillars_phase_and_almanac() {
+    let day = info(Date::new(2024, 2, 10).unwrap()).unwrap();
+    let pillars = day.pillars.unwrap();
+    assert_eq!(pillars[0], "甲辰");
+    assert_eq!(pillars[1], "丙寅");
+    assert!(day.phase.is_some_and(|p| p < 8));
+    assert!(!day.recommends.is_empty() || !day.avoids.is_empty());
+    // 农历范围外没有这些信息
+    let far = info(Date::new(1800, 1, 1).unwrap()).unwrap();
+    assert!(far.pillars.is_none() && far.phase.is_none() && far.recommends.is_empty());
+}

@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Tabs } from '@toolforge/ui'
 import { usePlugin } from '@toolforge/plugin-ui-sdk'
-import { CalendarDays, CalendarPlus, Hourglass } from 'lucide-react'
+import { CalendarDays, CalendarHeart, CalendarPlus, Hourglass, Sparkles } from 'lucide-react'
 import { AddTab } from './AddTab'
+import { AnniversaryTab } from './AnniversaryTab'
+import { BirthTab } from './BirthTab'
 import { CalendarTab } from './CalendarTab'
 import { DiffTab } from './DiffTab'
 import type { Today } from './types'
 
-type Tab = 'diff' | 'add' | 'calendar'
+type Tab = 'diff' | 'add' | 'calendar' | 'birth' | 'anniversary'
 
 function DateCalculator() {
   const { t, call } = usePlugin()
@@ -28,6 +30,8 @@ function DateCalculator() {
           { value: 'diff', label: t('tabs.diff'), icon: <Hourglass /> },
           { value: 'add', label: t('tabs.add'), icon: <CalendarPlus /> },
           { value: 'calendar', label: t('tabs.calendar'), icon: <CalendarDays /> },
+          { value: 'birth', label: t('tabs.birth'), icon: <Sparkles /> },
+          { value: 'anniversary', label: t('tabs.anniversary'), icon: <CalendarHeart /> },
         ]}
       />
       {today && (
@@ -40,6 +44,12 @@ function DateCalculator() {
           </div>
           <div className="h-full" hidden={tab !== 'calendar'}>
             <CalendarTab today={today} />
+          </div>
+          <div className="h-full" hidden={tab !== 'birth'}>
+            <BirthTab today={today.date} />
+          </div>
+          <div className="h-full" hidden={tab !== 'anniversary'}>
+            <AnniversaryTab />
           </div>
         </div>
       )}
