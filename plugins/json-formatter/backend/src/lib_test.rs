@@ -12,6 +12,7 @@ fn manifest_declares_every_dispatched_function() {
         "format",
         "minify",
         "validate",
+        "repair",
         "escape",
         "unescape",
         "tree_children",
@@ -63,6 +64,71 @@ fn syntax_error_reports_position() {
     let err = call("validate", json!({"input": "{\n  \"a\": 1,\n}"})).unwrap_err();
     assert_eq!(err.code, "json.syntax");
     assert_eq!(err.params["line"], 3);
+}
+
+#[test]
+fn repair_handles_issue_353_without_relaxing_validation() {
+    let source = "{'name':'ToolForge',, enabled: True, missing: None, tags: ['a', 'b',],}";
+    assert!(call("validate", json!({ "input": source })).is_err());
+    assert!(call("format", json!({ "input": source, "mode": "json5" })).is_err());
+    let result = call("repair", json!({ "input": source })).unwrap();
+    let output: Value = serde_json::from_str(result["output"].as_str().unwrap()).unwrap();
+    assert_eq!(
+        output,
+        json!({ "name": "ToolForge", "enabled": true, "missing": null, "tags": ["a", "b"] })
+    );
+    assert_eq!(result["changed"], true);
+    for code in [
+        "single_quotes",
+        "extra_commas",
+        "python_literals",
+        "unquoted_keys",
+    ] {
+        assert!(
+            result["repairs"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|item| item["code"] == format!("json.repair.{code}")
+                    && item["count"].as_u64().unwrap() > 0)
+        );
+    }
+}
+
+#[test]
+fn repair_result_supports_indentation_sorting_stats_and_tree() {
+    let plugin = JsonFormatter::default();
+    let result = plugin
+        .call(
+            "repair",
+            json!({ "input": "{z:None,a:'None, True'}", "indent": "4", "sortKeys": true }),
+        )
+        .unwrap();
+    assert_eq!(
+        result["output"],
+        "{\n    \"a\": \"None, True\",\n    \"z\": null\n}"
+    );
+    assert_eq!(result["stats"]["nulls"], 1);
+    assert_eq!(result["stats"]["strings"], 1);
+    let page = plugin
+        .call(
+            "tree_children",
+            json!({ "docId": result["docId"], "path": [] }),
+        )
+        .unwrap();
+    assert_eq!(page["nodes"][0]["key"], "a");
+    assert_eq!(page["nodes"][1]["key"], "z");
+}
+
+#[test]
+fn repair_keeps_valid_numbers_exact_and_does_not_report_formatting_as_a_repair() {
+    let result = call("repair", json!({ "input": "{\"n\":12345678901234567890123456789,\"decimal\":1.10,\"exponent\":1e9999}" })).unwrap();
+    let output = result["output"].as_str().unwrap();
+    assert!(output.contains("12345678901234567890123456789"));
+    assert!(output.contains("1.10"));
+    assert!(output.contains("1e+9999"));
+    assert_eq!(result["changed"], false);
+    assert_eq!(result["repairs"], json!([]));
 }
 
 #[test]

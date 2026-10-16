@@ -8,6 +8,7 @@ mod format;
 mod jcs;
 mod parse;
 mod patch;
+mod repair;
 mod stats;
 mod tree;
 
@@ -77,11 +78,42 @@ struct CanonicalOutput {
     elapsed_ms: f64,
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct RepairOutput {
+    output: String,
+    doc_id: u64,
+    stats: Stats,
+    repairs: Vec<repair::Repair>,
+    changed: bool,
+    elapsed_ms: f64,
+}
+
 fn elapsed(start: Instant) -> f64 {
     (start.elapsed().as_secs_f64() * 1000.0 * 100.0).round() / 100.0
 }
 
 impl JsonFormatter {
+    fn repair(&self, args: SourceArgs) -> PluginResult<RepairOutput> {
+        let start = Instant::now();
+        let repaired = repair::repair(&args.input)?;
+        let mut value = repaired.value;
+        if args.sort_keys {
+            format::sort_keys(&mut value);
+        }
+        let output = format::pretty(&value, args.indent)?;
+        let stats = Stats::collect(&value, &output);
+        let doc_id = self.docs.insert(value);
+        Ok(RepairOutput {
+            output,
+            doc_id,
+            stats,
+            changed: !repaired.repairs.is_empty(),
+            repairs: repaired.repairs,
+            elapsed_ms: elapsed(start),
+        })
+    }
+
     fn render(&self, args: SourceArgs, minify: bool) -> PluginResult<Output> {
         let start = Instant::now();
         let mut value = parse::parse(&args.input, args.mode)?;
@@ -147,6 +179,7 @@ impl ToolPlugin for JsonFormatter {
             "minify" => to_value(self.render(parse_args(args)?, true)?),
             // 校验与格式化共享解析流程，输出格式化结果便于定位
             "validate" => to_value(self.render(parse_args(args)?, false)?),
+            "repair" => to_value(self.repair(parse_args(args)?)?),
             "canonicalize" => to_value(self.canonical(parse_args(args)?)?),
             "escape" => to_value(self.text(parse_args(args)?, format::escape)?),
             "unescape" => to_value(self.text(parse_args(args)?, format::unescape)?),

@@ -1,7 +1,7 @@
 import type { Mode } from './types'
 
 /** 「示例」菜单中的静态示例文本 */
-export const SAMPLES: { key: string; mode: Mode; text: string }[] = [
+export const SAMPLES: { key: string; mode: Mode; text: string; repair?: boolean }[] = [
   {
     key: 'basic',
     mode: 'json',
@@ -55,6 +55,17 @@ export const SAMPLES: { key: string; mode: Mode; text: string }[] = [
   "name": "ToolForge",
   "version": "0.1.0",
   "tags": ["a", "b",],
+}`,
+  },
+  {
+    key: 'repair',
+    mode: 'json',
+    repair: true,
+    text: `{
+  name: 'ToolForge',,
+  active: True,
+  optional: None,
+  tools: ['JSON', 'HTTP',],
 }`,
   },
 ]

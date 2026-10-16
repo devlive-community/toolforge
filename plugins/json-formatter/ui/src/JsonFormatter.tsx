@@ -32,10 +32,12 @@ import {
   Maximize2,
   Minimize2,
   Minimize,
+  Play,
   ShieldCheck,
   Sparkles,
   Terminal,
   TriangleAlert,
+  Wrench,
 } from 'lucide-react'
 import { DiffResult } from './components/DiffResult'
 import { ErrorCard } from './components/ErrorCard'
@@ -43,6 +45,7 @@ import { StatsView } from './components/StatsView'
 import { TreeView } from './components/TreeView'
 import { ValidCard } from './components/ValidCard'
 import { SAMPLES } from './samples'
+import { useRepair } from './useRepair'
 import type { DiffReport, Indent, Mode, ProcessResult, Tab } from './types'
 
 const JSON_FILTERS = [{ name: 'JSON', extensions: ['json', 'json5', 'jsonc', 'txt'] }]
@@ -72,10 +75,6 @@ export function JsonFormatter() {
   const { t, errorMessage } = usePlugin()
   const [tab, setTab] = useState<Tab>('format')
   const [input, setInput] = useState(SAMPLES[0].text)
-  useLaunchInput((text) => {
-    setInput(text)
-    setTab('format')
-  })
   const [right, setRight] = useState(SAMPLES[0].text.replace('"0.1.0"', '"0.2.0"'))
   const [mode, setMode] = useState<Mode>('json')
   const [indent, setIndent] = useState<Indent>('2')
@@ -91,11 +90,26 @@ export function JsonFormatter() {
 
   const isEscape = tab === 'escape'
   const isCanonical = tab === 'canonical'
+  const isRepair = tab === 'repair'
+  const repair = useRepair(isRepair, { input, indent, sortKeys })
+  const changeInput = (value: string) => { repair.invalidate(); setInput(value) }
+  const changeTab = (value: Tab) => { repair.invalidate(); setTab(value); setExpanded(false) }
+  const changeIndent = (value: Indent) => { repair.invalidate(); setIndent(value) }
+  const changeMode = (value: Mode) => { repair.invalidate(); setMode(value) }
+  const toggleSort = () => { repair.invalidate(); setSortKeys((value) => !value) }
+  useLaunchInput((text) => {
+    changeInput(text)
+    changeTab('format')
+  })
+
   const fn =
-    tab === 'diff' ? null : tab === 'minify' ? 'minify' : tab === 'validate' ? 'validate' : isCanonical ? 'canonicalize' : isEscape ? escapeDir : 'format'
+    tab === 'diff' || isRepair ? null : tab === 'minify' ? 'minify' : tab === 'validate' ? 'validate' : isCanonical ? 'canonicalize' : isEscape ? escapeDir : 'format'
   const hasInput = input.trim().length > 0
   const args = !hasInput ? null : isEscape || isCanonical ? { input } : { input, mode, indent, sortKeys }
-  const { result, error, pending } = useDebouncedCall<ProcessResult>(fn, args, [fn, input, mode, indent, sortKeys])
+  const processed = useDebouncedCall<ProcessResult>(fn, args, [fn, input, mode, indent, sortKeys])
+  const result = isRepair ? repair.result : processed.result
+  const error = isRepair ? repair.error : processed.error
+  const pending = isRepair ? repair.pending : processed.pending
   const diff = useDebouncedCall<DiffReport>(tab === 'diff' ? 'diff' : null, { left: input, right, mode }, [tab, input, right, mode])
 
   const errorLine = error && !isEscape ? Number(error.params?.line ?? 0) || null : null
@@ -115,30 +129,31 @@ export function JsonFormatter() {
   const paste = () =>
     run(async () => {
       const text = await host.clipboard.readText()
-      if (text) setInput(text)
+      if (text) changeInput(text)
     })
   const openFile = () =>
     run(async () => {
       const path = await host.dialog.openFile(JSON_FILTERS)
-      if (path) setInput(await host.fs.readText(path))
+      if (path) changeInput(await host.fs.readText(path))
     })
   const copy = () =>
     run(async () => {
-      if (!result) return
+      if (!result || (isRepair && !repair.isCurrent())) return
       await host.clipboard.writeText(result.output)
       toast.success(t('common:copied'))
     })
   const download = () =>
     run(async () => {
-      if (!result) return
-      const path = await host.dialog.saveFile(isEscape ? 'output.txt' : isCanonical ? 'canonical.json' : 'formatted.json', JSON_FILTERS)
-      if (!path) return
+      if (!result || (isRepair && !repair.isCurrent())) return
+      const path = await host.dialog.saveFile(isEscape ? 'output.txt' : isCanonical ? 'canonical.json' : isRepair ? 'repaired.json' : 'formatted.json', JSON_FILTERS)
+      if (!path || (isRepair && !repair.isCurrent())) return
       await host.fs.writeText(path, result.output)
       toast.success(t('common:saved'))
     })
 
   const tabs = [
     { value: 'format' as const, label: t('tabs.format'), icon: <Sparkles /> },
+    { value: 'repair' as const, label: t('tabs.repair'), icon: <Wrench /> },
     { value: 'minify' as const, label: t('tabs.minify'), icon: <Minimize /> },
     { value: 'validate' as const, label: t('tabs.validate'), icon: <ShieldCheck /> },
     { value: 'canonical' as const, label: t('tabs.canonical'), icon: <Fingerprint /> },
@@ -152,7 +167,7 @@ export function JsonFormatter() {
       size="sm"
       variant="ghost"
       value={mode}
-      onValueChange={setMode}
+      onValueChange={changeMode}
       aria-label={t('status.mode')}
       options={[
         { value: 'json', label: 'JSON' },
@@ -179,8 +194,9 @@ export function JsonFormatter() {
               key: sample.key,
               label: t(`samples.${sample.key}`),
               onSelect: () => {
-                setInput(sample.text)
-                setMode(sample.mode)
+                changeInput(sample.text)
+                changeMode(sample.mode)
+                if (sample.repair) changeTab('repair')
               },
             }))}
           />
@@ -188,7 +204,7 @@ export function JsonFormatter() {
       }
       actions={
         <>
-          <Button size="sm" onClick={() => setInput('')}>
+          <Button size="sm" onClick={() => changeInput('')}>
             {t('common:clear')}
           </Button>
           <Button size="sm" onClick={paste}>
@@ -205,14 +221,14 @@ export function JsonFormatter() {
       footer={
         <Footer cursor={cursorIn} chars={input.length}>
           <WrapToggle checked={wrapIn} onChange={setWrapIn} />
-          {!isEscape && !isCanonical && modeSelect}
+          {!isEscape && !isCanonical && !isRepair && modeSelect}
         </Footer>
       }
     >
       <CodeEditor
         ref={inputRef}
         value={input}
-        onChange={setInput}
+        onChange={changeInput}
         language={isEscape ? 'text' : 'json'}
         lineWrapping={wrapIn}
         errorLine={tab === 'diff' ? diffErrorLine : errorLine}
@@ -225,11 +241,18 @@ export function JsonFormatter() {
 
   const outputTitle = isEscape
     ? t(`output.${escapeDir}`)
-    : t(`output.${tab === 'minify' ? 'minified' : tab === 'validate' ? 'validated' : isCanonical ? 'canonical' : 'formatted'}`)
+    : t(`output.${isRepair ? 'repaired' : tab === 'minify' ? 'minified' : tab === 'validate' ? 'validated' : isCanonical ? 'canonical' : 'formatted'}`)
 
   const outputBody = () => {
     if (!hasInput) return <p className="p-6 text-center text-[13px] text-fg-subtle">{t('output.waiting')}</p>
     if (error) return <ErrorCard error={error} onLocate={(line, column) => inputRef.current?.gotoLine(line, column)} />
+    if (isRepair && !result) return (
+      <div className="flex h-full flex-col items-center justify-center gap-2 px-6 text-center text-fg-muted" role="status">
+        {pending ? <Spinner /> : <Wrench className="size-6 text-fg-subtle" />}
+        <p className="text-[13px]">{t(pending ? 'repair.running' : 'repair.waiting')}</p>
+        <p className="max-w-sm text-xs leading-relaxed text-fg-subtle">{t('repair.hint')}</p>
+      </div>
+    )
     if (!result) {
       return (
         <div className="flex h-full items-center justify-center text-fg-muted">
@@ -247,6 +270,18 @@ export function JsonFormatter() {
         onCursorChange={setCursorOut}
         aria-label={outputTitle}
       />
+    )
+    if (isRepair && repair.result) return (
+      <div className="flex h-full min-h-0 flex-col">
+        <div className="max-h-44 shrink-0 space-y-2 overflow-auto border-b border-border bg-surface-2 px-3 py-2 text-xs text-fg-muted" role="status">
+          <p className="font-medium text-fg">{t(repair.result.changed ? 'repair.changed' : 'repair.alreadyValid')}</p>
+          {!!repair.result.repairs.length && <ul className="flex flex-wrap gap-x-4 gap-y-1">
+            {repair.result.repairs.map((item) => <li key={item.code}>{t(`repair.changes.${item.code}`, { count: item.count })}</li>)}
+          </ul>}
+          <p className="text-fg-subtle">{t('repair.previewHint')}</p>
+        </div>
+        <div className="min-h-0 flex-1">{editor}</div>
+      </div>
     )
     if (!isCanonical) return editor
     return (
@@ -291,7 +326,7 @@ export function JsonFormatter() {
                 variant={sortKeys ? 'soft' : 'outline'}
                 aria-pressed={sortKeys}
                 aria-label={t('output.sortKeys')}
-                onClick={() => setSortKeys((v) => !v)}
+                onClick={toggleSort}
               >
                 <ArrowDownAZ />
               </Button>
@@ -326,7 +361,7 @@ export function JsonFormatter() {
               size="sm"
               variant="ghost"
               value={indent}
-              onValueChange={setIndent}
+              onValueChange={changeIndent}
               aria-label={t('status.indent')}
               options={[
                 { value: '2', label: t('status.indent2') },
@@ -421,13 +456,24 @@ export function JsonFormatter() {
     <div className="flex h-full min-h-0 flex-col gap-4">
       <Tabs
         value={tab}
-        onValueChange={(value) => {
-          setTab(value)
-          setExpanded(false)
-        }}
+        onValueChange={changeTab}
         items={tabs}
         aria-label={t('name')}
       />
+      {isRepair && <div className="flex shrink-0 flex-wrap items-center gap-3 rounded-card border border-border bg-surface-2 px-3 py-2">
+        <Wrench className="size-4 shrink-0 text-fg-muted" />
+        <p className="min-w-48 flex-1 text-xs leading-relaxed text-fg-muted">{t('repair.previewHint')}</p>
+        <Button size="sm" variant="primary" disabled={!hasInput || repair.pending} onClick={() => void repair.start()}>
+          <Play />{t('repair.start')}
+        </Button>
+        <Button size="sm" disabled={!repair.result || repair.pending} onClick={() => {
+          if (!repair.result || !repair.isCurrent()) return
+          const output = repair.result.output
+          changeInput(output)
+          setMode('json')
+          changeTab('format')
+        }}>{t('repair.apply')}</Button>
+      </div>}
       <div className={cn('min-h-0 flex-1')}>{workspace}</div>
     </div>
   )

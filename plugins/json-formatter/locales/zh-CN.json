@@ -1,9 +1,10 @@
 {
   "name": "JSON 格式化",
-  "description": "格式化、压缩、校验、可视化 JSON 数据，支持大文件，完全在本地运行",
+  "description": "格式化、修复、压缩、校验、可视化 JSON 数据，完全在本地运行",
   "help": [
     "输入框中的内容会实时交给本地 Rust 引擎处理，数据不会离开本机。",
     "格式化 / 压缩 / 校验：支持严格 JSON 与宽松的 JSON5（注释、尾逗号、单引号）。",
+    "修复：点击「开始修复」后预览常见语法问题的修复结果，再通过「应用并格式化」替换原文并切换到严格 JSON。缺值、重复键、截断字符串等有歧义的内容需要手工处理；每次最多 2 MiB、127 层嵌套、100,000 个节点。",
     "出错时会标红错误所在行，点击「定位到错误」可跳转。",
     "JCS 规范化：按 RFC 8785 对键按 UTF-16 排序、统一字符串转义与数字格式，只接受严格 JSON，重复键、孤立代理项与超出范围的数字会明确报错。",
     "树形视图按需加载节点，大文件也能流畅浏览；统计信息展示各类型数量与嵌套深度。",
@@ -17,7 +18,8 @@
     "canonical": "JCS 规范化",
     "escape": "转义/反转义",
     "tree": "树形视图",
-    "diff": "对比"
+    "diff": "对比",
+    "repair": "修复"
   },
   "side": {
     "stats": "统计信息"
@@ -36,7 +38,8 @@
     "array": "对象数组",
     "nested": "多层嵌套",
     "json5": "JSON5（宽松语法）",
-    "invalid": "错误示例"
+    "invalid": "错误示例",
+    "repair": "混合语法修复示例"
   },
   "output": {
     "formatted": "输出 (已格式化)",
@@ -50,7 +53,8 @@
     "expand": "最大化",
     "collapse": "还原",
     "waiting": "在左侧输入内容后，这里会显示结果",
-    "canonical": "输出 (RFC 8785 规范化)"
+    "canonical": "输出 (RFC 8785 规范化)",
+    "repaired": "输出（修复预览）"
   },
   "status": {
     "cursor": "行 {{line}}, 列 {{column}}",
@@ -130,11 +134,39 @@
     "json.duplicate_key": "第 {{line}} 行第 {{column}} 列的键「{{key}}」重复，JCS 不接受重复键",
     "json.lone_surrogate": "第 {{line}} 行第 {{column}} 列有孤立的 UTF-16 代理项转义，不是合法的 Unicode",
     "json.number_range": "第 {{line}} 行第 {{column}} 列的数字 {{number}} 超出双精度范围",
-    "json.too_deep": "嵌套超过 {{max}} 层（第 {{line}} 行第 {{column}} 列）"
+    "json.too_deep": "嵌套超过 {{max}} 层（第 {{line}} 行第 {{column}} 列）",
+    "json.repair_syntax": "第 {{line}} 行第 {{column}} 列附近的语法无法安全修复，请检查此处的结构和缺失值。",
+    "json.repair_too_large": "输入超过修复上限 {{max}} 字节",
+    "json.repair_too_deep": "输入超过修复上限 {{max}} 层嵌套",
+    "json.repair_too_many_nodes": "输入超过修复上限 {{max}} 个节点",
+    "json.repair_duplicate_key": "第 {{line}} 行第 {{column}} 列的键「{{key}}」重复，请先确认要保留哪个值。"
   },
   "canonical": {
     "hint": "按 RFC 8785 生成确定的 UTF-8 字节，用于签名、摘要与内容寻址；数字按 IEEE 754 双精度处理，不保留任意精度。复制后可在哈希工具中计算摘要。",
     "lossy": "{{count}} 个数字超出双精度可精确表示的范围，规范结果与原文数值不同",
     "bytes": "{{count}} 字节"
+  },
+  "repair": {
+    "start": "开始修复",
+    "apply": "应用并格式化",
+    "running": "正在修复 JSON…",
+    "waiting": "点击「开始修复」预览严格 JSON 结果",
+    "hint": "修正常见语法问题；缺值、重复键和截断字符串等需手工处理。输入最多 2 MiB。",
+    "changed": "语法已修复，请检查结果",
+    "alreadyValid": "原文已是合法 JSON，无需修复语法",
+    "previewHint": "原文保持不变。「应用并格式化」会将预览结果填回输入框，并切换到严格 JSON。",
+    "changes": {
+      "json.repair.single_quotes": "转换单引号字符串 {{count}} 处",
+      "json.repair.unquoted_keys": "补全键名引号 {{count}} 处",
+      "json.repair.comments": "移除注释 {{count}} 处",
+      "json.repair.extra_commas": "移除多余逗号 {{count}} 处",
+      "json.repair.python_literals": "转换 Python 字面量 {{count}} 处",
+      "json.repair.undefined": "将 undefined 转为 null {{count}} 处",
+      "json.repair.missing_commas": "补全缺失逗号 {{count}} 处",
+      "json.repair.unclosed_containers": "补全容器结束符 {{count}} 处",
+      "json.repair.string_escapes": "修复字符串转义 {{count}} 处",
+      "json.repair.control_characters": "转义控制字符 {{count}} 处",
+      "json.repair.bom": "移除开头 BOM {{count}} 处"
+    }
   }
 }

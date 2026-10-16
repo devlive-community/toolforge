@@ -1,9 +1,10 @@
 {
   "name": "JSON Formatter",
-  "description": "Format, minify, validate and visualize JSON. Handles large files and runs entirely on your machine",
+  "description": "Format, repair, minify, validate and visualize JSON. Runs entirely on your machine",
   "help": [
     "Input is processed in real time by the local Rust engine; your data never leaves this machine.",
     "Format / Minify / Validate support strict JSON as well as relaxed JSON5 (comments, trailing commas, single quotes).",
+    "Repair runs only when you click Start repair. Preview common syntax fixes, then choose Apply and format to replace the input with strict JSON. Ambiguous missing values, duplicate keys and truncated strings are rejected; the limit is 2 MiB, 127 nesting levels and 100,000 nodes.",
     "Errors highlight the offending line; click “Go to error” to jump there.",
     "JCS canonical: sorts keys by UTF-16 code units and normalizes string escapes and number formatting per RFC 8785. Only strict JSON is accepted; duplicate keys, lone surrogates and out-of-range numbers fail with a clear error.",
     "The tree view loads nodes on demand so large files stay smooth; stats show type counts and nesting depth.",
@@ -17,7 +18,8 @@
     "canonical": "JCS canonical",
     "escape": "Escape",
     "tree": "Tree",
-    "diff": "Compare"
+    "diff": "Compare",
+    "repair": "Repair"
   },
   "side": {
     "stats": "Stats"
@@ -36,7 +38,8 @@
     "array": "Array of objects",
     "nested": "Deeply nested",
     "json5": "JSON5 (relaxed)",
-    "invalid": "Invalid example"
+    "invalid": "Invalid example",
+    "repair": "Repair mixed syntax"
   },
   "output": {
     "formatted": "Output (formatted)",
@@ -50,7 +53,8 @@
     "expand": "Maximize",
     "collapse": "Restore",
     "waiting": "Results appear here once you enter some input",
-    "canonical": "Output (RFC 8785 canonical)"
+    "canonical": "Output (RFC 8785 canonical)",
+    "repaired": "Output (repair preview)"
   },
   "status": {
     "cursor": "Ln {{line}}, Col {{column}}",
@@ -130,7 +134,12 @@
     "json.duplicate_key": "Duplicate key \"{{key}}\" at line {{line}}, column {{column}}; JCS rejects duplicate keys",
     "json.lone_surrogate": "Lone UTF-16 surrogate escape at line {{line}}, column {{column}} is not valid Unicode",
     "json.number_range": "Number {{number}} at line {{line}}, column {{column}} is out of double range",
-    "json.too_deep": "Nesting deeper than {{max}} levels (line {{line}}, column {{column}})"
+    "json.too_deep": "Nesting deeper than {{max}} levels (line {{line}}, column {{column}})",
+    "json.repair_syntax": "Cannot safely repair the syntax near line {{line}}, column {{column}}. Check the structure and values at this location.",
+    "json.repair_too_large": "Input exceeds the repair limit of {{max}} bytes",
+    "json.repair_too_deep": "Input exceeds the repair limit of {{max}} nesting levels",
+    "json.repair_too_many_nodes": "Input exceeds the repair limit of {{max}} nodes",
+    "json.repair_duplicate_key": "Duplicate key \"{{key}}\" at line {{line}}, column {{column}}. Choose which value to keep before repairing."
   },
   "canonical": {
     "hint": "Deterministic UTF-8 bytes per RFC 8785 for signing, digests and content addressing. Numbers follow IEEE 754 double precision; arbitrary precision is not kept. Copy the result into the Hash tool to compute a digest.",
@@ -138,5 +147,28 @@
     "lossy_other": "{{count}} numbers cannot be represented exactly as doubles; their canonical values differ from the source",
     "bytes_one": "{{count}} byte",
     "bytes_other": "{{count}} bytes"
+  },
+  "repair": {
+    "start": "Start repair",
+    "apply": "Apply and format",
+    "running": "Repairing JSON…",
+    "waiting": "Click Start repair to preview a strict JSON result",
+    "hint": "Repairs common syntax mistakes. Missing values, duplicate keys and truncated strings need manual review. Up to 2 MiB per input.",
+    "changed": "Syntax repaired — review the result",
+    "alreadyValid": "Already valid JSON — no syntax repairs needed",
+    "previewHint": "The source stays unchanged. Apply and format replaces it with the preview and switches to strict JSON.",
+    "changes": {
+      "json.repair.single_quotes": "Single-quoted strings: {{count}}",
+      "json.repair.unquoted_keys": "Unquoted keys: {{count}}",
+      "json.repair.comments": "Comments removed: {{count}}",
+      "json.repair.extra_commas": "Extra commas removed: {{count}}",
+      "json.repair.python_literals": "Python literals normalized: {{count}}",
+      "json.repair.undefined": "undefined values converted to null: {{count}}",
+      "json.repair.missing_commas": "Missing commas inserted: {{count}}",
+      "json.repair.unclosed_containers": "Unclosed containers completed: {{count}}",
+      "json.repair.string_escapes": "String escapes repaired: {{count}}",
+      "json.repair.control_characters": "Control characters escaped: {{count}}",
+      "json.repair.bom": "Leading BOM removed: {{count}}"
+    }
   }
 }

@@ -1,6 +1,6 @@
 export type Mode = 'json' | 'json5'
 export type Indent = '2' | '4' | 'tab'
-export type Tab = 'format' | 'minify' | 'validate' | 'canonical' | 'escape' | 'tree' | 'diff'
+export type Tab = 'format' | 'repair' | 'minify' | 'validate' | 'canonical' | 'escape' | 'tree' | 'diff'
 
 export interface Stats {
   objects: number
@@ -24,6 +24,11 @@ export interface ProcessResult {
   /** 仅 JCS：精度发生变化的数字个数 */
   lossyNumbers?: number
   elapsedMs: number
+}
+
+export interface RepairResult extends ProcessResult {
+  changed: boolean
+  repairs: { code: string; count: number }[]
 }
 
 export type Segment = string | number
