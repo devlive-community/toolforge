@@ -1,0 +1,112 @@
+{
+  "name": "LCOV 覆盖率查看器",
+  "description": "离线打开 lcov.info，按目录与文件查看行、函数、分支覆盖率，并在源码上标注命中次数与未覆盖区段",
+  "help": [
+    "只读取 LCOV 报告与你选择的源码目录，不运行测试、不编译项目、不连接 CI；覆盖率只是测试运行留下的证据，不代表测试质量。",
+    "支持 TN、SF、VER、DA（含校验和）、FN（含 lcov 2 的结束行写法）、FNDA、FNL / FNA、BRDA、LF / LH / FNF / FNH / BRF / BRH；其他记录类型不参与统计，只计数提示。同一源文件出现在多个测试分组时，行、函数、分支取并集、命中次数相加，不会重复计数。",
+    "分支覆盖率 = 至少走过一次的分支 / 全部分支；BRDA 中的「-」表示所在代码块从未执行，计入分母并单独显示；没有某项记录时显示 N/A。报告中声明的 LF / LH 等与实际统计不一致时会给出诊断。",
+    "设置源码根后可以在源码上查看命中次数；报告里是 CI 上的绝对路径时，添加「CI 路径前缀 → 本地目录」映射（取最长匹配，Windows 与 POSIX 路径均可）。只读取源码根内的文件，越界路径会被拒绝；行号超出源码、校验和不符都会提示。",
+    "大报告以任务方式读取，可以取消；文件列表分页显示，可导出 CSV 或 Markdown 摘要。"
+  ],
+  "open": {
+    "drop": "拖入或打开 lcov.info",
+    "hint": "由 lcov、c8 / nyc、cargo-llvm-cov、gcovr、Jest、pytest-cov 等工具生成的 LCOV 报告",
+    "filter": "LCOV 报告",
+    "loading": "正在读取报告…",
+    "cancel": "取消",
+    "other": "打开其他报告",
+    "reloading": "报告缓存已失效，正在重新读取"
+  },
+  "metric": {
+    "lines": "行",
+    "functions": "函数",
+    "branches": "分支",
+    "notExecuted": "{{count}} 个未执行"
+  },
+  "summary": {
+    "files": "{{count}} 个文件 · {{records}} 条记录",
+    "tests": "测试：{{list}}（{{count}}）",
+    "diagnostics": "{{count}} 项诊断"
+  },
+  "table": {
+    "title": "覆盖率",
+    "kind": "显示",
+    "files": "文件",
+    "dirs": "目录",
+    "count": "{{count}} 项",
+    "previous": "上一页",
+    "next": "下一页",
+    "search": "按路径筛选",
+    "sort": "排序",
+    "sorts": {
+      "lines": "按行覆盖率",
+      "functions": "按函数覆盖率",
+      "branches": "按分支覆盖率",
+      "path": "按路径"
+    },
+    "ascending": "升序",
+    "descending": "降序",
+    "dirsHint": "双击目录可筛选其中的文件"
+  },
+  "detail": {
+    "title": "文件详情",
+    "empty": "选择一个文件",
+    "emptyHint": "设置源码根后可以在源码上查看命中次数",
+    "uncovered": "未覆盖：",
+    "sourceIssues": "源码诊断 {{count}} 项：",
+    "beyondSource": "第 {{line}} 行超出源码",
+    "checksumMismatch": "第 {{line}} 行校验和不符",
+    "branchesOnLine": "已执行 {{taken}} / {{total}} 个分支",
+    "noSourceLine": "",
+    "functions": "函数（{{count}}）",
+    "untakenBranches": "未走过的分支",
+    "branchNotExecuted": "第 {{line}} 行 {{block}}.{{branch}}：代码块未执行",
+    "branchNotTaken": "第 {{line}} 行 {{block}}.{{branch}}：0 次",
+    "more": "另有 {{count}} 段",
+    "hits": "{{count}}×"
+  },
+  "source": {
+    "title": "源码设置",
+    "description": "源码只在本机读取，用于在源码上标注命中次数",
+    "root": "源码根目录",
+    "rootPlaceholder": "选择项目目录",
+    "choose": "选择",
+    "mappings": "路径映射",
+    "from": "CI 路径前缀",
+    "to": "本地目录（可相对源码根）",
+    "addMapping": "添加映射",
+    "removeMapping": "删除映射",
+    "mappingHint": "例如 /home/runner/work/app/app → /Users/me/app；映射后仍在源码根之外的路径不会读取。",
+    "close": "关闭",
+    "noRoot": "未设置源码根，只显示报告中的可执行行。",
+    "unavailable": "无法读取源码：{{reason}}"
+  },
+  "diagnostics": {
+    "title": "诊断",
+    "ignored": "未统计的记录类型：",
+    "line": "第 {{line}} 行",
+    "malformed": "格式错误",
+    "outsideRecord": "出现在 SF 记录之外",
+    "unterminated": "记录缺少 end_of_record",
+    "declaredMismatch": "声明值与统计不一致",
+    "duplicateRecord": "同一测试分组中重复出现",
+    "dropped": "另有 {{count}} 项未列出",
+    "ignoredCount": "{{kind}} × {{count}}"
+  },
+  "export": {
+    "title": "导出",
+    "copyMarkdown": "复制 Markdown 摘要",
+    "saveMarkdown": "保存 Markdown 摘要",
+    "copyCsv": "复制 CSV",
+    "saveCsv": "保存 CSV"
+  },
+  "errors": {
+    "lcov.empty": "报告中没有任何源文件记录",
+    "lcov.expired": "报告缓存已失效，请重新打开",
+    "lcov.too_large": "文本超过 {{mb}} MB，请直接打开文件",
+    "lcov.read_failed": "读取报告失败：{{detail}}",
+    "lcov.file_not_found": "报告中没有 {{file}}",
+    "lcov.outside_root": "{{path}} 不在源码根目录内",
+    "lcov.root_not_absolute": "源码根目录必须是绝对路径"
+  }
+}

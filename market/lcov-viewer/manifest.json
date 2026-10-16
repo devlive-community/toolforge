@@ -1,0 +1,19 @@
+{
+  "id": "org.devlive.toolforge.lcov-viewer",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["lcov", "coverage", "code coverage", "test coverage", "lcov.info", "genhtml", "覆盖率", "测试覆盖率", "代码覆盖率"],
+  "accent": "green",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write", "fs:user-selected"],
+  "functions": {
+    "load": { "task": true },
+    "parse": {},
+    "detail": {},
+    "resolve": {},
+    "export": {}
+  },
+  "sensitive": false
+}

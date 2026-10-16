@@ -1,0 +1,112 @@
+{
+  "name": "LCOV Coverage Viewer",
+  "description": "Open lcov.info offline to browse line, function and branch coverage by directory and file, with hit counts and uncovered ranges on the source",
+  "help": [
+    "Only the LCOV report and the source folder you choose are read. Nothing runs tests, builds the project or contacts CI; coverage is evidence of what tests executed, not a quality score.",
+    "Supported records: TN, SF, VER, DA (with checksums), FN (including the lcov 2 end-line form), FNDA, FNL / FNA, BRDA and LF / LH / FNF / FNH / BRF / BRH. Other record types are counted and reported but never used for statistics. A source file appearing in several test groups is merged: lines, functions and branches are unioned and hits are added, so nothing is counted twice.",
+    "Branch coverage = branches taken at least once / all branches; a “-” in BRDA means the block never executed, which counts in the total and is shown separately. A metric without records shows N/A. Declared LF / LH etc. that disagree with the actual counts are reported.",
+    "Set a source root to see hit counts on the source. When the report holds absolute CI paths, add “CI path prefix → local folder” mappings (longest match wins, Windows and POSIX paths both work). Only files inside the source root are read and escaping paths are refused; line numbers beyond the source and checksum mismatches are reported.",
+    "Large reports load as a cancellable task, the file list is paged, and summaries export as CSV or Markdown."
+  ],
+  "open": {
+    "drop": "Drop or open an lcov.info",
+    "hint": "LCOV reports from lcov, c8 / nyc, cargo-llvm-cov, gcovr, Jest, pytest-cov and others",
+    "filter": "LCOV reports",
+    "loading": "Reading the report…",
+    "cancel": "Cancel",
+    "other": "Open another report",
+    "reloading": "The cached report expired; reading it again"
+  },
+  "metric": {
+    "lines": "Lines",
+    "functions": "Functions",
+    "branches": "Branches",
+    "notExecuted": "{{count}} not executed"
+  },
+  "summary": {
+    "files": "{{count}} files · {{records}} records",
+    "tests": "Tests: {{list}} ({{count}})",
+    "diagnostics": "{{count}} diagnostics"
+  },
+  "table": {
+    "title": "Coverage",
+    "kind": "Show",
+    "files": "Files",
+    "dirs": "Directories",
+    "count": "{{count}} items",
+    "previous": "Previous page",
+    "next": "Next page",
+    "search": "Filter by path",
+    "sort": "Sort",
+    "sorts": {
+      "lines": "By line coverage",
+      "functions": "By function coverage",
+      "branches": "By branch coverage",
+      "path": "By path"
+    },
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "dirsHint": "Double-click a directory to filter its files"
+  },
+  "detail": {
+    "title": "File details",
+    "empty": "Choose a file",
+    "emptyHint": "Set a source root to see hit counts on the source",
+    "uncovered": "Uncovered:",
+    "sourceIssues": "{{count}} source issues:",
+    "beyondSource": "line {{line}} is beyond the source",
+    "checksumMismatch": "line {{line}} checksum differs",
+    "branchesOnLine": "{{taken}} of {{total}} branches taken",
+    "noSourceLine": "",
+    "functions": "Functions ({{count}})",
+    "untakenBranches": "Branches not taken",
+    "branchNotExecuted": "line {{line}} {{block}}.{{branch}}: block not executed",
+    "branchNotTaken": "line {{line}} {{block}}.{{branch}}: 0 times",
+    "more": "{{count}} more",
+    "hits": "{{count}}×"
+  },
+  "source": {
+    "title": "Source settings",
+    "description": "Sources are read locally to show hit counts on them",
+    "root": "Source root",
+    "rootPlaceholder": "Choose the project folder",
+    "choose": "Choose",
+    "mappings": "Path mappings",
+    "from": "CI path prefix",
+    "to": "Local folder (may be relative to the root)",
+    "addMapping": "Add mapping",
+    "removeMapping": "Remove mapping",
+    "mappingHint": "For example /home/runner/work/app/app → /Users/me/app; paths still outside the source root after mapping are never read.",
+    "close": "Close",
+    "noRoot": "No source root set; only executable lines from the report are shown.",
+    "unavailable": "Could not read the source: {{reason}}"
+  },
+  "diagnostics": {
+    "title": "Diagnostics",
+    "ignored": "Record types not used for statistics:",
+    "line": "line {{line}}",
+    "malformed": "Malformed",
+    "outsideRecord": "Outside an SF record",
+    "unterminated": "Record missing end_of_record",
+    "declaredMismatch": "Declared value differs from the counts",
+    "duplicateRecord": "Repeated within the same test group",
+    "dropped": "{{count}} more not listed",
+    "ignoredCount": "{{kind}} × {{count}}"
+  },
+  "export": {
+    "title": "Export",
+    "copyMarkdown": "Copy Markdown summary",
+    "saveMarkdown": "Save Markdown summary",
+    "copyCsv": "Copy CSV",
+    "saveCsv": "Save CSV"
+  },
+  "errors": {
+    "lcov.empty": "The report has no source file records",
+    "lcov.expired": "The cached report expired; open it again",
+    "lcov.too_large": "Text exceeds {{mb}} MB; open the file instead",
+    "lcov.read_failed": "Could not read the report: {{detail}}",
+    "lcov.file_not_found": "{{file}} is not in the report",
+    "lcov.outside_root": "{{path}} is outside the source root",
+    "lcov.root_not_absolute": "The source root must be an absolute path"
+  }
+}

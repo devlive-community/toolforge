@@ -112,6 +112,7 @@ These tools are WASM plugins installed from the in-app tool market and updated i
 |------|-------------|
 | **Date Calculator** | Days, weeks and years-months-days between dates (with times); add or subtract time with end-of-month handling; count or add working days Monday to Friday or by the Chinese public holiday schedule with make-up workdays; a month calendar with lunar dates, solar terms and festivals; custom holiday schemes (own weekend days, company or regional days off and swaps) can be imported and exported as JSON. |
 | **i18n Key Diff** | Compare translation files for missing, extra, empty, untranslated, placeholder-mismatched and duplicate keys, and fill them back in the original format |
+| **LCOV Coverage Viewer** | Open lcov.info offline to browse line, function and branch coverage by directory and file, with hit counts and uncovered ranges on the source |
 | **SemVer Range Tester** | Parse, compare and sort versions by SemVer 2.0.0 and test them against npm ranges (^, ~, x, hyphen, `||`) with expanded comparator sets, exclusion reasons, a pre-release switch and CSV export |
 | **SQL Formatter** | Beautify and minify; keyword casing, indentation and compact mode; generic SQL, PostgreSQL, SQL Server, MySQL, SQLite, Oracle and BigQuery dialects |
 | **Test Cards** | Generate payment test card data that follows issuer ranges and Luhn, validate card numbers and look up sourced official sandbox cards |

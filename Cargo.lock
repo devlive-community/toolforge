@@ -8268,6 +8268,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-lcov-viewer"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "md-5 0.11.0",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-semver"
 version = "0.1.0"
 dependencies = [
