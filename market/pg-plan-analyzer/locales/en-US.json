@@ -1,0 +1,108 @@
+{
+  "name": "PostgreSQL Plan Analyzer",
+  "description": "Parse PostgreSQL EXPLAIN (FORMAT JSON) offline, build a collapsible plan tree, split time by loops, flag row-estimate deviations and sort spills, and surface hotspot nodes",
+  "help": [
+    "Run EXPLAIN (ANALYZE, FORMAT JSON) SELECT …; in psql, then paste the JSON or open it as a file. Everything is offline — no database connection, no query execution.",
+    "Time semantics: Actual Total Time is the average milliseconds per loop, so a node contributes that value × Actual Loops to its parent; exclusive time = inclusive time − children's inclusive time. Tree times are never summed naively.",
+    "Notes are hints only: large sequential scans, row-estimate deviations and sort spills are flagged, but a sequential scan is not an error by itself. Plan-only output never invents runtime metrics.",
+    "Multi-statement plans are switchable; node count and tree depth limits apply and large files can be cancelled while parsing."
+  ],
+  "functions": {
+    "parse": "Parse pasted plan",
+    "load": "Open plan file",
+    "export": "Export report"
+  },
+  "stages": {
+    "pg.reading": "Reading file",
+    "pg.parsing": "Parsing plan"
+  },
+  "open": {
+    "filter": "EXPLAIN JSON",
+    "openFile": "Open plan file",
+    "paste": "Paste JSON",
+    "pasteTitle": "Paste EXPLAIN JSON",
+    "parse": "Parse",
+    "loading": "Parsing plan…",
+    "cancel": "Cancel",
+    "drop": "Drop a plan JSON to parse",
+    "emptyTitle": "No plan loaded yet",
+    "emptyHint": "Only EXPLAIN (FORMAT JSON) is supported — no database connection, no query execution"
+  },
+  "overview": {
+    "statement": "Statement",
+    "planning": "Planning time",
+    "execution": "Execution time",
+    "nodes": "Nodes",
+    "hasActual": "ANALYZE metrics",
+    "planOnly": "Plan only",
+    "statementSql": "Original SQL"
+  },
+  "tree": {
+    "title": "Plan tree",
+    "empty": "This statement has no plan nodes",
+    "perLoop": "{rows:.0} rows ×{loops:.0}",
+    "noMetrics": "plan only",
+    "cost": "cost {cost:.2}",
+    "truncated": "More than {{max}} nodes, truncated"
+  },
+  "detail": {
+    "title": "Node detail",
+    "nodeType": "Node type",
+    "relation": "Relation",
+    "indexName": "Index",
+    "joinType": "Join type",
+    "filter": "Filter",
+    "indexCond": "Index cond",
+    "hashCond": "Hash cond",
+    "joinFilter": "Join filter",
+    "sortKey": "Sort key",
+    "startupCost": "Startup cost",
+    "totalCost": "Total cost",
+    "planRows": "Estimated rows",
+    "planWidth": "Estimated width",
+    "actualStartup": "Actual startup (ms)",
+    "actualTotal": "Actual time (ms/loop)",
+    "actualRows": "Actual rows (per loop)",
+    "loops": "Loops",
+    "inclusive": "Inclusive time (ms)",
+    "exclusive": "Exclusive time (ms)",
+    "rowsRemoved": "Rows removed by filter",
+    "tempWritten": "Temp blocks written",
+    "sharedHit": "Shared cache hits",
+    "sharedRead": "Shared reads",
+    "heapFetches": "Heap fetches",
+    "parallel": "parallel",
+    "msValue": "{{value}} ms",
+    "notes": "Notes",
+    "empty": "Select a node on the left to see details"
+  },
+  "hotspots": {
+    "title": "Hotspots",
+    "time": "exclusive time",
+    "spill": "sort spill",
+    "deviation": "row deviation",
+    "empty": "Hotspots appear once ANALYZE metrics are present"
+  },
+  "export": {
+    "markdown": "Copy Markdown",
+    "json": "Copy JSON",
+    "saveMd": "Save Markdown",
+    "saveJson": "Save JSON"
+  },
+  "errors": {
+    "pg.invalid_json": "Not valid JSON: {{detail}}",
+    "pg.empty": "The JSON contains no execution plans",
+    "pg.too_many_nodes": "More than {{max}} plan nodes",
+    "pg.too_deep": "The plan tree is deeper than {{max}}",
+    "pg.too_large": "Pasted content exceeds the {{mb}} MB limit",
+    "pg.file_too_large": "The file exceeds the {{mb}} MB limit",
+    "pg.read_failed": "Failed to read the file: {{detail}}",
+    "pg.no_result": "No analysis result yet — parse a plan first",
+    "pg.loaded": "Loaded {{statements}} statements, {{nodes}} nodes"
+  },
+  "notes": {
+    "pg.row_deviation": "Estimated {{plan}} rows but {{actual}} actual rows — statistics or selectivity may be off",
+    "pg.sort_spilled": "Sort wrote {{blocks}} temp blocks; consider raising work_mem or reducing sorted rows",
+    "pg.seq_scan_many_rows": "Sequential scan of ~{{rows}} rows — check whether a better index exists (a sequential scan is not an error)"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.pg-plan-analyzer",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["postgres", "postgresql", "explain", "query plan", "execution plan", "analyze", "slow query", "sql", "执行计划", "查询计划", "慢查询", "SQL调优", "EXPLAIN"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write", "fs:user-selected"],
+  "functions": {
+    "parse": {},
+    "load": { "task": true },
+    "export": {}
+  },
+  "sensitive": false
+}

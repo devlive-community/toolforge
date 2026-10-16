@@ -1,0 +1,108 @@
+{
+  "name": "PostgreSQL 计划分析器",
+  "description": "离线解析 PostgreSQL 的 EXPLAIN (FORMAT JSON),构建可折叠计划树,按 loops 口径拆分耗时,提示估计偏差与排序落盘,并给出热点节点",
+  "help": [
+    "在 psql 里执行 EXPLAIN (ANALYZE, FORMAT JSON) SELECT …; 把输出的 JSON 粘贴进来或打开为文件即可分析,全程离线,不连接数据库。",
+    "耗时口径:Actual Total Time 是每次循环的平均毫秒,节点对父节点的贡献 = 该值 × Actual Loops;自身耗时 = 包含耗时 − 子节点包含耗时,不会把整棵树直接相加。",
+    "提示只是线索:顺序扫描行数较多、估计行数与实际偏差较大、排序写盘都会标注,但顺序扫描本身不算错误;只有估计计划时不会补造运行指标。",
+    "多语句计划可切换查看;节点数与树深有上限,大文件解析可取消。"
+  ],
+  "functions": {
+    "parse": "解析粘贴的计划",
+    "load": "打开计划文件",
+    "export": "导出报告"
+  },
+  "stages": {
+    "pg.reading": "读取文件",
+    "pg.parsing": "解析计划"
+  },
+  "open": {
+    "filter": "EXPLAIN JSON",
+    "openFile": "打开计划文件",
+    "paste": "粘贴 JSON",
+    "pasteTitle": "粘贴 EXPLAIN JSON",
+    "parse": "解析",
+    "loading": "正在解析计划…",
+    "cancel": "取消",
+    "drop": "拖入计划 JSON 即可解析",
+    "emptyTitle": "还没有打开执行计划",
+    "emptyHint": "只支持 EXPLAIN (FORMAT JSON),不连接数据库、不运行查询"
+  },
+  "overview": {
+    "statement": "语句",
+    "planning": "规划耗时",
+    "execution": "执行耗时",
+    "nodes": "节点",
+    "hasActual": "含 ANALYZE 指标",
+    "planOnly": "仅估计计划",
+    "statementSql": "原始 SQL"
+  },
+  "tree": {
+    "title": "计划树",
+    "empty": "该语句没有计划节点",
+    "perLoop": "{rows:.0} 行 ×{loops:.0}",
+    "noMetrics": "仅估计",
+    "cost": "代价 {cost:.2}",
+    "truncated": "节点超过 {{max}},已截断"
+  },
+  "detail": {
+    "title": "节点详情",
+    "nodeType": "节点类型",
+    "relation": "关系",
+    "indexName": "索引",
+    "joinType": "连接类型",
+    "filter": "过滤条件",
+    "indexCond": "索引条件",
+    "hashCond": "Hash 条件",
+    "joinFilter": "连接过滤",
+    "sortKey": "排序键",
+    "startupCost": "启动代价",
+    "totalCost": "总代价",
+    "planRows": "估计行数",
+    "planWidth": "估计宽度",
+    "actualStartup": "实际启动 (ms)",
+    "actualTotal": "实际耗时 (ms/loop)",
+    "actualRows": "实际行数 (每次循环)",
+    "loops": "循环次数",
+    "inclusive": "包含耗时 (ms)",
+    "exclusive": "自身耗时 (ms)",
+    "rowsRemoved": "过滤移除行数",
+    "tempWritten": "临时写盘块",
+    "sharedHit": "共享缓存命中",
+    "sharedRead": "共享读盘",
+    "heapFetches": "堆取页次数",
+    "parallel": "并行",
+    "msValue": "{{value}} 毫秒",
+    "notes": "线索",
+    "empty": "点击左侧节点查看详情"
+  },
+  "hotspots": {
+    "title": "热点节点",
+    "time": "自身耗时",
+    "spill": "排序落盘",
+    "deviation": "行数偏差",
+    "empty": "有 ANALYZE 指标后才会出现热点"
+  },
+  "export": {
+    "markdown": "复制 Markdown",
+    "json": "复制 JSON",
+    "saveMd": "保存 Markdown",
+    "saveJson": "保存 JSON"
+  },
+  "errors": {
+    "pg.invalid_json": "不是有效的 JSON:{{detail}}",
+    "pg.empty": "JSON 里没有执行计划",
+    "pg.too_many_nodes": "计划节点超过 {{max}} 个上限",
+    "pg.too_deep": "计划树深度超过 {{max}} 上限",
+    "pg.too_large": "粘贴内容超过 {{mb}} MB 上限",
+    "pg.file_too_large": "文件超过 {{mb}} MB 上限",
+    "pg.read_failed": "读取文件失败:{{detail}}",
+    "pg.no_result": "还没有分析结果,先解析一份计划",
+    "pg.loaded": "已加载 {{statements}} 条语句、{{nodes}} 个节点"
+  },
+  "notes": {
+    "pg.row_deviation": "估计 {{plan}} 行,实际 {{actual}} 行,偏差较大,统计信息或选择度可能失真",
+    "pg.sort_spilled": "排序写入 {{blocks}} 个临时块,考虑增大 work_mem 或减少排序数据",
+    "pg.seq_scan_many_rows": "顺序扫描约 {{rows}} 行,确认是否有更合适的索引(顺序扫描本身不是错误)"
+  }
+}
