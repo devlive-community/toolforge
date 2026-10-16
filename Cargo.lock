@@ -8314,6 +8314,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-timestamp"
+version = "0.1.0"
+dependencies = [
+ "jiff",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-uscc"
 version = "0.1.0"
 dependencies = [
@@ -9034,16 +9045,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-timestamp"
-version = "0.1.0"
-dependencies = [
- "jiff",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-unicode"
 version = "0.1.0"
 dependencies = [
@@ -9512,7 +9513,6 @@ dependencies = [
  "tfp-text-diff",
  "tfp-text-encoding",
  "tfp-text-tools",
- "tfp-timestamp",
  "tfp-unicode",
  "tfp-unit-converter",
  "tfp-url-parser",

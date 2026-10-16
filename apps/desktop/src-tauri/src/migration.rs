@@ -14,6 +14,7 @@ pub const MIGRATED: &[&str] = &[
     "org.devlive.toolforge.date-calculator",
     "org.devlive.toolforge.semver",
     "org.devlive.toolforge.sql-formatter",
+    "org.devlive.toolforge.timestamp",
 ];
 
 pub const MARKER: &str = ".migrated.json";

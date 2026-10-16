@@ -44,7 +44,6 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **XML Formatter** | Format, minify and validate; keeps comments, CDATA and declarations; unclosed or mismatched tags reported with line and column |
 | **Regex Tester** | Live match and group highlighting with replacement preview; lookaround, backreferences and named groups; common pattern presets |
 | **Hex Viewer** | Open files of any size byte by byte with file-type detection, go to offset, hex or text search, a data inspector (integers, floats, UTF-8, Unix times in either byte order) and copying selections as hex, Base64, a C array or Python bytes |
-| **Timestamp** | Seconds / milliseconds / microseconds / nanoseconds detected automatically; multiple time zones side by side; date strings to timestamps; live clock |
 | **UUID Generator** | Batch generate UUID v1 / v3 / v4 / v5 / v7, ULID and NanoID; inspect versions and embedded timestamps |
 | **Hash** | MD5, SHA-1, SHA-2, SHA3, SM3 and CRC32; live text hashing and HMAC with verification; drop files to hash them in a background task with live logs |
 | **Encoder** | Base64 / Base64URL / Base32 / Hex, URL (component, full, form), HTML entities and Unicode escapes in both directions; files to Base64 or Data URIs |
@@ -116,6 +115,7 @@ These tools are WASM plugins installed from the in-app tool market and updated i
 | **SemVer Range Tester** | Parse, compare and sort versions by SemVer 2.0.0 and test them against npm ranges (^, ~, x, hyphen, `||`) with expanded comparator sets, exclusion reasons, a pre-release switch and CSV export |
 | **SQL Formatter** | Beautify and minify; keyword casing, indentation and compact mode; generic SQL, PostgreSQL, SQL Server, MySQL, SQLite, Oracle and BigQuery dialects |
 | **Test Cards** | Generate payment test card data that follows issuer ranges and Luhn, validate card numbers and look up sourced official sandbox cards |
+| **Timestamp** | Seconds / milliseconds / microseconds / nanoseconds detected automatically; multiple time zones side by side; date strings to timestamps; live clock |
 | **USCC Validator** | Validate Unified Social Credit Codes offline by GB 32100-2015 — length, characters and check digit — and explain every field |
 | **User-Agent Parser** | Parse browser, engine, OS, device and crawler from User-Agent strings offline with the matching rule shown; summarize UAs in access logs |
 

@@ -17,7 +17,6 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
     registry.register_for(Arc::new(tfp_json_formatter::JsonFormatter::default()), os);
     registry.register_for(Arc::new(tfp_hash::Hash::default()), os);
     registry.register_for(Arc::new(tfp_uuid::UuidTool::default()), os);
-    registry.register_for(Arc::new(tfp_timestamp::Timestamp::default()), os);
     registry.register_for(Arc::new(tfp_regex::Regex::default()), os);
     registry.register_for(Arc::new(tfp_xml_formatter::XmlFormatter::default()), os);
     registry.register_for(Arc::new(tfp_encoder::Encoder::default()), os);
