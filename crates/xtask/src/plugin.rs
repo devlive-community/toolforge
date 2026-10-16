@@ -158,3 +158,73 @@ pub fn pack(root: &Path, options: &PackOptions) -> Result<PathBuf, String> {
     println!("{}", if key.is_some() { "signed" } else { "unsigned" });
     Ok(out)
 }
+
+/// manifest 中 `i18n:key` 形式的文案，从包内语言包中取出各语言的值
+fn localized(
+    package: &tf_package::Package,
+    value: &str,
+) -> serde_json::Map<String, serde_json::Value> {
+    let mut out = serde_json::Map::new();
+    let Some(key) = value.strip_prefix("i18n:") else {
+        out.insert("en-US".into(), value.into());
+        return out;
+    };
+    for (path, data) in &package.files {
+        let Some(locale) = path
+            .strip_prefix("locales/")
+            .and_then(|p| p.strip_suffix(".json"))
+        else {
+            continue;
+        };
+        if let Some(text) = serde_json::from_slice::<serde_json::Value>(data)
+            .ok()
+            .and_then(|v| v.get(key).and_then(|t| t.as_str()).map(str::to_owned))
+        {
+            out.insert(locale.to_owned(), text.into());
+        }
+    }
+    out
+}
+
+/// 由目录中的 .tfp 生成插件索引 registry.json；url 为 base_url + 文件名
+pub fn index(dir: &Path, base_url: &str) -> Result<PathBuf, String> {
+    let mut plugins = Vec::new();
+    let mut entries: Vec<_> = std::fs::read_dir(dir)
+        .map_err(|e| format!("{}: {e}", dir.display()))?
+        .filter_map(Result::ok)
+        .map(|e| e.path())
+        .filter(|p| p.extension().is_some_and(|e| e == "tfp"))
+        .collect();
+    entries.sort();
+    for path in entries {
+        let bytes = std::fs::read(&path).map_err(|e| e.to_string())?;
+        let package = tf_package::open(&bytes).map_err(|e| format!("{}: {e}", path.display()))?;
+        let manifest = &package.manifest;
+        let file = path
+            .file_name()
+            .unwrap_or_default()
+            .to_string_lossy()
+            .into_owned();
+        plugins.push(serde_json::json!({
+            "id": manifest.id,
+            "version": manifest.version,
+            "category": manifest.category,
+            "names": localized(&package, &manifest.name),
+            "descriptions": localized(&package, &manifest.description),
+            "icon": package.files.get("icon.svg").map(|svg| String::from_utf8_lossy(svg).into_owned()),
+            "url": format!("{}/{file}", base_url.trim_end_matches('/')),
+            "sha256": HEXLOWER.encode(&Sha256::digest(&bytes)),
+            "size": bytes.len(),
+            "signed": matches!(package.trust, tf_package::Trust::Official { .. }),
+        }));
+    }
+    let out = dir.join("registry.json");
+    let index = serde_json::json!({ "version": 1, "plugins": plugins });
+    std::fs::write(
+        &out,
+        serde_json::to_string_pretty(&index).map_err(|e| e.to_string())?,
+    )
+    .map_err(|e| e.to_string())?;
+    println!("{} ({} plugins)", out.display(), plugins.len());
+    Ok(out)
+}

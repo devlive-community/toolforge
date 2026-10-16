@@ -26,6 +26,8 @@ Commands:
   plugin pack <slug> [--out dir] [--key-id id] [--unsigned]
                           Build market/<slug> into a .tfp package (default out: dist/plugins);
                           signs with the base64 key in TOOLFORGE_PLUGIN_KEY unless --unsigned
+  plugin index <dir> <base-url>
+                          Write <dir>/registry.json listing the .tfp packages in <dir>
   help                    Show this message
 ";
 
@@ -70,6 +72,10 @@ fn main() -> ExitCode {
             };
             match (args.get(1).map(String::as_str), args.get(2)) {
                 (Some("keygen"), Some(out)) => plugin::keygen(std::path::Path::new(out)),
+                (Some("index"), Some(dir)) => match args.get(3) {
+                    Some(base) => plugin::index(std::path::Path::new(dir), base).map(|_| ()),
+                    None => Err(format!("missing base url\n\n{HELP}")),
+                },
                 (Some("pack"), Some(slug)) => {
                     let root = check::workspace_root();
                     plugin::pack(
