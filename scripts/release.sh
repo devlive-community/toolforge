@@ -64,6 +64,8 @@ Version:
   (none)                  Release the current version (apps/desktop/package.json)
   1.2.0, 1.2.0-beta.1     Release exactly this version
   patch | minor | major   Bump the current version, then release it
+                          (minor and patch go up to 10 and then carry over:
+                          0.1.10 → 0.2.0, 0.10.10 → 1.0.0)
 
 Options:
   -n, --dry-run           Show the plan and release notes, change nothing
@@ -134,6 +136,9 @@ SEMVER_RE='^([0-9]+)\.([0-9]+)\.([0-9]+)(-[0-9A-Za-z.-]+)?$'
 
 is_semver() { [[ "$1" =~ $SEMVER_RE ]]; }
 
+# minor 与 patch 最大为 10，再递增时进位：0.1.10 → 0.2.0，0.10.10 → 1.0.0
+VERSION_PART_MAX=10
+
 # bump_version <version> <patch|minor|major>
 # 预发布版本（1.2.0-beta.1）的 patch 会得到正式版 1.2.0
 bump_version() {
@@ -142,10 +147,18 @@ bump_version() {
   local major="${BASH_REMATCH[1]}" minor="${BASH_REMATCH[2]}" patch="${BASH_REMATCH[3]}" pre="${BASH_REMATCH[4]}"
   case "$kind" in
     major) echo "$((major + 1)).0.0" ;;
-    minor) echo "$major.$((minor + 1)).0" ;;
+    minor)
+      if [ $((minor + 1)) -gt "$VERSION_PART_MAX" ]; then
+        echo "$((major + 1)).0.0"
+      else
+        echo "$major.$((minor + 1)).0"
+      fi
+      ;;
     patch)
       if [ -n "$pre" ]; then
         echo "$major.$minor.$patch"
+      elif [ $((patch + 1)) -gt "$VERSION_PART_MAX" ]; then
+        bump_version "$major.$minor.$patch" minor
       else
         echo "$major.$minor.$((patch + 1))"
       fi
