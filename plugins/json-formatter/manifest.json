@@ -9,14 +9,14 @@
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],
   "functions": {
-    "format": {},
-    "minify": {},
-    "validate": {},
-    "canonicalize": {},
-    "escape": {},
-    "unescape": {},
+    "format": { "history": true },
+    "minify": { "history": true },
+    "validate": { "history": true },
+    "canonicalize": { "history": true },
+    "escape": { "history": true },
+    "unescape": { "history": true },
     "tree_children": {},
-    "diff": {},
+    "diff": { "history": true },
     "diff_patch": {}
   },
   "sensitive": false

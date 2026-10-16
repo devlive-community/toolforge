@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.json-to-code",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "convert",
@@ -9,7 +9,7 @@
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:write", "fs:user-selected"],
   "functions": {
-    "generate": {},
+    "generate": { "history": true },
     "languages": {}
   },
   "sensitive": false

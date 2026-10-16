@@ -9,7 +9,7 @@
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:write", "fs:user-selected"],
   "functions": {
-    "analyze": {}
+    "analyze": { "history": true }
   },
   "sensitive": false
 }

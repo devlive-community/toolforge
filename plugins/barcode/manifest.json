@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.barcode",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "encode",
@@ -9,7 +9,7 @@
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:write", "clipboard:read", "fs:user-selected"],
   "functions": {
-    "generate": {},
+    "generate": { "history": true },
     "save": {},
     "decode": {}
   },

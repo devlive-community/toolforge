@@ -9,8 +9,8 @@
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:write"],
   "functions": {
-    "test": {},
-    "replace": {},
+    "test": { "history": true },
+    "replace": { "history": true },
     "analyze": {}
   },
   "sensitive": false

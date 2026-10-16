@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.timestamp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "dev",
@@ -10,8 +10,8 @@
   "permissions": ["clipboard:write"],
   "functions": {
     "now": {},
-    "from_timestamp": {},
-    "to_timestamp": {},
+    "from_timestamp": { "history": true },
+    "to_timestamp": { "history": true },
     "timezones": {}
   },
   "sensitive": false

@@ -10,7 +10,7 @@
   "permissions": ["clipboard:write"],
   "functions": {
     "generate": {},
-    "inspect": {}
+    "inspect": { "history": true }
   },
   "sensitive": false
 }

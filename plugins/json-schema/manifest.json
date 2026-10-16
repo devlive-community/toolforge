@@ -8,6 +8,6 @@
   "accent": "violet",
   "locales": ["zh-CN", "en-US"],
   "permissions": ["fs:user-selected", "clipboard:write"],
-  "functions": { "read_file": {}, "infer": {}, "validate": { "task": true } },
+  "functions": { "read_file": {}, "infer": { "history": true }, "validate": { "task": true } },
   "sensitive": false
 }

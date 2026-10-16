@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.dns-lookup",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "network",
@@ -9,7 +9,7 @@
   "locales": ["zh-CN", "en-US"],
   "permissions": ["network", "clipboard:write"],
   "functions": {
-    "lookup": {},
+    "lookup": { "history": true },
     "servers": {}
   },
   "sensitive": false

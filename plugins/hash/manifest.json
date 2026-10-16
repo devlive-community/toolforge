@@ -9,7 +9,7 @@
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:write", "fs:user-selected"],
   "functions": {
-    "hash_text": {},
+    "hash_text": { "history": true },
     "hmac_text": {},
     "hash_files": { "task": true },
     "manifest_create": { "task": true },

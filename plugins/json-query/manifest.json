@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.json-query",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "dev",
@@ -9,7 +9,7 @@
   "locales": ["zh-CN", "en-US"],
   "permissions": ["fs:user-selected", "clipboard:write"],
   "functions": {
-    "query": {}
+    "query": { "history": true }
   },
   "sensitive": false
 }

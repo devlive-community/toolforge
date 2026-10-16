@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.text-tools",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "text",
@@ -9,9 +9,9 @@
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:read", "clipboard:write"],
   "functions": {
-    "cases": {},
-    "lines": {},
-    "stats": {}
+    "cases": { "history": true },
+    "lines": { "history": true },
+    "stats": { "history": true }
   },
   "sensitive": false
 }

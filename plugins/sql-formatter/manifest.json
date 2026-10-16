@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.sql-formatter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "dev",
@@ -9,8 +9,8 @@
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],
   "functions": {
-    "format": {},
-    "minify": {}
+    "format": { "history": true },
+    "minify": { "history": true }
   },
   "sensitive": false
 }

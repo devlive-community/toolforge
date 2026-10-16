@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.unicode",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "text",
@@ -9,7 +9,7 @@
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:read", "clipboard:write"],
   "functions": {
-    "analyze": {},
+    "analyze": { "history": true },
     "clean": {},
     "lookup": {}
   },

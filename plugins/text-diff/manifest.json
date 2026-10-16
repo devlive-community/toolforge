@@ -9,7 +9,7 @@
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],
   "functions": {
-    "diff": {}
+    "diff": { "history": true }
   },
   "sensitive": false
 }
