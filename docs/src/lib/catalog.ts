@@ -44,8 +44,8 @@ export const release = releaseJson as ReleaseData
  * 工具发布状态：
  * - released：早已随历史版本发布
  * - new：随最新版本首次发布（最新 tag 有、上个 tag 没有）
- * - updated：随最新版本更新发布（两个 tag 都有、manifest version 变化）
- * - upcoming：已合入仓库但尚未随任何版本发布（目录最新 tag 没有，或 version 领先最新 tag）
+ * - updated：随最新版本更新发布（两个 tag 都有、插件目录内容变化）
+ * - upcoming：新工具尚未发布，或插件目录在最新 tag 后有已合入的变化
  * 由 generate-data.mjs 在构建时计算；数据不可用时一律视为 released，避免整站误标。
  */
 export function toolStatus(tool: ToolEntry): ToolStatus {
