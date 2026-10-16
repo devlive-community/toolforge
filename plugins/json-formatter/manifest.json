@@ -4,7 +4,7 @@
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "dev",
-  "keywords": ["json", "format", "pretty", "minify", "validate", "json5", "jcs", "rfc8785", "canonical", "规范化", "格式化", "压缩", "校验"],
+  "keywords": ["json", "format", "pretty", "minify", "validate", "json5", "jcs", "rfc8785", "canonical", "json patch", "merge patch", "规范化", "格式化", "压缩", "校验"],
   "accent": "violet",
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],
@@ -16,7 +16,8 @@
     "escape": {},
     "unescape": {},
     "tree_children": {},
-    "diff": {}
+    "diff": {},
+    "diff_patch": {}
   },
   "sensitive": false
 }

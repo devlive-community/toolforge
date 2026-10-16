@@ -7,7 +7,8 @@
     "Errors highlight the offending line; click “Go to error” to jump there.",
     "JCS canonical: sorts keys by UTF-16 code units and normalizes string escapes and number formatting per RFC 8785. Only strict JSON is accepted; duplicate keys, lone surrogates and out-of-range numbers fail with a clear error.",
     "The tree view loads nodes on demand so large files stay smooth; stats show type counts and nesting depth.",
-    "Compare performs a structural diff and lists added, removed and changed paths."
+    "Compare performs a structural diff and lists added, removed and changed paths.",
+    "Export the diff as a JSON Patch (add / remove / replace / move with JSON Pointer paths) or a JSON Merge Patch for reviews and config sync."
   ],
   "tabs": {
     "format": "Format",
@@ -98,6 +99,14 @@
       "added": "Added",
       "removed": "Removed",
       "changed": "Changed"
+    },
+    "export": {
+      "title": "Export diff",
+      "copyPatch": "Copy JSON Patch (RFC 6902)",
+      "savePatch": "Save JSON Patch…",
+      "copyMerge": "Copy Merge Patch (RFC 7386)",
+      "saveMerge": "Save Merge Patch…",
+      "nullWarning": "In a Merge Patch null means delete, so null values at these paths cannot be expressed: {{paths}}"
     }
   },
   "error": {

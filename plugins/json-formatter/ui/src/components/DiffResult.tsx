@@ -1,12 +1,57 @@
-import { Badge, Empty, Spinner, cn } from '@toolforge/ui'
-import { usePlugin, type AppError } from '@toolforge/plugin-ui-sdk'
-import { CircleCheck, GitCompare } from 'lucide-react'
-import type { DiffReport } from '../types'
+import { Badge, Button, DropdownMenu, Empty, Spinner, cn, toast } from '@toolforge/ui'
+import { host, usePlugin, type AppError } from '@toolforge/plugin-ui-sdk'
+import { ChevronDown, CircleCheck, FileDown, GitCompare } from 'lucide-react'
+import type { DiffReport, Mode, PatchResult } from '../types'
 import { ErrorCard } from './ErrorCard'
 
 const badge = { added: 'success', removed: 'danger', changed: 'warning' } as const
 
-export function DiffResult({ report, error, pending }: { report: DiffReport | null; error: AppError | null; pending: boolean }) {
+interface Sources {
+  left: string
+  right: string
+  mode: Mode
+}
+
+function ExportMenu({ sources }: { sources: Sources }) {
+  const { t, call, errorMessage } = usePlugin()
+  const exportPatch = async (kind: 'patch' | 'merge', target: 'copy' | 'save') => {
+    try {
+      const result = await call<PatchResult>('diff_patch', { ...sources, kind })
+      if (target === 'copy') {
+        await host.clipboard.writeText(result.output)
+        toast.success(t('common:copied'))
+      } else {
+        const path = await host.dialog.saveFile(kind === 'patch' ? 'patch.json' : 'merge-patch.json', [{ name: 'JSON', extensions: ['json'] }])
+        if (!path) return
+        await host.fs.writeText(path, result.output)
+        toast.success(t('common:saved'))
+      }
+      if (result.nullPaths.length > 0) toast.info(t('diff.export.nullWarning', { paths: result.nullPaths.join(', ') }))
+    } catch (reason) {
+      toast.error(errorMessage(reason))
+    }
+  }
+  return (
+    <DropdownMenu
+      placement="bottom-end"
+      trigger={
+        <Button size="sm" variant="outline" className="ml-auto">
+          <FileDown />
+          {t('diff.export.title')}
+          <ChevronDown />
+        </Button>
+      }
+      items={[
+        { key: 'copy-patch', label: t('diff.export.copyPatch'), onSelect: () => void exportPatch('patch', 'copy') },
+        { key: 'save-patch', label: t('diff.export.savePatch'), onSelect: () => void exportPatch('patch', 'save') },
+        { key: 'copy-merge', label: t('diff.export.copyMerge'), onSelect: () => void exportPatch('merge', 'copy') },
+        { key: 'save-merge', label: t('diff.export.saveMerge'), onSelect: () => void exportPatch('merge', 'save') },
+      ]}
+    />
+  )
+}
+
+export function DiffResult({ report, error, pending, sources }: { report: DiffReport | null; error: AppError | null; pending: boolean; sources: Sources }) {
   const { t } = usePlugin()
   if (error) return <ErrorCard error={error} />
   if (!report) {
@@ -27,6 +72,7 @@ export function DiffResult({ report, error, pending }: { report: DiffReport | nu
         <Badge variant="success">{t('diff.added', { count: report.added })}</Badge>
         <Badge variant="danger">{t('diff.removed', { count: report.removed })}</Badge>
         <Badge variant="warning">{t('diff.changed', { count: report.changed })}</Badge>
+        <ExportMenu sources={sources} />
       </div>
       <ul className="min-h-0 flex-1 divide-y divide-border overflow-auto">
         {report.items.map((item, index) => (

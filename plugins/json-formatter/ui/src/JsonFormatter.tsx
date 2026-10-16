@@ -396,7 +396,7 @@ export function JsonFormatter() {
           />
         </Panel>
         <Panel icon={<GitCompare />} title={t('diff.title')} extra={diff.pending && <Spinner className="size-3.5 text-fg-subtle" />}>
-          <DiffResult report={diff.result} error={diff.error} pending={diff.pending} />
+          <DiffResult report={diff.result} error={diff.error} pending={diff.pending} sources={{ left: input, right, mode }} />
         </Panel>
       </div>
     )

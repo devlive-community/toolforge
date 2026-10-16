@@ -57,3 +57,9 @@ export interface DiffReport {
   truncated: boolean
   elapsedMs: number
 }
+
+export interface PatchResult {
+  output: string
+  operations: number | null
+  nullPaths: string[]
+}

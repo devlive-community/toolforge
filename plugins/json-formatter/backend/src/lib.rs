@@ -7,6 +7,7 @@ mod docs;
 mod format;
 mod jcs;
 mod parse;
+mod patch;
 mod stats;
 mod tree;
 
@@ -151,6 +152,7 @@ impl ToolPlugin for JsonFormatter {
             "unescape" => to_value(self.text(parse_args(args)?, format::unescape)?),
             "tree_children" => to_value(tree::children(&self.docs, parse_args(args)?)?),
             "diff" => to_value(diff::run(parse_args(args)?)?),
+            "diff_patch" => to_value(patch::run(parse_args(args)?)?),
             other => Err(unknown_function(other)),
         }
     }

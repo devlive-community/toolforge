@@ -7,7 +7,8 @@
     "出错时会标红错误所在行，点击「定位到错误」可跳转。",
     "JCS 规范化：按 RFC 8785 对键按 UTF-16 排序、统一字符串转义与数字格式，只接受严格 JSON，重复键、孤立代理项与超出范围的数字会明确报错。",
     "树形视图按需加载节点，大文件也能流畅浏览；统计信息展示各类型数量与嵌套深度。",
-    "对比：结构化比较两份 JSON，列出新增、删除与修改的路径。"
+    "对比：结构化比较两份 JSON，列出新增、删除与修改的路径。",
+    "对比结果可导出为 JSON Patch（add / remove / replace / move，路径为 JSON Pointer）或 JSON Merge Patch，用于评审与同步配置。"
   ],
   "tabs": {
     "format": "格式化",
@@ -98,6 +99,14 @@
       "added": "新增",
       "removed": "删除",
       "changed": "修改"
+    },
+    "export": {
+      "title": "导出差异",
+      "copyPatch": "复制 JSON Patch（RFC 6902）",
+      "savePatch": "保存 JSON Patch…",
+      "copyMerge": "复制 Merge Patch（RFC 7386）",
+      "saveMerge": "保存 Merge Patch…",
+      "nullWarning": "Merge Patch 中 null 表示删除，以下位置的 null 值无法表达：{{paths}}"
     }
   },
   "error": {
