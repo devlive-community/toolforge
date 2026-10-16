@@ -8188,7 +8188,7 @@ dependencies = [
 
 [[package]]
 name = "tf-core"
-version = "0.1.10"
+version = "0.2.0"
 dependencies = [
  "indexmap 2.14.2",
  "log",
@@ -8204,7 +8204,7 @@ dependencies = [
 
 [[package]]
 name = "tf-package"
-version = "0.1.10"
+version = "0.2.0"
 dependencies = [
  "data-encoding",
  "ed25519-dalek",
@@ -8217,7 +8217,7 @@ dependencies = [
 
 [[package]]
 name = "tf-plugin-api"
-version = "0.1.10"
+version = "0.2.0"
 dependencies = [
  "indexmap 2.14.2",
  "serde",
@@ -8226,7 +8226,7 @@ dependencies = [
 
 [[package]]
 name = "tf-plugin-guest"
-version = "0.1.10"
+version = "0.2.0"
 dependencies = [
  "serde_json",
  "tf-plugin-api",
@@ -8235,7 +8235,7 @@ dependencies = [
 
 [[package]]
 name = "tf-wasm"
-version = "0.1.10"
+version = "0.2.0"
 dependencies = [
  "serde_json",
  "tf-plugin-api",
@@ -9387,7 +9387,7 @@ checksum = "7d56353a2a665ad0f41a421187180aab746c8c325620617ad883a99a1cbe66d2"
 
 [[package]]
 name = "toolforge"
-version = "0.1.10"
+version = "0.2.0"
 dependencies = [
  "log",
  "objc2-app-kit",
@@ -11769,7 +11769,7 @@ checksum = "ec7a2a501ed189703dba8b08142f057e887dfc4b2cc4db2d343ac6376ba3e0b9"
 
 [[package]]
 name = "xtask"
-version = "0.1.10"
+version = "0.2.0"
 dependencies = [
  "data-encoding",
  "ed25519-dalek",
