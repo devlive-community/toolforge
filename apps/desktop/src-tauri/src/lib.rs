@@ -1,5 +1,6 @@
 mod commands;
 mod diagnostics;
+mod history;
 mod launcher;
 mod lifecycle;
 mod menu;
@@ -118,6 +119,13 @@ pub fn run() {
             tasks::task_cancel,
             tasks::task_list,
             tasks::task_logs,
+            tasks::task_rerun,
+            tasks::task_clear,
+            history::history_list,
+            history::history_delete,
+            history::history_clear,
+            history::history_settings_get,
+            history::history_settings_set,
             resources::resource_list,
             resources::resource_download,
             resources::resource_delete,

@@ -60,8 +60,28 @@
       "emptyHint": "打开任意工具后会出现在这里。"
     },
     "history": {
-      "subtitle": "工具的处理记录。",
-      "hint": "历史记录功能将在后续版本提供，敏感工具默认不记录。"
+      "subtitle": "工具的处理记录与耗时任务。",
+      "records": "处理记录",
+      "tasks": "任务",
+      "search": "搜索输入、输出或工具",
+      "enabled": "记录处理历史",
+      "clear": "清空记录",
+      "cleared": "已清空 {{count}} 条记录",
+      "privacy": "只保存在本机 SQLite 中；密码、密钥、加解密等敏感工具从不记录。同一工具连续调用 1 分钟内合并为一条，最多保留 2000 条。",
+      "empty": "还没有处理记录",
+      "emptyHint": "在格式化、编码、正则等工具中处理内容后，会在这里留下记录。",
+      "noMatch": "没有匹配的记录",
+      "reopen": "带着这段输入打开工具",
+      "copyInput": "复制输入",
+      "delete": "删除",
+      "more": "加载更多",
+      "rerun": "用相同参数重新运行",
+      "notRerunnable": "敏感工具或参数过大，未保存参数，无法重新运行",
+      "exportLogs": "导出日志",
+      "tasksHint": "耗时任务的运行记录与日志，最多保留 200 条。",
+      "clearTasks": "清理已结束的任务",
+      "tasksCleared": "已清理 {{count}} 个任务",
+      "output": "→ {{output}}"
     },
     "settings": {
       "appearance": "外观",
@@ -240,7 +260,8 @@
       "resource.size_mismatch": "下载中断（已下载 {{actual}} / {{expected}} 字节），重试即可继续",
       "resource.checksum_mismatch": "“{{id}}”下载的文件校验失败，已丢弃",
       "shortcut.invalid": "无效的快捷键：{{shortcut}}",
-      "shortcut.unavailable": "{{shortcut}} 已被系统或其他应用占用"
+      "shortcut.unavailable": "{{shortcut}} 已被系统或其他应用占用",
+      "task.not_rerunnable": "这个任务没有保存参数，无法重新运行"
     },
     "logs": {
       "task": {

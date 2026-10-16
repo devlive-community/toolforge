@@ -5,7 +5,7 @@ use std::sync::Arc;
 use serde_json::Value;
 use tauri::ipc::Channel;
 use tauri::{AppHandle, Emitter, State};
-use tf_core::{AppResult, EventSink, LogLine, TaskEvent, TaskRecord};
+use tf_core::{AppError, AppResult, EventSink, LogLine, TaskEvent, TaskRecord, history};
 
 use crate::AppState;
 
@@ -43,13 +43,55 @@ pub fn task_start(
     on_event: Channel<TaskEvent>,
 ) -> AppResult<String> {
     // 在启动线程前同步校验，错误直接返回给调用方
+    start(&app, &state, plugin_id, function, args, on_event)
+}
+
+fn start(
+    app: &AppHandle,
+    state: &AppState,
+    plugin_id: String,
+    function: String,
+    args: Value,
+    on_event: Channel<TaskEvent>,
+) -> AppResult<String> {
     state.plugins.ensure_task(&plugin_id, &function)?;
     let registry = state.plugins.clone();
-    let sink = Arc::new(TauriSink::new(on_event, app));
+    let sink = Arc::new(TauriSink::new(on_event, app.clone()));
     let (pid, func) = (plugin_id.clone(), function.clone());
-    state.tasks.start(&plugin_id, &function, sink, move |ctx| {
+    // 敏感插件与过大的参数不保存，这些任务不能重新运行
+    let saved = (!state.plugins.is_sensitive(&plugin_id)
+        && args.to_string().len() <= history::MAX_TASK_ARGS)
+        .then(|| args.clone());
+    let task_id = state.tasks.start(&plugin_id, &function, sink, move |ctx| {
         registry.run_task(&pid, &func, args, ctx)
-    })
+    })?;
+    if let Some(args) = saved
+        && let Err(err) = state.store.task_set_args(&task_id, &args)
+    {
+        log::warn!("saving task args failed: {}", err.code);
+    }
+    Ok(task_id)
+}
+
+/// 用保存的参数重新运行任务
+#[tauri::command]
+pub fn task_rerun(
+    app: AppHandle,
+    state: State<'_, AppState>,
+    task_id: String,
+    on_event: Channel<TaskEvent>,
+) -> AppResult<String> {
+    let (plugin_id, function, args) = state
+        .store
+        .task_args(&task_id)?
+        .ok_or_else(|| AppError::new("task.not_rerunnable"))?;
+    start(&app, &state, plugin_id, function, args, on_event)
+}
+
+/// 删除已结束的任务记录与日志
+#[tauri::command]
+pub fn task_clear(state: State<'_, AppState>) -> AppResult<usize> {
+    state.tasks.clear_finished()
 }
 
 #[tauri::command]

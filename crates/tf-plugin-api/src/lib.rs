@@ -45,12 +45,15 @@ impl std::error::Error for PluginError {}
 
 pub type PluginResult<T> = Result<T, PluginError>;
 
-/// 函数声明：宿主据此决定是否以任务方式运行。
+/// 函数声明：宿主据此决定是否以任务方式运行、是否记入历史。
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FunctionSpec {
     #[serde(default)]
     pub task: bool,
+    /// 调用成功后记入「历史记录」（插件为 sensitive 时始终不记录）
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub history: bool,
 }
 
 /// 需要按需下载的外部资源（例如模型文件），由宿主统一下载、校验与存放。

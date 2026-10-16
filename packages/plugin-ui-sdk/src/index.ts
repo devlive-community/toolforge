@@ -11,7 +11,9 @@ export { isAppError, toAppError, type AppError, type FunctionSpec, type Manifest
 export type { PluginModule } from './module'
 export {
   cancelTask,
+  clearTasks,
   listTasks,
+  rerunTask,
   startResourceDownload,
   startTask,
   taskLogs,

@@ -209,9 +209,14 @@ pub async fn plugin_call(
     args: Value,
 ) -> AppResult<Value> {
     let registry = state.plugins.clone();
-    tauri::async_runtime::spawn_blocking(move || registry.call(&plugin_id, &function, args))
-        .await
-        .map_err(|e| AppError::new("plugin.crashed").with("detail", e.to_string()))?
+    let store = state.store.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        let result = registry.call(&plugin_id, &function, args.clone())?;
+        crate::history::record(&store, &registry, &plugin_id, &function, &args, &result);
+        Ok(result)
+    })
+    .await
+    .map_err(|e| AppError::new("plugin.crashed").with("detail", e.to_string()))?
 }
 
 /// 编辑器可承载的文本文件上限；更大的文件需走流式处理

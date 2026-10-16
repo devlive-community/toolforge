@@ -310,6 +310,7 @@ impl TaskManager {
             finished_at: None,
             elapsed_ms: None,
             error_code: None,
+            rerunnable: false,
         })?;
 
         let cancel = Arc::new(AtomicBool::new(false));
@@ -422,6 +423,15 @@ impl TaskManager {
             }
             None => false,
         }
+    }
+
+    /// 删除已结束的任务记录与日志文件，返回删除数量
+    pub fn clear_finished(&self) -> AppResult<usize> {
+        let ids = self.store.tasks_clear_finished()?;
+        for id in &ids {
+            let _ = std::fs::remove_file(self.log_path(id));
+        }
+        Ok(ids.len())
     }
 
     pub fn list(&self, limit: usize) -> AppResult<Vec<TaskRecord>> {

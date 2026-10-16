@@ -40,6 +40,7 @@ export const useTasks = create<TasksState>((set, get) => ({
               finishedAt: null,
               elapsedMs: null,
               errorCode: null,
+              rerunnable: false,
             },
             ...records.filter((r) => r.id !== event.taskId),
           ],

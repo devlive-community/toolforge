@@ -193,6 +193,20 @@ impl PluginRegistry {
         Ok(plugin.call(function, args)?)
     }
 
+    /// 这次调用是否应记入处理历史：函数声明了 history 且插件不是 sensitive
+    pub fn records_history(&self, plugin_id: &str, function: &str) -> bool {
+        self.get(plugin_id).is_ok_and(|plugin| {
+            let manifest = plugin.manifest();
+            !manifest.sensitive && manifest.functions.get(function).is_some_and(|f| f.history)
+        })
+    }
+
+    /// 插件是否为 sensitive（不保存任何输入）
+    pub fn is_sensitive(&self, plugin_id: &str) -> bool {
+        self.get(plugin_id)
+            .is_ok_and(|plugin| plugin.manifest().sensitive)
+    }
+
     /// 确认函数可以作为任务运行（在启动任务线程前同步校验）
     pub fn ensure_task(&self, plugin_id: &str, function: &str) -> AppResult<()> {
         match self.resolve(plugin_id, function)? {

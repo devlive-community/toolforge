@@ -36,6 +36,8 @@ export interface TaskRecord {
   finishedAt: number | null
   elapsedMs: number | null
   errorCode: string | null
+  /** 保存了启动参数，可以重新运行 */
+  rerunnable: boolean
 }
 
 const wrap = async <T,>(promise: Promise<T>) => {
@@ -58,6 +60,16 @@ export function startResourceDownload(pluginId: string, resourceId: string, onEv
   channel.onmessage = onEvent
   return wrap(invoke<string>('resource_download', { pluginId, resourceId, onEvent: channel }))
 }
+
+/** 用保存的参数重新运行任务；进度通过全局任务事件显示在任务中心 */
+export function rerunTask(taskId: string, onEvent: (event: TaskEvent) => void = () => {}) {
+  const channel = new Channel<TaskEvent>()
+  channel.onmessage = onEvent
+  return wrap(invoke<string>('task_rerun', { taskId, onEvent: channel }))
+}
+
+/** 删除已结束的任务记录与日志 */
+export const clearTasks = () => wrap(invoke<number>('task_clear'))
 
 export const cancelTask = (taskId: string) => wrap(invoke<boolean>('task_cancel', { taskId }))
 export const listTasks = () => wrap(invoke<TaskRecord[]>('task_list'))

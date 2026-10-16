@@ -60,8 +60,30 @@
       "emptyHint": "Tools you open will show up here."
     },
     "history": {
-      "subtitle": "Processing history of your tools.",
-      "hint": "History is coming in a later release; sensitive tools are never recorded."
+      "subtitle": "Processing records and long-running tasks.",
+      "records": "Records",
+      "tasks": "Tasks",
+      "search": "Search input, output or tool",
+      "enabled": "Record history",
+      "clear": "Clear records",
+      "cleared_one": "Cleared {{count}} record",
+      "cleared_other": "Cleared {{count}} records",
+      "privacy": "Stored only in the local SQLite database; sensitive tools such as passwords, keys and encryption are never recorded. Consecutive calls to the same tool within a minute merge into one record, and up to 2000 are kept.",
+      "empty": "No records yet",
+      "emptyHint": "Process something in tools such as the formatters, encoders or regex tester and it shows up here.",
+      "noMatch": "No matching records",
+      "reopen": "Open the tool with this input",
+      "copyInput": "Copy input",
+      "delete": "Delete",
+      "more": "Load more",
+      "rerun": "Run again with the same arguments",
+      "notRerunnable": "Arguments were not saved (sensitive tool or too large), so it cannot run again",
+      "exportLogs": "Export logs",
+      "tasksHint": "Runs and logs of long-running tasks; up to 200 are kept.",
+      "clearTasks": "Clear finished tasks",
+      "tasksCleared_one": "Cleared {{count}} task",
+      "tasksCleared_other": "Cleared {{count}} tasks",
+      "output": "→ {{output}}"
     },
     "settings": {
       "appearance": "Appearance",
@@ -240,7 +262,8 @@
       "resource.size_mismatch": "The download stopped early ({{actual}} of {{expected}} bytes); try again to resume",
       "resource.checksum_mismatch": "The downloaded file for “{{id}}” failed verification and was discarded",
       "shortcut.invalid": "Invalid shortcut: {{shortcut}}",
-      "shortcut.unavailable": "{{shortcut}} is already used by the system or another app"
+      "shortcut.unavailable": "{{shortcut}} is already used by the system or another app",
+      "task.not_rerunnable": "This task has no saved arguments and cannot run again"
     },
     "logs": {
       "task": {

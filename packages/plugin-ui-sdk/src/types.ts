@@ -6,6 +6,8 @@ export interface AppError {
 
 export interface FunctionSpec {
   task?: boolean
+  /** 调用成功后记入历史记录 */
+  history?: boolean
 }
 
 /** 与 Rust `tf_plugin_api::Manifest` 对应 */

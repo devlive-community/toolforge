@@ -43,7 +43,23 @@ const MIGRATIONS: &[&str] = &[
     );
     CREATE INDEX tasks_started_at ON tasks (started_at DESC);
 "#,
+    r#"
+    CREATE TABLE history (
+        id         INTEGER PRIMARY KEY AUTOINCREMENT,
+        plugin_id  TEXT NOT NULL,
+        function   TEXT NOT NULL,
+        input      TEXT NOT NULL,
+        output     TEXT,
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+    );
+    CREATE INDEX history_updated_at ON history (updated_at DESC);
+    ALTER TABLE tasks ADD COLUMN args TEXT;
+"#,
 ];
+
+/// 同一工具同一函数在这段时间内的连续调用合并为一条历史（边输入边计算时不刷屏）
+pub const HISTORY_MERGE_MS: i64 = 60_000;
 
 pub struct Store {
     conn: Mutex<Connection>,
@@ -61,6 +77,21 @@ pub struct TaskRecord {
     pub finished_at: Option<i64>,
     pub elapsed_ms: Option<i64>,
     pub error_code: Option<String>,
+    /// 保存了启动参数，可以重新运行
+    pub rerunnable: bool,
+}
+
+/// 一条处理记录
+#[derive(Debug, Clone, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct HistoryEntry {
+    pub id: i64,
+    pub plugin_id: String,
+    pub function: String,
+    pub input: String,
+    pub output: Option<String>,
+    pub created_at: i64,
+    pub updated_at: i64,
 }
 
 pub fn now_millis() -> i64 {
@@ -210,7 +241,8 @@ impl Store {
     pub fn tasks(&self, limit: usize) -> AppResult<Vec<TaskRecord>> {
         let conn = self.conn();
         let mut stmt = conn.prepare(
-            "SELECT id, plugin_id, function, status, started_at, finished_at, elapsed_ms, error_code
+            "SELECT id, plugin_id, function, status, started_at, finished_at, elapsed_ms, error_code,
+                    args IS NOT NULL
              FROM tasks ORDER BY started_at DESC LIMIT ?1",
         )?;
         let rows = stmt.query_map([limit as i64], |row| {
@@ -223,6 +255,7 @@ impl Store {
                 finished_at: row.get(5)?,
                 elapsed_ms: row.get(6)?,
                 error_code: row.get(7)?,
+                rerunnable: row.get(8)?,
             })
         })?;
         Ok(rows.collect::<Result<_, _>>()?)
@@ -248,6 +281,146 @@ impl Store {
             conn.execute("DELETE FROM tasks WHERE id = ?1", [id])?;
         }
         Ok(ids)
+    }
+
+    /// 保存任务的启动参数（用于重新运行）
+    pub fn task_set_args(&self, id: &str, args: &Value) -> AppResult<()> {
+        self.conn().execute(
+            "UPDATE tasks SET args = ?2 WHERE id = ?1",
+            params![id, args.to_string()],
+        )?;
+        Ok(())
+    }
+
+    /// 任务的插件、函数与启动参数
+    pub fn task_args(&self, id: &str) -> AppResult<Option<(String, String, Value)>> {
+        let row: Option<(String, String, Option<String>)> = self
+            .conn()
+            .query_row(
+                "SELECT plugin_id, function, args FROM tasks WHERE id = ?1",
+                [id],
+                |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?)),
+            )
+            .optional()?;
+        Ok(row.and_then(|(plugin, function, args)| {
+            let args = serde_json::from_str(&args?).ok()?;
+            Some((plugin, function, args))
+        }))
+    }
+
+    /// 删除已结束的任务记录，返回被删除的任务 id（用于清理日志文件）
+    pub fn tasks_clear_finished(&self) -> AppResult<Vec<String>> {
+        let conn = self.conn();
+        let mut stmt = conn.prepare("SELECT id FROM tasks WHERE status != 'running'")?;
+        let ids: Vec<String> = stmt
+            .query_map([], |row| row.get(0))?
+            .collect::<Result<_, _>>()?;
+        conn.execute("DELETE FROM tasks WHERE status != 'running'", [])?;
+        Ok(ids)
+    }
+
+    /// 记录一次处理；与同一工具同一函数在合并时间内的上一条记录合并
+    pub fn history_record(
+        &self,
+        plugin_id: &str,
+        function: &str,
+        input: &str,
+        output: Option<&str>,
+        now: i64,
+    ) -> AppResult<i64> {
+        let conn = self.conn();
+        let latest: Option<(i64, String, String, i64)> = conn
+            .query_row(
+                "SELECT id, plugin_id, function, updated_at FROM history ORDER BY updated_at DESC, id DESC LIMIT 1",
+                [],
+                |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?)),
+            )
+            .optional()?;
+        if let Some((id, p, f, updated_at)) = latest
+            && p == plugin_id
+            && f == function
+            && now - updated_at <= HISTORY_MERGE_MS
+        {
+            conn.execute(
+                "UPDATE history SET input = ?2, output = ?3, updated_at = ?4 WHERE id = ?1",
+                params![id, input, output, now],
+            )?;
+            return Ok(id);
+        }
+        conn.execute(
+            "INSERT INTO history (plugin_id, function, input, output, created_at, updated_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?5)",
+            params![plugin_id, function, input, output, now],
+        )?;
+        Ok(conn.last_insert_rowid())
+    }
+
+    /// 按更新时间倒序列出记录；query 匹配输入、输出或插件 id
+    pub fn history_list(
+        &self,
+        query: &str,
+        limit: usize,
+        offset: usize,
+    ) -> AppResult<Vec<HistoryEntry>> {
+        let conn = self.conn();
+        let pattern = format!(
+            "%{}%",
+            query
+                .replace('\\', "\\\\")
+                .replace('%', "\\%")
+                .replace('_', "\\_")
+        );
+        let mut stmt = conn.prepare(
+            "SELECT id, plugin_id, function, input, output, created_at, updated_at FROM history
+             WHERE ?1 = '' OR input LIKE ?2 ESCAPE '\\' OR output LIKE ?2 ESCAPE '\\' OR plugin_id LIKE ?2 ESCAPE '\\'
+             ORDER BY updated_at DESC, id DESC LIMIT ?3 OFFSET ?4",
+        )?;
+        let rows = stmt.query_map(
+            params![query, pattern, limit as i64, offset as i64],
+            |row| {
+                Ok(HistoryEntry {
+                    id: row.get(0)?,
+                    plugin_id: row.get(1)?,
+                    function: row.get(2)?,
+                    input: row.get(3)?,
+                    output: row.get(4)?,
+                    created_at: row.get(5)?,
+                    updated_at: row.get(6)?,
+                })
+            },
+        )?;
+        Ok(rows.collect::<Result<_, _>>()?)
+    }
+
+    pub fn history_count(&self) -> AppResult<usize> {
+        let count: i64 = self
+            .conn()
+            .query_row("SELECT COUNT(*) FROM history", [], |row| row.get(0))?;
+        Ok(count as usize)
+    }
+
+    pub fn history_delete(&self, id: i64) -> AppResult<()> {
+        self.conn()
+            .execute("DELETE FROM history WHERE id = ?1", [id])?;
+        Ok(())
+    }
+
+    /// 删除记录；plugin_id 为 None 时清空全部
+    pub fn history_clear(&self, plugin_id: Option<&str>) -> AppResult<usize> {
+        Ok(match plugin_id {
+            Some(id) => self
+                .conn()
+                .execute("DELETE FROM history WHERE plugin_id = ?1", [id])?,
+            None => self.conn().execute("DELETE FROM history", [])?,
+        })
+    }
+
+    /// 只保留最近 keep 条记录
+    pub fn history_prune(&self, keep: usize) -> AppResult<usize> {
+        Ok(self.conn().execute(
+            "DELETE FROM history WHERE id NOT IN (SELECT id FROM history ORDER BY updated_at DESC, id DESC LIMIT ?1)",
+            [keep as i64],
+        )?)
     }
 
     pub fn touch_recent(&self, plugin_id: &str) -> AppResult<()> {
