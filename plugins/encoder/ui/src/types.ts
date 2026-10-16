@@ -1,4 +1,4 @@
-export type Codec = 'base64' | 'base64url' | 'base32' | 'hex' | 'base58' | 'base85' | 'ascii85' | 'urlComponent' | 'url' | 'form' | 'html' | 'unicode' | 'morse'
+export type Codec = 'base64' | 'base64url' | 'base32' | 'hex' | 'base58' | 'base85' | 'ascii85' | 'urlComponent' | 'url' | 'form' | 'html' | 'unicode' | 'morse' | 'gzip' | 'deflate' | 'zlib' | 'zstd'
 export type Direction = 'encode' | 'decode'
 export type HtmlMode = 'basic' | 'decimal' | 'hex'
 export type UnicodeStyle = 'u' | 'braces' | 'codepoint'
@@ -8,6 +8,7 @@ export const GROUPS: { key: string; codecs: Codec[] }[] = [
   { key: 'binary', codecs: ['base64', 'base64url', 'base32', 'hex', 'base58', 'base85', 'ascii85'] },
   { key: 'url', codecs: ['urlComponent', 'url', 'form'] },
   { key: 'text', codecs: ['html', 'unicode', 'morse'] },
+  { key: 'compress', codecs: ['gzip', 'deflate', 'zlib', 'zstd'] },
 ]
 
 export interface Options {
@@ -38,4 +39,9 @@ export interface FileResult {
   name: string
   mime: string
   bytes: number
+}
+
+export interface Step {
+  codec: Codec
+  direction: Direction
 }

@@ -1,7 +1,8 @@
 //! 编解码插件后端：Base64 / Base32 / Base58 / Base85 / Ascii85 / Hex / URL / HTML 实体 / Unicode 转义 /
-//! 摩斯电码，以及文件转 Base64。
+//! 摩斯电码、gzip / deflate / zlib / zstd 压缩，多步流水线，以及文件转 Base64。
 
 mod codec;
+mod compress;
 mod detect;
 mod extra;
 mod file;
@@ -40,6 +41,7 @@ impl ToolPlugin for Encoder {
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
         match function {
             "transform" => to_value(codec::transform(parse_args(args)?)?),
+            "pipeline" => to_value(codec::pipeline(parse_args(args)?)?),
             "file_output" => to_value(self.results.full(parse_args(args)?)?),
             "save_output" => to_value(self.results.save(parse_args(args)?)?),
             other => Err(unknown_function(other)),

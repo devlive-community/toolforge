@@ -166,3 +166,75 @@ fn reports_byte_counts() {
     .unwrap();
     assert_eq!((out.input_bytes, out.output_bytes), (3, 4));
 }
+
+#[test]
+fn pipeline_decodes_base64_gzip_payload() {
+    let gz = crate::compress::compress(crate::compress::Format::Gzip, "{\"ok\":true}".as_bytes())
+        .unwrap();
+    let encoded = data_encoding::BASE64.encode(&gz);
+    let out = pipeline(PipelineArgs {
+        input: encoded.clone(),
+        steps: vec![
+            Step {
+                codec: Codec::Base64,
+                direction: Direction::Decode,
+            },
+            Step {
+                codec: Codec::Gzip,
+                direction: Direction::Decode,
+            },
+        ],
+        options: Options::default(),
+    })
+    .unwrap();
+    assert_eq!(out.output, "{\"ok\":true}");
+    assert!(out.text);
+    assert_eq!(out.sizes, vec![gz.len(), 11]);
+
+    let back = pipeline(PipelineArgs {
+        input: out.output,
+        steps: vec![
+            Step {
+                codec: Codec::Gzip,
+                direction: Direction::Encode,
+            },
+            Step {
+                codec: Codec::Base64,
+                direction: Direction::Encode,
+            },
+        ],
+        options: Options::default(),
+    })
+    .unwrap();
+    assert!(back.text);
+
+    let err = pipeline(PipelineArgs {
+        input: "!!!".into(),
+        steps: vec![Step {
+            codec: Codec::Base64,
+            direction: Direction::Decode,
+        }],
+        options: Options::default(),
+    })
+    .unwrap_err();
+    assert_eq!(err.params["step"], 1);
+    let err = pipeline(PipelineArgs {
+        input: "x".into(),
+        steps: vec![
+            Step {
+                codec: Codec::Gzip,
+                direction: Direction::Encode,
+            },
+            Step {
+                codec: Codec::Html,
+                direction: Direction::Encode,
+            },
+        ],
+        options: Options::default(),
+    })
+    .unwrap_err();
+    assert_eq!(
+        (err.code.as_str(), err.params["step"].as_u64()),
+        ("encode.not_text", Some(2))
+    );
+}

@@ -4,11 +4,11 @@ use data_encoding::{
     BASE32, BASE32_NOPAD, BASE64, BASE64_NOPAD, BASE64URL, BASE64URL_NOPAD, Encoding, HEXLOWER,
     HEXLOWER_PERMISSIVE, HEXUPPER,
 };
-use percent_encoding::{AsciiSet, NON_ALPHANUMERIC, percent_decode_str, utf8_percent_encode};
+use percent_encoding::{AsciiSet, NON_ALPHANUMERIC, percent_decode_str};
 use serde::{Deserialize, Serialize};
 use tf_plugin_api::{PluginError, PluginResult};
 
-use crate::{extra, unicode};
+use crate::{compress, extra, unicode};
 
 const MAX_INPUT: usize = 20 * 1024 * 1024;
 const MIME_WIDTH: usize = 76;
@@ -58,6 +58,10 @@ pub enum Codec {
     Base85,
     Ascii85,
     Morse,
+    Gzip,
+    Deflate,
+    Zlib,
+    Zstd,
 }
 
 #[derive(Debug, Clone, Copy, Deserialize, PartialEq)]
@@ -211,85 +215,159 @@ fn bytes_output(bytes: Vec<u8>) -> (String, bool) {
     }
 }
 
+fn text_input(codec: Codec, input: &[u8]) -> PluginResult<&str> {
+    std::str::from_utf8(input).map_err(|_| {
+        PluginError::new("encode.not_text").with("codec", format!("{codec:?}").to_lowercase())
+    })
+}
+
+/// 以字节为单位执行一步编解码，便于在流水线中传递二进制数据
+pub fn apply(
+    codec: Codec,
+    direction: Direction,
+    input: &[u8],
+    options: &Options,
+) -> PluginResult<Vec<u8>> {
+    let text = || text_input(codec, input);
+    Ok(match (codec, direction) {
+        (Codec::Base64 | Codec::Base64url | Codec::Base32 | Codec::Hex, Direction::Encode) => {
+            encode_bytes(codec, input, options).into_bytes()
+        }
+        (Codec::Base64, Direction::Decode) => decode_with(&BASE64, &BASE64_NOPAD, codec, text()?)?,
+        (Codec::Base64url, Direction::Decode) => {
+            decode_with(&BASE64URL, &BASE64URL_NOPAD, codec, text()?)?
+        }
+        (Codec::Base32, Direction::Decode) => {
+            decode_with(&BASE32, &BASE32_NOPAD, codec, &text()?.to_ascii_uppercase())?
+        }
+        (Codec::Hex, Direction::Decode) => {
+            let compact: String = text()?
+                .split_whitespace()
+                .flat_map(|part| part.split([':', '-', ',']))
+                .map(|part| part.trim_start_matches("0x").trim_start_matches("0X"))
+                .collect();
+            HEXLOWER_PERMISSIVE
+                .decode(compact.as_bytes())
+                .map_err(|e| invalid(codec, e))?
+        }
+        (Codec::UrlComponent, Direction::Encode) => {
+            percent_encoding::percent_encode(input, COMPONENT)
+                .to_string()
+                .into_bytes()
+        }
+        (Codec::Url, Direction::Encode) => percent_encoding::percent_encode(input, FULL_URL)
+            .to_string()
+            .into_bytes(),
+        (Codec::Form, Direction::Encode) => form_urlencoded::byte_serialize(input)
+            .collect::<String>()
+            .into_bytes(),
+        (Codec::UrlComponent | Codec::Url, Direction::Decode) => {
+            percent_decode_str(text()?).collect()
+        }
+        (Codec::Form, Direction::Decode) => {
+            percent_decode_str(&text()?.replace('+', " ")).collect()
+        }
+        (Codec::Html, Direction::Encode) => html_encode(text()?, options.html_mode).into_bytes(),
+        (Codec::Html, Direction::Decode) => html_escape::decode_html_entities(text()?)
+            .into_owned()
+            .into_bytes(),
+        (Codec::Unicode, Direction::Encode) => {
+            unicode::escape(text()?, options.unicode_style, options.escape_ascii).into_bytes()
+        }
+        (Codec::Unicode, Direction::Decode) => unicode::unescape(text()?)?.into_bytes(),
+        (Codec::Base58, Direction::Encode) => extra::base58_encode(input).into_bytes(),
+        (Codec::Base58, Direction::Decode) => extra::base58_decode(text()?)?,
+        (Codec::Base85, Direction::Encode) => extra::base85_encode(input).into_bytes(),
+        (Codec::Base85, Direction::Decode) => extra::base85_decode(text()?)?,
+        (Codec::Ascii85, Direction::Encode) => extra::ascii85_encode(input).into_bytes(),
+        (Codec::Ascii85, Direction::Decode) => extra::ascii85_decode(text()?)?,
+        (Codec::Morse, Direction::Encode) => {
+            extra::morse_encode(text()?, options.morse_utf8)?.into_bytes()
+        }
+        (Codec::Morse, Direction::Decode) => extra::morse_decode(text()?)?.into_bytes(),
+        (Codec::Gzip | Codec::Deflate | Codec::Zlib | Codec::Zstd, Direction::Encode) => {
+            compress::compress(compress::Format::of(codec), input)?
+        }
+        (Codec::Gzip | Codec::Deflate | Codec::Zlib | Codec::Zstd, Direction::Decode) => {
+            compress::decompress(compress::Format::of(codec), input)?
+        }
+    })
+}
+
 pub fn transform(args: Args) -> PluginResult<Output> {
     if args.input.len() > MAX_INPUT {
         return Err(PluginError::new("encode.too_large").with("limit", "20 MB"));
     }
     let start = Instant::now();
-    let input = args.input.as_str();
-    let options = &args.options;
-
-    let (output, text) = match (args.codec, args.direction) {
-        (Codec::Base64 | Codec::Base64url | Codec::Base32 | Codec::Hex, Direction::Encode) => {
-            (encode_bytes(args.codec, input.as_bytes(), options), true)
-        }
-        (Codec::Base64, Direction::Decode) => {
-            bytes_output(decode_with(&BASE64, &BASE64_NOPAD, args.codec, input)?)
-        }
-        (Codec::Base64url, Direction::Decode) => bytes_output(decode_with(
-            &BASE64URL,
-            &BASE64URL_NOPAD,
-            args.codec,
-            input,
-        )?),
-        (Codec::Base32, Direction::Decode) => bytes_output(decode_with(
-            &BASE32,
-            &BASE32_NOPAD,
-            args.codec,
-            &input.to_ascii_uppercase(),
-        )?),
-        (Codec::Hex, Direction::Decode) => {
-            let compact: String = input
-                .split_whitespace()
-                .flat_map(|part| part.split([':', '-', ',']))
-                .map(|part| part.trim_start_matches("0x").trim_start_matches("0X"))
-                .collect();
-            bytes_output(
-                HEXLOWER_PERMISSIVE
-                    .decode(compact.as_bytes())
-                    .map_err(|e| invalid(args.codec, e))?,
-            )
-        }
-        (Codec::UrlComponent, Direction::Encode) => {
-            (utf8_percent_encode(input, COMPONENT).to_string(), true)
-        }
-        (Codec::Url, Direction::Encode) => (utf8_percent_encode(input, FULL_URL).to_string(), true),
-        (Codec::Form, Direction::Encode) => (
-            form_urlencoded::byte_serialize(input.as_bytes()).collect(),
-            true,
-        ),
-        (Codec::UrlComponent | Codec::Url, Direction::Decode) => {
-            bytes_output(percent_decode_str(input).collect())
-        }
-        (Codec::Form, Direction::Decode) => {
-            bytes_output(percent_decode_str(&input.replace('+', " ")).collect())
-        }
-        (Codec::Html, Direction::Encode) => (html_encode(input, options.html_mode), true),
-        (Codec::Html, Direction::Decode) => {
-            (html_escape::decode_html_entities(input).into_owned(), true)
-        }
-        (Codec::Unicode, Direction::Encode) => (
-            unicode::escape(input, options.unicode_style, options.escape_ascii),
-            true,
-        ),
-        (Codec::Unicode, Direction::Decode) => (unicode::unescape(input)?, true),
-        (Codec::Base58, Direction::Encode) => (extra::base58_encode(input.as_bytes()), true),
-        (Codec::Base58, Direction::Decode) => bytes_output(extra::base58_decode(input)?),
-        (Codec::Base85, Direction::Encode) => (extra::base85_encode(input.as_bytes()), true),
-        (Codec::Base85, Direction::Decode) => bytes_output(extra::base85_decode(input)?),
-        (Codec::Ascii85, Direction::Encode) => (extra::ascii85_encode(input.as_bytes()), true),
-        (Codec::Ascii85, Direction::Decode) => bytes_output(extra::ascii85_decode(input)?),
-        (Codec::Morse, Direction::Encode) => {
-            (extra::morse_encode(input, options.morse_utf8)?, true)
-        }
-        (Codec::Morse, Direction::Decode) => (extra::morse_decode(input)?, true),
-    };
-
+    let bytes = apply(
+        args.codec,
+        args.direction,
+        args.input.as_bytes(),
+        &args.options,
+    )?;
+    let output_bytes = bytes.len();
+    let (output, text) = bytes_output(bytes);
     Ok(Output {
-        input_bytes: input.len(),
-        output_bytes: output.len(),
+        input_bytes: args.input.len(),
+        output_bytes,
         output,
         text,
+        elapsed_ms: (start.elapsed().as_secs_f64() * 100_000.0).round() / 100.0,
+    })
+}
+
+#[derive(Debug, Clone, Copy, Deserialize)]
+pub struct Step {
+    pub codec: Codec,
+    pub direction: Direction,
+}
+
+#[derive(Deserialize)]
+pub struct PipelineArgs {
+    pub input: String,
+    pub steps: Vec<Step>,
+    #[serde(default)]
+    pub options: Options,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PipelineOutput {
+    pub output: String,
+    pub text: bool,
+    pub input_bytes: usize,
+    pub output_bytes: usize,
+    /// 每一步输出的字节数
+    pub sizes: Vec<usize>,
+    pub elapsed_ms: f64,
+}
+
+pub const MAX_STEPS: usize = 16;
+
+/// 依次执行多步编解码；出错时错误参数带上 step（1 起始）
+pub fn pipeline(args: PipelineArgs) -> PluginResult<PipelineOutput> {
+    if args.input.len() > MAX_INPUT {
+        return Err(PluginError::new("encode.too_large").with("limit", "20 MB"));
+    }
+    if args.steps.is_empty() || args.steps.len() > MAX_STEPS {
+        return Err(PluginError::new("encode.invalid_steps").with("max", MAX_STEPS));
+    }
+    let start = Instant::now();
+    let mut data = args.input.as_bytes().to_vec();
+    let mut sizes = Vec::with_capacity(args.steps.len());
+    for (index, step) in args.steps.iter().enumerate() {
+        data = apply(step.codec, step.direction, &data, &args.options)
+            .map_err(|e| e.with("step", index + 1))?;
+        sizes.push(data.len());
+    }
+    let output_bytes = data.len();
+    let (output, text) = bytes_output(data);
+    Ok(PipelineOutput {
+        output,
+        text,
+        input_bytes: args.input.len(),
+        output_bytes,
+        sizes,
         elapsed_ms: (start.elapsed().as_secs_f64() * 100_000.0).round() / 100.0,
     })
 }

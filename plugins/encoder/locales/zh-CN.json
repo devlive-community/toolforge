@@ -1,20 +1,23 @@
 {
   "name": "编解码",
-  "description": "Base64、Base32、Hex、URL、HTML 实体与 Unicode 转义的编码与解码，支持文件转 Base64 / Data URI，并支持 Base58、Base85、Ascii85 与摩斯电码",
+  "description": "Base64、Base32、Hex、URL、HTML 实体与 Unicode 转义的编码与解码，支持文件转 Base64 / Data URI，并支持 Base58、Base85、Ascii85 与摩斯电码；支持 gzip / deflate / zlib / zstd 压缩与多步流水线",
   "help": [
     "左侧选择编码类型，上方切换编码 / 解码；输入后实时得到结果。",
     "解码结果若不是 UTF-8 文本（例如图片数据），会以十六进制显示并给出提示。",
     "「交换」把输出放回输入并反转方向，方便验证能否还原。",
     "文件转 Base64 以后台任务运行，最大 20 MB，可生成 Data URI 直接用于 HTML / CSS。",
-    "Base58 使用比特币字母表；Base85 使用 RFC 1924 / git 字母表，Ascii85 带 <~ ~> 包裹并用 z 表示 4 个 0 字节。摩斯电码按 ITU 标准，中文等没有对应码的字符可选择先转为 UTF-8 十六进制再编码（解码得到十六进制，需再经 Hex 解码）。"
+    "Base58 使用比特币字母表；Base85 使用 RFC 1924 / git 字母表，Ascii85 带 <~ ~> 包裹并用 z 表示 4 个 0 字节。摩斯电码按 ITU 标准，中文等没有对应码的字符可选择先转为 UTF-8 十六进制再编码（解码得到十六进制，需再经 Hex 解码）。",
+    "压缩：gzip / deflate / zlib / zstd 在字节层面压缩与解压，二进制结果以十六进制显示。流水线可把多步编码串联（如 Base64 解码 → gzip 解压），步骤之间直接传递二进制数据；可保存为预设，一键反转为相反方向的流水线。"
   ],
   "functions": {
-    "encode_file": "文件转 Base64"
+    "encode_file": "文件转 Base64",
+    "pipeline": "多步流水线"
   },
   "groups": {
     "binary": "Base 系列",
     "url": "URL",
-    "text": "文本转义"
+    "text": "文本转义",
+    "compress": "压缩"
   },
   "codecs": {
     "base64": {
@@ -68,6 +71,22 @@
     "morse": {
       "name": "摩斯电码",
       "hint": "字母间空格，单词间 /"
+    },
+    "gzip": {
+      "name": "gzip",
+      "hint": "压缩为 gzip，结果为二进制"
+    },
+    "deflate": {
+      "name": "Deflate",
+      "hint": "原始 deflate 流（无头）"
+    },
+    "zlib": {
+      "name": "zlib",
+      "hint": "带 zlib 头的 deflate"
+    },
+    "zstd": {
+      "name": "Zstandard",
+      "hint": "zstd 帧"
     }
   },
   "direction": {
@@ -89,11 +108,13 @@
   },
   "input": {
     "plain": "原文",
-    "encoded": "待解码内容"
+    "encoded": "待解码内容",
+    "title": "输入"
   },
   "output": {
     "encoded": "编码结果",
-    "decoded": "解码结果"
+    "decoded": "解码结果",
+    "title": "输出"
   },
   "swap": "交换输入与输出",
   "bytes": "{{count}} 字节",
@@ -127,6 +148,35 @@
     "encode.invalid_escape": "第 {{position}} 个字符处的转义序列无效",
     "encode.too_large": "内容过大（超过 {{limit}}）",
     "encode.file_too_large": "文件过大（超过 {{limit}}）",
-    "encode.morse_unsupported": "「{{char}}」没有对应的摩斯电码，可开启 UTF-8 十六进制选项"
+    "encode.morse_unsupported": "「{{char}}」没有对应的摩斯电码，可开启 UTF-8 十六进制选项",
+    "encode.not_text": "{{codec}} 需要文本输入，但上一步的结果是二进制",
+    "encode.compress_failed": "{{codec}} 压缩失败",
+    "encode.corrupt": "{{codec}} 数据损坏（读到第 {{offset}} 字节时出错）",
+    "encode.output_too_large": "解压结果超过 {{limit}}",
+    "encode.invalid_steps": "流水线需要 1 到 {{max}} 步"
+  },
+  "pipeline": {
+    "title": "流水线",
+    "hint": "多步串联，如 Base64 → gunzip",
+    "codec": "第 {{index}} 步",
+    "encode": "编码",
+    "decode": "解码",
+    "compress": "压缩",
+    "decompress": "解压",
+    "remove": "删除这一步",
+    "add": "添加一步",
+    "presets": "预设",
+    "save": "保存为预设",
+    "name": "预设名称",
+    "confirm": "保存",
+    "delete": "删除预设",
+    "reverse": "把结果作为输入，并反转流水线",
+    "failedAt": "第 {{step}} 步失败：",
+    "builtin": {
+      "base64Gunzip": "Base64 解码 → gzip 解压",
+      "gzipBase64": "gzip 压缩 → Base64 编码",
+      "base64Inflate": "Base64 解码 → zlib 解压",
+      "urlBase64": "URL 解码 → Base64 解码"
+    }
   }
 }

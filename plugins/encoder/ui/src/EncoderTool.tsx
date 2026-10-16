@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Button, CodeEditor, Panel, Progress, SegmentedControl, Spinner, Tooltip, cn, toast } from '@toolforge/ui'
-import { CopyButton, host, useCopy, useDebouncedCall, useLaunchInput, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
-import { ArrowUpDown, Check, Copy, Download, FileText, FileUp, Info, Terminal, X } from 'lucide-react'
+import { CopyButton, host, useCopy, useDebouncedCall, useLaunchInput, usePlugin, usePluginState, useTask } from '@toolforge/plugin-ui-sdk'
+import { ArrowUpDown, Check, Copy, Download, FileText, FileUp, Info, Terminal, Workflow, X } from 'lucide-react'
 import { CodecOptions } from './CodecOptions'
-import { GROUPS, type Codec, type Direction, type FileFormat, type FileResult, type Options, type TransformResult } from './types'
+import { Pipeline, type Preset } from './Pipeline'
+import { GROUPS, type Codec, type Direction, type FileFormat, type FileResult, type Options, type Step, type TransformResult } from './types'
 
 const BASE64_CODECS: Codec[] = ['base64']
 /** 剪贴板识别的标签对应的解码方式 */
@@ -35,14 +36,22 @@ export function EncoderTool() {
   const [fileFormat, setFileFormat] = useState<FileFormat>('dataUri')
   const [showFile, setShowFile] = useState(false)
   const task = useTask<FileResult>()
+  const [pipelineMode, setPipelineMode] = useState(false)
+  const [steps, setSteps] = useState<Step[]>([
+    { codec: 'gzip', direction: 'encode' },
+    { codec: 'base64', direction: 'encode' },
+  ])
+  const [presets, setPresets] = usePluginState<Preset[]>('pipelines', [])
 
   const optionKey = Object.values(options).join('|')
+  const stepKey = steps.map((step) => `${step.codec}:${step.direction}`).join('>')
   const hasInput = input.length > 0
   const { result, error, pending } = useDebouncedCall<TransformResult>(
-    hasInput ? 'transform' : null,
-    hasInput ? { input, codec, direction, options } : null,
-    [input, codec, direction, optionKey],
+    hasInput ? (pipelineMode ? 'pipeline' : 'transform') : null,
+    hasInput ? (pipelineMode ? { input, steps, options } : { input, codec, direction, options }) : null,
+    [input, codec, direction, optionKey, pipelineMode, stepKey],
   )
+  const failedStep = pipelineMode && error ? Number(error.params?.step ?? 0) || null : null
 
   const fileMode = showFile && task.status !== 'idle'
   const output = fileMode ? (task.result?.preview ?? '') : error ? '' : (result?.output ?? '')
@@ -50,6 +59,11 @@ export function EncoderTool() {
   const swap = () => {
     if (!result || error || !result.text) return
     setInput(result.output)
+    if (pipelineMode) {
+      // 反向流水线：步骤倒序且方向取反
+      setSteps([...steps].reverse().map((step) => ({ ...step, direction: step.direction === 'encode' ? 'decode' : 'encode' })))
+      return
+    }
     setDirection((d) => (d === 'encode' ? 'decode' : 'encode'))
   }
 
@@ -93,6 +107,24 @@ export function EncoderTool() {
   return (
     <div className="grid h-full min-h-0 grid-cols-[200px_minmax(0,1fr)] gap-3">
       <nav className="flex min-h-0 flex-col gap-4 overflow-auto rounded-card border border-border bg-surface p-2 shadow-card">
+        <button
+          type="button"
+          aria-current={pipelineMode}
+          onClick={() => {
+            setPipelineMode(true)
+            setShowFile(false)
+          }}
+          className={cn(
+            'flex w-full items-start gap-2 rounded-control px-2.5 py-1.5 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring',
+            pipelineMode ? 'bg-primary-soft text-primary-fg' : 'text-fg hover:bg-hover',
+          )}
+        >
+          <Workflow className="mt-0.5 size-4 shrink-0" />
+          <span className="flex flex-col">
+            <span className="text-[13px] font-medium">{t('pipeline.title')}</span>
+            <span className={cn('text-[11px]', pipelineMode ? 'text-primary-fg/80' : 'text-fg-subtle')}>{t('pipeline.hint')}</span>
+          </span>
+        </button>
         {GROUPS.map((group) => (
           <div key={group.key}>
             <p className="px-2 pt-1 pb-1.5 text-[11px] font-semibold tracking-wide text-fg-subtle uppercase">{t(`groups.${group.key}`)}</p>
@@ -100,18 +132,19 @@ export function EncoderTool() {
               <button
                 key={item}
                 type="button"
-                aria-current={item === codec}
+                aria-current={!pipelineMode && item === codec}
                 onClick={() => {
                   setCodec(item)
+                  setPipelineMode(false)
                   setShowFile(false)
                 }}
                 className={cn(
                   'flex w-full flex-col rounded-control px-2.5 py-1.5 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring',
-                  item === codec ? 'bg-primary-soft text-primary-fg' : 'text-fg hover:bg-hover',
+                  !pipelineMode && item === codec ? 'bg-primary-soft text-primary-fg' : 'text-fg hover:bg-hover',
                 )}
               >
                 <span className="text-[13px] font-medium">{t(`codecs.${item}.name`)}</span>
-                <span className={cn('text-[11px]', item === codec ? 'text-primary-fg/80' : 'text-fg-subtle')}>{t(`codecs.${item}.hint`)}</span>
+                <span className={cn('text-[11px]', !pipelineMode && item === codec ? 'text-primary-fg/80' : 'text-fg-subtle')}>{t(`codecs.${item}.hint`)}</span>
               </button>
             ))}
           </div>
@@ -120,6 +153,17 @@ export function EncoderTool() {
 
       <div className="flex min-h-0 flex-col gap-3">
         <section className="flex shrink-0 flex-wrap items-center gap-3 rounded-card border border-border bg-surface px-3 py-2 shadow-card">
+          {pipelineMode ? (
+            <div className="flex min-w-0 flex-1 items-start gap-2">
+              <Pipeline steps={steps} onChange={setSteps} presets={presets} onPresetsChange={setPresets} failedStep={failedStep} />
+              <Tooltip content={t('pipeline.reverse')}>
+                <Button size="icon-md" aria-label={t('pipeline.reverse')} onClick={swap} disabled={!result || !!error || !result.text}>
+                  <ArrowUpDown />
+                </Button>
+              </Tooltip>
+            </div>
+          ) : (
+            <>
           <SegmentedControl<Direction>
             value={direction}
             onValueChange={(value) => {
@@ -158,12 +202,14 @@ export function EncoderTool() {
               </Button>
             </Tooltip>
           </div>
+            </>
+          )}
         </section>
 
         <div className="grid min-h-0 flex-1 grid-cols-2 gap-3">
           <Panel
             icon={<FileText />}
-            title={t(direction === 'encode' ? 'input.plain' : 'input.encoded')}
+            title={t(pipelineMode ? 'input.title' : direction === 'encode' ? 'input.plain' : 'input.encoded')}
             actions={
               <Button size="sm" onClick={() => setInput('')}>
                 {t('common:clear')}
@@ -176,7 +222,7 @@ export function EncoderTool() {
 
           <Panel
             icon={<Terminal />}
-            title={fileMode ? t('file.title', { name: task.result?.name ?? '' }) : t(direction === 'encode' ? 'output.encoded' : 'output.decoded')}
+            title={fileMode ? t('file.title', { name: task.result?.name ?? '' }) : t(pipelineMode ? 'output.title' : direction === 'encode' ? 'output.encoded' : 'output.decoded')}
             extra={(pending || task.running) && <Spinner className="size-3.5 text-fg-subtle" />}
             actions={
               <>
@@ -225,6 +271,7 @@ export function EncoderTool() {
               <p className="p-4 text-[13px] text-danger">{errorMessage(task.error)}</p>
             ) : error ? (
               <p className="p-4 text-[13px] text-danger">
+                {failedStep !== null && `${t('pipeline.failedAt', { step: failedStep })} `}
                 {errorMessage(error)}
                 {typeof error.params?.detail === 'string' && <span className="mt-1 block font-mono text-xs text-fg-muted">{error.params.detail}</span>}
               </p>

@@ -1,20 +1,23 @@
 {
   "name": "Encoder",
-  "description": "Encode and decode Base64, Base32, Hex, URL, HTML entities and Unicode escapes, and turn files into Base64 / Data URIs, plus Base58, Base85, Ascii85 and Morse code",
+  "description": "Encode and decode Base64, Base32, Hex, URL, HTML entities and Unicode escapes, and turn files into Base64 / Data URIs, plus Base58, Base85, Ascii85 and Morse code; gzip / deflate / zlib / zstd compression and multi-step pipelines",
   "help": [
     "Pick an encoding on the left and switch between encode and decode above; results update as you type.",
     "Decoded data that is not UTF-8 text (such as image bytes) is shown as hex with a notice.",
     "“Swap” moves the output back to the input and flips the direction so you can verify a round trip.",
     "File to Base64 runs as a background task (up to 20 MB) and can produce a Data URI ready for HTML / CSS.",
-    "Base58 uses the Bitcoin alphabet; Base85 uses the RFC 1924 / git alphabet, and Ascii85 is wrapped in <~ ~> with z for four zero bytes. Morse follows ITU; characters without a code (such as Chinese) can be sent as UTF-8 hex first (decoding gives hex, then decode it with Hex)."
+    "Base58 uses the Bitcoin alphabet; Base85 uses the RFC 1924 / git alphabet, and Ascii85 is wrapped in <~ ~> with z for four zero bytes. Morse follows ITU; characters without a code (such as Chinese) can be sent as UTF-8 hex first (decoding gives hex, then decode it with Hex).",
+    "Compression: gzip / deflate / zlib / zstd work on bytes; binary results are shown as hex. Pipelines chain several steps (such as Base64 decode → gzip decompress) and pass binary data between them; save them as presets and reverse a pipeline in one click."
   ],
   "functions": {
-    "encode_file": "File to Base64"
+    "encode_file": "File to Base64",
+    "pipeline": "Multi-step pipeline"
   },
   "groups": {
     "binary": "Base encodings",
     "url": "URL",
-    "text": "Text escapes"
+    "text": "Text escapes",
+    "compress": "Compression"
   },
   "codecs": {
     "base64": {
@@ -68,6 +71,22 @@
     "morse": {
       "name": "Morse code",
       "hint": "Letters split by spaces, words by /"
+    },
+    "gzip": {
+      "name": "gzip",
+      "hint": "gzip stream, binary output"
+    },
+    "deflate": {
+      "name": "Deflate",
+      "hint": "Raw deflate stream (no header)"
+    },
+    "zlib": {
+      "name": "zlib",
+      "hint": "Deflate with a zlib header"
+    },
+    "zstd": {
+      "name": "Zstandard",
+      "hint": "zstd frame"
     }
   },
   "direction": {
@@ -89,11 +108,13 @@
   },
   "input": {
     "plain": "Plain text",
-    "encoded": "Encoded input"
+    "encoded": "Encoded input",
+    "title": "Input"
   },
   "output": {
     "encoded": "Encoded",
-    "decoded": "Decoded"
+    "decoded": "Decoded",
+    "title": "Output"
   },
   "swap": "Swap input and output",
   "bytes": "{{count}} bytes",
@@ -127,6 +148,35 @@
     "encode.invalid_escape": "Invalid escape sequence at character {{position}}",
     "encode.too_large": "Input is too large (over {{limit}})",
     "encode.file_too_large": "File is too large (over {{limit}})",
-    "encode.morse_unsupported": "\"{{char}}\" has no Morse code; enable the UTF-8 hex option"
+    "encode.morse_unsupported": "\"{{char}}\" has no Morse code; enable the UTF-8 hex option",
+    "encode.not_text": "{{codec}} needs text, but the previous step produced binary data",
+    "encode.compress_failed": "{{codec}} compression failed",
+    "encode.corrupt": "Corrupt {{codec}} data (failed after reading {{offset}} bytes)",
+    "encode.output_too_large": "The decompressed result exceeds {{limit}}",
+    "encode.invalid_steps": "A pipeline needs 1 to {{max}} steps"
+  },
+  "pipeline": {
+    "title": "Pipeline",
+    "hint": "Chain steps, e.g. Base64 → gunzip",
+    "codec": "Step {{index}}",
+    "encode": "Encode",
+    "decode": "Decode",
+    "compress": "Compress",
+    "decompress": "Decompress",
+    "remove": "Remove step",
+    "add": "Add step",
+    "presets": "Presets",
+    "save": "Save as preset",
+    "name": "Preset name",
+    "confirm": "Save",
+    "delete": "Delete preset",
+    "reverse": "Use the result as input and reverse the pipeline",
+    "failedAt": "Step {{step}} failed:",
+    "builtin": {
+      "base64Gunzip": "Base64 decode → gzip decompress",
+      "gzipBase64": "gzip compress → Base64 encode",
+      "base64Inflate": "Base64 decode → zlib decompress",
+      "urlBase64": "URL decode → Base64 decode"
+    }
   }
 }
