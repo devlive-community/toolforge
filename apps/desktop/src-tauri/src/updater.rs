@@ -1,5 +1,6 @@
 //! 在线更新：检查、下载安装都在 Rust 侧完成，进度通过 Channel 实时推送给前端。
 
+use std::future::Future;
 use std::sync::Mutex;
 use std::time::{Duration, Instant};
 
@@ -15,7 +16,86 @@ const PROGRESS_INTERVAL: Duration = Duration::from_millis(100);
 
 /// 最近一次检查到的更新，供安装时使用
 #[derive(Default)]
-pub struct PendingUpdate(Mutex<Option<Update>>);
+pub struct PendingUpdate(Pending<Update>);
+
+struct Pending<T> {
+    state: Mutex<PendingState<T>>,
+}
+
+struct PendingState<T> {
+    candidate: Option<T>,
+    busy: bool,
+}
+
+impl<T> Default for Pending<T> {
+    fn default() -> Self {
+        Self {
+            state: Mutex::new(PendingState {
+                candidate: None,
+                busy: false,
+            }),
+        }
+    }
+}
+
+/// A lease spans the asynchronous operation without holding a mutex guard.
+/// Dropping a failed or cancelled operation releases it but keeps its candidate.
+struct Operation<'a, T>(&'a Pending<T>);
+
+impl<T> Pending<T> {
+    fn begin_check(&self) -> AppResult<Operation<'_, T>> {
+        let mut state = self.state.lock().unwrap_or_else(|e| e.into_inner());
+        if state.busy {
+            return Err(AppError::new("update.busy"));
+        }
+        state.busy = true;
+        Ok(Operation(self))
+    }
+}
+
+impl<T: Clone> Pending<T> {
+    fn begin_install(&self) -> AppResult<(Operation<'_, T>, T)> {
+        let mut state = self.state.lock().unwrap_or_else(|e| e.into_inner());
+        if state.busy {
+            return Err(AppError::new("update.busy"));
+        }
+        let candidate = state
+            .candidate
+            .clone()
+            .ok_or_else(|| AppError::new("update.none"))?;
+        state.busy = true;
+        Ok((Operation(self), candidate))
+    }
+
+    async fn install<F, Fut>(&self, install: F) -> AppResult<()>
+    where
+        F: FnOnce(T) -> Fut,
+        Fut: Future<Output = AppResult<()>>,
+    {
+        let (operation, update) = self.begin_install()?;
+        install(update).await?;
+        // Only successful installation consumes the update. Checks cannot
+        // replace the candidate while this lease is active.
+        operation.replace(None);
+        Ok(())
+    }
+}
+
+impl<T> Operation<'_, T> {
+    fn replace(&self, candidate: Option<T>) {
+        self.0
+            .state
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .candidate = candidate;
+    }
+}
+
+impl<T> Drop for Operation<'_, T> {
+    fn drop(&mut self) {
+        self.0.state.lock().unwrap_or_else(|e| e.into_inner()).busy = false;
+    }
+}
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -48,6 +128,7 @@ pub async fn update_check(
     app: AppHandle,
     pending: State<'_, PendingUpdate>,
 ) -> AppResult<Option<UpdateInfo>> {
+    let operation = pending.0.begin_check()?;
     let update = app
         .updater()
         .map_err(|e| failed("update.check_failed", e))?
@@ -60,7 +141,7 @@ pub async fn update_check(
         date: u.date.map(|d| d.to_string()),
         notes: u.body.as_deref().map(markdown::parse).unwrap_or_default(),
     });
-    *pending.0.lock().unwrap_or_else(|e| e.into_inner()) = update;
+    operation.replace(update);
     Ok(info)
 }
 
@@ -69,36 +150,39 @@ pub async fn update_install(
     pending: State<'_, PendingUpdate>,
     on_event: Channel<UpdateEvent>,
 ) -> AppResult<()> {
-    let update = pending
+    let events = on_event.clone();
+    pending
         .0
-        .lock()
-        .unwrap_or_else(|e| e.into_inner())
-        .take()
-        .ok_or_else(|| AppError::new("update.none"))?;
-
-    let mut downloaded = 0u64;
-    let mut last_emit: Option<Instant> = None;
-    let progress = on_event.clone();
-    let installing = on_event.clone();
-    update
-        .download_and_install(
-            move |chunk, total| {
-                downloaded += chunk as u64;
-                let due = last_emit.is_none_or(|t| t.elapsed() >= PROGRESS_INTERVAL);
-                if due || total == Some(downloaded) {
-                    last_emit = Some(Instant::now());
-                    let _ = progress.send(UpdateEvent::Progress { downloaded, total });
-                }
-            },
-            move || {
-                let _ = installing.send(UpdateEvent::Installing);
-            },
-        )
-        .await
-        .map_err(|e| failed("update.install_failed", e))?;
+        .install(|update| async move {
+            let mut downloaded = 0u64;
+            let mut last_emit: Option<Instant> = None;
+            let progress = events.clone();
+            let installing = events.clone();
+            update
+                .download_and_install(
+                    move |chunk, total| {
+                        downloaded += chunk as u64;
+                        let due = last_emit.is_none_or(|t| t.elapsed() >= PROGRESS_INTERVAL);
+                        if due || total == Some(downloaded) {
+                            last_emit = Some(Instant::now());
+                            let _ = progress.send(UpdateEvent::Progress { downloaded, total });
+                        }
+                    },
+                    move || {
+                        let _ = installing.send(UpdateEvent::Installing);
+                    },
+                )
+                .await
+                .map_err(|e| failed("update.install_failed", e))
+        })
+        .await?;
     let _ = on_event.send(UpdateEvent::Finished);
     Ok(())
 }
+
+#[cfg(test)]
+#[path = "updater_test.rs"]
+mod tests;
 
 /// 安装完成后重启应用
 #[tauri::command]

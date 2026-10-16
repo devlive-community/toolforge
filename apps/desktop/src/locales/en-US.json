@@ -314,6 +314,7 @@
       "update.check_failed": "Failed to check for updates; check your network and try again",
       "update.install_failed": "Failed to install the update",
       "update.none": "No update to install",
+      "update.busy": "An update check or installation is already in progress",
       "task.panicked": "The plugin crashed while running",
       "task.not_found": "Task not found",
       "task.spawn_failed": "Failed to start the task",

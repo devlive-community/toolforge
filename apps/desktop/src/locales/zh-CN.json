@@ -312,6 +312,7 @@
       "update.check_failed": "检查更新失败，请检查网络后重试",
       "update.install_failed": "更新安装失败",
       "update.none": "没有可安装的更新",
+      "update.busy": "正在检查或安装更新，请稍后再试",
       "task.panicked": "插件执行时崩溃",
       "task.not_found": "任务不存在",
       "task.spawn_failed": "无法启动任务",

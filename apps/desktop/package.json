@@ -8,6 +8,7 @@
     "build": "pnpm typecheck && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
+    "test": "node --experimental-strip-types --test tests/update.test.mjs",
     "tauri": "tauri"
   },
   "dependencies": {
