@@ -17,6 +17,7 @@ import { About } from './views/About'
 import { Collection } from './views/Collection'
 import { History } from './views/History'
 import { Home } from './views/Home'
+import { Market } from './views/Market'
 import { Settings } from './views/Settings'
 import { ToolView } from './views/ToolView'
 
@@ -31,6 +32,8 @@ function Content() {
       return <Collection kind="recent" />
     case 'history':
       return <History />
+    case 'market':
+      return <Market />
     case 'settings':
       return <Settings />
     case 'about':

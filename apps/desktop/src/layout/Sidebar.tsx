@@ -1,12 +1,12 @@
 import { cn } from '@toolforge/ui'
-import { ChevronDown, Clock3, House, Star } from 'lucide-react'
+import { ChevronDown, Clock3, House, Star, Store } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { CATEGORIES, KNOWN_CATEGORIES } from '../lib/categories'
 import { ToolGlyph } from '../plugins/ToolIcon'
 import { usePluginText } from '../plugins/usePluginText'
 import { useApp, type Route } from '../stores/app'
-import { usePrefs } from '../stores/prefs'
+import { toolStatus, usePrefs } from '../stores/prefs'
 import { Logo } from './Logo'
 
 function NavItem({
@@ -15,12 +15,14 @@ function NavItem({
   active,
   onClick,
   indent,
+  badge,
 }: {
   icon: ReactNode
   label: string
   active?: boolean
   onClick: () => void
   indent?: boolean
+  badge?: number
 }) {
   return (
     <button
@@ -36,6 +38,11 @@ function NavItem({
     >
       <span className={cn('flex', active ? 'text-fg-on-primary' : 'text-fg-muted')}>{icon}</span>
       <span className="truncate">{label}</span>
+      {!!badge && (
+        <span className={cn('ml-auto rounded-full px-1.5 text-[10px] leading-4 font-semibold tabular-nums', active ? 'bg-fg-on-primary/20 text-fg-on-primary' : 'bg-primary-soft text-primary-fg')}>
+          {badge}
+        </span>
+      )}
     </button>
   )
 }
@@ -43,7 +50,11 @@ function NavItem({
 export function Sidebar() {
   const { t } = useTranslation()
   const text = usePluginText()
-  const plugins = useApp((s) => s.plugins)
+  const all = useApp((s) => s.plugins)
+  const hidden = usePrefs((s) => s.hiddenTools)
+  const seen = usePrefs((s) => s.seenVersions)
+  const plugins = all.filter((p) => !hidden.includes(p.id))
+  const changed = all.filter((p) => toolStatus(p, seen) !== 'seen').length
   const route = useApp((s) => s.route)
   const info = useApp((s) => s.info)
   const navigate = useApp((s) => s.navigate)
@@ -113,6 +124,13 @@ export function Sidebar() {
           label={t('nav.recent')}
           active={is('recent')}
           onClick={() => navigate({ view: 'recent' })}
+        />
+        <NavItem
+          icon={<Store />}
+          label={t('nav.market')}
+          active={is('market')}
+          badge={changed}
+          onClick={() => navigate({ view: 'market' })}
         />
       </nav>
 

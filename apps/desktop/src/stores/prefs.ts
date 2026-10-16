@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/core'
 import { create } from 'zustand'
+import type { Manifest } from '@toolforge/plugin-ui-sdk'
 import { i18n, resolveLocale, type Locale } from '../i18n'
 import { DEFAULT_SHORTCUT, boot, type Prefs, type ThemeMode } from '../lib/boot'
 
@@ -15,6 +16,19 @@ interface PrefsState extends Prefs {
   /** 注册失败时抛出错误并保留原快捷键 */
   setGlobalShortcut: (value: string | null) => Promise<void>
   setRunInBackground: (value: boolean) => Promise<void>
+  setToolHidden: (pluginId: string, hidden: boolean) => void
+  /** 把这些工具的当前版本记为已看过 */
+  markToolsSeen: (plugins: Manifest[]) => void
+}
+
+export type ToolStatus = 'new' | 'updated' | 'seen'
+
+/** 相对用户上次看过的版本：新增、已更新或已看过（首次启动前全部视为已看过） */
+export function toolStatus(manifest: Manifest, seen: Record<string, string> | null): ToolStatus {
+  if (!seen) return 'seen'
+  const version = seen[manifest.id]
+  if (version === undefined) return 'new'
+  return version === manifest.version ? 'seen' : 'updated'
 }
 
 const systemDark = matchMedia('(prefers-color-scheme: dark)')
@@ -44,6 +58,8 @@ const snapshot = (state: PrefsState): Prefs => ({
   clipboardSuggest: state.clipboardSuggest,
   globalShortcut: state.globalShortcut,
   runInBackground: state.runInBackground,
+  hiddenTools: state.hiddenTools,
+  seenVersions: state.seenVersions,
 })
 
 export const usePrefs = create<PrefsState>((set, get) => ({
@@ -56,6 +72,8 @@ export const usePrefs = create<PrefsState>((set, get) => ({
   clipboardSuggest: boot.prefs.clipboardSuggest ?? true,
   globalShortcut: boot.prefs.globalShortcut === undefined ? DEFAULT_SHORTCUT : boot.prefs.globalShortcut,
   runInBackground: boot.prefs.runInBackground ?? false,
+  hiddenTools: boot.prefs.hiddenTools ?? [],
+  seenVersions: boot.prefs.seenVersions ?? null,
   systemDark: systemDark.matches,
   setTheme: (theme) => {
     applyTheme(theme)
@@ -100,6 +118,23 @@ export const usePrefs = create<PrefsState>((set, get) => ({
     clearTimeout(saveTimer)
     await invoke('prefs_set', { prefs: snapshot(get()) }).catch(() => {})
   },
+  setToolHidden: (pluginId, hidden) => {
+    set((state) => ({ hiddenTools: hidden ? [...state.hiddenTools.filter((id) => id !== pluginId), pluginId] : state.hiddenTools.filter((id) => id !== pluginId) }))
+    persist(snapshot(get()))
+  },
+  markToolsSeen: (plugins) => {
+    const seenVersions = { ...(get().seenVersions ?? {}) }
+    let changed = false
+    for (const plugin of plugins) {
+      if (seenVersions[plugin.id] !== plugin.version) {
+        seenVersions[plugin.id] = plugin.version
+        changed = true
+      }
+    }
+    if (!changed && get().seenVersions) return
+    set({ seenVersions })
+    persist(snapshot(get()))
+  },
   setConfirmQuit: (confirmQuit) => {
     set({ confirmQuit })
     // 退出确认由 Rust 读取，需立即写入，避免刚修改就退出时仍按旧值处理
@@ -117,3 +152,6 @@ export const useIsDark = () =>
   usePrefs((s) => s.theme === 'dark' || (s.theme === 'system' && s.systemDark))
 
 export const initialLocale = () => resolveLocale(usePrefs.getState().locale)
+
+/** 未隐藏的工具（侧边栏、首页与命令面板使用） */
+export const useHiddenTools = () => usePrefs((s) => s.hiddenTools)

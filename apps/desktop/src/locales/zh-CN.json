@@ -15,7 +15,8 @@
       "favorites": "收藏夹",
       "recent": "最近使用",
       "history": "历史记录",
-      "settings": "设置"
+      "settings": "设置",
+      "market": "工具市场"
     },
     "category": {
       "dev": "开发工具",
@@ -210,6 +211,40 @@
     },
     "keys": {
       "space": "空格"
+    },
+    "market": {
+      "subtitle": "浏览全部 {{count}} 个工具，查看功能说明与权限，并选择在侧边栏中显示哪些工具。",
+      "search": "搜索工具名称、说明或关键词",
+      "category": "分类",
+      "allCategories": "全部分类",
+      "filter": "筛选",
+      "filters": {
+        "all": "全部",
+        "changed": "新增与更新 {{count}}",
+        "hidden": "已隐藏 {{count}}"
+      },
+      "markSeen": "全部标为已读",
+      "empty": "没有符合条件的工具",
+      "version": "v{{version}}",
+      "builtin": "内置",
+      "sensitive": "敏感数据",
+      "open": "打开工具",
+      "visible": "显示",
+      "visibleFor": "在侧边栏显示 {{name}}",
+      "features": "功能",
+      "details": "详细信息",
+      "id": "插件 ID",
+      "functions": "函数",
+      "permissions": "权限",
+      "none": "无",
+      "platforms": "平台",
+      "allPlatforms": "全部平台",
+      "keywords": "关键词",
+      "status": {
+        "new": "新增",
+        "updated": "已更新"
+      },
+      "onlineSoon": "目前所有工具都随应用内置；在线安装与更新第三方插件正在开发中。"
     }
   },
   "common": {

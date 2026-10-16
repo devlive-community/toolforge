@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import { create } from 'zustand'
 import type { Manifest } from '@toolforge/plugin-ui-sdk'
+import { usePrefs } from './prefs'
 
 export type Route =
   | { view: 'home' }
@@ -8,6 +9,7 @@ export type Route =
   | { view: 'favorites' }
   | { view: 'recent' }
   | { view: 'history' }
+  | { view: 'market' }
   | { view: 'settings' }
   | { view: 'about' }
 
@@ -63,11 +65,16 @@ export const useApp = create<AppState>((set, get) => ({
       invoke<string[]>('recent_list'),
     ])
     set({ info, plugins, favorites, recent, ready: true })
+    // 首次启动时把现有工具记为已看过，之后新增或更新的工具在工具市场中标出
+    const prefs = usePrefs.getState()
+    if (!prefs.seenVersions) prefs.markToolsSeen(plugins)
   },
 
   navigate: (route) => set({ route, paletteOpen: false }),
 
   openTool: (pluginId) => {
+    const manifest = pluginById(get().plugins, pluginId)
+    if (manifest) usePrefs.getState().markToolsSeen([manifest])
     set((state) => ({
       route: { view: 'tool', pluginId },
       paletteOpen: false,

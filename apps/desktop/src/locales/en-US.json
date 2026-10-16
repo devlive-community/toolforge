@@ -15,7 +15,8 @@
       "favorites": "Favorites",
       "recent": "Recent",
       "history": "History",
-      "settings": "Settings"
+      "settings": "Settings",
+      "market": "Tool Market"
     },
     "category": {
       "dev": "Developer",
@@ -212,6 +213,40 @@
     },
     "keys": {
       "space": "Space"
+    },
+    "market": {
+      "subtitle": "Browse all {{count}} tools, read what they do and which permissions they use, and choose which ones appear in the sidebar.",
+      "search": "Search names, descriptions or keywords",
+      "category": "Category",
+      "allCategories": "All categories",
+      "filter": "Filter",
+      "filters": {
+        "all": "All",
+        "changed": "New & updated {{count}}",
+        "hidden": "Hidden {{count}}"
+      },
+      "markSeen": "Mark all as seen",
+      "empty": "No tools match",
+      "version": "v{{version}}",
+      "builtin": "Built-in",
+      "sensitive": "Sensitive data",
+      "open": "Open tool",
+      "visible": "Show",
+      "visibleFor": "Show {{name}} in the sidebar",
+      "features": "Features",
+      "details": "Details",
+      "id": "Plugin ID",
+      "functions": "Functions",
+      "permissions": "Permissions",
+      "none": "None",
+      "platforms": "Platforms",
+      "allPlatforms": "All platforms",
+      "keywords": "Keywords",
+      "status": {
+        "new": "New",
+        "updated": "Updated"
+      },
+      "onlineSoon": "All tools ship with the app for now; installing and updating third-party plugins online is in development."
     }
   },
   "common": {

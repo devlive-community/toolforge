@@ -22,6 +22,10 @@ export interface Prefs {
   globalShortcut: string | null
   /** 关闭窗口后留在菜单栏 / 系统托盘中运行（Rust 读取） */
   runInBackground: boolean
+  /** 在侧边栏、首页与命令面板中隐藏的工具 */
+  hiddenTools: string[]
+  /** 用户已看过的工具版本，用于在工具市场标出新增与更新；首次启动时为 null */
+  seenVersions: Record<string, string> | null
 }
 
 interface BootData {
