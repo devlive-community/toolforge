@@ -3,6 +3,8 @@ name: Release
 # 推送 v* 标签（scripts/release.sh 创建）时构建并发布。
 # 发布说明取自附注标签的内容（该版本的提交历史），缺失时回退到 cargo xtask notes。
 # 暂不做系统代码签名（macOS 公证 / Windows 签名），仅使用更新器密钥签名更新包。
+# 在线插件（market/*）随版本一起打包签名，与 registry.json 一同上传到该版本；
+# 应用从 releases/latest/download/registry.json 读取插件索引。
 on:
   push:
     tags: ["v*"]
@@ -108,9 +110,49 @@ jobs:
           includeUpdaterJson: true
           args: --target ${{ matrix.target }}
 
+  plugins:
+    name: Plugins
+    # 草稿发布由 build 任务创建，之后再上传插件
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      BASE_URL: https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-wasip2
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: release-plugins
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Pack, sign and upload plugins
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOOLFORGE_PLUGIN_KEY: ${{ secrets.TOOLFORGE_PLUGIN_KEY }}
+        run: |
+          # 未配置签名私钥时跳过插件，不阻塞应用发布
+          if [ -z "$TOOLFORGE_PLUGIN_KEY" ]; then
+            echo "::warning::TOOLFORGE_PLUGIN_KEY is not set; plugins were not published with this release"
+            exit 0
+          fi
+          shopt -s nullglob
+          for dir in market/*/; do
+            cargo xtask plugin pack "$(basename "$dir")"
+          done
+          mkdir -p dist/plugins
+          cargo xtask plugin index dist/plugins "$BASE_URL"
+          gh release upload "${GITHUB_REF_NAME}" dist/plugins/* --repo "${GITHUB_REPOSITORY}" --clobber
+
   publish:
     name: Publish release
-    needs: build
+    needs: [build, plugins]
     runs-on: ubuntu-latest
     steps:
       - name: Publish draft
