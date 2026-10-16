@@ -95,6 +95,8 @@ fn rejects_builtin_ids_and_serves_only_ui_files() {
         )
         .unwrap_err();
     assert_eq!(err.code, "package.builtin_conflict");
+    // 带上包内的名称，界面显示「名称（id）」
+    assert_eq!(err.params["names"]["zh-CN"], "示例");
 
     installed
         .install(&package("org.example.demo", "1.0.0"), None, true, |_| false)
@@ -144,5 +146,21 @@ fn installs_real_package() {
     )
     .unwrap();
     assert_eq!(out["summary"]["valid"], 1);
+    std::fs::remove_dir_all(installed.root()).unwrap();
+}
+
+#[test]
+fn records_localized_names() {
+    let installed = temp("names");
+    let (info, _) = installed
+        .install(&package("org.example.named", "1.0.0"), None, true, |_| false)
+        .unwrap();
+    assert_eq!(info.names.get("zh-CN").map(String::as_str), Some("示例"));
+    assert_eq!(installed.list()[0].names, info.names);
+    // 未声明 i18n 的名称原样记为 "*"
+    let raw = tf_package::open(&package("org.example.raw", "1.0.0")).unwrap();
+    let mut plain = raw;
+    plain.manifest.name = "Plain".into();
+    assert_eq!(package_names(&plain).get("*").map(String::as_str), Some("Plain"));
     std::fs::remove_dir_all(installed.root()).unwrap();
 }

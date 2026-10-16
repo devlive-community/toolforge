@@ -265,8 +265,8 @@
         "install": "安装",
         "update": "更新到 v{{version}}",
         "uninstall": "卸载",
-        "installed": "已安装 v{{version}}",
-        "uninstalled": "已卸载",
+        "installed": "已安装 {{name}} v{{version}}",
+        "uninstalled": "已卸载 {{name}}",
         "local": "本地安装的插件",
         "trust": {
           "official": "官方签名",
@@ -277,8 +277,8 @@
         "confirmInstall": "仍然安装",
         "confirmHint": "插件在沙箱中运行，但仍可能处理你提供给它的数据。只安装你信任来源的插件。",
         "untrusted": {
-          "unsigned": "插件包 {{id}} v{{version}} 没有签名，无法确认来源与完整性。",
-          "unknownKey": "插件包 {{id}} v{{version}} 使用非官方密钥（{{keyId}}）签名，无法确认发布者。"
+          "unsigned": "插件包 {{name}}（{{id}}）v{{version}} 没有签名，无法确认来源与完整性。",
+          "unknownKey": "插件包 {{name}}（{{id}}）v{{version}} 使用非官方密钥（{{keyId}}）签名，无法确认发布者。"
         },
         "needsApp": "需要 ToolForge v{{version}} 及以上",
         "packageSize": "包大小",
@@ -346,7 +346,7 @@
       "package.bad_signature": "插件包签名无效，内容可能被篡改",
       "package.bad_key": "签名公钥无效",
       "package.untrusted": "插件包未经官方签名",
-      "package.builtin_conflict": "{{id}} 与内置工具重名，不能安装",
+      "package.builtin_conflict": "{{name}}（{{id}}）与内置工具重名，不能安装",
       "package.not_installed": "{{id}} 没有安装",
       "package.checksum_mismatch": "下载的插件包校验失败",
       "market.invalid_index": "插件索引格式无效",

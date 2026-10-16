@@ -28,6 +28,38 @@ pub struct InstallInfo {
     pub installed_at: i64,
     /// 安装来源：网址，或本地文件时为 None
     pub url: Option<String>,
+    /// 插件名称：语言 → 名称（"*" 为未翻译的名称）；旧版本安装记录中没有
+    #[serde(default)]
+    pub names: BTreeMap<String, String>,
+}
+
+/// 包内声明的插件名称。manifest.name 为 `i18n:键` 时从 locales/<语言>.json 读取，否则原样作为 "*"
+pub fn package_names(package: &tf_package::Package) -> BTreeMap<String, String> {
+    let mut names = BTreeMap::new();
+    let Some(key) = package.manifest.name.strip_prefix("i18n:") else {
+        names.insert("*".to_owned(), package.manifest.name.clone());
+        return names;
+    };
+    for (path, bytes) in &package.files {
+        let Some(locale) = path
+            .strip_prefix("locales/")
+            .and_then(|p| p.strip_suffix(".json"))
+        else {
+            continue;
+        };
+        let Ok(value) = serde_json::from_slice::<Value>(bytes) else {
+            continue;
+        };
+        // 键可以是 a.b 形式的嵌套路径
+        let found = key
+            .split('.')
+            .try_fold(&value, |node, part| node.get(part))
+            .and_then(Value::as_str);
+        if let Some(name) = found {
+            names.insert(locale.to_owned(), name.to_owned());
+        }
+    }
+    names
 }
 
 pub fn package_error(err: PackageError) -> AppError {
@@ -77,13 +109,25 @@ impl Installed {
     ) -> AppResult<(InstallInfo, Manifest)> {
         let package = tf_package::open(bytes).map_err(package_error)?;
         let id = package.manifest.id.clone();
+        let names = package_names(&package);
+        let names_value = || {
+            Value::Object(
+                names
+                    .iter()
+                    .map(|(k, v)| (k.clone(), Value::String(v.clone())))
+                    .collect(),
+            )
+        };
         if is_builtin(&id) {
-            return Err(AppError::new("package.builtin_conflict").with("id", id));
+            return Err(AppError::new("package.builtin_conflict")
+                .with("id", id)
+                .with("names", names_value()));
         }
         let (trust, key_id) = trust_parts(&package.trust);
         if trust != "official" && !allow_unsigned {
             let mut err = AppError::new("package.untrusted")
                 .with("id", id.as_str())
+                .with("names", names_value())
                 .with("trust", trust.as_str())
                 .with("version", package.manifest.version.as_str());
             if let Some(key) = &key_id {
@@ -99,6 +143,7 @@ impl Installed {
             digest: package.digest.clone(),
             installed_at: now_millis(),
             url: url.map(str::to_owned),
+            names,
         };
         std::fs::create_dir_all(&self.root)?;
         let target = self.dir(&id)?;

@@ -267,8 +267,8 @@
         "install": "Install",
         "update": "Update to v{{version}}",
         "uninstall": "Uninstall",
-        "installed": "Installed v{{version}}",
-        "uninstalled": "Uninstalled",
+        "installed": "Installed {{name}} v{{version}}",
+        "uninstalled": "Uninstalled {{name}}",
         "local": "Locally installed plugins",
         "trust": {
           "official": "Official signature",
@@ -279,8 +279,8 @@
         "confirmInstall": "Install anyway",
         "confirmHint": "The plugin runs in a sandbox but can still process data you give it. Only install plugins from sources you trust.",
         "untrusted": {
-          "unsigned": "Package {{id}} v{{version}} is unsigned, so its origin and integrity cannot be verified.",
-          "unknownKey": "Package {{id}} v{{version}} is signed with an unofficial key ({{keyId}}), so the publisher cannot be verified."
+          "unsigned": "The package {{name}} ({{id}}) v{{version}} is unsigned, so its origin and integrity cannot be verified.",
+          "unknownKey": "The package {{name}} ({{id}}) v{{version}} is signed with an unofficial key ({{keyId}}), so its publisher cannot be verified."
         },
         "needsApp": "Requires ToolForge v{{version}} or later",
         "packageSize": "Package size",
@@ -348,7 +348,7 @@
       "package.bad_signature": "Invalid package signature; the content may have been tampered with",
       "package.bad_key": "Invalid signing key",
       "package.untrusted": "The package has no official signature",
-      "package.builtin_conflict": "{{id}} clashes with a built-in tool",
+      "package.builtin_conflict": "{{name}} ({{id}}) clashes with a built-in tool and cannot be installed",
       "package.not_installed": "{{id}} is not installed",
       "package.checksum_mismatch": "The downloaded package failed its checksum",
       "market.invalid_index": "Invalid plugin index",

@@ -32,6 +32,8 @@ interface InstallInfo {
   keyId: string | null
   installedAt: number
   url: string | null
+  /** 语言 → 名称（"*" 为未翻译的名称） */
+  names?: Record<string, string>
 }
 
 /** 简单比较 x.y.z 版本，用于判断是否有更新 */
@@ -63,6 +65,16 @@ export function MarketOnline() {
   const [detail, setDetail] = useState<DetailTarget | null>(null)
 
   const localized = (values: Record<string, string>) => values[i18n.language] ?? values['en-US'] ?? Object.values(values)[0] ?? ''
+  /** 插件显示名：按当前语言取包内名称，没有时用 id */
+  const displayName = (names: unknown, id: string) => {
+    const map = names && typeof names === 'object' ? (names as Record<string, string>) : {}
+    return map[i18n.language] ?? map['en-US'] ?? map['*'] ?? Object.values(map)[0] ?? id
+  }
+  /** 给安装错误补上 name 参数，提示里显示「名称（id）」 */
+  const withName = (error: AppError): AppError => {
+    const id = String(error.params?.id ?? '')
+    return id ? { ...error, params: { ...error.params, name: displayName(error.params?.names, id) } } : error
+  }
 
   /** 读取已安装列表与插件索引；只在回调中更新状态 */
   const load = useCallback(
@@ -98,12 +110,12 @@ export function MarketOnline() {
         pending.kind === 'url'
           ? await invoke<InstallInfo>('plugin_install_url', { url: pending.entry.url, sha256: pending.entry.sha256, allowUnsigned })
           : await invoke<InstallInfo>('plugin_install_file', { path: pending.path, allowUnsigned })
-      toast.success(t('market.online.installed', { version: info.version }))
+      toast.success(t('market.online.installed', { name: displayName(info.names, info.id), id: info.id, version: info.version }))
       setInstalled(await invoke<InstallInfo[]>('plugin_installed'))
     } catch (error) {
       const appError = error as AppError
-      if (appError.code === 'package.untrusted') setConfirm({ pending, error: appError })
-      else toast.error(errorMessage(appError))
+      if (appError.code === 'package.untrusted') setConfirm({ pending, error: withName(appError) })
+      else toast.error(errorMessage(withName(appError)))
     } finally {
       setBusy(null)
     }
@@ -118,7 +130,8 @@ export function MarketOnline() {
     setBusy(id)
     try {
       await invoke('plugin_uninstall', { pluginId: id })
-      toast.success(t('market.online.uninstalled'))
+      const info = installed.find((item) => item.id === id)
+      toast.success(t('market.online.uninstalled', { name: displayName(info?.names, id), id }))
       setInstalled(await invoke<InstallInfo[]>('plugin_installed'))
       setDetail(null)
     } catch (error) {
@@ -403,6 +416,7 @@ export function MarketOnline() {
             <p>
               {t(`market.online.untrusted.${String(confirm.error.params?.trust ?? 'unsigned')}`, {
                 id: String(confirm.error.params?.id ?? ''),
+                name: String(confirm.error.params?.name ?? confirm.error.params?.id ?? ''),
                 version: String(confirm.error.params?.version ?? ''),
                 keyId: String(confirm.error.params?.keyId ?? ''),
               })}
