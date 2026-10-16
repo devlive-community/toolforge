@@ -5,6 +5,7 @@
     "Input is processed in real time by the local Rust engine; your data never leaves this machine.",
     "Format / Minify / Validate support strict JSON as well as relaxed JSON5 (comments, trailing commas, single quotes).",
     "Errors highlight the offending line; click “Go to error” to jump there.",
+    "JCS canonical: sorts keys by UTF-16 code units and normalizes string escapes and number formatting per RFC 8785. Only strict JSON is accepted; duplicate keys, lone surrogates and out-of-range numbers fail with a clear error.",
     "The tree view loads nodes on demand so large files stay smooth; stats show type counts and nesting depth.",
     "Compare performs a structural diff and lists added, removed and changed paths."
   ],
@@ -12,6 +13,7 @@
     "format": "Format",
     "minify": "Minify",
     "validate": "Validate",
+    "canonical": "JCS canonical",
     "escape": "Escape",
     "tree": "Tree",
     "diff": "Compare"
@@ -46,7 +48,8 @@
     "sortKeys": "Sort keys",
     "expand": "Maximize",
     "collapse": "Restore",
-    "waiting": "Results appear here once you enter some input"
+    "waiting": "Results appear here once you enter some input",
+    "canonical": "Output (RFC 8785 canonical)"
   },
   "status": {
     "cursor": "Ln {{line}}, Col {{column}}",
@@ -114,6 +117,17 @@
     "json.unescape_failed": "Cannot unescape: invalid escape sequence near column {{column}}",
     "json.serialize_failed": "Failed to produce output",
     "json.doc_expired": "The document expired; please process it again",
-    "json.path_not_found": "Node path not found"
+    "json.path_not_found": "Node path not found",
+    "json.duplicate_key": "Duplicate key \"{{key}}\" at line {{line}}, column {{column}}; JCS rejects duplicate keys",
+    "json.lone_surrogate": "Lone UTF-16 surrogate escape at line {{line}}, column {{column}} is not valid Unicode",
+    "json.number_range": "Number {{number}} at line {{line}}, column {{column}} is out of double range",
+    "json.too_deep": "Nesting deeper than {{max}} levels (line {{line}}, column {{column}})"
+  },
+  "canonical": {
+    "hint": "Deterministic UTF-8 bytes per RFC 8785 for signing, digests and content addressing. Numbers follow IEEE 754 double precision; arbitrary precision is not kept. Copy the result into the Hash tool to compute a digest.",
+    "lossy_one": "{{count}} number cannot be represented exactly as a double; its canonical value differs from the source",
+    "lossy_other": "{{count}} numbers cannot be represented exactly as doubles; their canonical values differ from the source",
+    "bytes_one": "{{count}} byte",
+    "bytes_other": "{{count}} bytes"
   }
 }

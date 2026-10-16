@@ -25,6 +25,7 @@ import {
   Download,
   FileJson,
   FileText,
+  Fingerprint,
   FolderOpen,
   GitCompare,
   ListTree,
@@ -34,6 +35,7 @@ import {
   ShieldCheck,
   Sparkles,
   Terminal,
+  TriangleAlert,
 } from 'lucide-react'
 import { DiffResult } from './components/DiffResult'
 import { ErrorCard } from './components/ErrorCard'
@@ -88,9 +90,11 @@ export function JsonFormatter() {
   const inputRef = useRef<CodeEditorHandle>(null)
 
   const isEscape = tab === 'escape'
-  const fn = tab === 'diff' ? null : tab === 'minify' ? 'minify' : tab === 'validate' ? 'validate' : isEscape ? escapeDir : 'format'
+  const isCanonical = tab === 'canonical'
+  const fn =
+    tab === 'diff' ? null : tab === 'minify' ? 'minify' : tab === 'validate' ? 'validate' : isCanonical ? 'canonicalize' : isEscape ? escapeDir : 'format'
   const hasInput = input.trim().length > 0
-  const args = !hasInput ? null : isEscape ? { input } : { input, mode, indent, sortKeys }
+  const args = !hasInput ? null : isEscape || isCanonical ? { input } : { input, mode, indent, sortKeys }
   const { result, error, pending } = useDebouncedCall<ProcessResult>(fn, args, [fn, input, mode, indent, sortKeys])
   const diff = useDebouncedCall<DiffReport>(tab === 'diff' ? 'diff' : null, { left: input, right, mode }, [tab, input, right, mode])
 
@@ -127,7 +131,7 @@ export function JsonFormatter() {
   const download = () =>
     run(async () => {
       if (!result) return
-      const path = await host.dialog.saveFile(isEscape ? 'output.txt' : 'formatted.json', JSON_FILTERS)
+      const path = await host.dialog.saveFile(isEscape ? 'output.txt' : isCanonical ? 'canonical.json' : 'formatted.json', JSON_FILTERS)
       if (!path) return
       await host.fs.writeText(path, result.output)
       toast.success(t('common:saved'))
@@ -137,6 +141,7 @@ export function JsonFormatter() {
     { value: 'format' as const, label: t('tabs.format'), icon: <Sparkles /> },
     { value: 'minify' as const, label: t('tabs.minify'), icon: <Minimize /> },
     { value: 'validate' as const, label: t('tabs.validate'), icon: <ShieldCheck /> },
+    { value: 'canonical' as const, label: t('tabs.canonical'), icon: <Fingerprint /> },
     { value: 'escape' as const, label: t('tabs.escape'), icon: <Binary /> },
     { value: 'tree' as const, label: t('tabs.tree'), icon: <ListTree /> },
     { value: 'diff' as const, label: t('tabs.diff'), icon: <GitCompare /> },
@@ -200,7 +205,7 @@ export function JsonFormatter() {
       footer={
         <Footer cursor={cursorIn} chars={input.length}>
           <WrapToggle checked={wrapIn} onChange={setWrapIn} />
-          {!isEscape && modeSelect}
+          {!isEscape && !isCanonical && modeSelect}
         </Footer>
       }
     >
@@ -218,7 +223,9 @@ export function JsonFormatter() {
     </Panel>
   )
 
-  const outputTitle = isEscape ? t(`output.${escapeDir}`) : t(`output.${tab === 'minify' ? 'minified' : tab === 'validate' ? 'validated' : 'formatted'}`)
+  const outputTitle = isEscape
+    ? t(`output.${escapeDir}`)
+    : t(`output.${tab === 'minify' ? 'minified' : tab === 'validate' ? 'validated' : isCanonical ? 'canonical' : 'formatted'}`)
 
   const outputBody = () => {
     if (!hasInput) return <p className="p-6 text-center text-[13px] text-fg-subtle">{t('output.waiting')}</p>
@@ -231,15 +238,30 @@ export function JsonFormatter() {
       )
     }
     if (tab === 'validate' && result.stats) return <ValidCard stats={result.stats} elapsedMs={result.elapsedMs} />
-    return (
+    const editor = (
       <CodeEditor
         value={result.output}
         readOnly
         language={isEscape ? 'text' : 'json'}
-        lineWrapping={wrapOut || tab === 'minify'}
+        lineWrapping={wrapOut || tab === 'minify' || isCanonical}
         onCursorChange={setCursorOut}
         aria-label={outputTitle}
       />
+    )
+    if (!isCanonical) return editor
+    return (
+      <div className="flex h-full min-h-0 flex-col">
+        <div className="shrink-0 space-y-1 border-b border-border px-3 py-2 text-xs text-fg-muted">
+          <p>{t('canonical.hint')}</p>
+          {!!result.lossyNumbers && (
+            <p className="flex items-center gap-1.5 text-warning">
+              <TriangleAlert className="size-3.5 shrink-0" />
+              {t('canonical.lossy', { count: result.lossyNumbers })}
+            </p>
+          )}
+        </div>
+        <div className="min-h-0 flex-1">{editor}</div>
+      </div>
     )
   }
 
@@ -262,7 +284,7 @@ export function JsonFormatter() {
               ]}
             />
           )}
-          {!isEscape && tab !== 'validate' && (
+          {!isEscape && !isCanonical && tab !== 'validate' && (
             <Tooltip content={t('output.sortKeys')}>
               <Button
                 size="icon-sm"
@@ -296,9 +318,10 @@ export function JsonFormatter() {
       }
       footer={
         <Footer cursor={result && tab !== 'validate' ? cursorOut : undefined} chars={result?.stats?.chars ?? result?.output.length ?? 0}>
+          {isCanonical && result?.stats && <span>{t('canonical.bytes', { count: result.stats.bytes })}</span>}
           {result && <span>{t('status.elapsed', { ms: result.elapsedMs })}</span>}
           <WrapToggle checked={wrapOut} onChange={setWrapOut} />
-          {!isEscape && (
+          {!isEscape && !isCanonical && (
             <Select<Indent>
               size="sm"
               variant="ghost"

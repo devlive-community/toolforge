@@ -1,10 +1,11 @@
-//! JSON 格式化插件后端：解析、格式化、压缩、校验、转义、树形浏览与对比，
+//! JSON 格式化插件后端：解析、格式化、压缩、校验、RFC 8785 规范化、转义、树形浏览与对比，
 //! 所有数据处理都在这里完成，前端只负责展示。
 
 mod detect;
 mod diff;
 mod docs;
 mod format;
+mod jcs;
 mod parse;
 mod stats;
 mod tree;
@@ -13,7 +14,9 @@ use std::time::Instant;
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use tf_plugin_api::{Manifest, PluginResult, ToolPlugin, parse_args, to_value, unknown_function};
+use tf_plugin_api::{
+    Manifest, PluginError, PluginResult, ToolPlugin, parse_args, to_value, unknown_function,
+};
 
 pub use parse::Mode;
 
@@ -63,6 +66,16 @@ struct Output {
     elapsed_ms: f64,
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct CanonicalOutput {
+    output: String,
+    doc_id: Option<u64>,
+    stats: Option<Stats>,
+    lossy_numbers: usize,
+    elapsed_ms: f64,
+}
+
 fn elapsed(start: Instant) -> f64 {
     (start.elapsed().as_secs_f64() * 1000.0 * 100.0).round() / 100.0
 }
@@ -85,6 +98,23 @@ impl JsonFormatter {
             output,
             doc_id: Some(doc_id),
             stats: Some(stats),
+            elapsed_ms: elapsed(start),
+        })
+    }
+
+    /// RFC 8785 规范化：输出规范 UTF-8 文本；统计与树形浏览基于规范结果
+    fn canonical(&self, args: TextArgs) -> PluginResult<CanonicalOutput> {
+        let start = Instant::now();
+        let canonical = jcs::canonicalize(&args.input)?;
+        let value: Value = serde_json::from_str(&canonical.text)
+            .map_err(|e| PluginError::new("json.serialize_failed").with("detail", e.to_string()))?;
+        let stats = Stats::collect(&value, &canonical.text);
+        let doc_id = self.docs.insert(value);
+        Ok(CanonicalOutput {
+            output: canonical.text,
+            doc_id: Some(doc_id),
+            stats: Some(stats),
+            lossy_numbers: canonical.lossy_numbers,
             elapsed_ms: elapsed(start),
         })
     }
@@ -116,6 +146,7 @@ impl ToolPlugin for JsonFormatter {
             "minify" => to_value(self.render(parse_args(args)?, true)?),
             // 校验与格式化共享解析流程，输出格式化结果便于定位
             "validate" => to_value(self.render(parse_args(args)?, false)?),
+            "canonicalize" => to_value(self.canonical(parse_args(args)?)?),
             "escape" => to_value(self.text(parse_args(args)?, format::escape)?),
             "unescape" => to_value(self.text(parse_args(args)?, format::unescape)?),
             "tree_children" => to_value(tree::children(&self.docs, parse_args(args)?)?),

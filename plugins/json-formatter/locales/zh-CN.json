@@ -5,6 +5,7 @@
     "输入框中的内容会实时交给本地 Rust 引擎处理，数据不会离开本机。",
     "格式化 / 压缩 / 校验：支持严格 JSON 与宽松的 JSON5（注释、尾逗号、单引号）。",
     "出错时会标红错误所在行，点击「定位到错误」可跳转。",
+    "JCS 规范化：按 RFC 8785 对键按 UTF-16 排序、统一字符串转义与数字格式，只接受严格 JSON，重复键、孤立代理项与超出范围的数字会明确报错。",
     "树形视图按需加载节点，大文件也能流畅浏览；统计信息展示各类型数量与嵌套深度。",
     "对比：结构化比较两份 JSON，列出新增、删除与修改的路径。"
   ],
@@ -12,6 +13,7 @@
     "format": "格式化",
     "minify": "压缩",
     "validate": "校验",
+    "canonical": "JCS 规范化",
     "escape": "转义/反转义",
     "tree": "树形视图",
     "diff": "对比"
@@ -46,7 +48,8 @@
     "sortKeys": "按键名排序",
     "expand": "最大化",
     "collapse": "还原",
-    "waiting": "在左侧输入内容后，这里会显示结果"
+    "waiting": "在左侧输入内容后，这里会显示结果",
+    "canonical": "输出 (RFC 8785 规范化)"
   },
   "status": {
     "cursor": "行 {{line}}, 列 {{column}}",
@@ -114,6 +117,15 @@
     "json.unescape_failed": "无法反转义：第 {{column}} 列附近存在非法转义序列",
     "json.serialize_failed": "生成输出失败",
     "json.doc_expired": "文档已过期，请重新处理",
-    "json.path_not_found": "节点路径不存在"
+    "json.path_not_found": "节点路径不存在",
+    "json.duplicate_key": "第 {{line}} 行第 {{column}} 列的键「{{key}}」重复，JCS 不接受重复键",
+    "json.lone_surrogate": "第 {{line}} 行第 {{column}} 列有孤立的 UTF-16 代理项转义，不是合法的 Unicode",
+    "json.number_range": "第 {{line}} 行第 {{column}} 列的数字 {{number}} 超出双精度范围",
+    "json.too_deep": "嵌套超过 {{max}} 层（第 {{line}} 行第 {{column}} 列）"
+  },
+  "canonical": {
+    "hint": "按 RFC 8785 生成确定的 UTF-8 字节，用于签名、摘要与内容寻址；数字按 IEEE 754 双精度处理，不保留任意精度。复制后可在哈希工具中计算摘要。",
+    "lossy": "{{count}} 个数字超出双精度可精确表示的范围，规范结果与原文数值不同",
+    "bytes": "{{count}} 字节"
   }
 }
