@@ -175,3 +175,32 @@ fn detects_and_rejects_invalid_components() {
         .unwrap();
     assert_eq!(err.code, "plugin.load_failed");
 }
+
+/// 冒烟测试已编译的在线插件：
+/// `TF_WASM_PLUGIN=market/<slug> TF_WASM_CALL='[task:]<函数> <JSON 参数>' cargo test -p tf-wasm calls_a_built_plugin -- --ignored --nocapture`
+/// 需先 `cargo build --release --target wasm32-wasip2 -p tfm-<slug>`
+#[test]
+#[ignore]
+fn calls_a_built_plugin() {
+    let dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .join(std::env::var("TF_WASM_PLUGIN").expect("set TF_WASM_PLUGIN"));
+    let slug = dir.file_name().unwrap().to_string_lossy().replace('-', "_");
+    let manifest = std::fs::read_to_string(dir.join("manifest.json")).unwrap();
+    let wasm = std::fs::read(dir.join(format!(
+        "../../target/wasm32-wasip2/release/tfm_{slug}.wasm"
+    )))
+    .unwrap();
+    let plugin = WasmPlugin::load(Manifest::from_static(manifest.leak()), &wasm).unwrap();
+    let call = std::env::var("TF_WASM_CALL").expect("set TF_WASM_CALL");
+    let (function, args) = call.split_once(' ').unwrap_or((call.as_str(), "{}"));
+    let args = serde_json::from_str(args).unwrap();
+    let started = std::time::Instant::now();
+    // 「task:<函数>」按任务运行
+    let out = match function.strip_prefix("task:") {
+        Some(task) => plugin.run_task(task, args, &Ctx::default()),
+        None => plugin.call(function, args),
+    };
+    println!("{:?} in {:?}", out, started.elapsed());
+    assert!(out.is_ok());
+}

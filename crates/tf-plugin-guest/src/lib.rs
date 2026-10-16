@@ -143,16 +143,20 @@ impl bindings::Guest for Adapter {
     }
 }
 
-/// 导出插件：类型需实现 [`ToolPlugin`] 与 [`Default`]
+/// 导出插件：类型需实现 [`ToolPlugin`] 与 [`Default`]。
+/// 只在编译为 wasm32 时生成导出；本机构建（单元测试、宿主测试同时链接多个插件）不产生同名符号
 #[macro_export]
 macro_rules! export_plugin {
     ($ty:ty) => {
+        #[cfg(target_arch = "wasm32")]
         #[unsafe(no_mangle)]
         pub fn __toolforge_plugin_new() -> Box<dyn $crate::tf_plugin_api::ToolPlugin> {
             Box::new(<$ty as ::core::default::Default>::default())
         }
         // 生成的 export! 只接受标识符，先把适配器引入为本地名称
+        #[cfg(target_arch = "wasm32")]
         use $crate::Adapter as __ToolforgeAdapter;
+        #[cfg(target_arch = "wasm32")]
         $crate::bindings::export!(__ToolforgeAdapter with_types_in $crate::bindings);
     };
 }
