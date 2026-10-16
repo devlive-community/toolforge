@@ -6,7 +6,6 @@ use std::cell::Cell;
 use std::ffi::c_void;
 use std::sync::mpsc;
 use std::sync::mpsc::Sender;
-use std::time::{Duration, Instant};
 
 use objc2::rc::autoreleasepool;
 use objc2_app_kit::NSWorkspace;
@@ -121,9 +120,6 @@ const FLAG_CAPS_LOCK: u64 = 0x1_0000;
 const INPUT_MONITORING_URL: &str =
     "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent";
 
-/// Caps Lock 按下沿与随后同一次按键产生的系统事件（输入法切换）之间的去重窗口
-const CAPS_DEDUPE_WINDOW: Duration = Duration::from_millis(300);
-
 pub fn support() -> Result<(), &'static str> {
     Ok(())
 }
@@ -149,10 +145,15 @@ pub fn request_permission() {
 struct Context {
     sink: Sink,
     tap: Ref,
-    /// 最近一次按按下沿计入的 Caps Lock 时刻：新版 macOS 对 Caps Lock 的
-    /// 按下、松开各发一次 FlagsChanged，用作输入法切换键时松开后还会再发
-    /// 一个键值 NX_KEYTYPE_CAPS_LOCK 的系统事件，靠时间去重保证只计一次
-    caps_press: Cell<Option<Instant>>,
+    /// Caps Lock 状态机：新版 macOS 对 Caps Lock 的按下、松开各发一次
+    /// FlagsChanged，把它用作输入法切换键时松开后还会再发一个键值
+    /// NX_KEYTYPE_CAPS_LOCK 的系统事件。两个来源必须只计一次：
+    /// - `caps_on` 跟踪 AlphaShift 标志，只在 off→on 的按下沿计数；
+    /// - 按下沿计数后置 `caps_pending_sysdef`，同一次按键随后的系统事件
+    ///   消耗该标记后跳过；没有按下沿的系统事件（大写锁定未啣合的输入法
+    ///   切换）直接计数。
+    caps_on: Cell<bool>,
+    caps_pending_sysdef: Cell<bool>,
 }
 
 fn mods(flags: u64) -> u8 {
@@ -182,9 +183,7 @@ fn modifier_pressed(code: &str, flags: u64) -> bool {
         "AltRight" => 0x40,
         "ControlRight" => 0x2000,
         "Fn" => FLAG_FN,
-        // Caps Lock：按下沿计数（新版 macOS 松开也会发一次 FlagsChanged，
-        // 不能像以前那样两个方向都计）
-        "CapsLock" => FLAG_CAPS_LOCK,
+        // CapsLock 不走这里：它在 FLAGS_CHANGED 分支里由状态机处理
         _ => return true,
     };
     flags & mask != 0
@@ -216,10 +215,21 @@ extern "C" fn on_event(_: Ref, kind: u32, event: Ref, user: *mut c_void) -> Ref 
         FLAGS_CHANGED => {
             let code = keymap::mac(unsafe { CGEventGetIntegerValueField(event, KEYCODE) } as u16);
             let flags = unsafe { CGEventGetFlags(event) };
-            if modifier_pressed(code, flags) {
-                if code == "CapsLock" {
-                    ctx.caps_press.set(Some(Instant::now()));
+            if code == "CapsLock" {
+                // Caps Lock 状态机（见 Context 注释）：只在按下沿计数，
+                // 不能按时间窗去重——按住超过窗口再松开会把两个来源都计入
+                let on = flags & FLAG_CAPS_LOCK != 0;
+                let was_on = ctx.caps_on.replace(on);
+                if on && !was_on {
+                    ctx.caps_pending_sysdef.set(true);
+                    send(Event::Key {
+                        code,
+                        mods: mods(flags),
+                    });
                 }
+                return event;
+            }
+            if modifier_pressed(code, flags) {
                 send(Event::Key {
                     code,
                     mods: mods(flags),
@@ -250,13 +260,9 @@ extern "C" fn on_event(_: Ref, kind: u32, event: Ref, user: *mut c_void) -> Ref 
                 return event;
             }
             // Caps Lock 用作输入法切换时，松开按键会发键值 NX_KEYTYPE_CAPS_LOCK
-            // 的系统事件；同一次按键若已由 FlagsChanged 的按下沿计入则跳过
-            if code == "CapsLock"
-                && ctx
-                    .caps_press
-                    .get()
-                    .is_some_and(|at| at.elapsed() < CAPS_DEDUPE_WINDOW)
-            {
+            // 的系统事件；同一次按键若已由 FlagsChanged 的按下沿计入则消耗
+            // 标记并跳过，否则（大写锁定未啣合的切换）正常计数
+            if code == "CapsLock" && ctx.caps_pending_sysdef.replace(false) {
                 return event;
             }
             send(Event::Key { code, mods: 0 });
@@ -343,7 +349,8 @@ fn run_tap(sink: Sink, ready: Sender<Option<SendRef>>) {
     let ctx = Box::into_raw(Box::new(Context {
         sink,
         tap: std::ptr::null_mut(),
-        caps_press: Cell::new(None),
+        caps_on: Cell::new(false),
+        caps_pending_sysdef: Cell::new(false),
     }));
     unsafe {
         let tap = CGEventTapCreate(
