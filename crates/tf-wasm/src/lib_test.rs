@@ -91,6 +91,13 @@ fn calls_keep_instance_state_and_map_errors() {
 }
 
 #[test]
+fn passes_the_host_time_zone() {
+    let tz = load().call("tz", json!({})).unwrap();
+    assert_eq!(tz, json!(local_time_zone()));
+    assert!(!local_time_zone().is_empty());
+}
+
+#[test]
 fn panics_reset_the_instance() {
     let plugin = load();
     plugin.call("echo", json!({})).unwrap();

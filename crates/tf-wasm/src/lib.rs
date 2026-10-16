@@ -35,6 +35,14 @@ const MEMORY_LIMIT: usize = 1 << 30;
 const MAX_READ: u32 = 4 * 1024 * 1024;
 pub const FS_PERMISSION: &str = "fs:user-selected";
 
+/// 宿主的 IANA 时区名，经 WASI 环境变量 TZ 传给插件（插件内置时区库，读取系统时区会失败）
+fn local_time_zone() -> String {
+    jiff::tz::TimeZone::system()
+        .iana_name()
+        .unwrap_or("UTC")
+        .to_owned()
+}
+
 fn engine() -> &'static Engine {
     static ENGINE: OnceLock<Engine> = OnceLock::new();
     ENGINE.get_or_init(|| {
@@ -218,7 +226,7 @@ impl WasmPlugin {
 
     fn instantiate(&self) -> PluginResult<Instance> {
         let state = State {
-            wasi: WasiCtx::builder().build(),
+            wasi: WasiCtx::builder().env("TZ", local_time_zone()).build(),
             table: ResourceTable::new(),
             limits: StoreLimitsBuilder::new().memory_size(MEMORY_LIMIT).build(),
             task: None,

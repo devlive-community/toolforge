@@ -42,6 +42,7 @@ impl ToolPlugin for Fixture {
                     v.iter().filter_map(Value::as_i64).sum::<i64>()
                 })))
             }
+            "tz" => Ok(json!(std::env::var("TZ").ok())),
             "fail" => Err(PluginError::new("fixture.failed").with("reason", "asked")),
             "panic" => panic!("boom"),
             "spin" => loop {

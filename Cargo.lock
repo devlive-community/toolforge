@@ -8237,6 +8237,7 @@ dependencies = [
 name = "tf-wasm"
 version = "0.2.0"
 dependencies = [
+ "jiff",
  "serde_json",
  "tf-plugin-api",
  "wasmtime",
