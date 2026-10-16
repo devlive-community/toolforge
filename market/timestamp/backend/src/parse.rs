@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use tf_plugin_api::{PluginError, PluginResult};
 
 use crate::convert::{ZonedRow, row};
-use crate::zone;
+use crate::{natural, zone};
 
 #[derive(Deserialize)]
 pub struct Args {
@@ -12,6 +12,20 @@ pub struct Args {
     /// 输入不带时区信息时使用的时区
     #[serde(default)]
     timezone: String,
+    /// 自然语言有多种解释时选用第几个
+    #[serde(default)]
+    choice: usize,
+}
+
+/// 自然语言解析的一种解释
+#[derive(Debug, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct CandidateView {
+    /// 所选时区下的日期时间
+    pub datetime: String,
+    /// 1 = 周一 … 7 = 周日（与 from_timestamp 一致）
+    pub weekday: i8,
+    pub notes: Vec<&'static str>,
 }
 
 #[derive(Debug, Serialize)]
@@ -22,14 +36,41 @@ pub struct Parsed {
     pub microseconds: i64,
     pub nanoseconds: String,
     pub iso: String,
-    /// 解析出的格式：rfc3339 / zoned / rfc2822 / datetime / date
+    /// 解析出的格式：rfc3339 / zoned / rfc2822 / datetime / date / natural
     pub format: &'static str,
+    /// 自然语言的全部解释（其他格式为空）
+    pub candidates: Vec<CandidateView>,
+    pub choice: usize,
     /// 解析时实际使用的时区（输入自带时区时为其自身时区）
     pub zoned: ZonedRow,
 }
 
-/// 依次尝试各种格式，返回带时区的时间与格式名
-fn parse(input: &str, timezone: &str) -> PluginResult<(Zoned, &'static str)> {
+type Natural = Vec<natural::Candidate>;
+
+/// 依次尝试各种格式，都不匹配时按自然语言解析；now 在测试中固定，为空时取当前时间
+fn parse_at(
+    input: &str,
+    timezone: &str,
+    now: Option<&Zoned>,
+) -> PluginResult<(Zoned, &'static str, Natural)> {
+    let plain = |(zoned, format)| (zoned, format, Vec::new());
+    parse_formats(input, timezone).map(plain).or_else(|err| {
+        if err.code != "time.unrecognized" {
+            return Err(err);
+        }
+        let tz = zone::resolve(timezone)?;
+        let now = now
+            .cloned()
+            .unwrap_or_else(|| Zoned::now().with_time_zone(tz));
+        match natural::parse(input, &now) {
+            Some(candidates) => Ok((candidates[0].at.clone(), "natural", candidates)),
+            None => Err(err),
+        }
+    })
+}
+
+/// 精确格式，返回带时区的时间与格式名
+fn parse_formats(input: &str, timezone: &str) -> PluginResult<(Zoned, &'static str)> {
     if let Ok(zoned) = input.parse::<Zoned>() {
         return Ok((zoned, "zoned"));
     }
@@ -83,11 +124,17 @@ fn normalize(input: &str) -> String {
 }
 
 pub fn to_timestamp(args: Args) -> PluginResult<Parsed> {
+    to_timestamp_at(args, None)
+}
+
+fn to_timestamp_at(args: Args, now: Option<&Zoned>) -> PluginResult<Parsed> {
     let input = args.input.trim();
     if input.is_empty() {
         return Err(PluginError::new("time.empty"));
     }
-    let (zoned, format) = parse(input, &args.timezone)?;
+    let (first, format, candidates) = parse_at(input, &args.timezone, now)?;
+    let choice = args.choice.min(candidates.len().saturating_sub(1));
+    let zoned = candidates.get(choice).map_or(first, |c| c.at.clone());
     let ts = zoned.timestamp();
     let name = zoned.time_zone().iana_name().unwrap_or("UTC").to_owned();
     Ok(Parsed {
@@ -97,6 +144,15 @@ pub fn to_timestamp(args: Args) -> PluginResult<Parsed> {
         nanoseconds: ts.as_nanosecond().to_string(),
         iso: ts.to_string(),
         format,
+        candidates: candidates
+            .iter()
+            .map(|c| CandidateView {
+                datetime: c.at.strftime("%Y-%m-%d %H:%M:%S").to_string(),
+                weekday: c.at.weekday().to_monday_one_offset(),
+                notes: c.notes.clone(),
+            })
+            .collect(),
+        choice,
         zoned: row(&name, &zoned),
     })
 }

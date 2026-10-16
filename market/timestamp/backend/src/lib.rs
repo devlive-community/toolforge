@@ -2,6 +2,7 @@
 
 mod convert;
 mod detect;
+mod natural;
 mod parse;
 mod zone;
 

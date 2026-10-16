@@ -1,10 +1,10 @@
 {
   "id": "org.devlive.toolforge.timestamp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "dev",
-  "keywords": ["timestamp", "unix", "epoch", "date", "time", "timezone", "时间戳", "日期", "时区", "转换"],
+  "keywords": ["timestamp", "unix", "epoch", "date", "time", "timezone", "时间戳", "日期", "时区", "转换", "natural language", "relative date", "自然语言", "相对日期", "明天", "下周"],
   "accent": "cyan",
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:write"],

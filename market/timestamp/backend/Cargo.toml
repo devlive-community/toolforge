@@ -16,3 +16,4 @@ serde_json.workspace = true
 tf-plugin-api.workspace = true
 tf-plugin-guest = { path = "../../../crates/tf-plugin-guest" }
 jiff = "0.2"
+regex = "1"

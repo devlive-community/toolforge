@@ -8318,6 +8318,7 @@ name = "tfm-timestamp"
 version = "0.1.0"
 dependencies = [
  "jiff",
+ "regex",
  "serde",
  "serde_json",
  "tf-plugin-api",

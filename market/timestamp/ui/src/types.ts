@@ -34,7 +34,10 @@ export interface Parsed {
   microseconds: number
   nanoseconds: string
   iso: string
-  format: 'rfc3339' | 'zoned' | 'rfc2822' | 'datetime' | 'date'
+  format: 'rfc3339' | 'zoned' | 'rfc2822' | 'datetime' | 'date' | 'natural'
+  /** 自然语言的全部解释 */
+  candidates: { datetime: string; weekday: number; notes: string[] }[]
+  choice: number
   zoned: ZonedRow
 }
 

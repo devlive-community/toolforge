@@ -5,6 +5,7 @@
     "The unit is detected from the number of digits (10 s, 13 ms, 16 μs, 19 ns) or can be chosen manually.",
     "Shows local time, UTC and a comparison zone together with ISO 8601, RFC 2822, weekday, day of year and ISO week.",
     "Dates accept RFC 3339, RFC 2822, bracketed zones and common forms such as 2024-02-29 12:00:00 or 2024/2/29; inputs without a zone use the selected zone.",
+    "Natural language and relative dates work too: today / tomorrow / yesterday, in 3 days, 2 weeks ago, in half an hour, next month, next year, [next / last / this] Friday, plus times such as 9am, 9:30 pm, noon or 15:30 (Chinese phrases like 明天上午 9 点 as well). Without a time the current time is kept, in the selected time zone. Ambiguous phrases list their readings to pick from: “next Friday” may mean Friday of next week or the coming Friday, and “at 3” may be 3:00 or 15:00.",
     "Everything runs in local Rust with a bundled time zone database."
   ],
   "units": {
@@ -28,7 +29,8 @@
     "zoned": "Zoned (RFC 9557)",
     "rfc2822": "RFC 2822",
     "datetime": "Date time",
-    "date": "Date"
+    "date": "Date",
+    "natural": "Natural language"
   },
   "now": {
     "unix": "Current Unix timestamp (s)",
@@ -71,5 +73,22 @@
     "time.invalid_timezone": "Invalid time zone: {{timezone}}",
     "time.unrecognized": "Unrecognized date format",
     "time.invalid_date": "This time does not exist in the selected zone"
+  },
+  "natural": {
+    "pick": "This can mean several things; choose one:",
+    "understood": "Understood as:",
+    "examples": "Natural language (click to fill)",
+    "separator": ", ",
+    "notes": {
+      "thisWeek": "this week",
+      "nextWeek": "next calendar week",
+      "lastWeek": "last calendar week",
+      "weekAfterNext": "the week after next",
+      "weekBeforeLast": "the week before last",
+      "upcoming": "the coming one",
+      "previous": "the most recent one",
+      "am": "a.m.",
+      "pm": "p.m."
+    }
   }
 }
