@@ -177,8 +177,9 @@ pub fn mac(keycode: u16) -> &'static str {
 ///
 /// 亮度、音量、播放控制等功能层按键不走普通 keyDown，键值是 IOKit
 /// `ev_keymap.h` 的 `NX_KEYTYPE_*`，与 `mac()` 的虚拟键码是两套编号。
-/// CapsLock / Help / NumLock 不在此表：它们的物理键本来就产生普通事件，
-/// 这里再算会重复计数。
+/// CapsLock(4) 只在系统把它用作输入法切换键时才以系统事件出现（普通
+/// 大写锁定走 FlagsChanged 按下沿统计，macos.rs 会对同一次按键去重）；
+/// Help / NumLock 不在此表。
 #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
 pub fn mac_special(key: i64) -> &'static str {
     match key {
@@ -186,6 +187,7 @@ pub fn mac_special(key: i64) -> &'static str {
         1 => "AudioVolumeDown",
         2 => "BrightnessUp",
         3 => "BrightnessDown",
+        4 => "CapsLock",
         7 => "AudioVolumeMute",
         14 => "Eject",
         16 => "MediaPlayPause",

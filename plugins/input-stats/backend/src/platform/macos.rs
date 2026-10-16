@@ -2,9 +2,11 @@
 //!
 //! 系统开启安全输入（密码框等）时，键盘事件不会送达事件监听，因此不会统计到密码输入。
 
+use std::cell::Cell;
 use std::ffi::c_void;
 use std::sync::mpsc;
 use std::sync::mpsc::Sender;
+use std::time::{Duration, Instant};
 
 use objc2::rc::autoreleasepool;
 use objc2_app_kit::NSWorkspace;
@@ -113,9 +115,14 @@ const FLAG_CONTROL: u64 = 0x4_0000;
 const FLAG_ALT: u64 = 0x8_0000;
 const FLAG_COMMAND: u64 = 0x10_0000;
 const FLAG_FN: u64 = 0x80_0000;
+/// AlphaShift / 大写锁定状态（NX_ALPHASHIFTMASK），按下置位、松开清零
+const FLAG_CAPS_LOCK: u64 = 0x1_0000;
 
 const INPUT_MONITORING_URL: &str =
     "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent";
+
+/// Caps Lock 按下沿与随后同一次按键产生的系统事件（输入法切换）之间的去重窗口
+const CAPS_DEDUPE_WINDOW: Duration = Duration::from_millis(300);
 
 pub fn support() -> Result<(), &'static str> {
     Ok(())
@@ -142,6 +149,10 @@ pub fn request_permission() {
 struct Context {
     sink: Sink,
     tap: Ref,
+    /// 最近一次按按下沿计入的 Caps Lock 时刻：新版 macOS 对 Caps Lock 的
+    /// 按下、松开各发一次 FlagsChanged，用作输入法切换键时松开后还会再发
+    /// 一个键值 NX_KEYTYPE_CAPS_LOCK 的系统事件，靠时间去重保证只计一次
+    caps_press: Cell<Option<Instant>>,
 }
 
 fn mods(flags: u64) -> u8 {
@@ -171,7 +182,9 @@ fn modifier_pressed(code: &str, flags: u64) -> bool {
         "AltRight" => 0x40,
         "ControlRight" => 0x2000,
         "Fn" => FLAG_FN,
-        // Caps Lock 每次按下都会切换状态并产生一次事件
+        // Caps Lock：按下沿计数（新版 macOS 松开也会发一次 FlagsChanged，
+        // 不能像以前那样两个方向都计）
+        "CapsLock" => FLAG_CAPS_LOCK,
         _ => return true,
     };
     flags & mask != 0
@@ -204,6 +217,9 @@ extern "C" fn on_event(_: Ref, kind: u32, event: Ref, user: *mut c_void) -> Ref 
             let code = keymap::mac(unsafe { CGEventGetIntegerValueField(event, KEYCODE) } as u16);
             let flags = unsafe { CGEventGetFlags(event) };
             if modifier_pressed(code, flags) {
+                if code == "CapsLock" {
+                    ctx.caps_press.set(Some(Instant::now()));
+                }
                 send(Event::Key {
                     code,
                     mods: mods(flags),
@@ -217,23 +233,33 @@ extern "C" fn on_event(_: Ref, kind: u32, event: Ref, user: *mut c_void) -> Ref 
             // 输入法的系统事件时会在转换过程中进入 TSM 输入源代码并断言主队列，
             // tap 线程上直接 SIGTRAP 整个应用（2026-10-16 所有输入框切中英文
             // 都闪退的原因）。
-            if unsafe { CGEventGetIntegerValueField(event, SYS_SUBTYPE) } as i16
-                != AUX_CONTROL_BUTTONS
-            {
+            let subtype = unsafe { CGEventGetIntegerValueField(event, SYS_SUBTYPE) } as i16;
+            if subtype != AUX_CONTROL_BUTTONS {
                 return event;
             }
             let data1 = unsafe { CGEventGetIntegerValueField(event, SYS_DATA1) };
             // 高 16 位是键值；低 16 位里第 8 位为 0x0A 表示按下，第 0 位是自动重复
             let down = (data1 & 0xFF00) >> 8 == 0x0A;
             let repeat = data1 & 0x1 != 0;
-            if down && !repeat {
-                // 只统计已知功能键：私有字段读不到、或键值不在表内（包括
-                // Caps Lock 切输入法的系统事件）时跳过，不产生 Unidentified 噪声
-                let code = keymap::mac_special((data1 & 0xFFFF_0000) >> 16);
-                if code != keymap::UNIDENTIFIED {
-                    send(Event::Key { code, mods: 0 });
-                }
+            if !down || repeat {
+                return event;
             }
+            // 只统计已知功能键，不产生 Unidentified 噪声
+            let code = keymap::mac_special((data1 & 0xFFFF_0000) >> 16);
+            if code == keymap::UNIDENTIFIED {
+                return event;
+            }
+            // Caps Lock 用作输入法切换时，松开按键会发键值 NX_KEYTYPE_CAPS_LOCK
+            // 的系统事件；同一次按键若已由 FlagsChanged 的按下沿计入则跳过
+            if code == "CapsLock"
+                && ctx
+                    .caps_press
+                    .get()
+                    .is_some_and(|at| at.elapsed() < CAPS_DEDUPE_WINDOW)
+            {
+                return event;
+            }
+            send(Event::Key { code, mods: 0 });
         }
         LEFT_DOWN | RIGHT_DOWN | OTHER_DOWN => {
             let button = match kind {
@@ -317,6 +343,7 @@ fn run_tap(sink: Sink, ready: Sender<Option<SendRef>>) {
     let ctx = Box::into_raw(Box::new(Context {
         sink,
         tap: std::ptr::null_mut(),
+        caps_press: Cell::new(None),
     }));
     unsafe {
         let tap = CGEventTapCreate(

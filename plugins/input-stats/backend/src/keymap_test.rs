@@ -88,6 +88,8 @@ fn mac_special_keys_follow_the_ev_keymap_table() {
     assert_eq!(mac_special(1), "AudioVolumeDown");
     assert_eq!(mac_special(2), "BrightnessUp");
     assert_eq!(mac_special(3), "BrightnessDown");
+    // NX_KEYTYPE_CAPS_LOCK：仅 Caps Lock 被用作输入法切换时以系统事件出现
+    assert_eq!(mac_special(4), "CapsLock");
     assert_eq!(mac_special(7), "AudioVolumeMute");
     assert_eq!(mac_special(14), "Eject");
     assert_eq!(mac_special(16), "MediaPlayPause");
