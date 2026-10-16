@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.gitignore",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["gitignore", ".gitignore", "git", "ignore", "template", "custom template", "repository", "exclude", "忽略", "模板", "自定义模板", "仓库"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write", "fs:user-selected"],
+  "functions": {
+    "catalog": {},
+    "generate": {},
+    "library": {}
+  },
+  "sensitive": false
+}
