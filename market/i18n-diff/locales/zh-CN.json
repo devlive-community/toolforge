@@ -1,0 +1,84 @@
+{
+  "name": "i18n 键值对比",
+  "description": "对比多语言翻译文件，找出缺失、多余、空值、疑似未翻译、占位符不一致与重复的键，并按原格式补齐写回",
+  "help": [
+    "支持 JSON（嵌套对象与数组）、Flutter ARB（忽略 @ 元数据）、YAML 与 Java properties；第一个文件（星标）为基准，最多同时对比 20 个文件，文件只在本机读取。",
+    "规则：缺失 = 基准有而该文件没有；多余 = 基准没有而该文件有；空值 = 基准有文本而该文件为空；疑似未翻译 = 与基准文本完全相同（基准去掉占位符后至少有两个字母）；重复 = 同一文件中出现多次（以最后一次为准）。",
+    "占位符识别 {{name}}、{name} / {0} / ICU 复数与选择（分支内文本不算）、%s / %1$s / %@ 与 %{name}；具名与带位置的占位符只看是否出现，不带位置的 %s 还要求次数一致。",
+    "选择目标文件后可以直接在表格中修改译文，并选择把缺失的键补为空值或基准文本；写入前先预览。JSON / ARB 保留键顺序与缩进风格，properties 逐行修改并保留注释；YAML 重新生成会丢失注释，因此只对比不写回。"
+  ],
+  "files": {
+    "title": "文件",
+    "drop": "拖入或选择翻译文件",
+    "dropHint": "支持 JSON、ARB、YAML、properties；第一个文件作为基准",
+    "add": "添加文件",
+    "reload": "重新读取全部文件",
+    "remove": "移出对比",
+    "makeBase": "设为基准",
+    "needTwo": "至少需要两个文件",
+    "tooMany": "最多对比 {{max}} 个文件，多出的已忽略",
+    "filter": "翻译文件",
+    "baseSummary": "基准 · {{keys}} 个键",
+    "summary": "{{keys}} 个键 · 覆盖率 {{coverage}}%"
+  },
+  "issue": {
+    "missing": "缺失",
+    "extra": "多余",
+    "empty": "空值",
+    "untranslated": "疑似未翻译",
+    "placeholders": "占位符不一致",
+    "duplicate": "重复"
+  },
+  "table": {
+    "title": "键值对比",
+    "filter": "筛选",
+    "onlyIssues": "只看有问题的键",
+    "all": "全部 {{count}} 个键",
+    "issueType": "问题类型",
+    "anyIssue": "全部问题",
+    "view": "视图",
+    "flat": "展平",
+    "grouped": "按命名空间分组",
+    "key": "键",
+    "clean": "没有发现问题",
+    "emptyValue": "（空）",
+    "missingValue": "缺失，输入译文补齐",
+    "edit": "编辑译文",
+    "lacks": "缺少 {{list}}",
+    "adds": "多出 {{list}}",
+    "more": "表格只显示前 {{count}} 行，导出报告可获得全部结果。"
+  },
+  "write": {
+    "target": "编辑并写回",
+    "pick": "选择目标文件",
+    "none": "没有可写回的文件",
+    "fill": "缺失的键",
+    "fillNone": "不补缺失的键",
+    "fillEmpty": "补为空值",
+    "fillBase": "补为基准文本",
+    "edited": "已修改 {{count}} 处",
+    "preview": "预览并写回",
+    "previewTitle": "写回 {{file}}",
+    "changes": "新增 {{added}} 个键，修改 {{updated}} 个键",
+    "cancel": "取消",
+    "save": "写入文件",
+    "saved": "已写入 {{file}}"
+  },
+  "export": {
+    "title": "导出报告",
+    "copyCsv": "复制 CSV",
+    "saveCsv": "保存 CSV",
+    "copyJson": "复制 JSON",
+    "saveJson": "保存 JSON"
+  },
+  "errors": {
+    "i18n.parse_failed": "{{file}} 解析失败：{{detail}}",
+    "i18n.not_object": "{{file}} 的顶层不是对象",
+    "i18n.unknown_format": "无法识别 {{file}} 的格式",
+    "i18n.too_large": "{{file}} 超过 {{mb}} MB",
+    "i18n.file_count": "请选择 2 到 {{max}} 个文件",
+    "i18n.write_unsupported": "{{format}} 文件不支持写回",
+    "i18n.unknown_key": "基准与目标中都没有键 {{key}}",
+    "i18n.write_failed": "生成文件失败：{{detail}}"
+  }
+}

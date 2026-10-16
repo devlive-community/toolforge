@@ -1,0 +1,84 @@
+{
+  "name": "i18n Key Diff",
+  "description": "Compare translation files for missing, extra, empty, untranslated, placeholder-mismatched and duplicate keys, and fill them back in the original format",
+  "help": [
+    "Supports JSON (nested objects and arrays), Flutter ARB (@ metadata ignored), YAML and Java properties. The first (starred) file is the baseline; up to 20 files at a time, read locally only.",
+    "Rules: missing = in the baseline but not in the file; extra = in the file but not in the baseline; empty = the baseline has text but the file is empty; possibly untranslated = identical to the baseline (which has at least two letters besides placeholders); duplicate = appears more than once in a file (the last one wins).",
+    "Placeholders recognized: {{name}}, {name} / {0} / ICU plural and select (branch text excluded), %s / %1$s / %@ and %{name}. Named and positional placeholders only need to be present; sequential %s must also match in count.",
+    "Pick a target file to edit translations right in the table and optionally fill missing keys with empty values or the baseline text, then preview before writing. JSON / ARB keep key order and indentation; properties are edited line by line with comments kept. YAML would lose comments when regenerated, so it is compared but not written."
+  ],
+  "files": {
+    "title": "Files",
+    "drop": "Drop or choose translation files",
+    "dropHint": "JSON, ARB, YAML and properties; the first file is the baseline",
+    "add": "Add files",
+    "reload": "Reload all files",
+    "remove": "Remove from comparison",
+    "makeBase": "Use as baseline",
+    "needTwo": "Add at least two files",
+    "tooMany": "Up to {{max}} files can be compared; the rest were ignored",
+    "filter": "Translation files",
+    "baseSummary": "Baseline · {{keys}} keys",
+    "summary": "{{keys}} keys · {{coverage}}% covered"
+  },
+  "issue": {
+    "missing": "Missing",
+    "extra": "Extra",
+    "empty": "Empty",
+    "untranslated": "Untranslated?",
+    "placeholders": "Placeholders",
+    "duplicate": "Duplicate"
+  },
+  "table": {
+    "title": "Key comparison",
+    "filter": "Filter",
+    "onlyIssues": "Only keys with issues",
+    "all": "All {{count}} keys",
+    "issueType": "Issue type",
+    "anyIssue": "All issues",
+    "view": "View",
+    "flat": "Flat",
+    "grouped": "Grouped by namespace",
+    "key": "Key",
+    "clean": "No issues found",
+    "emptyValue": "(empty)",
+    "missingValue": "Missing; type a translation",
+    "edit": "Edit translation",
+    "lacks": "lacks {{list}}",
+    "adds": "adds {{list}}",
+    "more": "The table shows the first {{count}} rows; export the report for everything."
+  },
+  "write": {
+    "target": "Edit and write back",
+    "pick": "Choose a target file",
+    "none": "No writable files",
+    "fill": "Missing keys",
+    "fillNone": "Leave missing keys",
+    "fillEmpty": "Fill with empty values",
+    "fillBase": "Fill with baseline text",
+    "edited": "{{count}} edits",
+    "preview": "Preview and write",
+    "previewTitle": "Write {{file}}",
+    "changes": "{{added}} keys added, {{updated}} keys changed",
+    "cancel": "Cancel",
+    "save": "Write file",
+    "saved": "Wrote {{file}}"
+  },
+  "export": {
+    "title": "Export report",
+    "copyCsv": "Copy CSV",
+    "saveCsv": "Save CSV",
+    "copyJson": "Copy JSON",
+    "saveJson": "Save JSON"
+  },
+  "errors": {
+    "i18n.parse_failed": "Could not parse {{file}}: {{detail}}",
+    "i18n.not_object": "The top level of {{file}} is not an object",
+    "i18n.unknown_format": "Unknown format: {{file}}",
+    "i18n.too_large": "{{file}} exceeds {{mb}} MB",
+    "i18n.file_count": "Choose 2 to {{max}} files",
+    "i18n.write_unsupported": "{{format}} files cannot be written back",
+    "i18n.unknown_key": "Neither the baseline nor the target has the key {{key}}",
+    "i18n.write_failed": "Could not generate the file: {{detail}}"
+  }
+}

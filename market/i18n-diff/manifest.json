@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.i18n-diff",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["i18n", "l10n", "translation", "locale", "json", "yaml", "arb", "properties", "missing keys", "翻译", "多语言", "国际化", "缺失键"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write", "fs:user-selected"],
+  "functions": {
+    "compare": {},
+    "write": {},
+    "report": {}
+  },
+  "sensitive": false
+}
