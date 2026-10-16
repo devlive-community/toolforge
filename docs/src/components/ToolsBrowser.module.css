@@ -5,8 +5,8 @@
   min-width: 0;
 }
 :global(.dark) .browser {
-  --browser-accent: #91f5b0;
-  --browser-accent-soft: #15271d;
+  --browser-accent: var(--accent);
+  --browser-accent-soft: var(--accent-soft);
 }
 .browser button, .browser input { outline: none; }
 .browser button:focus-visible, .browser input:focus-visible {

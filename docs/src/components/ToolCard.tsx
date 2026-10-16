@@ -14,7 +14,7 @@ export function ToolCard({ tool, lang }: { tool: ToolEntry; lang: Lang }) {
   return (
     <Link href={`/${lang}/tools/${tool.slug}/`} className={styles.card}>
       <div className={styles.top}>
-        <span className={styles.iconBox}><img src={`/icons/${tool.slug}.svg`} alt="" width={23} height={23} loading="lazy" className={styles.icon} /></span>
+        <span className={styles.iconBox}><span className={styles.icon} aria-hidden="true" style={{ maskImage: `url(/icons/${tool.slug}.svg)`, WebkitMaskImage: `url(/icons/${tool.slug}.svg)` }} /></span>
         <span className={`${styles.badge} ${status === 'upcoming' ? styles.upcoming : status === 'released' ? styles.released : styles.fresh}`}><span aria-hidden="true" />{labels[lang][status]}</span>
       </div>
       <h3>{toolName(tool, lang)}</h3>

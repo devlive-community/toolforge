@@ -5,7 +5,7 @@
 }
 
 :global(.dark) .page {
-  --tools-accent: #91f5b0;
+  --tools-accent: var(--accent);
 }
 
 .wrap {

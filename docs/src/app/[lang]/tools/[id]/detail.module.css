@@ -4,7 +4,7 @@
   background: radial-gradient(ellipse at 85% 0%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 37%);
 }
 :global(.dark) .detail {
-  --detail-accent: #91f5b0;
+  --detail-accent: var(--accent);
 }
 .wrap {
   max-width: 1200px;
@@ -55,13 +55,20 @@
   background: var(--panel);
   flex-shrink: 0;
 }
-.heroIcon img {
+.heroGlyph, .visualGlyph {
+  display: block;
+  background: var(--detail-accent);
+  mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
+}
+.heroGlyph {
   width: 100%;
   height: 100%;
 }
-:global(.dark) .heroIcon img,
-:global(.dark) .visualIcon img {
-  filter: brightness(0) saturate(100%) invert(87%) sepia(24%) saturate(649%) hue-rotate(77deg) brightness(103%) contrast(93%);
+.visualGlyph {
+  width: 76px;
+  height: 76px;
 }
 .heroCopy {
   min-width: 0;
@@ -626,7 +633,7 @@
     height: 96px;
     border-radius: 20px;
   }
-  .visualIcon img {
+  .visualGlyph {
     width: 63px;
     height: 63px;
   }

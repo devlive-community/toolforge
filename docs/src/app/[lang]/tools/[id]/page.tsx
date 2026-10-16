@@ -204,7 +204,7 @@ export default async function ToolDetailPage({
 
         <header className={styles.hero}>
           <div className={styles.heroMain}>
-            <span className={styles.heroIcon}><img src={`/icons/${tool.slug}.svg`} alt="" width={48} height={48} /></span>
+            <span className={styles.heroIcon}><span className={styles.heroGlyph} aria-hidden="true" style={{ maskImage: `url(/icons/${tool.slug}.svg)`, WebkitMaskImage: `url(/icons/${tool.slug}.svg)` }} /></span>
             <div className={styles.heroCopy}>
               <div className={styles.labels}>
                 <span className={styles.category}>{tool.categoryLabel[langTag]}</span>
@@ -255,7 +255,7 @@ export default async function ToolDetailPage({
                     <span>{tool.categoryLabel[langTag]}</span>
                   </div>
                   <div className={styles.visualCenter}>
-                    <span className={styles.visualIcon}><img src={`/icons/${tool.slug}.svg`} alt="" width={76} height={76} /></span>
+                    <span className={styles.visualIcon}><span className={styles.visualGlyph} aria-hidden="true" style={{ maskImage: `url(/icons/${tool.slug}.svg)`, WebkitMaskImage: `url(/icons/${tool.slug}.svg)` }} /></span>
                     <p className={styles.visualEyebrow}>{t.overviewLabel}</p>
                     <p className={styles.visualName}>{name}</p>
                     <div className={styles.visualKeywords}>

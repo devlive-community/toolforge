@@ -1,6 +1,6 @@
 .preview {
-  --preview-mint: #197b43;
-  --preview-mint-soft: #e6f3e9;
+  --preview-mint: var(--accent);
+  --preview-mint-soft: var(--accent-soft);
   --preview-surface: #fcfdfb;
   --preview-sidebar: #f3f6f2;
   --preview-code: #ffffff;
@@ -20,8 +20,8 @@
 }
 
 :global(.dark) .preview {
-  --preview-mint: #a1e8b3;
-  --preview-mint-soft: #223d2e;
+  --preview-mint: var(--accent);
+  --preview-mint-soft: var(--accent-soft);
   --preview-surface: #141a17;
   --preview-sidebar: #101612;
   --preview-code: #101612;

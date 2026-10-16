@@ -5,7 +5,7 @@
   background: radial-gradient(ellipse at 78% 15%,color-mix(in srgb,var(--accent) 5%,transparent),transparent 35%);
 }
 :global(.dark) .home {
-  --home-accent: #91f5b0;
+  --home-accent: var(--accent);
 }
 .wrap {
   width: 100%;

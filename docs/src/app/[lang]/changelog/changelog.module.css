@@ -4,7 +4,7 @@
   min-height: 70vh;
   background: radial-gradient(ellipse at 85% 0%, color-mix(in srgb, var(--accent) 4%, transparent), transparent 37%);
 }
-:global(.dark) .page { --mint: #91f5b0; }
+:global(.dark) .page { --mint: var(--accent); }
 .wrap {
   width: 100%;
   max-width: 1200px;
