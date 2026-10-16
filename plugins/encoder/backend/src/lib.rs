@@ -1,7 +1,9 @@
-//! 编解码插件后端：Base64 / Base32 / Hex / URL / HTML 实体 / Unicode 转义，以及文件转 Base64。
+//! 编解码插件后端：Base64 / Base32 / Base58 / Base85 / Ascii85 / Hex / URL / HTML 实体 / Unicode 转义 /
+//! 摩斯电码，以及文件转 Base64。
 
 mod codec;
 mod detect;
+mod extra;
 mod file;
 mod unicode;
 

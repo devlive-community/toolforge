@@ -1,13 +1,13 @@
-export type Codec = 'base64' | 'base64url' | 'base32' | 'hex' | 'urlComponent' | 'url' | 'form' | 'html' | 'unicode'
+export type Codec = 'base64' | 'base64url' | 'base32' | 'hex' | 'base58' | 'base85' | 'ascii85' | 'urlComponent' | 'url' | 'form' | 'html' | 'unicode' | 'morse'
 export type Direction = 'encode' | 'decode'
 export type HtmlMode = 'basic' | 'decimal' | 'hex'
 export type UnicodeStyle = 'u' | 'braces' | 'codepoint'
 export type FileFormat = 'base64' | 'dataUri'
 
 export const GROUPS: { key: string; codecs: Codec[] }[] = [
-  { key: 'binary', codecs: ['base64', 'base64url', 'base32', 'hex'] },
+  { key: 'binary', codecs: ['base64', 'base64url', 'base32', 'hex', 'base58', 'base85', 'ascii85'] },
   { key: 'url', codecs: ['urlComponent', 'url', 'form'] },
-  { key: 'text', codecs: ['html', 'unicode'] },
+  { key: 'text', codecs: ['html', 'unicode', 'morse'] },
 ]
 
 export interface Options {
@@ -17,6 +17,7 @@ export interface Options {
   htmlMode: HtmlMode
   unicodeStyle: UnicodeStyle
   escapeAscii: boolean
+  morseUtf8: boolean
 }
 
 export interface TransformResult {

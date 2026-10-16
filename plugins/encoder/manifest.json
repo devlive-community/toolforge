@@ -1,10 +1,10 @@
 {
   "id": "org.devlive.toolforge.encoder",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "encode",
-  "keywords": ["base64", "base32", "hex", "url", "urlencode", "html", "entity", "unicode", "escape", "data uri", "编码", "解码", "转义"],
+  "keywords": ["base64", "base32", "hex", "url", "urlencode", "html", "entity", "unicode", "escape", "data uri", "base58", "base85", "ascii85", "morse", "摩斯", "编码", "解码", "转义"],
   "accent": "green",
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],

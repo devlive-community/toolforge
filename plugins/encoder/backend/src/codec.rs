@@ -8,7 +8,7 @@ use percent_encoding::{AsciiSet, NON_ALPHANUMERIC, percent_decode_str, utf8_perc
 use serde::{Deserialize, Serialize};
 use tf_plugin_api::{PluginError, PluginResult};
 
-use crate::unicode;
+use crate::{extra, unicode};
 
 const MAX_INPUT: usize = 20 * 1024 * 1024;
 const MIME_WIDTH: usize = 76;
@@ -54,6 +54,10 @@ pub enum Codec {
     Form,
     Html,
     Unicode,
+    Base58,
+    Base85,
+    Ascii85,
+    Morse,
 }
 
 #[derive(Debug, Clone, Copy, Deserialize, PartialEq)]
@@ -93,6 +97,9 @@ pub struct Options {
     /// Unicode 转义是否连 ASCII 一起转义
     #[serde(default)]
     pub escape_ascii: bool,
+    /// 摩斯电码：没有对应码的字符先转为 UTF-8 十六进制再编码
+    #[serde(default)]
+    pub morse_utf8: bool,
 }
 
 fn yes() -> bool {
@@ -266,6 +273,16 @@ pub fn transform(args: Args) -> PluginResult<Output> {
             true,
         ),
         (Codec::Unicode, Direction::Decode) => (unicode::unescape(input)?, true),
+        (Codec::Base58, Direction::Encode) => (extra::base58_encode(input.as_bytes()), true),
+        (Codec::Base58, Direction::Decode) => bytes_output(extra::base58_decode(input)?),
+        (Codec::Base85, Direction::Encode) => (extra::base85_encode(input.as_bytes()), true),
+        (Codec::Base85, Direction::Decode) => bytes_output(extra::base85_decode(input)?),
+        (Codec::Ascii85, Direction::Encode) => (extra::ascii85_encode(input.as_bytes()), true),
+        (Codec::Ascii85, Direction::Decode) => bytes_output(extra::ascii85_decode(input)?),
+        (Codec::Morse, Direction::Encode) => {
+            (extra::morse_encode(input, options.morse_utf8)?, true)
+        }
+        (Codec::Morse, Direction::Decode) => (extra::morse_decode(input)?, true),
     };
 
     Ok(Output {

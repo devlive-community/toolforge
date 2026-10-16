@@ -1,11 +1,12 @@
 {
   "name": "编解码",
-  "description": "Base64、Base32、Hex、URL、HTML 实体与 Unicode 转义的编码与解码，支持文件转 Base64 / Data URI",
+  "description": "Base64、Base32、Hex、URL、HTML 实体与 Unicode 转义的编码与解码，支持文件转 Base64 / Data URI，并支持 Base58、Base85、Ascii85 与摩斯电码",
   "help": [
     "左侧选择编码类型，上方切换编码 / 解码；输入后实时得到结果。",
     "解码结果若不是 UTF-8 文本（例如图片数据），会以十六进制显示并给出提示。",
     "「交换」把输出放回输入并反转方向，方便验证能否还原。",
-    "文件转 Base64 以后台任务运行，最大 20 MB，可生成 Data URI 直接用于 HTML / CSS。"
+    "文件转 Base64 以后台任务运行，最大 20 MB，可生成 Data URI 直接用于 HTML / CSS。",
+    "Base58 使用比特币字母表；Base85 使用 RFC 1924 / git 字母表，Ascii85 带 <~ ~> 包裹并用 z 表示 4 个 0 字节。摩斯电码按 ITU 标准，中文等没有对应码的字符可选择先转为 UTF-8 十六进制再编码（解码得到十六进制，需再经 Hex 解码）。"
   ],
   "functions": {
     "encode_file": "文件转 Base64"
@@ -51,6 +52,22 @@
     "unicode": {
       "name": "Unicode 转义",
       "hint": "\\u4e2d、\\u{1F600}、U+4E2D"
+    },
+    "base58": {
+      "name": "Base58",
+      "hint": "比特币字母表，不含 0 O I l"
+    },
+    "base85": {
+      "name": "Base85",
+      "hint": "RFC 1924 字母表（git 二进制补丁）"
+    },
+    "ascii85": {
+      "name": "Ascii85",
+      "hint": "Adobe <~ ~>，PDF / PostScript"
+    },
+    "morse": {
+      "name": "摩斯电码",
+      "hint": "字母间空格，单词间 /"
     }
   },
   "direction": {
@@ -67,7 +84,8 @@
     "htmlDecimal": "非 ASCII → 十进制",
     "htmlHex": "非 ASCII → 十六进制",
     "unicodeStyle": "转义格式",
-    "escapeAscii": "转义 ASCII"
+    "escapeAscii": "转义 ASCII",
+    "morseUtf8": "无对应码时按 UTF-8 十六进制编码"
   },
   "input": {
     "plain": "原文",
@@ -108,6 +126,7 @@
     "encode.invalid_input": "输入不是合法的 {{codec}} 编码",
     "encode.invalid_escape": "第 {{position}} 个字符处的转义序列无效",
     "encode.too_large": "内容过大（超过 {{limit}}）",
-    "encode.file_too_large": "文件过大（超过 {{limit}}）"
+    "encode.file_too_large": "文件过大（超过 {{limit}}）",
+    "encode.morse_unsupported": "「{{char}}」没有对应的摩斯电码，可开启 UTF-8 十六进制选项"
   }
 }

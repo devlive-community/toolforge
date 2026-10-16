@@ -30,6 +30,7 @@ export function EncoderTool() {
     htmlMode: 'basic',
     unicodeStyle: 'u',
     escapeAscii: false,
+    morseUtf8: false,
   })
   const [fileFormat, setFileFormat] = useState<FileFormat>('dataUri')
   const [showFile, setShowFile] = useState(false)

@@ -1,11 +1,12 @@
 {
   "name": "Encoder",
-  "description": "Encode and decode Base64, Base32, Hex, URL, HTML entities and Unicode escapes, and turn files into Base64 / Data URIs",
+  "description": "Encode and decode Base64, Base32, Hex, URL, HTML entities and Unicode escapes, and turn files into Base64 / Data URIs, plus Base58, Base85, Ascii85 and Morse code",
   "help": [
     "Pick an encoding on the left and switch between encode and decode above; results update as you type.",
     "Decoded data that is not UTF-8 text (such as image bytes) is shown as hex with a notice.",
     "“Swap” moves the output back to the input and flips the direction so you can verify a round trip.",
-    "File to Base64 runs as a background task (up to 20 MB) and can produce a Data URI ready for HTML / CSS."
+    "File to Base64 runs as a background task (up to 20 MB) and can produce a Data URI ready for HTML / CSS.",
+    "Base58 uses the Bitcoin alphabet; Base85 uses the RFC 1924 / git alphabet, and Ascii85 is wrapped in <~ ~> with z for four zero bytes. Morse follows ITU; characters without a code (such as Chinese) can be sent as UTF-8 hex first (decoding gives hex, then decode it with Hex)."
   ],
   "functions": {
     "encode_file": "File to Base64"
@@ -51,6 +52,22 @@
     "unicode": {
       "name": "Unicode escapes",
       "hint": "\\u4e2d, \\u{1F600}, U+4E2D"
+    },
+    "base58": {
+      "name": "Base58",
+      "hint": "Bitcoin alphabet, no 0 O I l"
+    },
+    "base85": {
+      "name": "Base85",
+      "hint": "RFC 1924 alphabet (git binary patches)"
+    },
+    "ascii85": {
+      "name": "Ascii85",
+      "hint": "Adobe <~ ~>, PDF / PostScript"
+    },
+    "morse": {
+      "name": "Morse code",
+      "hint": "Letters split by spaces, words by /"
     }
   },
   "direction": {
@@ -67,7 +84,8 @@
     "htmlDecimal": "Non-ASCII → decimal",
     "htmlHex": "Non-ASCII → hex",
     "unicodeStyle": "Escape style",
-    "escapeAscii": "Escape ASCII"
+    "escapeAscii": "Escape ASCII",
+    "morseUtf8": "Use UTF-8 hex for unmapped characters"
   },
   "input": {
     "plain": "Plain text",
@@ -108,6 +126,7 @@
     "encode.invalid_input": "The input is not valid {{codec}}",
     "encode.invalid_escape": "Invalid escape sequence at character {{position}}",
     "encode.too_large": "Input is too large (over {{limit}})",
-    "encode.file_too_large": "File is too large (over {{limit}})"
+    "encode.file_too_large": "File is too large (over {{limit}})",
+    "encode.morse_unsupported": "\"{{char}}\" has no Morse code; enable the UTF-8 hex option"
   }
 }

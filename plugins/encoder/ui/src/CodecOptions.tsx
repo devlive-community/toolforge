@@ -70,5 +70,8 @@ export function CodecOptions({ codec, direction, options, onChange }: Props) {
       )
     }
   }
+  if (codec === 'morse') {
+    items.push(<Toggle key="morseUtf8" label={t('options.morseUtf8')} checked={options.morseUtf8} onChange={(morseUtf8) => onChange({ morseUtf8 })} />)
+  }
   return <>{items}</>
 }
