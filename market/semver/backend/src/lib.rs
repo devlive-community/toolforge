@@ -1,4 +1,4 @@
-//! SemVer 插件后端：按 SemVer 2.0.0 解析、比较与排序版本，并按 npm（node-semver）范围语义批量判断命中。
+//! SemVer 插件（在线安装插件）：按 SemVer 2.0.0 解析、比较与排序版本，并按 npm（node-semver）范围语义批量判断命中。
 
 mod analyze;
 mod range;
@@ -33,6 +33,8 @@ impl ToolPlugin for Semver {
         }
     }
 }
+
+tf_plugin_guest::export_plugin!(Semver);
 
 #[cfg(test)]
 #[path = "lib_test.rs"]

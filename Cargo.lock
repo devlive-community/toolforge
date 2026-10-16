@@ -8244,6 +8244,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-semver"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-uscc"
 version = "0.1.0"
 dependencies = [
@@ -8882,15 +8892,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-semver"
-version = "0.1.0"
-dependencies = [
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-sql-formatter"
 version = "0.1.0"
 dependencies = [
@@ -9454,7 +9455,6 @@ dependencies = [
  "tfp-qrcode",
  "tfp-random",
  "tfp-regex",
- "tfp-semver",
  "tfp-sql-formatter",
  "tfp-ssh-key",
  "tfp-svg-converter",
