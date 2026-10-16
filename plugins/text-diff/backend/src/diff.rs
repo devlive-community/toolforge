@@ -1,5 +1,6 @@
 use std::time::Instant;
 
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 use similar::{Algorithm, ChangeTag, DiffOp, TextDiff, capture_diff_slices};
 use tf_plugin_api::{PluginError, PluginResult};
@@ -8,6 +9,9 @@ const MAX_INPUT: usize = 5 * 1024 * 1024;
 /// 并排视图最多返回的行数
 pub const MAX_ROWS: usize = 20_000;
 const CONTEXT: usize = 3;
+const MAX_PATTERNS: usize = 32;
+/// 忽略规则编译后的大小上限，避免超大表达式占用内存
+const PATTERN_SIZE_LIMIT: usize = 1 << 20;
 
 #[derive(Debug, Clone, Copy, Default, Deserialize, Serialize, PartialEq)]
 #[serde(rename_all = "lowercase")]
@@ -40,6 +44,9 @@ pub struct Args {
     /// 比较时忽略行首尾空白并合并连续空白
     #[serde(default)]
     pub ignore_whitespace: bool,
+    /// 对比前从每行中删除这些正则匹配到的内容（时间戳、ID 等噪音）
+    #[serde(default)]
+    pub ignore_patterns: Vec<String>,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, PartialEq)]
@@ -84,6 +91,8 @@ pub struct Stats {
     pub removed: usize,
     pub changed: usize,
     pub unchanged: usize,
+    /// 原文不同、但规范化后相同而被视为未改动的行数
+    pub ignored: usize,
     /// 0–1
     pub similarity: f32,
 }
@@ -117,12 +126,38 @@ fn split_lines(text: &str) -> Vec<&str> {
         .collect()
 }
 
-fn normalize(line: &str, args: &Args) -> String {
-    let mut key = if args.ignore_whitespace {
-        line.split_whitespace().collect::<Vec<_>>().join(" ")
-    } else {
-        line.to_owned()
-    };
+fn compile(patterns: &[String]) -> PluginResult<Vec<Regex>> {
+    if patterns.len() > MAX_PATTERNS {
+        return Err(PluginError::new("diff.too_many_patterns").with("max", MAX_PATTERNS));
+    }
+    patterns
+        .iter()
+        .enumerate()
+        .filter(|(_, p)| !p.is_empty())
+        .map(|(index, pattern)| {
+            regex::RegexBuilder::new(pattern)
+                .size_limit(PATTERN_SIZE_LIMIT)
+                .build()
+                .map_err(|e| {
+                    PluginError::new("diff.invalid_pattern")
+                        .with("index", index + 1)
+                        .with("detail", e.to_string())
+                })
+        })
+        .collect()
+}
+
+/// 规范化后的比较键：先删除忽略规则匹配的内容，再处理空白与大小写
+fn normalize(line: &str, args: &Args, patterns: &[Regex]) -> String {
+    let mut key = line.to_owned();
+    for pattern in patterns {
+        if let std::borrow::Cow::Owned(replaced) = pattern.replace_all(&key, "") {
+            key = replaced;
+        }
+    }
+    if args.ignore_whitespace {
+        key = key.split_whitespace().collect::<Vec<_>>().join(" ");
+    }
     if args.ignore_case {
         key = key.to_lowercase();
     }
@@ -193,10 +228,10 @@ fn merge(segments: Vec<Segment>) -> Vec<Segment> {
     out
 }
 
-fn line_diff(args: &Args) -> (Vec<Row>, Stats, bool) {
+fn line_diff(args: &Args, patterns: &[Regex]) -> (Vec<Row>, Stats, bool) {
     let (left, right) = (split_lines(&args.left), split_lines(&args.right));
-    let left_keys: Vec<String> = left.iter().map(|l| normalize(l, args)).collect();
-    let right_keys: Vec<String> = right.iter().map(|l| normalize(l, args)).collect();
+    let left_keys: Vec<String> = left.iter().map(|l| normalize(l, args, patterns)).collect();
+    let right_keys: Vec<String> = right.iter().map(|l| normalize(l, args, patterns)).collect();
     let ops = capture_diff_slices(algorithm(args.algorithm), &left_keys, &right_keys);
 
     let mut rows = Vec::new();
@@ -215,6 +250,9 @@ fn line_diff(args: &Args) -> (Vec<Row>, Stats, bool) {
                 len,
             } => {
                 stats.unchanged += len;
+                stats.ignored += (0..len)
+                    .filter(|i| left[old_index + i] != right[new_index + i])
+                    .count();
                 for i in 0..len {
                     push(
                         Row {
@@ -374,7 +412,8 @@ pub fn run(args: Args) -> PluginResult<Output> {
 
     let (rows, tokens, stats, truncated) = match args.mode {
         Mode::Lines => {
-            let (rows, stats, truncated) = line_diff(&args);
+            let patterns = compile(&args.ignore_patterns)?;
+            let (rows, stats, truncated) = line_diff(&args, &patterns);
             (rows, Vec::new(), stats, truncated)
         }
         Mode::Words | Mode::Chars => {

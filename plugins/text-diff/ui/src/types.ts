@@ -24,7 +24,7 @@ export interface DiffResult {
   rows: Row[]
   tokens: { tag: Tag; text: string }[]
   truncated: boolean
-  stats: { added: number; removed: number; changed: number; unchanged: number; similarity: number }
+  stats: { added: number; removed: number; changed: number; unchanged: number; ignored: number; similarity: number }
   unified: string
   elapsedMs: number
 }

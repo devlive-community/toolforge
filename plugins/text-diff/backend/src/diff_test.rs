@@ -8,6 +8,7 @@ fn args(left: &str, right: &str) -> Args {
         algorithm: Algo::Myers,
         ignore_case: false,
         ignore_whitespace: false,
+        ignore_patterns: Vec::new(),
     }
 }
 
@@ -122,4 +123,57 @@ fn handles_empty_sides_and_crlf() {
     assert_eq!(tags(&out), vec![Tag::Insert, Tag::Insert]);
     assert_eq!(out.rows[0].right.as_ref().unwrap().segments[0].text, "x");
     assert!(run(args("", "")).unwrap().identical);
+}
+
+#[test]
+fn ignore_patterns_normalize_noise_before_diffing() {
+    let left = "2026-10-01 08:00:01 [42] start\n2026-10-01 08:00:02 [43] load config\n2026-10-01 08:00:03 [44] ready";
+    let right = "2026-10-15 21:11:09 [97] start\n2026-10-15 21:11:10 [98] load config v2\n2026-10-15 21:11:11 [99] ready";
+    let plain = run(args(left, right)).unwrap();
+    assert_eq!(plain.stats.changed, 3);
+
+    let mut a = args(left, right);
+    a.ignore_patterns = vec![
+        r"^\d{4}-\d{2}-\d{2} [\d:]+".into(),
+        r"\[\d+\]".into(),
+        String::new(),
+    ];
+    let out = run(a).unwrap();
+    assert_eq!(tags(&out), vec![Tag::Equal, Tag::Change, Tag::Equal]);
+    assert_eq!(
+        (out.stats.unchanged, out.stats.changed, out.stats.ignored),
+        (2, 1, 2)
+    );
+    // 显示原文
+    assert!(
+        out.rows[0].left.as_ref().unwrap().segments[0]
+            .text
+            .starts_with("2026-10-01")
+    );
+}
+
+#[test]
+fn ignore_patterns_stack_with_case_and_whitespace() {
+    let mut a = args("ID=1  Hello", "id=2 hello");
+    a.ignore_patterns = vec![r"(?i)id=\d+".into()];
+    assert!(
+        !run(Args {
+            ignore_patterns: a.ignore_patterns.clone(),
+            ..args("ID=1  Hello", "id=2 hello")
+        })
+        .unwrap()
+        .identical
+    );
+    a.ignore_case = true;
+    a.ignore_whitespace = true;
+    assert!(run(a).unwrap().identical);
+}
+
+#[test]
+fn rejects_invalid_patterns() {
+    let mut a = args("a", "b");
+    a.ignore_patterns = vec!["ok".into(), "(".into()];
+    let err = run(a).unwrap_err();
+    assert_eq!(err.code, "diff.invalid_pattern");
+    assert_eq!(err.params["index"], 2);
 }

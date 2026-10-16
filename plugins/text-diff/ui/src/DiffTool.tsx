@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Badge, Button, Checkbox, CodeEditor, Empty, Panel, SegmentedControl, Select, Spinner, Tooltip, cn } from '@toolforge/ui'
-import { CopyButton, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
-import { ArrowLeftRight, CircleCheck, FileText, GitCompare } from 'lucide-react'
+import { CopyButton, useDebouncedCall, usePlugin, usePluginState } from '@toolforge/plugin-ui-sdk'
+import { ArrowLeftRight, CircleCheck, EyeOff, FileText, GitCompare } from 'lucide-react'
+import { IgnoreRules, type IgnoreRule } from './IgnoreRules'
 import { SideBySide } from './SideBySide'
 import { LEFT_SAMPLE, RIGHT_SAMPLE, type Algo, type DiffResult, type Mode } from './types'
 
@@ -20,12 +21,18 @@ export function DiffTool() {
   const [algorithm, setAlgorithm] = useState<Algo>('myers')
   const [ignoreCase, setIgnoreCase] = useState(false)
   const [ignoreWhitespace, setIgnoreWhitespace] = useState(false)
+  const [rules, setRules] = usePluginState<IgnoreRule[]>('ignoreRules', [])
+  const [showRules, setShowRules] = useState(false)
+  // 只发送启用的规则；保留原序号以便定位无效规则
+  const active = rules.map((rule, index) => ({ ...rule, index })).filter((rule) => rule.enabled && rule.pattern)
+  const ignorePatterns = active.map((rule) => rule.pattern)
 
   const { result, error, pending } = useDebouncedCall<DiffResult>(
     'diff',
-    { left, right, mode, algorithm, ignoreCase, ignoreWhitespace },
-    [left, right, mode, algorithm, ignoreCase, ignoreWhitespace],
+    { left, right, mode, algorithm, ignoreCase, ignoreWhitespace, ignorePatterns },
+    [left, right, mode, algorithm, ignoreCase, ignoreWhitespace, ignorePatterns.join('\u0000')],
   )
+  const invalidIndex = error?.code === 'diff.invalid_pattern' ? (active[Number(error.params?.index ?? 0) - 1]?.index ?? null) : null
   const stats = result?.stats
 
   return (
@@ -49,6 +56,11 @@ export function DiffTool() {
             <Checkbox checked={ignoreWhitespace} onCheckedChange={setIgnoreWhitespace}>
               {t('options.ignoreWhitespace')}
             </Checkbox>
+            <Button size="sm" variant={showRules ? 'soft' : 'outline'} aria-pressed={showRules} onClick={() => setShowRules((v) => !v)}>
+              <EyeOff />
+              {t('ignore.toggle')}
+              {active.length > 0 && <Badge variant="primary">{active.length}</Badge>}
+            </Button>
           </>
         )}
         <Select<Algo>
@@ -80,12 +92,15 @@ export function DiffTool() {
               <Badge variant="success">+{stats.added}</Badge>
               <Badge variant="danger">−{stats.removed}</Badge>
               {mode === 'lines' && <Badge variant="warning">~{stats.changed}</Badge>}
+              {mode === 'lines' && stats.ignored > 0 && <Badge variant="info">{t('ignoredLines', { count: stats.ignored })}</Badge>}
               <Badge>{t('similarity', { value: Math.round(stats.similarity * 100) })}</Badge>
             </>
           )}
           {result && !result.identical && <CopyButton text={result.unified} label={t('copyPatch')} variant="outline" />}
         </div>
       </section>
+
+      {mode === 'lines' && showRules && <IgnoreRules rules={rules} onChange={setRules} invalidIndex={invalidIndex} />}
 
       <div className="grid min-h-0 flex-[0.8] grid-cols-2 gap-3">
         <Panel icon={<FileText />} title={t('left')}>
@@ -104,7 +119,14 @@ export function DiffTool() {
         footer={result && <span>{t('elapsed', { ms: result.elapsedMs })}</span>}
       >
         {error ? (
-          <p className="p-4 text-[13px] text-danger">{errorMessage(error)}</p>
+          <div className="p-4 text-[13px]">
+            <p className="text-danger">{errorMessage(error)}</p>
+            {typeof error.params?.detail === 'string' && (
+              <p className="mt-2 rounded-control bg-surface-2 px-2.5 py-1.5 font-mono text-xs break-all whitespace-pre-wrap text-fg-muted" data-selectable>
+                {error.params.detail}
+              </p>
+            )}
+          </div>
         ) : !result ? (
           <div className="flex h-full items-center justify-center text-fg-muted">
             <Spinner />

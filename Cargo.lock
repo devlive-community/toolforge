@@ -8474,6 +8474,7 @@ dependencies = [
 name = "tfp-text-diff"
 version = "0.1.0"
 dependencies = [
+ "regex",
  "serde",
  "serde_json",
  "similar",

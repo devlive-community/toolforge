@@ -1,11 +1,12 @@
 {
   "name": "Text Diff",
-  "description": "Compare two texts by line, word or character with side-by-side highlighting and patch export",
+  "description": "Compare two texts by line, word or character with side-by-side highlighting and patch export; ignore noise such as timestamps and IDs with regex rules",
   "help": [
     "Line mode shows both sides next to each other and highlights the exact words that changed within modified lines.",
     "Word and character modes are handy for spotting small differences in a sentence or a config value.",
     "Ignoring case and whitespace only affects the comparison; the original text is still shown.",
-    "“Copy patch” produces a standard unified diff ready for git apply or code review."
+    "“Copy patch” produces a standard unified diff ready for git apply or code review.",
+    "Ignore rules: in line mode, text matched by each rule (a regex) is removed from every line before comparing — handy for timestamps, auto-increment IDs and random values. Rules stack with ignore case and whitespace, are saved for next time, and statistics use the normalized result."
   ],
   "mode": {
     "label": "Granularity",
@@ -28,6 +29,30 @@
   "truncated": "Too many differences; showing the first 20,000 rows",
   "elapsed": "{{ms}} ms",
   "errors": {
-    "diff.too_large": "Text is too large (over {{limit}})"
-  }
+    "diff.too_large": "Text is too large (over {{limit}})",
+    "diff.invalid_pattern": "Ignore rule {{index}} is not a valid regex",
+    "diff.too_many_patterns": "At most {{max}} ignore rules"
+  },
+  "ignore": {
+    "toggle": "Ignore rules",
+    "title": "Ignore rules",
+    "hint": "Remove matching text from each line before comparing",
+    "common": "Common rules",
+    "add": "Add rule",
+    "empty": "No rules yet. Add a common rule or write your own regex.",
+    "enabled": "Enable rule",
+    "placeholder": "Regex, e.g. ^\\d{4}-\\d{2}-\\d{2}",
+    "pattern": "Rule {{index}}",
+    "remove": "Remove rule",
+    "presets": {
+      "datetime": "Date-time (ISO 8601)",
+      "time": "Time hh:mm:ss",
+      "uuid": "UUID",
+      "hex": "Hex hash / address",
+      "number": "All numbers",
+      "bracketId": "Bracketed number [123]"
+    }
+  },
+  "ignoredLines_one": "{{count}} line differs only in ignored text",
+  "ignoredLines_other": "{{count}} lines differ only in ignored text"
 }
