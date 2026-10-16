@@ -4,6 +4,7 @@
 
 mod check;
 mod notes;
+mod plugin;
 mod rules;
 mod version;
 
@@ -21,6 +22,10 @@ Commands:
                           (releases are published with scripts/release.sh)
   notes [ref] [tag]       Print release notes (commit history since the previous v* tag) for ref
                           (default HEAD); tag names the release for the compare link
+  plugin keygen <file>    Create an ed25519 signing key for plugin packages (prints the public key)
+  plugin pack <slug> [--out dir] [--key-id id] [--unsigned]
+                          Build market/<slug> into a .tfp package (default out: dist/plugins);
+                          signs with the base64 key in TOOLFORGE_PLUGIN_KEY unless --unsigned
   help                    Show this message
 ";
 
@@ -56,6 +61,35 @@ fn main() -> ExitCode {
             args.get(2).map(String::as_str),
         )
         .map(|notes| print!("{notes}")),
+        Some("plugin") => {
+            let flag = |name: &str| {
+                args.iter()
+                    .position(|a| a == name)
+                    .and_then(|i| args.get(i + 1))
+                    .cloned()
+            };
+            match (args.get(1).map(String::as_str), args.get(2)) {
+                (Some("keygen"), Some(out)) => plugin::keygen(std::path::Path::new(out)),
+                (Some("pack"), Some(slug)) => {
+                    let root = check::workspace_root();
+                    plugin::pack(
+                        &root,
+                        &plugin::PackOptions {
+                            slug: slug.clone(),
+                            out: flag("--out")
+                                .map_or_else(|| root.join("dist/plugins"), Into::into),
+                            key_id: flag("--key-id")
+                                .unwrap_or_else(|| plugin::DEFAULT_KEY_ID.to_owned()),
+                            unsigned: args.iter().any(|a| a == "--unsigned"),
+                        },
+                    )
+                    .map(|_| ())
+                }
+                _ => Err(format!(
+                    "usage: cargo xtask plugin keygen <file> | pack <slug>\n\n{HELP}"
+                )),
+            }
+        }
         Some("help") | None => {
             print!("{HELP}");
             Ok(())

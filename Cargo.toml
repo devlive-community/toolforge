@@ -4,6 +4,7 @@ members = [
     "apps/desktop/src-tauri",
     "crates/tf-core",
     "crates/tf-plugin-api",
+    "crates/tf-package",
     "crates/tf-plugin-guest",
     "crates/tf-wasm",
     "crates/xtask",
@@ -23,6 +24,8 @@ serde_json = { version = "1", features = ["preserve_order", "arbitrary_precision
 thiserror = "2"
 tf-core = { path = "crates/tf-core" }
 tf-plugin-api = { path = "crates/tf-plugin-api" }
+tf-package = { path = "crates/tf-package" }
+tf-wasm = { path = "crates/tf-wasm" }
 tfp-archive = { path = "plugins/archive/backend" }
 tfp-background-remover = { path = "plugins/background-remover/backend" }
 tfp-barcode = { path = "plugins/barcode/backend" }
