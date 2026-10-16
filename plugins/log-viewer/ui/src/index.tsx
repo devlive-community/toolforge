@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { Badge, Button, Input, Panel, Progress, Switch, Tooltip, cn, toast } from '@toolforge/ui'
 import { CopyButton, formatBytes, host, usePlugin, usePluginState, useTask } from '@toolforge/plugin-ui-sdk'
-import { CaseSensitive, FileText, FolderOpen, History, Regex, RotateCw, Search, Upload, X } from 'lucide-react'
+import { CaseSensitive, ClipboardCopy, Download, FileText, FolderOpen, History, Palette, Regex, RotateCw, Search, Upload, X } from 'lucide-react'
 import { LEVEL_BAR, LogList, type Growth } from './LogList'
-import { LEVELS, type Detail, type FilterResult, type Level, type Line, type OpenInfo, type Refreshed, type Stats } from './types'
+import { Styled } from './Styled'
+import { LEVELS, type Detail, type Exported, type FilterResult, type Level, type Line, type OpenInfo, type Refreshed, type Stats } from './types'
 
 const FILTER_DELAY = 300
 const FOLLOW_INTERVAL = 1000
 const MAX_RECENT = 8
+const MAX_EXPORT = 5000
 const baseName = (path: string) => path.split(/[\\/]/).pop() ?? path
 
 function IconToggle({ pressed, onChange, label, children }: { pressed: boolean; onChange: (value: boolean) => void; label: string; children: React.ReactNode }) {
@@ -37,6 +39,9 @@ function LogViewer() {
   const [growth, setGrowth] = useState<Growth>({ from: 0, seq: 0 })
   const [detail, setDetail] = useState<Detail | null>(null)
   const [hovering, setHovering] = useState(false)
+  const [colors, setColors] = usePluginState('ansiColors', true)
+  /** 选区：锚点与当前行（视图中的下标），按住 Shift 点击扩展 */
+  const [selection, setSelection] = useState<{ key: string; anchor: number; focus: number } | null>(null)
   const lastFilter = useRef('')
   /** 当前视图的行数，文件增长时据此判断需要重新读取的块 */
   const shown = useRef(0)
@@ -140,8 +145,13 @@ function LogViewer() {
       .catch((error) => toast.error(errorMessage(error)))
   }
 
-  const select = (line: Line) => {
+  const select = (line: Line, index: number, extend: boolean) => {
     if (!doc) return
+    if (extend && selection && selection.key === listKey) {
+      setSelection({ ...selection, focus: index })
+      return
+    }
+    setSelection({ key: listKey, anchor: index, focus: index })
     call<Detail>('line', { id: doc.id, line: line.n })
       .then(setDetail)
       .catch((error) => toast.error(errorMessage(error)))
@@ -161,6 +171,29 @@ function LogViewer() {
     task.progress && task.progress.total > 0 ? (task.progress.done / task.progress.total) * 100 : null
 
   const total = view ? view.total : (stats?.lines ?? 0)
+  const listKey = `${doc?.id}:${view?.id ?? 0}:${epoch}`
+  const range: [number, number] | null =
+    selection && selection.key === listKey ? [Math.min(selection.anchor, selection.focus), Math.max(selection.anchor, selection.focus)] : null
+  const rangeSize = range ? range[1] - range[0] + 1 : 0
+
+  const exportRange = async (target: 'copy' | 'save') => {
+    if (!doc || !range) return
+    try {
+      const result = await call<Exported>('export', { id: doc.id, view: view?.id ?? 0, offset: range[0], limit: Math.min(rangeSize, MAX_EXPORT) })
+      if (target === 'copy') {
+        await host.clipboard.writeText(result.html)
+        toast.success(t('export.copied', { count: result.lines }))
+      } else {
+        const path = await host.dialog.saveFile(`${baseName(doc.name)}.html`, [{ name: 'HTML', extensions: ['html'] }])
+        if (!path) return
+        await host.fs.writeText(path, `<!doctype html>\n<meta charset="utf-8">\n${result.html}\n`)
+        toast.success(t('common:saved'))
+      }
+      if (rangeSize > MAX_EXPORT) toast.info(t('export.limited', { max: MAX_EXPORT }))
+    } catch (error) {
+      toast.error(errorMessage(error))
+    }
+  }
   useEffect(() => {
     shown.current = total
   }, [total])
@@ -241,6 +274,9 @@ function LogViewer() {
               </span>
             }
           />
+          <IconToggle pressed={colors} onChange={setColors} label={t('toolbar.colors')}>
+            <Palette />
+          </IconToggle>
           <label className="flex items-center gap-2 text-[13px] text-fg">
             <Switch size="sm" checked={follow} onCheckedChange={setFollow} aria-label={t('toolbar.follow')} />
             {t('toolbar.follow')}
@@ -293,6 +329,23 @@ function LogViewer() {
           icon={<FileText />}
           title={doc.name}
           extra={<Badge>{doc.encoding}</Badge>}
+          actions={
+            range && (
+              <>
+                <span className="text-xs text-fg-muted tabular-nums">{t('export.selected', { count: rangeSize })}</span>
+                <Tooltip content={t('export.copy')}>
+                  <Button size="icon-sm" variant="ghost" aria-label={t('export.copy')} onClick={() => void exportRange('copy')}>
+                    <ClipboardCopy />
+                  </Button>
+                </Tooltip>
+                <Tooltip content={t('export.save')}>
+                  <Button size="icon-sm" variant="ghost" aria-label={t('export.save')} onClick={() => void exportRange('save')}>
+                    <Download />
+                  </Button>
+                </Tooltip>
+              </>
+            )
+          }
           footer={
             <>
               <span className="shrink-0 whitespace-nowrap tabular-nums">
@@ -314,6 +367,8 @@ function LogViewer() {
             growth={growth}
             follow={follow}
             selected={detail?.n ?? null}
+            range={range}
+            colors={colors}
             onSelect={select}
             onScrolledAway={() => setFollow(false)}
           />
@@ -333,7 +388,7 @@ function LogViewer() {
             bodyClassName="space-y-3 overflow-auto p-3"
           >
             <pre className="font-mono text-[12px] leading-relaxed break-all whitespace-pre-wrap text-fg" data-selectable>
-              {detail.text}
+              <Styled text={detail.text} styles={detail.styles} colors={colors} />
             </pre>
             {detail.truncated && <p className="text-xs text-warning">{t('detail.truncated')}</p>}
             {detail.json && (

@@ -81,7 +81,14 @@ pub fn strip_ansi(bytes: &[u8]) -> Cow<'_, [u8]> {
                 }
                 i += if bytes.get(i) == Some(&0x1b) { 2 } else { 1 };
             }
-            _ => i += 2,
+            // ESC 中间字节（0x20–0x2f，如 ESC ( B）… 结束字节
+            _ => {
+                i += 1;
+                while i < bytes.len() && (0x20..=0x2f).contains(&bytes[i]) {
+                    i += 1;
+                }
+                i += 1;
+            }
         }
     }
     Cow::Owned(out)

@@ -1,5 +1,7 @@
-//! 日志查看插件后端：为大文件建立行索引，按级别与文本 / 正则筛选，跟随文件增长（tail -f）。
+//! 日志查看插件后端：为大文件建立行索引，按级别与文本 / 正则筛选，跟随文件增长（tail -f），
+//! 解析 ANSI 颜色并可导出为 HTML。
 
+mod ansi;
 mod doc;
 mod index;
 mod level;
@@ -25,6 +27,7 @@ const MANIFEST: &str = include_str!("../../manifest.json");
 /// 同时保留的文件数量，更早的会被释放
 const CAPACITY: usize = 3;
 const MAX_PAGE: usize = 1000;
+const MAX_EXPORT: usize = 5000;
 
 #[derive(Default)]
 struct Docs {
@@ -187,6 +190,11 @@ impl ToolPlugin for LogViewer {
                 let args: PageArgs = parse_args(args)?;
                 let doc = self.docs.get(args.id)?;
                 to_value(doc.page(args.view, args.offset, args.limit.min(MAX_PAGE))?)
+            }
+            "export" => {
+                let args: PageArgs = parse_args(args)?;
+                let doc = self.docs.get(args.id)?;
+                to_value(doc.export(args.view, args.offset, args.limit.min(MAX_EXPORT))?)
             }
             "line" => {
                 let args: LineArgs = parse_args(args)?;

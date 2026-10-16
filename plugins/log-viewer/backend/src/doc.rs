@@ -54,6 +54,8 @@ pub struct Line {
     pub text: String,
     pub truncated: bool,
     pub marks: Vec<[usize; 2]>,
+    /// ANSI 颜色与样式
+    pub styles: Vec<text::Span>,
 }
 
 #[derive(Debug, Serialize)]
@@ -71,6 +73,14 @@ pub struct Detail {
     pub text: String,
     pub truncated: bool,
     pub json: Option<String>,
+    pub styles: Vec<text::Span>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct Export {
+    pub html: String,
+    pub text: String,
+    pub lines: usize,
 }
 
 #[derive(Debug, Serialize)]
@@ -353,14 +363,20 @@ impl Doc {
         for number in numbers {
             let (start, end) = index.range(number, &mut file)?;
             let (bytes, cut) = read_range(&mut file, start, end, DISPLAY_BYTES)?;
-            let decoded = text::decode(&bytes, self.encoding);
+            let (decoded, spans) = text::decode_styled(&bytes, self.encoding);
             let (shown, shortened) = text::truncate(&decoded, DISPLAY_CHARS);
+            let styles = if shortened {
+                text::clip_spans(spans, shown.encode_utf16().count())
+            } else {
+                spans
+            };
             lines.push(Line {
                 n: number + 1,
                 level: level::NAMES[self.line_level(&index, number, &mut file)? as usize],
                 marks: matcher.as_ref().map(|m| m.marks(shown)).unwrap_or_default(),
                 text: shown.to_owned(),
                 truncated: cut || shortened,
+                styles,
             });
         }
         Ok(Page { total, lines })
@@ -375,13 +391,37 @@ impl Doc {
         let mut file = open_file(&self.path)?;
         let (start, end) = index.range(number, &mut file)?;
         let (bytes, truncated) = read_range(&mut file, start, end, DETAIL_BYTES)?;
-        let text = text::decode(&bytes, self.encoding).into_owned();
+        let (text, styles) = text::decode_styled(&bytes, self.encoding);
         Ok(Detail {
             n: line,
             level: level::NAMES[self.line_level(&index, number, &mut file)? as usize],
             json: text::pretty_json(&text),
             text,
             truncated,
+            styles,
+        })
+    }
+
+    /// 把视图中 [offset, offset + limit) 的行导出为带颜色的 HTML 片段与纯文本
+    pub fn export(&self, view: u64, offset: usize, limit: usize) -> PluginResult<Export> {
+        let page = self.page(view, offset, limit)?;
+        let mut html = String::from(
+            "<pre style=\"background:#1e1e1e;color:#d4d4d4;padding:12px;border-radius:6px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-all\">",
+        );
+        let mut plain = String::new();
+        for (index, line) in page.lines.iter().enumerate() {
+            if index > 0 {
+                html.push('\n');
+                plain.push('\n');
+            }
+            text::line_html(&line.text, &line.styles, &mut html);
+            plain.push_str(&line.text);
+        }
+        html.push_str("</pre>");
+        Ok(Export {
+            html,
+            text: plain,
+            lines: page.lines.len(),
         })
     }
 

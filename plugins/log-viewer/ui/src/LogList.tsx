@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { Empty, cn, toast } from '@toolforge/ui'
 import { usePlugin } from '@toolforge/plugin-ui-sdk'
 import { SearchX } from 'lucide-react'
+import { Styled } from './Styled'
 import type { Level, Line, Page } from './types'
 
 const BLOCK = 200
@@ -26,23 +27,6 @@ const LEVEL_TEXT: Record<Level, string> = {
   none: 'text-fg',
 }
 
-/** 高亮匹配片段（位置由 Rust 按 UTF-16 下标给出） */
-function Marked({ line }: { line: Line }) {
-  if (line.marks.length === 0) return <>{line.text}</>
-  const parts: ReactNode[] = []
-  let cursor = 0
-  line.marks.forEach(([start, end], index) => {
-    if (start > cursor) parts.push(line.text.slice(cursor, start))
-    parts.push(
-      <mark key={index} className="rounded-[2px] bg-warning-soft text-fg">
-        {line.text.slice(start, end)}
-      </mark>,
-    )
-    cursor = end
-  })
-  parts.push(line.text.slice(cursor))
-  return <>{parts}</>
-}
 
 interface Block {
   /** 读取时的增长序号，用于判断块是否过期 */
@@ -74,11 +58,14 @@ interface LogListProps {
   growth: Growth
   follow: boolean
   selected: number | null
-  onSelect: (line: Line) => void
+  /** 选中的行范围（视图中的下标，含两端） */
+  range: [number, number] | null
+  colors: boolean
+  onSelect: (line: Line, index: number, extend: boolean) => void
   onScrolledAway: () => void
 }
 
-export function LogList({ docId, view, epoch, total, lineCount, growth, follow, selected, onSelect, onScrolledAway }: LogListProps) {
+export function LogList({ docId, view, epoch, total, lineCount, growth, follow, selected, range, colors, onSelect, onScrolledAway }: LogListProps) {
   const { t, call, errorMessage } = usePlugin()
   const parent = useRef<HTMLDivElement>(null)
   const key = `${docId}:${view}:${epoch}`
@@ -148,13 +135,14 @@ export function LogList({ docId, view, epoch, total, lineCount, growth, follow, 
       <div className="relative min-w-full" style={{ height: virtualizer.getTotalSize() }}>
         {items.map((item) => {
           const line = rows.get(Math.floor(item.index / BLOCK))?.lines[item.index % BLOCK]
+          const inRange = range !== null && item.index >= range[0] && item.index <= range[1]
           return (
             <div
               key={item.key}
-              onClick={() => line && onSelect(line)}
+              onClick={(event) => line && onSelect(line, item.index, event.shiftKey)}
               className={cn(
                 'absolute left-0 flex w-full cursor-default items-stretch hover:bg-hover',
-                line && selected === line.n && 'bg-primary-soft hover:bg-primary-soft',
+                (inRange || (line && selected === line.n)) && 'bg-primary-soft hover:bg-primary-soft',
               )}
               style={{ top: item.start, height: ROW_HEIGHT }}
             >
@@ -166,7 +154,7 @@ export function LogList({ docId, view, epoch, total, lineCount, growth, follow, 
                 {line?.n ?? ''}
               </span>
               <span className={cn('min-w-0 flex-1 truncate pr-3 whitespace-pre leading-[22px]', line ? LEVEL_TEXT[line.level] : '')}>
-                {line ? <Marked line={line} /> : <span className="inline-block h-2 w-40 rounded-sm bg-active align-middle" />}
+                {line ? <Styled text={line.text} styles={line.styles} marks={line.marks} colors={colors} /> : <span className="inline-block h-2 w-40 rounded-sm bg-active align-middle" />}
               </span>
             </div>
           )

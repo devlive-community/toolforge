@@ -228,3 +228,27 @@ fn benchmark_large_log() {
         );
     }
 }
+
+#[test]
+fn pages_ansi_styles_and_exports_html() {
+    let content = "\x1b[32mINFO\x1b[0m ready\n\x1b[1;31mERROR\x1b[0m <boom>\nplain\n";
+    let doc = Doc::open(&write("ansi", content), |_, _| {}, || false).unwrap();
+    let page = doc.page(0, 0, 3).unwrap();
+    assert_eq!(page.lines[0].text, "INFO ready");
+    assert_eq!(page.lines[0].level, "info");
+    assert_eq!(
+        (page.lines[1].styles[0].start, page.lines[1].styles[0].end),
+        (0, 5)
+    );
+    assert!(page.lines[2].styles.is_empty());
+    let detail = doc.detail(2).unwrap();
+    assert!(detail.styles[0].style.bold);
+
+    let export = doc.export(0, 1, 2).unwrap();
+    assert_eq!(export.lines, 2);
+    assert_eq!(export.text, "ERROR <boom>\nplain");
+    assert!(export.html.starts_with("<pre style="));
+    assert!(export.html.contains(
+        "<span style=\"color:#cd3131;font-weight:bold\">ERROR</span> &lt;boom&gt;\nplain</pre>"
+    ));
+}

@@ -77,3 +77,39 @@ fn truncates_and_formats_json() {
     assert!(pretty_json("no json {here").is_none());
     assert!(pretty_json("} {").is_none());
 }
+
+#[test]
+fn decode_styled_maps_spans_to_utf16() {
+    let (text, spans) = decode_styled(
+        b"\x1b[31m\xe4\xb8\xad\xf0\x9f\x98\x80\x1b[0m x \x1b[1mbold",
+        encoding_rs::UTF_8,
+    );
+    assert_eq!(text, "中😀 x bold");
+    assert_eq!((spans[0].start, spans[0].end), (0, 3));
+    assert_eq!((spans[1].start, spans[1].end), (6, 10));
+    assert!(spans[1].style.bold);
+    let clipped = clip_spans(spans, 8);
+    assert_eq!(clipped[1].end, 8);
+}
+
+#[test]
+fn renders_html_with_escaping() {
+    let (text, spans) = decode_styled(b"<\x1b[32mok & done\x1b[0m>", encoding_rs::UTF_8);
+    let mut html = String::new();
+    line_html(&text, &spans, &mut html);
+    assert_eq!(
+        html,
+        "&lt;<span style=\"color:#0dbc79\">ok &amp; done</span>&gt;"
+    );
+}
+
+#[test]
+fn decode_styled_handles_gb18030_runs() {
+    let (encoded, _, _) = encoding_rs::GB18030.encode("错误");
+    let mut bytes = b"\x1b[31m".to_vec();
+    bytes.extend_from_slice(&encoded);
+    bytes.extend_from_slice(b"\x1b[0m!");
+    let (text, spans) = decode_styled(&bytes, encoding_rs::GB18030);
+    assert_eq!(text, "错误!");
+    assert_eq!((spans[0].start, spans[0].end), (0, 2));
+}

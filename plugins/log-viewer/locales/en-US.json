@@ -1,20 +1,22 @@
 {
   "name": "Log Viewer",
-  "description": "Open large log files, filter by level, text or regex, and follow new lines as they are written",
+  "description": "Open large log files, filter by level, text or regex, and follow new lines as they are written, render ANSI colors and export them as HTML",
   "help": [
     "Open a log file of any size, or drop it onto the window. Lines are indexed in Rust (about 1 GB per second) and only the visible part is read, so gigabyte logs open quickly.",
     "Levels are detected from common formats: plain text (ERROR, WARN, INFO…), [error], level=warn, JSON logs and numeric pino levels. Stack trace lines inherit the level of the line above.",
     "Type to filter lines, turn on Aa for case-sensitive matching or .* for regular expressions, and click the level chips to show only those levels. Matches are highlighted.",
     "Turn on Follow to watch the file like tail -f: new lines appear every second and the view stays at the end. Scroll up to pause following. Truncated or rotated files are re-indexed automatically.",
     "Click a line to see the full text; JSON inside the line is formatted in the side panel.",
-    "UTF-8 and GB18030 (GBK) logs are detected automatically; color codes are removed."
+    "UTF-8 and GB18030 (GBK) logs are detected automatically; color codes are removed.",
+    "ANSI colors: color and bold escape sequences are parsed in Rust (including 256-color and truecolor); the palette button switches between colored and plain text. Click a line, then Shift-click another to select a range and copy or save it as a colored HTML snippet (up to 5000 lines)."
   ],
   "functions": {
     "open": "Open log",
     "filter": "Filter lines",
     "lines": "Read lines",
     "line": "Line details",
-    "refresh": "Check for new lines"
+    "refresh": "Check for new lines",
+    "export": "Export HTML"
   },
   "open": {
     "drop": "Drop a log file here",
@@ -33,7 +35,8 @@
     "reloaded": "New lines loaded",
     "unchanged": "The file has not changed",
     "open": "Open",
-    "allLevels": "All levels"
+    "allLevels": "All levels",
+    "colors": "Show ANSI colors"
   },
   "levels": {
     "error": "Error",
@@ -76,5 +79,14 @@
     "log.view_expired": "The filter changed; the list will reload",
     "log.file_expired": "The file was closed; open it again",
     "log.filter_failed": "Filtering failed"
+  },
+  "export": {
+    "selected_one": "{{count}} line selected",
+    "selected_other": "{{count}} lines selected",
+    "copy": "Copy as colored HTML",
+    "save": "Save as HTML file",
+    "copied_one": "Copied {{count}} line as HTML",
+    "copied_other": "Copied {{count}} lines as HTML",
+    "limited": "Exports are limited to {{max}} lines"
   }
 }

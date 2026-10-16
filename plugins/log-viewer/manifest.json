@@ -1,10 +1,10 @@
 {
   "id": "org.devlive.toolforge.log-viewer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "dev",
-  "keywords": ["log", "logs", "tail", "tail -f", "follow", "grep", "filter", "error", "stack trace", "large file", "日志", "日志查看", "大文件", "筛选", "实时跟踪"],
+  "keywords": ["log", "logs", "tail", "tail -f", "follow", "grep", "filter", "error", "stack trace", "large file", "ansi", "color", "html", "日志", "日志查看", "大文件", "筛选", "实时跟踪"],
   "accent": "cyan",
   "locales": ["zh-CN", "en-US"],
   "permissions": ["fs:user-selected", "clipboard:write"],
@@ -13,7 +13,8 @@
     "filter": { "task": true },
     "lines": {},
     "line": {},
-    "refresh": {}
+    "refresh": {},
+    "export": {}
   },
   "sensitive": false
 }
