@@ -128,40 +128,37 @@ fn tasks_page_through_records() {
 }
 
 #[test]
-fn history_merges_bursts_and_searches() {
+fn history_records_every_call_and_searches() {
     let store = Store::open_in_memory().unwrap();
     let t0 = 1_000_000;
-    let a = store
-        .history_record("json", "format", "{", None, t0)
-        .unwrap();
-    let b = store
-        .history_record("json", "format", "{\"a\":1}", Some("ok"), t0 + 5_000)
-        .unwrap();
-    assert_eq!(a, b, "same burst merges");
-    let c = store
-        .history_record("json", "minify", "{}", None, t0 + 6_000)
-        .unwrap();
-    let d = store
-        .history_record("json", "format", "[1]", None, t0 + 7_000)
-        .unwrap();
-    assert!(c != a && d != c, "another function breaks the burst");
-    let e = store
-        .history_record(
-            "json",
-            "format",
-            "[2]",
-            None,
-            t0 + 7_000 + HISTORY_MERGE_MS + 1,
-        )
-        .unwrap();
-    assert_ne!(e, d, "a pause starts a new entry");
+    let calls = [
+        ("json", "format", "{", None),
+        ("json", "format", "{\"a\":1}", Some("ok")),
+        ("json", "minify", "{}", None),
+        ("json", "format", "[1]", None),
+        ("json", "format", "[2]", None),
+    ];
+    let ids: Vec<i64> = calls
+        .iter()
+        .enumerate()
+        .map(|(i, (plugin, function, input, output))| {
+            store
+                .history_record(plugin, function, input, *output, t0 + i as i64 * 1_000)
+                .unwrap()
+        })
+        .collect();
+    // 每次调用都单独成条，id 严格递增（自增主键）
+    assert!(
+        ids.windows(2).all(|w| w[0] < w[1]),
+        "every call is its own entry"
+    );
 
     let all = store.history_list("", 10, 0).unwrap();
-    assert_eq!(all.len(), 4);
+    assert_eq!(all.len(), 5);
     assert_eq!(all[0].input, "[2]");
-    assert_eq!(all[3].input, "{\"a\":1}");
+    assert_eq!(all[4].input, "{");
+    assert_eq!(all[4].created_at, t0);
     assert_eq!(all[3].output.as_deref(), Some("ok"));
-    assert_eq!(all[3].created_at, t0);
     assert_eq!(store.history_list("\"a\"", 10, 0).unwrap().len(), 1);
     assert_eq!(
         store.history_list("%", 10, 0).unwrap().len(),
@@ -169,11 +166,11 @@ fn history_merges_bursts_and_searches() {
         "LIKE wildcards are escaped"
     );
 
-    store.history_delete(e).unwrap();
-    assert_eq!(store.history_count().unwrap(), 3);
-    assert_eq!(store.history_clear(Some("json")).unwrap(), 3);
+    store.history_delete(ids[4]).unwrap();
+    assert_eq!(store.history_count().unwrap(), 4);
+    assert_eq!(store.history_clear(Some("json")).unwrap(), 4);
     assert_eq!(store.history_count().unwrap(), 0);
-    // 历史记录永久保留：写入的记录不会因数量被裁剪（上方 all.len() == 4 即验证）
+    // 历史记录永久保留：写入的记录不会因数量被裁剪（上方 all.len() == 5 即验证）
 }
 
 #[test]

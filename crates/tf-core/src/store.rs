@@ -58,9 +58,6 @@ const MIGRATIONS: &[&str] = &[
 "#,
 ];
 
-/// 同一工具同一函数在这段时间内的连续调用合并为一条历史（边输入边计算时不刷屏）
-pub const HISTORY_MERGE_MS: i64 = 60_000;
-
 pub struct Store {
     conn: Mutex<Connection>,
 }
@@ -312,7 +309,7 @@ impl Store {
         Ok(ids)
     }
 
-    /// 记录一次处理；与同一工具同一函数在合并时间内的上一条记录合并
+    /// 记录一次处理；每次调用都单独成条（用户 2026-10-16 要求不合并）
     pub fn history_record(
         &self,
         plugin_id: &str,
@@ -322,24 +319,6 @@ impl Store {
         now: i64,
     ) -> AppResult<i64> {
         let conn = self.conn();
-        let latest: Option<(i64, String, String, i64)> = conn
-            .query_row(
-                "SELECT id, plugin_id, function, updated_at FROM history ORDER BY updated_at DESC, id DESC LIMIT 1",
-                [],
-                |row| Ok((row.get(0)?, row.get(1)?, row.get(2)?, row.get(3)?)),
-            )
-            .optional()?;
-        if let Some((id, p, f, updated_at)) = latest
-            && p == plugin_id
-            && f == function
-            && now - updated_at <= HISTORY_MERGE_MS
-        {
-            conn.execute(
-                "UPDATE history SET input = ?2, output = ?3, updated_at = ?4 WHERE id = ?1",
-                params![id, input, output, now],
-            )?;
-            return Ok(id);
-        }
         conn.execute(
             "INSERT INTO history (plugin_id, function, input, output, created_at, updated_at)
              VALUES (?1, ?2, ?3, ?4, ?5, ?5)",
