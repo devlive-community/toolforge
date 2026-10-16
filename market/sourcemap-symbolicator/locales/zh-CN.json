@@ -1,0 +1,138 @@
+{
+  "name": "Source Map 堆栈还原",
+  "description": "导入构建产物自带的 Source Map,把压缩代码的报错位置批量还原为源文件、行列与符号名,支持 Chrome/V8 与 Firefox 堆栈",
+  "help": [
+    "打开或粘贴 .map 文件,再把错误堆栈粘贴进来即可还原;产物与 map 的关联默认取 map 内的 file 字段,也可以手动填写,不会凭同名文件猜测。",
+    "输出的行、列均为 1 基(与浏览器一致);生成列按 UTF-16 code unit 计量,含 emoji 的行也能对齐。",
+    "支持常规映射与内嵌 sections 的 index map;外部 sections 链接不会自动加载;缺失映射、损坏 VLQ、越界索引都会给出明确原因。",
+    "源码只来自内嵌 sourcesContent,不请求 URL、不执行脚本;映射条数与堆栈行数有上限,大文件解析可取消。"
+  ],
+  "functions": {
+    "parse": "解析粘贴的 map",
+    "load": "打开 map 文件",
+    "symbolicate": "还原堆栈",
+    "export": "导出报告"
+  },
+  "stages": {
+    "sourcemap.reading": "读取文件",
+    "sourcemap.parsing": "解析映射"
+  },
+  "open": {
+    "filter": "Source Map",
+    "openFile": "打开 .map 文件",
+    "paste": "粘贴 JSON",
+    "pasteTitle": "粘贴 Source Map JSON",
+    "parse": "解析",
+    "loading": "正在解析映射…",
+    "cancel": "取消",
+    "drop": "拖入 .map 文件即可解析",
+    "emptyTitle": "还没有打开 Source Map",
+    "emptyHint": "支持常规映射与 sections 的 index map,全部在本地解析"
+  },
+  "overview": {
+    "kind": "类型",
+    "regular": "常规映射",
+    "index": "index map(sections)",
+    "file": "产物",
+    "sourceRoot": "sourceRoot",
+    "sources": "来源",
+    "names": "符号名",
+    "segments": "映射段",
+    "mappedLines": "已映射行",
+    "content": "内嵌源码",
+    "contentCovered": "{{covered}}/{{total}}",
+    "sections": "sections",
+    "section": {
+      "index": "#",
+      "offset": "偏移",
+      "sources": "来源",
+      "segments": "映射段"
+    },
+    "diagnostics": "注意事项",
+    "empty": "该 map 没有来源信息"
+  },
+  "tabs": {
+    "stack": "堆栈还原",
+    "position": "单个位置",
+    "sources": "源码与符号"
+  },
+  "stack": {
+    "title": "错误堆栈",
+    "placeholder": "粘贴 Chrome/Firefox 的错误堆栈…",
+    "asset": "关联产物",
+    "assetPlaceholder": "如 app.min.js",
+    "assetHint": "堆栈里的 URL 按文件名与它匹配,默认取 map 的 file 字段",
+    "run": "还原"
+  },
+  "position": {
+    "line": "生成行",
+    "column": "生成列",
+    "hint": "行、列均为 1 基,与浏览器开发者工具一致",
+    "run": "还原"
+  },
+  "frames": {
+    "title": "还原结果",
+    "index": "#",
+    "original": "原始帧",
+    "resolved": "还原结果",
+    "resolvedFrame": "{{source}}:{{line}}:{{column}}",
+    "empty": "输入堆栈后点击「还原」",
+    "truncated": "堆栈超过 {{max}} 行,已截断",
+    "detail": "帧详情",
+    "context": "源码上下文",
+    "name": "符号名",
+    "section": "命中的 section",
+    "anonymous": "(匿名来源)",
+    "noContent": "该来源没有内嵌源码",
+    "status": {
+      "resolved": "已还原",
+      "no_mapping": "无映射",
+      "unrelated": "无关产物",
+      "unassociated": "未关联产物",
+      "no_column": "缺少列号",
+      "message": "消息"
+    }
+  },
+  "sources": {
+    "name": "来源",
+    "content": "内嵌源码",
+    "segments": "映射段",
+    "yes": "有",
+    "no": "无",
+    "empty": "该 map 没有来源信息"
+  },
+  "export": {
+    "markdown": "复制 Markdown",
+    "json": "复制 JSON",
+    "saveMd": "保存 Markdown",
+    "saveJson": "保存 JSON",
+    "empty": "先执行一次还原再导出"
+  },
+  "errors": {
+    "sourcemap.invalid_json": "不是有效的 JSON:{{detail}}",
+    "sourcemap.unsupported_version": "只支持 version 3 的 Source Map",
+    "sourcemap.mappings_missing": "缺少 mappings 字段",
+    "sourcemap.invalid_mappings": "mappings 解码失败:{{detail}}",
+    "sourcemap.index_out_of_range": "{{field}} 下标 {{index}} 越界",
+    "sourcemap.too_many_segments": "映射段超过 {{max}} 条上限",
+    "sourcemap.too_many_sources": "来源超过 {{max}} 个上限",
+    "sourcemap.too_many_names": "符号名超过 {{max}} 个上限",
+    "sourcemap.too_large": "粘贴内容超过 {{mb}} MB 上限",
+    "sourcemap.file_too_large": "文件超过 {{mb}} MB 上限",
+    "sourcemap.stack_too_large": "堆栈文本超过 {{kb}} KB 上限",
+    "sourcemap.read_failed": "读取文件失败:{{detail}}",
+    "sourcemap.expired": "这份 map 已被新打开的内容替换,请重新加载",
+    "sourcemap.no_result": "还没有还原结果,先执行一次还原",
+    "sourcemap.no_input": "请提供堆栈文本或生成位置",
+    "sourcemap.section_url_skipped": "section 指向外部链接 {{url}},已跳过(不自动加载)",
+    "sourcemap.section_empty": "第 {{index}} 个 section 没有 map 内容,已跳过",
+    "sourcemap.nested_sections": "sections 内不允许再嵌套 sections",
+    "sourcemap.invalid_offset": "第 {{index}} 个 section 的偏移无效",
+    "sourcemap.frame_unrelated": "堆栈帧来自 {{url}},与关联产物不同",
+    "sourcemap.frame_unassociated": "该 map 没有声明产物文件,也未手动指定关联",
+    "sourcemap.frame_no_column": "堆栈帧缺少列号,无法给出精确位置",
+    "sourcemap.frame_no_mapping": "该位置在 map 里没有对应映射",
+    "sourcemap.frame_invalid_position": "堆栈帧的行列必须是正整数",
+    "sourcemap.too_many_frames": "堆栈超过 {{max}} 行,已截断"
+  }
+}

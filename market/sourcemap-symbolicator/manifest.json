@@ -1,0 +1,18 @@
+{
+  "id": "org.devlive.toolforge.sourcemap-symbolicator",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["sourcemap", "source map", "source-map", "symbolicate", "symbolicator", "stack trace", "stacktrace", "minified", "vlq", "sourcesContent", "堆栈还原", "源码映射", "报错定位", "压缩报错", "还原"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write", "fs:user-selected"],
+  "functions": {
+    "parse": {},
+    "load": { "task": true },
+    "symbolicate": {},
+    "export": {}
+  },
+  "sensitive": false
+}

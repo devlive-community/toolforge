@@ -1,0 +1,138 @@
+{
+  "name": "Source Map Symbolicator",
+  "description": "Import the Source Map shipped with your build and batch-map minified error positions back to source files, lines, columns and symbol names. Supports Chrome/V8 and Firefox stacks",
+  "help": [
+    "Open or paste a .map file, then paste the error stack to symbolicate. The asset association defaults to the map's file field and can be overridden manually; files are never matched by name guessing.",
+    "Output lines and columns are 1-based (matching the browser); generated columns use UTF-16 code units, so lines with emoji still line up.",
+    "Both regular mappings and index maps with sections are supported; external section URLs are never fetched. Missing mappings, broken VLQ and out-of-range indexes all report a clear reason.",
+    "Source code only comes from embedded sourcesContent — no URLs are fetched and no script is executed. Mapping and stack limits apply, and large files can be cancelled while parsing."
+  ],
+  "functions": {
+    "parse": "Parse pasted map",
+    "load": "Open map file",
+    "symbolicate": "Symbolicate stack",
+    "export": "Export report"
+  },
+  "stages": {
+    "sourcemap.reading": "Reading file",
+    "sourcemap.parsing": "Parsing mappings"
+  },
+  "open": {
+    "filter": "Source Map",
+    "openFile": "Open .map file",
+    "paste": "Paste JSON",
+    "pasteTitle": "Paste Source Map JSON",
+    "parse": "Parse",
+    "loading": "Parsing mappings…",
+    "cancel": "Cancel",
+    "drop": "Drop a .map file to parse",
+    "emptyTitle": "No Source Map loaded yet",
+    "emptyHint": "Supports regular mappings and index maps with sections — everything is parsed locally"
+  },
+  "overview": {
+    "kind": "Kind",
+    "regular": "Regular mappings",
+    "index": "Index map (sections)",
+    "file": "Asset",
+    "sourceRoot": "sourceRoot",
+    "sources": "Sources",
+    "names": "Names",
+    "segments": "Segments",
+    "mappedLines": "Mapped lines",
+    "content": "Embedded source",
+    "contentCovered": "{{covered}}/{{total}}",
+    "sections": "Sections",
+    "section": {
+      "index": "#",
+      "offset": "Offset",
+      "sources": "Sources",
+      "segments": "Segments"
+    },
+    "diagnostics": "Notes",
+    "empty": "This map has no sources"
+  },
+  "tabs": {
+    "stack": "Stack",
+    "position": "Single position",
+    "sources": "Sources & names"
+  },
+  "stack": {
+    "title": "Error stack",
+    "placeholder": "Paste a Chrome/Firefox error stack…",
+    "asset": "Associated asset",
+    "assetPlaceholder": "e.g. app.min.js",
+    "assetHint": "Stack URLs are matched by file name; defaults to the map's file field",
+    "run": "Symbolicate"
+  },
+  "position": {
+    "line": "Generated line",
+    "column": "Generated column",
+    "hint": "Both are 1-based, matching the browser devtools",
+    "run": "Symbolicate"
+  },
+  "frames": {
+    "title": "Result",
+    "index": "#",
+    "original": "Original",
+    "resolved": "Resolved",
+    "resolvedFrame": "{{source}}:{{line}}:{{column}}",
+    "empty": "Paste a stack and press \"Symbolicate\"",
+    "truncated": "Stack exceeded {{max}} lines and was truncated",
+    "detail": "Frame detail",
+    "context": "Source context",
+    "name": "Name",
+    "section": "Matched section",
+    "anonymous": "(anonymous source)",
+    "noContent": "This source has no embedded content",
+    "status": {
+      "resolved": "Resolved",
+      "no_mapping": "No mapping",
+      "unrelated": "Other asset",
+      "unassociated": "No asset linked",
+      "no_column": "Missing column",
+      "message": "Message"
+    }
+  },
+  "sources": {
+    "name": "Source",
+    "content": "Embedded source",
+    "segments": "Segments",
+    "yes": "yes",
+    "no": "no",
+    "empty": "This map has no sources"
+  },
+  "export": {
+    "markdown": "Copy Markdown",
+    "json": "Copy JSON",
+    "saveMd": "Save Markdown",
+    "saveJson": "Save JSON",
+    "empty": "Run a symbolication first"
+  },
+  "errors": {
+    "sourcemap.invalid_json": "Not valid JSON: {{detail}}",
+    "sourcemap.unsupported_version": "Only Source Map version 3 is supported",
+    "sourcemap.mappings_missing": "The mappings field is missing",
+    "sourcemap.invalid_mappings": "Failed to decode mappings: {{detail}}",
+    "sourcemap.index_out_of_range": "{{field}} index {{index}} is out of range",
+    "sourcemap.too_many_segments": "More than {{max}} mapping segments",
+    "sourcemap.too_many_sources": "More than {{max}} sources",
+    "sourcemap.too_many_names": "More than {{max}} names",
+    "sourcemap.too_large": "Pasted content exceeds the {{mb}} MB limit",
+    "sourcemap.file_too_large": "The file exceeds the {{mb}} MB limit",
+    "sourcemap.stack_too_large": "The stack text exceeds the {{kb}} KB limit",
+    "sourcemap.read_failed": "Failed to read the file: {{detail}}",
+    "sourcemap.expired": "This map was replaced by a newer load; please reload it",
+    "sourcemap.no_result": "No symbolication result yet — run one first",
+    "sourcemap.no_input": "Provide a stack text or a generated position",
+    "sourcemap.section_url_skipped": "Section points to the external URL {{url}} and was skipped (never fetched)",
+    "sourcemap.section_empty": "Section {{index}} has no map content and was skipped",
+    "sourcemap.nested_sections": "Sections cannot be nested inside sections",
+    "sourcemap.invalid_offset": "Section {{index}} has an invalid offset",
+    "sourcemap.frame_unrelated": "The frame comes from {{url}}, which is not the linked asset",
+    "sourcemap.frame_unassociated": "This map declares no asset and none was given manually",
+    "sourcemap.frame_no_column": "The frame has no column, so no precise position can be reported",
+    "sourcemap.frame_no_mapping": "This position has no mapping in the map",
+    "sourcemap.frame_invalid_position": "Frame line and column must be positive integers",
+    "sourcemap.too_many_frames": "The stack exceeded {{max}} lines and was truncated"
+  }
+}
