@@ -1,10 +1,10 @@
 name: Plugins
 
-# 在线插件（market/*）变更合入 main 后打包、签名，并发布到滚动的 `plugins` 预发布版本：
+# 在线插件（market/*）变更推送到默认分支 dev 后打包、签名，并发布到滚动的 `plugins` 预发布版本：
 # 每个插件一个 .tfp，外加应用读取的 registry.json。签名私钥来自仓库机密 TOOLFORGE_PLUGIN_KEY。
 on:
   push:
-    branches: [main]
+    branches: [dev]
     paths:
       - "market/**"
       - "wit/**"
