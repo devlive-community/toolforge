@@ -110,16 +110,20 @@ These tools are WASM plugins installed from the in-app tool market and updated i
 | Tool | Description |
 |------|-------------|
 | **.gitignore Generator** | Search offline language, framework, editor and OS templates; save reusable custom templates in ToolForge's database, combine rules without changing negation order, and copy or save with LF or CRLF line endings |
+| **CSP Inspector** | Parse Content-Security-Policy headers offline, explain directive fallbacks and source matching, and judge every resource as allowed, blocked or undetermined; report-only policies and strict-dynamic are marked |
 | **Date Calculator** | Days, weeks and years-months-days between dates (with times); add or subtract time with end-of-month handling; count or add working days Monday to Friday or by the Chinese public holiday schedule with make-up workdays; a month calendar with lunar dates, solar terms and festivals; custom holiday schemes (own weekend days, company or regional days off and swaps) can be imported and exported as JSON. |
 | **EditorConfig Inspector** | Explain which .editorconfig rules apply to a file: matching sections, each property's value and source line, and what was overridden or unset |
 | **i18n Key Diff** | Compare translation files for missing, extra, empty, untranslated, placeholder-mismatched and duplicate keys, and fill them back in the original format |
 | **LCOV Coverage Viewer** | Open lcov.info offline to browse line, function and branch coverage by directory and file, with hit counts and uncovered ranges on the source |
+| **PostgreSQL Plan Analyzer** | Parse EXPLAIN (FORMAT JSON) offline into a collapsible plan tree, split time by loops, flag row-estimate deviations and sort spills, and list hotspot nodes; multiple statements and Markdown / JSON reports |
 | **SemVer Range Tester** | Parse, compare and sort versions by SemVer 2.0.0 and test them against npm ranges (^, ~, x, hyphen, `||`) with expanded comparator sets, exclusion reasons, a pre-release switch and CSV export |
+| **Source Map Symbolicator** | Batch-map minified Chrome/V8 and Firefox stack frames back to source files, lines, columns and symbol names with a Source Map v3 (index maps included), with source context and reports |
 | **SQL Formatter** | Beautify and minify; keyword casing, indentation and compact mode; generic SQL, PostgreSQL, SQL Server, MySQL, SQLite, Oracle and BigQuery dialects |
 | **Test Cards** | Generate payment test card data that follows issuer ranges and Luhn, validate card numbers and look up sourced official sandbox cards |
 | **Timestamp** | Seconds / milliseconds / microseconds / nanoseconds detected automatically; multiple time zones side by side; date strings to timestamps; live clock |
 | **USCC Validator** | Validate Unified Social Credit Codes offline by GB 32100-2015 — length, characters and check digit — and explain every field |
 | **User-Agent Parser** | Parse browser, engine, OS, device and crawler from User-Agent strings offline with the matching rule shown; summarize UAs in access logs |
+| **WebAssembly Module Inspector** | Read-only .wasm analysis: section offsets and sizes (custom sections counted separately), imports and exports with signatures, memory and table limits, producers, standard validation that tells unsupported proposals apart from corruption, and on-demand WAT per function or as a file |
 
 ## 📦 Download
 
