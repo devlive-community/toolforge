@@ -1,10 +1,13 @@
 //! HTTP 客户端插件后端（在线安装插件）：请求由宿主发送（任务，可取消、实时日志），
 //! 响应正文在插件中格式化并缓存，前端只展示预览。
+//! 流式接收（SSE 等）由任务打开连接，之后前端短轮询取增量事件。
 
 mod detect;
 mod http;
 mod import;
 mod oauth;
+mod sse;
+mod stream;
 mod workspace;
 
 use serde::Deserialize;
@@ -20,6 +23,7 @@ pub struct HttpClient {
     manifest: Manifest,
     bodies: http::Bodies,
     oauth: oauth::OAuth,
+    streams: stream::Streams,
 }
 
 impl Default for HttpClient {
@@ -28,6 +32,7 @@ impl Default for HttpClient {
             manifest: Manifest::from_static(MANIFEST),
             bodies: http::Bodies::default(),
             oauth: oauth::OAuth::default(),
+            streams: stream::Streams::default(),
         }
     }
 }
@@ -40,6 +45,16 @@ struct RefreshArgs {
     variables: Vec<workspace::Variable>,
     #[serde(default)]
     environment_id: Option<String>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct StreamArgs {
+    #[serde(flatten)]
+    request: workspace::RequestArgs,
+    /// 续连时带上的 Last-Event-ID
+    #[serde(default)]
+    last_event_id: Option<String>,
 }
 
 impl HttpClient {
@@ -94,6 +109,23 @@ impl ToolPlugin for HttpClient {
                 let args: import::ImportArgs = parse_args(args)?;
                 to_value(import::import(&args.command)?)
             }
+            "stream_poll" => {
+                let args: stream::SessionArgs = parse_args(args)?;
+                to_value(self.streams.poll(args.session, stream::POLL)?)
+            }
+            "stream_stop" => {
+                let args: stream::SessionArgs = parse_args(args)?;
+                to_value(self.streams.stop(args.session)?)
+            }
+            "stream_close" => {
+                self.streams
+                    .close(parse_args::<stream::SessionArgs>(args)?.session);
+                Ok(Value::Null)
+            }
+            "stream_export" => {
+                let args: stream::ExportArgs = parse_args(args)?;
+                to_value(self.streams.export(args.session, args.format)?)
+            }
             "oauth_begin" => to_value(self.oauth.begin(parse_args(args)?)?),
             "oauth_cancel" => {
                 self.oauth.cancel(parse_args::<oauth::FlowArgs>(args)?.flow);
@@ -126,6 +158,15 @@ impl ToolPlugin for HttpClient {
                     http::send_with_redacted_urls(request, &self.bodies, ctx, true)
                 };
                 to_value(result.map_err(|error| args.protect_error(error))?)
+            }
+            "stream" => {
+                let args: StreamArgs = parse_args(args)?;
+                let request = self.prepare(&args.request)?;
+                let redact = !args.request.variables.is_empty();
+                let opened =
+                    self.streams
+                        .open(&request, args.last_event_id.as_deref(), redact, ctx);
+                to_value(opened.map_err(|error| args.request.protect_error(error))?)
             }
             "oauth_wait" => {
                 let flow = parse_args::<oauth::FlowArgs>(args)?.flow;

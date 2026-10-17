@@ -18,6 +18,8 @@ export interface Request {
   timeoutMs: number
   followRedirects: boolean
   useProxy: boolean
+  /** 流式接收（SSE 与其他分块响应）；旧的保存数据没有这个字段 */
+  stream?: boolean
 }
 
 export interface Variable extends Pair {
@@ -88,6 +90,7 @@ export const newRequest = (): Request => ({
   timeoutMs: 30_000,
   followRedirects: true,
   useProxy: true,
+  stream: false,
 })
 
 export interface Reply {
@@ -107,3 +110,47 @@ export interface Reply {
 }
 
 export const emptyPair = (): Pair => ({ key: '', value: '', enabled: true })
+
+export interface StreamItem {
+  seq: number
+  atMs: number
+  kind: 'event' | 'chunk'
+  event?: string
+  id?: string
+  data: string
+  /** data 是 JSON 时后端给出的缩进展示 */
+  formatted?: string
+  retry?: number
+  truncated: boolean
+}
+
+export interface StreamEnd {
+  reason: 'ended' | 'stopped' | 'failed'
+  error?: { code: string; params?: Record<string, unknown> }
+  discarded: boolean
+}
+
+export interface StreamBatch {
+  events: StreamItem[]
+  total: number
+  dropped: number
+  bytes: number
+  comments: number
+  retry: number | null
+  lastId: string | null
+  elapsedMs: number
+  done: StreamEnd | null
+}
+
+export interface StreamOpened extends StreamBatch {
+  session: number
+  status: number
+  statusText: string
+  version: string
+  headers: [string, string][]
+  contentType: string | null
+  mode: 'sse' | 'raw'
+}
+
+/** 前端最多保留的事件数，与后端一致 */
+export const MAX_STREAM_EVENTS = 5000

@@ -8,6 +8,7 @@
     "「cURL」可把当前请求复制为命令行。",
     "请求与环境保存在本地，密钥变量的值仅保留在当前会话。",
     "「授权」页支持 OAuth 2.0 授权码 + PKCE：用系统浏览器登录，回调由本机 127.0.0.1 接收；令牌只保存在本次运行的内存中，按环境隔离。",
+    "打开地址栏旁的「流式」后，响应边收边显示：text/event-stream 按 SSE 解析 event、id、data、retry，其他分块响应按块显示；可搜索、停止、导出，带 Last-Event-ID 续连。流式接收没有超时，不跟随重定向、不使用系统代理，最多保留最近 5000 条。",
     "使用 Ctrl / Command + Enter 发送当前请求。"
   ],
   "functions": {
@@ -24,7 +25,12 @@
     "oauth_refresh": "刷新令牌",
     "oauth_sessions": "查询授权状态",
     "oauth_clear": "清除授权",
-    "oauth_reveal": "复制令牌"
+    "oauth_reveal": "复制令牌",
+    "stream": "流式接收",
+    "stream_poll": "读取流式事件",
+    "stream_stop": "停止流式接收",
+    "stream_close": "关闭流式会话",
+    "stream_export": "导出事件流"
   },
   "request": {
     "title": "请求",
@@ -46,7 +52,10 @@
     "remove": "移除",
     "noBody": "该请求没有请求体。",
     "auth": "授权",
-    "authOn": "授权 · {{name}}"
+    "authOn": "授权 · {{name}}",
+    "stream": "流式",
+    "streamHint": "流式接收：SSE 与分块响应边收边显示",
+    "stop": "停止"
   },
   "bodyKinds": {
     "none": "无",
@@ -57,7 +66,9 @@
     "timeout": "超时（秒）",
     "redirects": "自动跟随重定向",
     "proxy": "使用系统代理",
-    "proxyHint": "本机地址始终直连"
+    "proxyHint": "本机地址始终直连",
+    "streamNoTimeout": "流式接收时没有超时，需手动停止",
+    "streamNotApplied": "流式接收时不生效"
   },
   "response": {
     "title": "响应",
@@ -73,12 +84,58 @@
     "binary": "二进制响应（{{size}}）",
     "truncated": "仅显示前 1 MB（共 {{size}}），保存响应可获得完整内容。"
   },
+  "stream": {
+    "events": "事件（{{count}}）",
+    "chunk": "数据块",
+    "raw": "分块",
+    "truncated": "已截断",
+    "emptyData": "（空数据）",
+    "export": "导出",
+    "copyJson": "复制为 JSON",
+    "saveJson": "保存为 JSON",
+    "saveSse": "保存为事件流文本",
+    "saveRaw": "保存为文本",
+    "copied": "已复制",
+    "receiving": "接收中…",
+    "connecting": "正在连接…",
+    "end": {
+      "ended": "服务端已结束",
+      "stopped": "已停止",
+      "failed": "连接中断"
+    },
+    "stats_one": "{{count}} 条 · {{size}} · {{seconds}} 秒",
+    "stats_other": "{{count}} 条 · {{size}} · {{seconds}} 秒",
+    "comments_one": "心跳 {{count}}",
+    "comments_other": "心跳 {{count}}",
+    "resume": "续连",
+    "empty": "还没有连接",
+    "emptyHint": "点击发送后开始接收，事件会实时出现在这里",
+    "search": "搜索事件类型、id 或数据",
+    "matched_one": "匹配 {{count}} 条",
+    "matched_other": "匹配 {{count}} 条",
+    "dropped_one": "最早的 {{count}} 条已丢弃：最多保留最近 {{max}} 条，导出也只包含保留的部分",
+    "dropped_other": "最早的 {{count}} 条已丢弃：最多保留最近 {{max}} 条，导出也只包含保留的部分",
+    "discarded": "连接结束时还有未以空行结束的事件，按规范已丢弃",
+    "noMatch": "没有匹配的事件",
+    "waitingEvents": "已连接，等待事件…",
+    "noEvents": "没有收到事件",
+    "prev": "上一页",
+    "next": "下一页",
+    "page": "第 {{page}} 页",
+    "newestFirst_one": "共 {{count}} 条，最新在前",
+    "newestFirst_other": "共 {{count}} 条，最新在前",
+    "id": "id: {{id}}",
+    "retry": "retry {{ms}} ms",
+    "at": "+{{seconds}} 秒",
+    "lastId": "Last-Event-ID: {{id}}"
+  },
   "logs": {
     "http": {
       "request": "{{method}} {{url}}",
       "redirect": "重定向到 {{url}}",
       "response": "HTTP {{status}}，耗时 {{ms}} ms",
-      "body": "接收 {{bytes, number}} 字节，耗时 {{ms}} ms"
+      "body": "接收 {{bytes, number}} 字节，耗时 {{ms}} ms",
+      "stream_open": "流式连接已建立：状态 {{status}}"
     },
     "oauth": {
       "callback": "已收到授权回调，正在兑换令牌",
@@ -140,7 +197,12 @@
     "oauth.no_session": "当前环境还没有授权，请先在「授权」页获取 Token",
     "oauth.no_refresh_token": "没有 refresh token，请重新授权",
     "oauth.expired": "令牌已过期，请先在「授权」页刷新",
-    "oauth.header_conflict": "请求头里已有 Authorization，与绑定的授权冲突"
+    "oauth.header_conflict": "请求头里已有 Authorization，与绑定的授权冲突",
+    "http.stream_expired": "流式会话已失效，请重新发送",
+    "net.tls": "TLS 握手失败：{{detail}}",
+    "net.stream_closed": "连接已关闭",
+    "net.too_many_streams": "同时进行的流式连接过多",
+    "net.unsupported_scheme": "不支持的协议 {{scheme}}"
   },
   "workspace": {
     "untitled": "未命名请求",

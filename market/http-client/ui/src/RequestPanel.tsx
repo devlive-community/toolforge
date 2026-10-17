@@ -22,7 +22,7 @@ function ToggleRow({ label, hint, children }: { label: string; hint?: string; ch
 export function RequestPanel({ request, onChange, auth }: { request: Request; onChange: (request: Request) => void; auth: AuthBinding }) {
   const { t } = usePlugin()
   const [requestTab, setRequestTab] = useState<RequestTab>('params')
-  const { params, headers, body, timeoutMs, followRedirects, useProxy } = request
+  const { params, headers, body, timeoutMs, followRedirects, useProxy, stream } = request
   const { kind: bodyKind, text: bodyText, form } = body
   const timeout = timeoutMs / 1000
   const setParams = (params: Pair[]) => onChange({ ...request, params })
@@ -82,13 +82,13 @@ export function RequestPanel({ request, onChange, auth }: { request: Request; on
           {requestTab === 'auth' && <AuthPanel binding={auth} request={request} />}
           {requestTab === 'settings' && (
             <div className="divide-y divide-border">
-              <ToggleRow label={t('settings.timeout')}>
+              <ToggleRow label={t('settings.timeout')} hint={stream ? t('settings.streamNoTimeout') : undefined}>
                 <NumberInput size="sm" value={timeout} onValueChange={setTimeoutSeconds} min={1} max={600} className="w-32" aria-label={t('settings.timeout')} />
               </ToggleRow>
-              <ToggleRow label={t('settings.redirects')}>
+              <ToggleRow label={t('settings.redirects')} hint={stream ? t('settings.streamNotApplied') : undefined}>
                 <Switch checked={followRedirects} onCheckedChange={setFollowRedirects} aria-label={t('settings.redirects')} />
               </ToggleRow>
-              <ToggleRow label={t('settings.proxy')} hint={t('settings.proxyHint')}>
+              <ToggleRow label={t('settings.proxy')} hint={stream ? t('settings.streamNotApplied') : t('settings.proxyHint')}>
                 <Switch checked={useProxy} onCheckedChange={setUseProxy} aria-label={t('settings.proxy')} />
               </ToggleRow>
             </div>

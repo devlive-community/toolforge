@@ -156,6 +156,11 @@ pub fn import(command: &str) -> PluginResult<Imported> {
         }
         adjusted
     });
+    // 明确请求事件流的命令导入后直接用流式接收
+    let stream = parsed.headers.iter().any(|(key, value)| {
+        key.eq_ignore_ascii_case("accept")
+            && value.to_ascii_lowercase().contains("text/event-stream")
+    });
     let request = Request {
         method: parsed.method,
         url: parsed.url,
@@ -173,6 +178,7 @@ pub fn import(command: &str) -> PluginResult<Imported> {
         timeout_ms,
         follow_redirects: parsed.follow_redirects,
         use_proxy,
+        stream,
     };
     validate_request(&request)?;
     crate::http::normalize_url(&request.url)?;

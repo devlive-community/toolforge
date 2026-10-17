@@ -67,6 +67,9 @@ pub struct Request {
     /// 使用系统代理；本机地址始终直连
     #[serde(default = "enabled")]
     pub use_proxy: bool,
+    /// 流式接收（SSE 与其他分块响应）：边收边显示，直到服务端结束或手动停止
+    #[serde(default)]
+    pub stream: bool,
 }
 
 #[derive(Debug, Serialize, PartialEq)]
@@ -202,7 +205,7 @@ fn headers(request: &Request) -> PluginResult<Vec<(String, String)>> {
         .collect()
 }
 
-fn has_header(request: &Request, name: &str) -> bool {
+pub fn has_header(request: &Request, name: &str) -> bool {
     active(&request.headers).any(|p| p.key.trim().eq_ignore_ascii_case(name))
 }
 
@@ -242,7 +245,7 @@ pub fn body(request: &Request) -> PluginResult<Option<(Vec<u8>, &'static str)>> 
 }
 
 /// 宿主网络错误换成本插件的错误码；参数里只有底层原因，不含地址
-fn network_error(err: PluginError) -> PluginError {
+pub fn network_error(err: PluginError) -> PluginError {
     let code = match err.code.as_str() {
         "net.timeout" => "http.timeout",
         "net.connect" => "http.connect_failed",
@@ -316,32 +319,57 @@ pub fn send(request: Request, bodies: &Bodies, ctx: &dyn TaskContext) -> PluginR
     send_with_redacted_urls(request, bodies, ctx, false)
 }
 
+/// 校验并展开后的请求：方法、地址、请求头（含默认 Content-Type）与正文
+pub struct Outgoing {
+    pub method: String,
+    pub url: url::Url,
+    pub headers: Vec<(String, String)>,
+    pub body: Option<Vec<u8>>,
+}
+
+pub fn outgoing(request: &Request) -> PluginResult<Outgoing> {
+    let method = method(&request.method)?;
+    let url = build_url(request)?;
+    let mut header_list = headers(request)?;
+    let payload = body(request)?;
+    if let Some((_, content_type)) = &payload
+        && !has_header(request, "content-type")
+    {
+        header_list.push(("Content-Type".into(), (*content_type).to_owned()));
+    }
+    Ok(Outgoing {
+        method,
+        url,
+        headers: header_list,
+        body: payload.map(|(bytes, _)| bytes),
+    })
+}
+
+pub fn log_request(ctx: &dyn TaskContext, outgoing: &Outgoing, redact_urls: bool) {
+    ctx.log(
+        LogLevel::Info,
+        "http.request",
+        json!({
+            "method": outgoing.method,
+            "url": if redact_urls { "[redacted]" } else { outgoing.url.as_str() }
+        }),
+    );
+}
+
 pub fn send_with_redacted_urls(
     request: Request,
     bodies: &Bodies,
     ctx: &dyn TaskContext,
     redact_urls: bool,
 ) -> PluginResult<Reply> {
-    let method = method(&request.method)?;
-    let url = build_url(&request)?;
-    let mut header_list = headers(&request)?;
-    let payload = body(&request)?;
-    if let Some((_, content_type)) = &payload
-        && !has_header(&request, "content-type")
-    {
-        header_list.push(("Content-Type".into(), (*content_type).to_owned()));
-    }
-    ctx.log(
-        LogLevel::Info,
-        "http.request",
-        json!({ "method": method, "url": if redact_urls { "[redacted]" } else { url.as_str() } }),
-    );
+    let parts = outgoing(&request)?;
+    log_request(ctx, &parts, redact_urls);
     // 请求由宿主发送：跨源重定向时宿主会去掉 Authorization 等凭据头
     let outgoing = HttpRequest {
-        method,
-        url: url.to_string(),
-        headers: header_list,
-        body: payload.map(|(bytes, _)| bytes),
+        method: parts.method,
+        url: parts.url.to_string(),
+        headers: parts.headers,
+        body: parts.body,
         timeout_ms: request.timeout_ms.clamp(1000, 600_000) as u32,
         follow_redirects: request.follow_redirects,
         max_redirects: MAX_REDIRECTS,

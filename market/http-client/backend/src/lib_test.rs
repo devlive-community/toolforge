@@ -243,3 +243,60 @@ fn oauth_functions_are_declared() {
     }
     assert!(functions["oauth_wait"].task && functions["oauth_refresh"].task);
 }
+
+#[test]
+fn streaming_functions_reuse_the_request_model() {
+    let tool = HttpClient::default();
+    let functions = &tool.manifest().functions;
+    assert!(functions["stream"].task);
+    for name in [
+        "stream_poll",
+        "stream_stop",
+        "stream_close",
+        "stream_export",
+    ] {
+        assert!(!functions[name].task, "{name}");
+    }
+    let ctx = NoopCtx(Default::default());
+    let closed = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+    let port = closed.local_addr().unwrap().port();
+    drop(closed);
+    // 变量、授权与正文沿用普通请求；用了变量时错误参数与日志里的地址被隐去
+    let err = tool
+        .run_task(
+            "stream",
+            json!({
+                "method": "POST", "url": "http://127.0.0.1:{{port}}/events", "stream": true,
+                "body": { "kind": "json", "text": "{\"q\":1}" },
+                "variables": [{ "key": "port", "value": port.to_string(), "secret": true }],
+                "lastEventId": "7"
+            }),
+            &ctx,
+        )
+        .unwrap_err();
+    assert_eq!(err.code, "http.connect_failed");
+    assert!(err.params.values().all(|v| v == "[redacted]"));
+    assert!(ctx.0.lock().unwrap()[0].contains("[redacted]"));
+    let err = tool
+        .run_task(
+            "stream",
+            json!({ "method": "GET", "url": "http://x/", "body": { "kind": "json", "text": "{" } }),
+            &ctx,
+        )
+        .unwrap_err();
+    assert_eq!(err.code, "http.invalid_json_body");
+    assert_eq!(
+        tool.call("stream_poll", json!({ "session": 99 }))
+            .unwrap_err()
+            .code,
+        "http.stream_expired"
+    );
+    // 请求头里要事件流的 curl 命令导入后直接流式接收
+    let imported = tool
+        .call(
+            "import_curl",
+            json!({ "command": "curl -N -H 'Accept: text/event-stream' https://example.com/sse" }),
+        )
+        .unwrap();
+    assert_eq!(imported["request"]["stream"], true);
+}

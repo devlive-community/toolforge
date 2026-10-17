@@ -120,6 +120,7 @@ fn request(method: &str, url: String) -> Request {
         timeout_ms: 30_000,
         follow_redirects: true,
         use_proxy: true,
+        stream: false,
     }
 }
 

@@ -8,6 +8,7 @@
     "Copy as cURL turns the current request into a shell command.",
     "Saved requests and environments are stored locally. Secret variable values last only for this session.",
     "The Auth tab supports OAuth 2.0 Authorization Code + PKCE: sign in through the system browser and receive the callback on 127.0.0.1. Tokens live only in memory for this run and are isolated per environment.",
+    "Turn on “Stream” next to the address bar to show the response as it arrives: text/event-stream is parsed into SSE event, id, data and retry fields, other chunked responses are shown chunk by chunk. Search, stop, export and resume with Last-Event-ID. Streaming has no timeout, does not follow redirects or use the system proxy, and keeps the latest 5000 items.",
     "Use Ctrl / Command + Enter to send the current request."
   ],
   "functions": {
@@ -24,7 +25,12 @@
     "oauth_refresh": "Refresh token",
     "oauth_sessions": "Read authorization state",
     "oauth_clear": "Clear authorization",
-    "oauth_reveal": "Copy token"
+    "oauth_reveal": "Copy token",
+    "stream": "Stream response",
+    "stream_poll": "Read stream events",
+    "stream_stop": "Stop streaming",
+    "stream_close": "Close stream session",
+    "stream_export": "Export event stream"
   },
   "request": {
     "title": "Request",
@@ -46,7 +52,10 @@
     "remove": "Remove",
     "noBody": "This request has no body.",
     "auth": "Auth",
-    "authOn": "Auth · {{name}}"
+    "authOn": "Auth · {{name}}",
+    "stream": "Stream",
+    "streamHint": "Stream: show SSE and chunked responses as they arrive",
+    "stop": "Stop"
   },
   "bodyKinds": {
     "none": "None",
@@ -57,7 +66,9 @@
     "timeout": "Timeout (seconds)",
     "redirects": "Follow redirects",
     "proxy": "Use system proxy",
-    "proxyHint": "Localhost is always connected directly"
+    "proxyHint": "Localhost is always connected directly",
+    "streamNoTimeout": "No timeout while streaming; stop it manually",
+    "streamNotApplied": "Not applied while streaming"
   },
   "response": {
     "title": "Response",
@@ -73,12 +84,58 @@
     "binary": "Binary response ({{size}})",
     "truncated": "Showing the first 1 MB of {{size}}. Save the response to get the full body."
   },
+  "stream": {
+    "events": "Events ({{count}})",
+    "chunk": "Chunk",
+    "raw": "Chunked",
+    "truncated": "Truncated",
+    "emptyData": "(empty data)",
+    "export": "Export",
+    "copyJson": "Copy as JSON",
+    "saveJson": "Save as JSON",
+    "saveSse": "Save as event stream text",
+    "saveRaw": "Save as text",
+    "copied": "Copied",
+    "receiving": "Receiving…",
+    "connecting": "Connecting…",
+    "end": {
+      "ended": "Ended by server",
+      "stopped": "Stopped",
+      "failed": "Connection lost"
+    },
+    "stats_one": "{{count}} item · {{size}} · {{seconds}} s",
+    "stats_other": "{{count}} items · {{size}} · {{seconds}} s",
+    "comments_one": "{{count}} heartbeat",
+    "comments_other": "{{count}} heartbeats",
+    "resume": "Resume",
+    "empty": "Not connected",
+    "emptyHint": "Send the request to start receiving; events show up here as they arrive",
+    "search": "Search event type, id or data",
+    "matched_one": "{{count}} match",
+    "matched_other": "{{count}} matches",
+    "dropped_one": "The earliest {{count}} item was dropped: only the latest {{max}} are kept, and exports include only those",
+    "dropped_other": "The earliest {{count}} items were dropped: only the latest {{max}} are kept, and exports include only those",
+    "discarded": "An event not terminated by a blank line was pending when the stream ended and was discarded, as the specification requires",
+    "noMatch": "No matching events",
+    "waitingEvents": "Connected, waiting for events…",
+    "noEvents": "No events received",
+    "prev": "Previous",
+    "next": "Next",
+    "page": "Page {{page}}",
+    "newestFirst_one": "{{count}} item, newest first",
+    "newestFirst_other": "{{count}} items, newest first",
+    "id": "id: {{id}}",
+    "retry": "retry {{ms}} ms",
+    "at": "+{{seconds}} s",
+    "lastId": "Last-Event-ID: {{id}}"
+  },
   "logs": {
     "http": {
       "request": "{{method}} {{url}}",
       "redirect": "Redirected to {{url}}",
       "response": "HTTP {{status}} after {{ms}} ms",
-      "body": "Received {{bytes, number}} bytes in {{ms}} ms"
+      "body": "Received {{bytes, number}} bytes in {{ms}} ms",
+      "stream_open": "Stream opened: status {{status}}"
     },
     "oauth": {
       "callback": "Authorization callback received; exchanging the code",
@@ -140,7 +197,12 @@
     "oauth.no_session": "Not authorized in the current environment; get a token on the Auth tab first",
     "oauth.no_refresh_token": "There is no refresh token; authorize again",
     "oauth.expired": "The token has expired; refresh it on the Auth tab first",
-    "oauth.header_conflict": "The request already has an Authorization header that conflicts with the bound authorization"
+    "oauth.header_conflict": "The request already has an Authorization header that conflicts with the bound authorization",
+    "http.stream_expired": "The stream session has expired; send the request again",
+    "net.tls": "TLS handshake failed: {{detail}}",
+    "net.stream_closed": "The connection is closed",
+    "net.too_many_streams": "Too many streams are open at once",
+    "net.unsupported_scheme": "Unsupported scheme {{scheme}}"
   },
   "workspace": {
     "untitled": "Untitled request",
