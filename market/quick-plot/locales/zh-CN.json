@@ -1,0 +1,135 @@
+{
+  "name": "数据绘图器",
+  "description": "粘贴 CSV、TSV、JSON 或 JSON Lines，秒级画出折线、柱状、散点图并导出 PNG / SVG",
+  "help": [
+    "粘贴表格文本或打开文件（也可以直接拖入窗口）：自动识别分隔符（逗号、制表符、分号、竖线、空白）、表头与每列的类型（数值、时间、文本）。",
+    "JSON 数组中的对象按点路径展开为列（如 stats.p99）；接口返回的 {\"data\": [...]} 会自动找到其中的数组；JSON Lines 每行一个对象。",
+    "默认用第一个时间列作 X 轴，数值列作系列；可切换折线 / 柱状 / 散点，把系列放到右轴、开启对数坐标。",
+    "大量数据会降采样（折线保留形状，最多 2000 点；散点最多 5000 点）；悬停查看数值，导出 PNG 或 SVG。数据全程在本地处理。"
+  ],
+  "functions": {
+    "parse": "解析数据",
+    "load": "打开数据文件",
+    "plot": "生成图表",
+    "save_png": "保存 PNG"
+  },
+  "stages": {
+    "plot": {
+      "reading": "正在读取文件…",
+      "parsing": "正在解析数据…"
+    }
+  },
+  "logs": {
+    "plot": {
+      "loaded": "已解析 {{rows}} 行、{{columns}} 列"
+    }
+  },
+  "data": {
+    "title": "数据",
+    "input": "数据",
+    "preview": "预览",
+    "format": "数据格式",
+    "header": "表头",
+    "open": "打开文件",
+    "sample": "示例",
+    "dropHint": "可拖入文件",
+    "placeholder": "粘贴 CSV / TSV / JSON / JSON Lines…",
+    "fileHint": "已从文件读取，切换格式或表头会重新解析",
+    "closeFile": "改为粘贴",
+    "noPreview": "还没有数据",
+    "previewLimit": "仅预览前 {{shown}} 行（共 {{rows}} 行）",
+    "withHeader": "有表头",
+    "noHeader": "无表头",
+    "size": "{{rows}} 行 × {{columns}} 列"
+  },
+  "formats": {
+    "auto": "自动识别",
+    "csv": "CSV",
+    "tsv": "TSV",
+    "json": "JSON",
+    "jsonl": "JSON Lines"
+  },
+  "headers": {
+    "auto": "自动表头",
+    "yes": "首行是表头",
+    "no": "没有表头"
+  },
+  "delimiters": {
+    "comma": "逗号分隔",
+    "tab": "制表符分隔",
+    "semicolon": "分号分隔",
+    "pipe": "竖线分隔",
+    "whitespace": "空白分隔"
+  },
+  "kinds": {
+    "number": "数值",
+    "time": "时间",
+    "text": "文本"
+  },
+  "charts": {
+    "line": "折线",
+    "bar": "柱状",
+    "scatter": "散点"
+  },
+  "xTypes": {
+    "auto": "自动",
+    "number": "按数值",
+    "time": "按时间",
+    "category": "按类目"
+  },
+  "config": {
+    "chart": "图表类型",
+    "x": "X 轴",
+    "xType": "X 轴类型",
+    "rowNumber": "行号",
+    "addSeries": "添加系列",
+    "remove": "移除",
+    "switchAxis": "切换左 / 右轴",
+    "log": "对数",
+    "logLeft": "左轴对数",
+    "logRight": "右轴对数"
+  },
+  "chart": {
+    "title": "图表",
+    "export": "导出",
+    "savePng": "保存为 PNG",
+    "saveSvg": "保存为 SVG",
+    "saved": "图表已保存",
+    "empty": "还没有数据",
+    "emptyHint": "在左侧粘贴数据、打开文件，或点「示例」",
+    "noSeries": "还没有选择系列",
+    "noSeriesHint": "在上方「添加系列」选择要画的数值列",
+    "noNumeric": "数据里没有数值列，可检查分隔符或表头设置",
+    "drawing": "正在绘制…",
+    "leftShort": "左",
+    "rightShort": "右"
+  },
+  "notes": {
+    "skipped_one": "{{name}}：跳过 {{count}} 行（缺值、无法解析或对数轴上非正数）",
+    "skipped_other": "{{name}}：跳过 {{count}} 行（缺值、无法解析或对数轴上非正数）",
+    "sampled": "{{name}}：{{total}} 个点降采样为 {{shown}} 个",
+    "plot.json_path": "使用 JSON 中 {{path}} 的数组",
+    "plot.ragged_rows": "{{count}} 行的列数与表头不一致，已补空或忽略多余列",
+    "plot.too_many_rows": "超过 {{max}} 行，只使用前 {{max}} 行",
+    "plot.too_many_columns": "超过 {{max}} 列，只使用前 {{max}} 列",
+    "plot.bars_truncated": "柱状图最多 {{max}} 个类目，只画前 {{max}} 行（共 {{rows}} 行）"
+  },
+  "errors": {
+    "plot.empty_input": "请输入数据",
+    "plot.no_rows": "没有数据行",
+    "plot.csv_invalid": "第 {{line}} 行不是有效的 CSV",
+    "plot.json_invalid": "JSON 格式错误：第 {{line}} 行第 {{column}} 列",
+    "plot.jsonl_invalid": "JSON Lines 第 {{line}} 行不是有效的 JSON（第 {{column}} 列）",
+    "plot.json_no_array": "JSON 中没有找到数据数组",
+    "plot.expired": "数据已更新，请重试",
+    "plot.unknown_column": "列不存在",
+    "plot.no_series": "请至少选择一个系列",
+    "plot.too_many_series": "最多同时画 {{max}} 个系列",
+    "plot.series_not_numeric": "「{{column}}」不是数值列",
+    "plot.no_points": "所选列没有可绘制的点",
+    "plot.file_too_large": "文件超过 {{limit}}",
+    "plot.read_failed": "读取文件失败：{{detail}}",
+    "plot.not_utf8": "文件不是 UTF-8 编码，请转换后再打开",
+    "plot.png_invalid": "图片数据无效"
+  }
+}

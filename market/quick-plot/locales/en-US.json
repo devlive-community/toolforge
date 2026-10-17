@@ -1,0 +1,135 @@
+{
+  "name": "Quick Plot",
+  "description": "Paste CSV, TSV, JSON or JSON Lines and get a line, bar or scatter chart in seconds, exported as PNG or SVG",
+  "help": [
+    "Paste table text or open a file (or drop it on the window): the delimiter (comma, tab, semicolon, pipe or whitespace), header row and column types (number, time, text) are detected.",
+    "Objects in a JSON array are flattened into columns by dotted path (such as stats.p99); in API responses like {\"data\": [...]} the array is found automatically; JSON Lines has one object per line.",
+    "By default the first time column is the X axis and numeric columns are series. Switch between line, bar and scatter, move series to the right axis and turn on log scales.",
+    "Large data is downsampled (lines keep their shape with up to 2000 points; scatter keeps up to 5000). Hover to read values and export PNG or SVG. Data never leaves this computer."
+  ],
+  "functions": {
+    "parse": "Parse data",
+    "load": "Open data file",
+    "plot": "Build chart",
+    "save_png": "Save PNG"
+  },
+  "stages": {
+    "plot": {
+      "reading": "Reading file…",
+      "parsing": "Parsing data…"
+    }
+  },
+  "logs": {
+    "plot": {
+      "loaded": "Parsed {{rows}} rows and {{columns}} columns"
+    }
+  },
+  "data": {
+    "title": "Data",
+    "input": "Data",
+    "preview": "Preview",
+    "format": "Data format",
+    "header": "Header",
+    "open": "Open file",
+    "sample": "Sample",
+    "dropHint": "Drop a file here",
+    "placeholder": "Paste CSV / TSV / JSON / JSON Lines…",
+    "fileHint": "Read from file; changing the format or header parses it again",
+    "closeFile": "Paste instead",
+    "noPreview": "No data yet",
+    "previewLimit": "Previewing the first {{shown}} of {{rows}} rows",
+    "withHeader": "Header",
+    "noHeader": "No header",
+    "size": "{{rows}} rows × {{columns}} columns"
+  },
+  "formats": {
+    "auto": "Detect",
+    "csv": "CSV",
+    "tsv": "TSV",
+    "json": "JSON",
+    "jsonl": "JSON Lines"
+  },
+  "headers": {
+    "auto": "Detect header",
+    "yes": "First row is header",
+    "no": "No header"
+  },
+  "delimiters": {
+    "comma": "Comma",
+    "tab": "Tab",
+    "semicolon": "Semicolon",
+    "pipe": "Pipe",
+    "whitespace": "Whitespace"
+  },
+  "kinds": {
+    "number": "Number",
+    "time": "Time",
+    "text": "Text"
+  },
+  "charts": {
+    "line": "Line",
+    "bar": "Bar",
+    "scatter": "Scatter"
+  },
+  "xTypes": {
+    "auto": "Auto",
+    "number": "Numeric",
+    "time": "Time",
+    "category": "Category"
+  },
+  "config": {
+    "chart": "Chart type",
+    "x": "X axis",
+    "xType": "X axis type",
+    "rowNumber": "Row number",
+    "addSeries": "Add series",
+    "remove": "Remove",
+    "switchAxis": "Switch left / right axis",
+    "log": "Log",
+    "logLeft": "Log left",
+    "logRight": "Log right"
+  },
+  "chart": {
+    "title": "Chart",
+    "export": "Export",
+    "savePng": "Save as PNG",
+    "saveSvg": "Save as SVG",
+    "saved": "Chart saved",
+    "empty": "No data yet",
+    "emptyHint": "Paste data on the left, open a file, or click Sample",
+    "noSeries": "No series selected",
+    "noSeriesHint": "Use Add series above to choose numeric columns",
+    "noNumeric": "There are no numeric columns; check the delimiter or header setting",
+    "drawing": "Drawing…",
+    "leftShort": "L",
+    "rightShort": "R"
+  },
+  "notes": {
+    "skipped_one": "{{name}}: {{count}} row skipped (missing, unparsable, or not positive on a log axis)",
+    "skipped_other": "{{name}}: {{count}} rows skipped (missing, unparsable, or not positive on a log axis)",
+    "sampled": "{{name}}: {{total}} points downsampled to {{shown}}",
+    "plot.json_path": "Using the array at {{path}} in the JSON",
+    "plot.ragged_rows": "{{count}} rows have a different number of columns than the header; missing cells are empty and extra ones ignored",
+    "plot.too_many_rows": "More than {{max}} rows; only the first {{max}} are used",
+    "plot.too_many_columns": "More than {{max}} columns; only the first {{max}} are used",
+    "plot.bars_truncated": "Bar charts show at most {{max}} categories; plotting the first {{max}} of {{rows}} rows"
+  },
+  "errors": {
+    "plot.empty_input": "Enter some data",
+    "plot.no_rows": "There are no data rows",
+    "plot.csv_invalid": "Line {{line}} is not valid CSV",
+    "plot.json_invalid": "Invalid JSON at line {{line}}, column {{column}}",
+    "plot.jsonl_invalid": "Line {{line}} of the JSON Lines is not valid JSON (column {{column}})",
+    "plot.json_no_array": "No data array found in the JSON",
+    "plot.expired": "The data changed; try again",
+    "plot.unknown_column": "The column does not exist",
+    "plot.no_series": "Choose at least one series",
+    "plot.too_many_series": "At most {{max}} series can be drawn at once",
+    "plot.series_not_numeric": "“{{column}}” is not a numeric column",
+    "plot.no_points": "The selected columns have no points to draw",
+    "plot.file_too_large": "The file is larger than {{limit}}",
+    "plot.read_failed": "Could not read the file: {{detail}}",
+    "plot.not_utf8": "The file is not UTF-8; convert it first",
+    "plot.png_invalid": "Invalid image data"
+  }
+}

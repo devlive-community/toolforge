@@ -1,0 +1,18 @@
+{
+  "id": "org.devlive.toolforge.quick-plot",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["plot", "chart", "graph", "csv", "tsv", "json", "jsonl", "line", "bar", "scatter", "benchmark", "绘图", "图表", "折线图", "柱状图", "散点图", "可视化"],
+  "accent": "teal",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:read", "fs:user-selected"],
+  "functions": {
+    "parse": {},
+    "load": { "task": true },
+    "plot": {},
+    "save_png": {}
+  },
+  "sensitive": false
+}

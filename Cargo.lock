@@ -8691,6 +8691,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-quick-plot"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "data-encoding",
+ "jiff",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-semver"
 version = "0.1.0"
 dependencies = [
