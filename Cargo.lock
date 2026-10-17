@@ -8304,6 +8304,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-http-client"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "getrandom 0.3.4",
+ "serde",
+ "serde_json",
+ "sha2 0.11.0",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+ "tfp-curl-converter",
+ "tiny_http",
+ "url",
+ "zeroize",
+]
+
+[[package]]
 name = "tfm-i18n-diff"
 version = "0.1.0"
 dependencies = [
@@ -8722,24 +8739,6 @@ dependencies = [
  "serde_json",
  "tf-plugin-api",
  "uuid",
-]
-
-[[package]]
-name = "tfp-http-client"
-version = "0.1.0"
-dependencies = [
- "data-encoding",
- "getrandom 0.3.4",
- "reqwest",
- "rustls",
- "serde",
- "serde_json",
- "sha2 0.11.0",
- "tf-plugin-api",
- "tfp-curl-converter",
- "tiny_http",
- "url",
- "zeroize",
 ]
 
 [[package]]
@@ -9566,7 +9565,6 @@ dependencies = [
  "tfp-format-converter",
  "tfp-hash",
  "tfp-hex-viewer",
- "tfp-http-client",
  "tfp-icon-generator",
  "tfp-image-compressor",
  "tfp-image-converter",

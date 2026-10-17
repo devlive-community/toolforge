@@ -12,6 +12,7 @@ use serde_json::Value;
 /// 已迁出的内置工具 id（保持原 id，用户数据与历史记录随之保留）
 pub const MIGRATED: &[&str] = &[
     "org.devlive.toolforge.date-calculator",
+    "org.devlive.toolforge.http-client",
     "org.devlive.toolforge.semver",
     "org.devlive.toolforge.sql-formatter",
     "org.devlive.toolforge.timestamp",

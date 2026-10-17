@@ -1,21 +1,16 @@
-use std::io::Read;
+use std::sync::Mutex;
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::sync::{Arc, Mutex, Once};
-use std::time::{Duration, Instant};
 
-use reqwest::blocking::{Client, Response};
-use reqwest::header::{CONTENT_TYPE, HeaderMap, HeaderName, HeaderValue};
-use reqwest::redirect::Policy;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
-use tf_plugin_api::{LogLevel, PluginError, PluginResult, TaskContext, cancelled};
+use tf_plugin_api::{LogLevel, PluginError, PluginResult, TaskContext};
+use tf_plugin_guest::net::{self, HttpRequest};
 
 /// 响应体最大读取量
 const MAX_BODY: u64 = 50 * 1024 * 1024;
 /// 返回给前端展示的正文长度上限；完整内容留在后端，按需保存
 const PREVIEW: usize = 1024 * 1024;
-const CHUNK: usize = 64 * 1024;
-const MAX_REDIRECTS: usize = 10;
+const MAX_REDIRECTS: u32 = 10;
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub struct Pair {
@@ -125,18 +120,14 @@ impl Bodies {
     pub fn save(&self, args: SaveArgs) -> PluginResult<()> {
         let latest = self.latest.lock().unwrap_or_else(|e| e.into_inner());
         match latest.as_ref() {
-            Some((id, bytes)) if *id == args.id => std::fs::write(&args.path, bytes).map_err(|e| {
-                PluginError::new("fs.io")
-                    .with("path", args.path.as_str())
-                    .with("detail", e.to_string())
-            }),
+            Some((id, bytes)) if *id == args.id => net::write_file(&args.path, bytes),
             _ => Err(PluginError::new("http.response_expired")),
         }
     }
 }
 
 /// 没有协议时补全：本机与内网地址用 http，其余用 https
-pub fn normalize_url(raw: &str) -> PluginResult<reqwest::Url> {
+pub fn normalize_url(raw: &str) -> PluginResult<url::Url> {
     let trimmed = raw.trim();
     if trimmed.is_empty() {
         return Err(PluginError::new("http.empty_url"));
@@ -152,7 +143,7 @@ pub fn normalize_url(raw: &str) -> PluginResult<reqwest::Url> {
             || host.ends_with(".local");
         format!("{}://{trimmed}", if local { "http" } else { "https" })
     };
-    let url = reqwest::Url::parse(&with_scheme)
+    let url = url::Url::parse(&with_scheme)
         .map_err(|e| PluginError::new("http.invalid_url").with("detail", e.to_string()))?;
     if !matches!(url.scheme(), "http" | "https") {
         return Err(PluginError::new("http.unsupported_scheme").with("scheme", url.scheme()));
@@ -167,7 +158,7 @@ fn active(pairs: &[Pair]) -> impl Iterator<Item = &Pair> {
 }
 
 /// 合并地址栏中的查询参数与参数表
-pub fn build_url(request: &Request) -> PluginResult<reqwest::Url> {
+pub fn build_url(request: &Request) -> PluginResult<url::Url> {
     let mut url = normalize_url(&request.url)?;
     let params: Vec<_> = active(&request.params).collect();
     if !params.is_empty() {
@@ -179,22 +170,36 @@ pub fn build_url(request: &Request) -> PluginResult<reqwest::Url> {
     Ok(url)
 }
 
-fn method(raw: &str) -> PluginResult<reqwest::Method> {
-    let upper = raw.trim().to_ascii_uppercase();
-    reqwest::Method::from_bytes(upper.as_bytes())
-        .map_err(|_| PluginError::new("http.invalid_method").with("method", raw))
+/// HTTP token（RFC 9110）：方法名与请求头名称允许的字符
+fn is_token(text: &str) -> bool {
+    !text.is_empty()
+        && text
+            .bytes()
+            .all(|b| b.is_ascii_alphanumeric() || b"!#$%&'*+-.^_`|~".contains(&b))
 }
 
-fn headers(request: &Request) -> PluginResult<HeaderMap> {
-    let mut map = HeaderMap::new();
-    for pair in active(&request.headers) {
-        let name = HeaderName::from_bytes(pair.key.trim().as_bytes())
-            .map_err(|_| PluginError::new("http.invalid_header").with("name", pair.key.as_str()))?;
-        let value = HeaderValue::from_str(pair.value.trim())
-            .map_err(|_| PluginError::new("http.invalid_header").with("name", pair.key.as_str()))?;
-        map.append(name, value);
+fn method(raw: &str) -> PluginResult<String> {
+    let upper = raw.trim().to_ascii_uppercase();
+    if !is_token(&upper) {
+        return Err(PluginError::new("http.invalid_method").with("method", raw));
     }
-    Ok(map)
+    Ok(upper)
+}
+
+/// 请求头：名称为 token，值只允许制表符与可见 ASCII
+fn headers(request: &Request) -> PluginResult<Vec<(String, String)>> {
+    active(&request.headers)
+        .map(|pair| {
+            let (name, value) = (pair.key.trim(), pair.value.trim());
+            let valid_value = value
+                .bytes()
+                .all(|b| b == b'\t' || (0x20..0x7f).contains(&b));
+            if !is_token(name) || !valid_value {
+                return Err(PluginError::new("http.invalid_header").with("name", pair.key.as_str()));
+            }
+            Ok((name.to_owned(), value.to_owned()))
+        })
+        .collect()
 }
 
 fn has_header(request: &Request, name: &str) -> bool {
@@ -222,7 +227,7 @@ pub fn body(request: &Request) -> PluginResult<Option<(Vec<u8>, &'static str)>> 
         BodyKind::Form => {
             let encoded = active(&request.body.form)
                 .fold(
-                    reqwest::Url::parse("http://x/").expect("static url"),
+                    url::Url::parse("http://x/").expect("static url"),
                     |mut url, p| {
                         url.query_pairs_mut().append_pair(p.key.trim(), &p.value);
                         url
@@ -236,101 +241,19 @@ pub fn body(request: &Request) -> PluginResult<Option<(Vec<u8>, &'static str)>> 
     })
 }
 
-fn is_loopback(url: &reqwest::Url) -> bool {
-    match url.host() {
-        Some(url::Host::Domain(domain)) => domain.eq_ignore_ascii_case("localhost"),
-        Some(url::Host::Ipv4(ip)) => ip.is_loopback(),
-        Some(url::Host::Ipv6(ip)) => ip.is_loopback(),
-        None => false,
-    }
-}
-
-fn client(
-    request: &Request,
-    url: &reqwest::Url,
-    redirects: Arc<Mutex<Vec<String>>>,
-) -> PluginResult<Client> {
-    static PROVIDER: Once = Once::new();
-    PROVIDER.call_once(|| {
-        if rustls::crypto::CryptoProvider::get_default().is_none() {
-            let _ = rustls::crypto::ring::default_provider().install_default();
-        }
-    });
-    let policy = if request.follow_redirects {
-        Policy::custom(move |attempt| {
-            if attempt.previous().len() > MAX_REDIRECTS {
-                return attempt.error("too many redirects");
-            }
-            redirects
-                .lock()
-                .unwrap_or_else(|e| e.into_inner())
-                .push(attempt.url().to_string());
-            attempt.follow()
-        })
-    } else {
-        Policy::none()
+/// 宿主网络错误换成本插件的错误码；参数里只有底层原因，不含地址
+fn network_error(err: PluginError) -> PluginError {
+    let code = match err.code.as_str() {
+        "net.timeout" => "http.timeout",
+        "net.connect" => "http.connect_failed",
+        "net.redirects" => "http.too_many_redirects",
+        "net.too_large" => return PluginError::new("http.body_too_large").with("limit", "50 MB"),
+        "net.failed" | "net.invalid_request" => "http.network",
+        _ => return err,
     };
-    let mut builder = Client::builder();
-    if !request.use_proxy || is_loopback(url) {
-        builder = builder.no_proxy();
-    }
-    builder
-        .user_agent(concat!("ToolForge/", env!("CARGO_PKG_VERSION")))
-        .redirect(policy)
-        .timeout(Duration::from_millis(
-            request.timeout_ms.clamp(1000, 600_000),
-        ))
-        .build()
-        .map_err(|e| PluginError::new("http.network").with("detail", e.to_string()))
-}
-
-fn network_error(err: reqwest::Error) -> PluginError {
-    let err = err.without_url();
-    let code = if err.is_timeout() {
-        "http.timeout"
-    } else if err.is_connect() {
-        "http.connect_failed"
-    } else if err.is_redirect() {
-        "http.too_many_redirects"
-    } else {
-        "http.network"
-    };
-    // reqwest 的错误信息包含底层原因（DNS、TLS 等）
-    let mut detail = err.to_string();
-    let mut source = std::error::Error::source(&err);
-    while let Some(inner) = source {
-        detail = format!("{detail}: {inner}");
-        source = inner.source();
-    }
-    PluginError::new(code).with("detail", detail)
-}
-
-fn read_body(response: &mut Response, ctx: &dyn TaskContext) -> PluginResult<Vec<u8>> {
-    let expected = response.content_length();
-    if expected.is_some_and(|len| len > MAX_BODY) {
-        return Err(PluginError::new("http.body_too_large").with("limit", "50 MB"));
-    }
-    let mut bytes = Vec::with_capacity(expected.unwrap_or(0).min(MAX_BODY) as usize);
-    let mut buffer = vec![0u8; CHUNK];
-    loop {
-        if ctx.is_cancelled() {
-            return Err(cancelled());
-        }
-        let read = response
-            .read(&mut buffer)
-            .map_err(|e| PluginError::new("http.network").with("detail", e.to_string()))?;
-        if read == 0 {
-            break;
-        }
-        bytes.extend_from_slice(&buffer[..read]);
-        if bytes.len() as u64 > MAX_BODY {
-            return Err(PluginError::new("http.body_too_large").with("limit", "50 MB"));
-        }
-        if let Some(total) = expected {
-            ctx.progress(bytes.len() as u64, total);
-        }
-    }
-    Ok(bytes)
+    let mut mapped = PluginError::new(code);
+    mapped.params = err.params;
+    mapped
 }
 
 fn classify(content_type: Option<&str>, bytes: &[u8]) -> ContentKind {
@@ -401,83 +324,70 @@ pub fn send_with_redacted_urls(
 ) -> PluginResult<Reply> {
     let method = method(&request.method)?;
     let url = build_url(&request)?;
-    let mut header_map = headers(&request)?;
+    let mut header_list = headers(&request)?;
     let payload = body(&request)?;
     if let Some((_, content_type)) = &payload
         && !has_header(&request, "content-type")
     {
-        header_map.insert(CONTENT_TYPE, HeaderValue::from_static(content_type));
+        header_list.push(("Content-Type".into(), (*content_type).to_owned()));
     }
-
-    let redirects = Arc::new(Mutex::new(Vec::new()));
-    let client = client(&request, &url, redirects.clone())?;
     ctx.log(
         LogLevel::Info,
         "http.request",
-        json!({ "method": method.as_str(), "url": if redact_urls { "[redacted]" } else { url.as_str() } }),
+        json!({ "method": method, "url": if redact_urls { "[redacted]" } else { url.as_str() } }),
     );
-    let start = Instant::now();
-    let mut builder = client.request(method, url).headers(header_map);
-    if let Some((bytes, _)) = payload {
-        builder = builder.body(bytes);
-    }
-    let mut response = builder.send().map_err(network_error)?;
-    let redirects = std::mem::take(&mut *redirects.lock().unwrap_or_else(|e| e.into_inner()));
-    for hop in &redirects {
+    // 请求由宿主发送：跨源重定向时宿主会去掉 Authorization 等凭据头
+    let outgoing = HttpRequest {
+        method,
+        url: url.to_string(),
+        headers: header_list,
+        body: payload.map(|(bytes, _)| bytes),
+        timeout_ms: request.timeout_ms.clamp(1000, 600_000) as u32,
+        follow_redirects: request.follow_redirects,
+        max_redirects: MAX_REDIRECTS,
+        use_proxy: request.use_proxy,
+        max_body: MAX_BODY,
+    };
+    let response = net::send(&outgoing, Some(ctx)).map_err(network_error)?;
+    for hop in &response.redirects {
         ctx.log(
             LogLevel::Info,
             "http.redirect",
             json!({ "url": if redact_urls { "[redacted]" } else { hop } }),
         );
     }
-    let status = response.status();
     ctx.log(
         LogLevel::Info,
         "http.response",
-        json!({ "status": status.as_u16(), "ms": start.elapsed().as_millis() as u64 }),
+        json!({ "status": response.status, "ms": response.elapsed_ms }),
     );
-
-    let final_url = response.url().to_string();
-    let version = format!("{:?}", response.version());
-    let headers: Vec<(String, String)> = response
-        .headers()
-        .iter()
-        .map(|(k, v)| {
-            (
-                k.to_string(),
-                String::from_utf8_lossy(v.as_bytes()).into_owned(),
-            )
-        })
-        .collect();
-    let content_type = response
-        .headers()
-        .get(CONTENT_TYPE)
-        .and_then(|v| v.to_str().ok())
-        .map(str::to_owned);
-    let bytes = read_body(&mut response, ctx)?;
-    let elapsed_ms = start.elapsed().as_millis() as u64;
     ctx.log(
         LogLevel::Info,
         "http.body",
-        json!({ "bytes": bytes.len(), "ms": elapsed_ms }),
+        json!({ "bytes": response.body.len(), "ms": response.elapsed_ms }),
     );
-
+    let content_type = response
+        .headers
+        .iter()
+        .find(|(k, _)| k.eq_ignore_ascii_case("content-type"))
+        .map(|(_, v)| v.clone());
+    let bytes = response.body;
     let (kind, body, truncated) = render(&classify(content_type.as_deref(), &bytes), &bytes);
     let size = bytes.len() as u64;
     Ok(Reply {
         id: bodies.store(bytes),
-        status: status.as_u16(),
-        status_text: status.canonical_reason().unwrap_or_default().to_owned(),
-        version,
-        url: final_url,
-        elapsed_ms,
+        status: response.status,
+        status_text: response.reason,
+        version: response.version,
+        url: response.url,
+        elapsed_ms: response.elapsed_ms,
         size,
-        headers,
+        headers: response.headers,
         content_type,
         kind,
         body,
         truncated,
-        redirects,
+        redirects: response.redirects,
     })
 }
 
@@ -491,8 +401,8 @@ pub fn to_curl(request: Request) -> PluginResult<String> {
     let url = build_url(&request)?;
     let payload = body(&request)?;
     let mut parts = vec!["curl".to_owned()];
-    if method != reqwest::Method::GET || payload.is_some() {
-        parts.push(format!("-X {}", method.as_str()));
+    if method != "GET" || payload.is_some() {
+        parts.push(format!("-X {method}"));
     }
     parts.push(shell_quote(url.as_str()));
     for pair in active(&request.headers) {

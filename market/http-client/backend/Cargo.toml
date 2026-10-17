@@ -1,21 +1,26 @@
 [package]
-name = "tfp-http-client"
-description = "ToolForge plugin: HTTP client"
+name = "tfm-http-client"
+description = "ToolForge market plugin: HTTP client"
 version = "0.1.0"
 edition.workspace = true
 license.workspace = true
 authors.workspace = true
 
+[lib]
+# cdylib 编译为 WASM 组件，rlib 供本机单元测试
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
 serde.workspace = true
 serde_json.workspace = true
 tf-plugin-api.workspace = true
+tf-plugin-guest = { path = "../../../crates/tf-plugin-guest" }
 tfp-curl-converter.workspace = true
-reqwest = { version = "0.13", default-features = false, features = ["blocking", "http2", "rustls-no-provider", "system-proxy"] }
 url = "2"
 data-encoding = "2"
 getrandom = "0.3"
 sha2 = "0.11"
-tiny_http = "0.12"
 zeroize = "1"
-rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+
+[dev-dependencies]
+tiny_http = "0.12"

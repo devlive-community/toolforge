@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 use std::io::Read;
+use std::net::{Ipv4Addr, TcpListener};
+use std::sync::Arc;
 use std::sync::atomic::AtomicBool;
 
 use super::*;
@@ -169,16 +171,11 @@ fn param(reply: &BeginReply, name: &str) -> String {
 
 /// 模拟浏览器访问回调地址
 fn callback(reply: &BeginReply, query: &str) -> Result<u16, String> {
-    let url = format!("{}?{query}", reply.redirect_uri);
-    ensure_crypto_provider();
-    reqwest::blocking::Client::builder()
-        .no_proxy()
-        .build()
-        .unwrap()
-        .get(url)
-        .send()
-        .map(|r| r.status().as_u16())
-        .map_err(|e| e.to_string())
+    let mut request = HttpRequest::new("GET", &format!("{}?{query}", reply.redirect_uri));
+    request.timeout_ms = 3000;
+    net::send(&request, None)
+        .map(|r| r.status)
+        .map_err(|e| e.code)
 }
 
 #[test]
@@ -251,7 +248,8 @@ fn rejects_wrong_state_and_denied_authorizations() {
     let server = auth_server();
     let oauth = OAuth::default();
     let reply = begin(&oauth, &server, None, None);
-    assert_eq!(callback(&reply, "code=good-code&state=forged"), Ok(400));
+    // 宿主只负责接收回调，页面总是 200；state 由插件校验
+    assert_eq!(callback(&reply, "code=good-code&state=forged"), Ok(200));
     let err = oauth.wait(reply.flow, &Ctx::new()).unwrap_err();
     assert_eq!(err.code, "oauth.state_mismatch");
     assert!(callback(&reply, "code=good-code&state=forged").is_err());
@@ -269,7 +267,7 @@ fn rejects_wrong_state_and_denied_authorizations() {
             &reply,
             &format!("error=access_denied&error_description=User+said+no&state={state}")
         ),
-        Ok(400)
+        Ok(200)
     );
     let err = oauth.wait(reply.flow, &Ctx::new()).unwrap_err();
     assert_eq!(err.code, "oauth.denied");

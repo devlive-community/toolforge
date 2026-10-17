@@ -1,6 +1,7 @@
-use std::io::{BufRead, BufReader, Write};
+use std::io::{BufRead, BufReader, Read, Write};
 use std::net::TcpListener;
 use std::thread;
+use std::time::Duration;
 
 use super::*;
 
@@ -290,14 +291,6 @@ fn reports_errors() {
 }
 
 #[test]
-fn loopback_bypasses_proxy() {
-    assert!(is_loopback(&normalize_url("localhost:8080").unwrap()));
-    assert!(is_loopback(&normalize_url("http://127.0.0.1/").unwrap()));
-    assert!(is_loopback(&normalize_url("http://[::1]:3000").unwrap()));
-    assert!(!is_loopback(&normalize_url("example.com").unwrap()));
-}
-
-#[test]
 fn normalizes_urls() {
     assert_eq!(
         normalize_url("example.com/a").unwrap().as_str(),
@@ -407,7 +400,6 @@ fn task_resolves_secret_queries_and_hides_encoded_urls_from_logs() {
 
 #[test]
 fn task_errors_do_not_persist_secret_values_in_error_parameters() {
-    let _ = rustls::crypto::ring::default_provider().install_default();
     use tf_plugin_api::ToolPlugin;
 
     let tool = crate::HttpClient::default();
@@ -424,15 +416,14 @@ fn task_errors_do_not_persist_secret_values_in_error_parameters() {
         .unwrap_err();
     assert_eq!(error.code, "http.invalid_header");
     assert_eq!(error.params["name"], "[redacted]");
-    let error = network_error(
-        Client::builder()
-            .no_proxy()
-            .build()
-            .unwrap()
-            .get("http://127.0.0.1:1/?token=top+secret")
-            .send()
-            .unwrap_err(),
-    );
+    // 宿主的网络错误不带地址（其中可能有已展开的密钥）
+    let error = send(
+        request("GET", "http://127.0.0.1:1/?token=top+secret".into()),
+        &Bodies::default(),
+        &Ctx,
+    )
+    .unwrap_err();
+    assert_eq!(error.code, "http.connect_failed");
     assert!(!error.to_string().contains("top+secret"));
 }
 

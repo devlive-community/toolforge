@@ -1,26 +1,25 @@
 //! OAuth 2.0 授权码 + PKCE（S256）流程，面向原生公共客户端（RFC 8252 / 7636 / 9700）。
 //!
-//! - `begin`：生成一次性的 state 与 code_verifier，在 127.0.0.1 上监听回调，返回授权地址；
+//! - `begin`：生成一次性的 state 与 code_verifier，请宿主在 127.0.0.1 上监听回调，返回授权地址；
 //!   由界面通过宿主用系统浏览器打开，登录页面完全由授权服务器提供。
 //! - `wait`（任务）：等待回调、校验 state、兑换令牌；拒绝授权、超时、取消都会结束会话并释放监听端口。
-//!   回调监听只接受一次：收到第一个回调后立即关闭，重复回调无法再连上。
+//!   宿主的回调监听只接受一次：收到第一个回调后立即关闭，重复回调无法再连上。
 //! - `refresh`（任务）：用户主动刷新；服务端轮换 refresh token 时替换旧值。
 //!
 //! 令牌、授权码与 verifier 只保存在本插件实例的内存中（按「配置 + 环境」隔离），
 //! 不进入工作区、任务日志或错误参数；清除授权或退出应用即销毁，重启后需要重新授权。
 
 use std::collections::HashMap;
-use std::net::{Ipv4Addr, TcpListener};
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
-use std::sync::{Arc, Mutex, Once};
-use std::thread::JoinHandle;
-use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
+use std::sync::Mutex;
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use data_encoding::BASE64URL_NOPAD;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use tf_plugin_api::{LogLevel, PluginError, PluginResult, TaskContext, cancelled};
+use tf_plugin_guest::net::{self, Callback, HttpRequest};
 use zeroize::Zeroizing;
 
 use crate::workspace::{Variable, resolve_text};
@@ -29,10 +28,10 @@ use crate::workspace::{Variable, resolve_text};
 const DEFAULT_TIMEOUT: Duration = Duration::from_secs(300);
 const MAX_TIMEOUT: Duration = Duration::from_secs(1800);
 const POLL: Duration = Duration::from_millis(100);
-/// 令牌端点请求的超时
-const TOKEN_TIMEOUT: Duration = Duration::from_secs(30);
+/// 令牌端点请求的超时（毫秒）
+const TOKEN_TIMEOUT_MS: u32 = 30_000;
 /// 令牌端点响应的读取上限
-const MAX_TOKEN_RESPONSE: usize = 256 * 1024;
+const MAX_TOKEN_RESPONSE: u64 = 256 * 1024;
 /// 错误描述在界面上显示的最大长度
 const MAX_DESCRIPTION: usize = 300;
 
@@ -202,29 +201,16 @@ impl Token {
     }
 }
 
-type Outcome = Arc<Mutex<Option<PluginResult<Zeroizing<String>>>>>;
-
-/// 进行中的授权：最多一个
+/// 进行中的授权：最多一个；drop 时宿主关闭回调监听、释放端口
 struct Pending {
     flow: u64,
     key: String,
+    state: Zeroizing<String>,
     verifier: Zeroizing<String>,
     redirect_uri: String,
     token_url: url::Url,
     client_id: String,
-    outcome: Outcome,
-    stop: Arc<AtomicBool>,
-    thread: Option<JoinHandle<()>>,
-}
-
-impl Pending {
-    /// 停止监听并等待线程退出（端口随之释放）
-    fn close(mut self) {
-        self.stop.store(true, Ordering::SeqCst);
-        if let Some(thread) = self.thread.take() {
-            let _ = thread.join();
-        }
-    }
+    callback: Callback,
 }
 
 #[derive(Default)]
@@ -281,25 +267,6 @@ pub struct SessionsArgs {
     pub keys: Vec<String>,
 }
 
-const PAGE_OK: &str = "<!doctype html><meta charset=utf-8><title>ToolForge</title>\
-<body style=\"font-family:system-ui;padding:3rem;text-align:center\">\
-<h2>授权已完成 / Authorization received</h2>\
-<p>可以关闭此页面并回到 ToolForge。<br>You can close this tab and return to ToolForge.</p>";
-
-const PAGE_FAILED: &str = "<!doctype html><meta charset=utf-8><title>ToolForge</title>\
-<body style=\"font-family:system-ui;padding:3rem;text-align:center\">\
-<h2>授权未完成 / Authorization failed</h2>\
-<p>请回到 ToolForge 查看原因。<br>Return to ToolForge for details.</p>";
-
-fn respond(request: tiny_http::Request, status: u16, page: &str) {
-    let header = tiny_http::Header::from_bytes("Content-Type", "text/html; charset=utf-8")
-        .expect("static header");
-    let response = tiny_http::Response::from_string(page)
-        .with_status_code(status)
-        .with_header(header);
-    let _ = request.respond(response);
-}
-
 fn truncated(text: &str) -> String {
     text.chars().take(MAX_DESCRIPTION).collect()
 }
@@ -325,68 +292,6 @@ fn read_callback(query: &str, state: &str) -> PluginResult<Zeroizing<String>> {
     }
 }
 
-/// 回调监听线程：收到第一个匹配路径的回调后结束；停止或超时也结束
-fn listen(
-    server: tiny_http::Server,
-    path: String,
-    state: Zeroizing<String>,
-    deadline: Instant,
-    outcome: Outcome,
-    stop: Arc<AtomicBool>,
-) {
-    while !stop.load(Ordering::SeqCst) {
-        if Instant::now() >= deadline {
-            *outcome.lock().unwrap_or_else(|e| e.into_inner()) =
-                Some(Err(PluginError::new("oauth.timeout")));
-            return;
-        }
-        let request = match server.recv_timeout(POLL) {
-            Ok(Some(request)) => request,
-            Ok(None) => continue,
-            Err(_) => continue,
-        };
-        let target = request.url().to_owned();
-        let (request_path, query) = target.split_once('?').unwrap_or((&target, ""));
-        if *request.method() != tiny_http::Method::Get || request_path != path {
-            respond(request, 404, PAGE_FAILED);
-            continue;
-        }
-        let result = read_callback(query, &state);
-        let ok = result.is_ok();
-        respond(
-            request,
-            if ok { 200 } else { 400 },
-            if ok { PAGE_OK } else { PAGE_FAILED },
-        );
-        *outcome.lock().unwrap_or_else(|e| e.into_inner()) = Some(result);
-        return;
-    }
-}
-
-/// reqwest 使用 rustls 时需要先安装加密实现
-pub fn ensure_crypto_provider() {
-    static PROVIDER: Once = Once::new();
-    PROVIDER.call_once(|| {
-        if rustls::crypto::CryptoProvider::get_default().is_none() {
-            let _ = rustls::crypto::ring::default_provider().install_default();
-        }
-    });
-}
-
-fn client(url: &url::Url) -> PluginResult<reqwest::blocking::Client> {
-    ensure_crypto_provider();
-    let mut builder = reqwest::blocking::Client::builder()
-        .timeout(TOKEN_TIMEOUT)
-        .redirect(reqwest::redirect::Policy::none())
-        .user_agent(concat!("ToolForge/", env!("CARGO_PKG_VERSION")));
-    if is_loopback(url) {
-        builder = builder.no_proxy();
-    }
-    builder
-        .build()
-        .map_err(|e| PluginError::new("oauth.network").with("detail", e.to_string()))
-}
-
 #[derive(Deserialize)]
 struct TokenResponse {
     access_token: Option<String>,
@@ -399,36 +304,42 @@ struct TokenResponse {
 }
 
 /// 向令牌端点提交表单；错误里只保留服务端的错误码与描述，不带请求内容
-fn token_request(url: &url::Url, form: &[(&str, &str)]) -> PluginResult<TokenResponse> {
+fn token_request(
+    url: &url::Url,
+    form: &[(&str, &str)],
+    ctx: &dyn TaskContext,
+) -> PluginResult<TokenResponse> {
     // 正文含授权码 / refresh token，用 Zeroizing 在发送后清零
     let body = Zeroizing::new(
         url::form_urlencoded::Serializer::new(String::new())
             .extend_pairs(form)
             .finish(),
     );
-    let response = client(url)?
-        .post(url.clone())
-        .header("Accept", "application/json")
-        .header("Content-Type", "application/x-www-form-urlencoded")
-        .body(body.as_bytes().to_vec())
-        .send()
-        .map_err(|e| {
-            let e = e.without_url();
-            let code = if e.is_timeout() {
-                "oauth.token_timeout"
-            } else {
-                "oauth.network"
-            };
-            PluginError::new(code).with("detail", e.to_string())
-        })?;
-    let status = response.status().as_u16();
-    let bytes = response.bytes().map_err(|e| {
-        PluginError::new("oauth.network").with("detail", e.without_url().to_string())
+    let mut request = HttpRequest::new("POST", url.as_str());
+    request.headers = vec![
+        ("Accept".into(), "application/json".into()),
+        (
+            "Content-Type".into(),
+            "application/x-www-form-urlencoded".into(),
+        ),
+    ];
+    request.body = Some(body.as_bytes().to_vec());
+    request.timeout_ms = TOKEN_TIMEOUT_MS;
+    request.follow_redirects = false;
+    request.max_body = MAX_TOKEN_RESPONSE;
+    let response = net::send(&request, Some(ctx)).map_err(|e| match e.code.as_str() {
+        "net.timeout" => PluginError::new("oauth.token_timeout"),
+        "net.too_large" => PluginError::new("oauth.token_response").with("status", 0),
+        "task.cancelled" => e,
+        _ => {
+            let mut mapped = PluginError::new("oauth.network");
+            mapped.params = e.params;
+            mapped
+        }
     })?;
-    if bytes.len() > MAX_TOKEN_RESPONSE {
-        return Err(PluginError::new("oauth.token_response").with("status", status));
-    }
-    let parsed: TokenResponse = serde_json::from_slice(&bytes)
+    let status = response.status;
+    let bytes = Zeroizing::new(response.body);
+    let parsed: TokenResponse = serde_json::from_slice(bytes.as_slice())
         .map_err(|_| PluginError::new("oauth.token_response").with("status", status))?;
     if let Some(error) = &parsed.error {
         let mut err = PluginError::new("oauth.token_error")
@@ -492,27 +403,31 @@ impl OAuth {
             .take()
     }
 
-    /// 开始一次授权：取消之前未完成的授权，绑定回调端口并返回授权地址
+    /// 开始一次授权：取消之前未完成的授权，请宿主监听回调端口并返回授权地址
     pub fn begin(&self, args: BeginArgs) -> PluginResult<BeginReply> {
         let resolved = args.config.resolve(&args.variables)?;
-        if let Some(previous) = self.take_pending() {
-            previous.close();
-        }
-        let port = args.config.redirect_port.unwrap_or(0);
-        let listener = TcpListener::bind((Ipv4Addr::LOCALHOST, port)).map_err(|e| {
-            if e.kind() == std::io::ErrorKind::AddrInUse {
-                PluginError::new("oauth.port_in_use").with("port", port)
-            } else {
-                PluginError::new("oauth.listen_failed").with("detail", e.to_string())
-            }
-        })?;
-        let port = listener
-            .local_addr()
-            .map_err(|e| PluginError::new("oauth.listen_failed").with("detail", e.to_string()))?
-            .port();
-        let server = tiny_http::Server::from_listener(listener, None)
-            .map_err(|e| PluginError::new("oauth.listen_failed").with("detail", e.to_string()))?;
-        let redirect_uri = format!("http://127.0.0.1:{port}{}", args.config.redirect_path);
+        drop(self.take_pending());
+        let timeout = args
+            .timeout_secs
+            .map_or(DEFAULT_TIMEOUT, Duration::from_secs)
+            .clamp(Duration::from_secs(1), MAX_TIMEOUT);
+        let requested = args.config.redirect_port.unwrap_or(0);
+        let callback = Callback::listen(requested, &args.config.redirect_path, timeout).map_err(
+            |e| match e.code.as_str() {
+                "net.port_in_use" => PluginError::new("oauth.port_in_use").with("port", requested),
+                "net.invalid_path" => PluginError::new("oauth.invalid_path"),
+                _ => {
+                    let mut mapped = PluginError::new("oauth.listen_failed");
+                    mapped.params = e.params;
+                    mapped
+                }
+            },
+        )?;
+        let redirect_uri = format!(
+            "http://127.0.0.1:{}{}",
+            callback.port(),
+            args.config.redirect_path
+        );
 
         let state = random_token()?;
         let verifier = random_token()?;
@@ -530,36 +445,17 @@ impl OAuth {
                 query.append_pair("scope", &resolved.scope);
             }
         }
-
-        let timeout = args
-            .timeout_secs
-            .map_or(DEFAULT_TIMEOUT, Duration::from_secs)
-            .clamp(Duration::from_secs(1), MAX_TIMEOUT);
-        let outcome: Outcome = Arc::default();
-        let stop = Arc::new(AtomicBool::new(false));
-        let thread = {
-            let (outcome, stop) = (outcome.clone(), stop.clone());
-            let path = args.config.redirect_path.clone();
-            let deadline = Instant::now() + timeout;
-            std::thread::Builder::new()
-                .name("oauth-callback".into())
-                .spawn(move || listen(server, path, state, deadline, outcome, stop))
-                .map_err(|e| {
-                    PluginError::new("oauth.listen_failed").with("detail", e.to_string())
-                })?
-        };
         let flow = self.next_flow.fetch_add(1, Ordering::Relaxed) + 1;
         let key = session_key(&args.config.id, args.environment_id.as_deref());
         *self.pending.lock().unwrap_or_else(|e| e.into_inner()) = Some(Pending {
             flow,
             key: key.clone(),
+            state,
             verifier,
             redirect_uri: redirect_uri.clone(),
             token_url: resolved.token_url,
             client_id: resolved.client_id,
-            outcome,
-            stop,
-            thread: Some(thread),
+            callback,
         });
         Ok(BeginReply {
             flow,
@@ -570,14 +466,34 @@ impl OAuth {
         })
     }
 
-    /// 取消当前授权（界面关闭对话框等）
+    /// 取消当前授权（界面关闭对话框等）；drop 时宿主释放回调端口
     pub fn cancel(&self, flow: u64) {
         let mut pending = self.pending.lock().unwrap_or_else(|e| e.into_inner());
         if pending.as_ref().is_some_and(|p| p.flow == flow) {
             let taken = pending.take();
             drop(pending);
-            if let Some(p) = taken {
-                p.close();
+            drop(taken);
+        }
+    }
+
+    /// 查看当前授权的回调：收到回调时取出整个授权
+    fn poll(&self, flow: u64) -> PluginResult<Option<(Pending, String)>> {
+        let mut pending = self.pending.lock().unwrap_or_else(|e| e.into_inner());
+        let current = match pending.as_ref() {
+            Some(p) if p.flow == flow => p,
+            _ => return Err(PluginError::new("oauth.flow_expired")),
+        };
+        let polled = current.callback.poll();
+        match polled {
+            Ok(None) => Ok(None),
+            Ok(Some(query)) => Ok(pending.take().map(|p| (p, query))),
+            Err(err) => {
+                pending.take();
+                Err(if err.code == "net.callback_timeout" {
+                    PluginError::new("oauth.timeout")
+                } else {
+                    err
+                })
             }
         }
     }
@@ -585,46 +501,29 @@ impl OAuth {
     /// 等待回调并兑换令牌（任务）
     pub fn wait(&self, flow: u64, ctx: &dyn TaskContext) -> PluginResult<SessionView> {
         ctx.stage("oauth.waiting");
-        loop {
-            {
-                let pending = self.pending.lock().unwrap_or_else(|e| e.into_inner());
-                match pending.as_ref() {
-                    Some(p) if p.flow == flow => {
-                        if p.outcome
-                            .lock()
-                            .unwrap_or_else(|e| e.into_inner())
-                            .is_some()
-                        {
-                            break;
-                        }
-                    }
-                    _ => return Err(PluginError::new("oauth.flow_expired")),
-                }
-            }
+        let (pending, query) = loop {
             if ctx.is_cancelled() {
                 self.cancel(flow);
                 return Err(cancelled());
             }
+            if let Some(done) = self.poll(flow)? {
+                break done;
+            }
             std::thread::sleep(POLL);
-        }
-        let pending = self
-            .take_pending()
-            .ok_or_else(|| PluginError::new("oauth.flow_expired"))?;
-        let result = pending
-            .outcome
-            .lock()
-            .unwrap_or_else(|e| e.into_inner())
-            .take()
-            .ok_or_else(|| PluginError::new("oauth.flow_expired"));
-        let key = pending.key.clone();
-        let verifier = pending.verifier.clone();
-        let (token_url, client_id, redirect_uri) = (
-            pending.token_url.clone(),
-            pending.client_id.clone(),
-            pending.redirect_uri.clone(),
-        );
-        pending.close();
-        let code = result??;
+        };
+        let Pending {
+            key,
+            state,
+            verifier,
+            redirect_uri,
+            token_url,
+            client_id,
+            callback,
+            ..
+        } = pending;
+        // 回调已收到，立即释放端口
+        drop(callback);
+        let code = read_callback(&query, &state)?;
         ctx.log(LogLevel::Info, "oauth.callback", json!({}));
         ctx.stage("oauth.exchanging");
         let response = token_request(
@@ -636,6 +535,7 @@ impl OAuth {
                 ("client_id", &client_id),
                 ("code_verifier", &verifier),
             ],
+            ctx,
         )?;
         let token = new_token(response, now_ms())?;
         ctx.log(
@@ -675,6 +575,7 @@ impl OAuth {
                 ("refresh_token", &refresh),
                 ("client_id", &resolved.client_id),
             ],
+            ctx,
         )
         .and_then(|response| new_token(response, now_ms()));
         let mut sessions = self.sessions();

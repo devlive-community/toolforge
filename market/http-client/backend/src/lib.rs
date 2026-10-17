@@ -1,5 +1,5 @@
-//! HTTP 客户端插件后端：请求由 Rust 发送（任务，可取消、实时日志），
-//! 响应正文在后端格式化并缓存，前端只展示预览。
+//! HTTP 客户端插件后端（在线安装插件）：请求由宿主发送（任务，可取消、实时日志），
+//! 响应正文在插件中格式化并缓存，前端只展示预览。
 
 mod detect;
 mod http;
@@ -143,6 +143,8 @@ impl ToolPlugin for HttpClient {
         }
     }
 }
+
+tf_plugin_guest::export_plugin!(HttpClient);
 
 #[cfg(test)]
 #[path = "lib_test.rs"]

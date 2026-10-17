@@ -115,7 +115,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
         ("10.0.0.1", "ip-calculator"),
         ("<a><b>1</b></a>", "xml-formatter"),
         ("0xDEADBEEF", "base-converter"),
-        ("https://api.github.com/repos/x", "http-client"),
         ("github.com", "dns-lookup"),
         ("name\tage\nAda\t36\n", "csv-viewer"),
         ("name: app\nversion: 1\n", "format-converter"),
