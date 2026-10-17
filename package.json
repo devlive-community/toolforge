@@ -12,7 +12,7 @@
     "build": "pnpm --filter @toolforge/desktop tauri build",
     "web:dev": "pnpm --filter @toolforge/desktop dev",
     "web:build": "pnpm --filter @toolforge/desktop build",
-    "typecheck": "pnpm -r --parallel typecheck",
+    "typecheck": "pnpm -r --workspace-concurrency=4 typecheck",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
     "icons:generate": "node scripts/generate-icons.mjs",
