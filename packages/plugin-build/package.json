@@ -13,11 +13,11 @@
     "react": "19.3.0",
     "react-i18next": "17.0.16",
     "i18next": "26.4.4",
-    "typescript": "7.0.2"
+    "typescript": "5.9.3"
   },
   "devDependencies": {
     "@types/node": "26.6.5",
-    "typescript": "7.0.2"
+    "typescript": "5.9.3"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json"
