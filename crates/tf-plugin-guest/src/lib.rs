@@ -14,6 +14,8 @@ extern crate self as tf_plugin_guest;
 pub use tf_plugin_api;
 pub use wit_bindgen;
 
+pub mod net;
+
 #[doc(hidden)]
 pub mod bindings {
     wit_bindgen::generate!({

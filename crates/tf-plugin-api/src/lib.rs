@@ -4,6 +4,8 @@
 //! 目前内置插件以原生 crate 形式注册，后续 WASM 插件会实现同一个 trait 的适配层，
 //! 因此宿主代码无需改动。
 
+pub mod net;
+
 use indexmap::IndexMap;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};

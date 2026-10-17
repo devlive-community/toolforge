@@ -10,5 +10,10 @@ authors.workspace = true
 jiff = "0.2"
 serde_json.workspace = true
 tf-plugin-api.workspace = true
+tf-net.workspace = true
 wasmtime = { version = "49.0.3", default-features = false, features = ["component-model", "cranelift", "runtime", "std", "parallel-compilation"] }
 wasmtime-wasi = "49.0.3"
+
+[dev-dependencies]
+reqwest = { version = "0.13", default-features = false, features = ["blocking"] }
+tiny_http = "0.12"

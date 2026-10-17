@@ -10,3 +10,7 @@ authors.workspace = true
 serde_json.workspace = true
 tf-plugin-api.workspace = true
 wit-bindgen = "0.57"
+
+# 本机构建（插件单元测试）时直接使用原生网络实现；WASM 组件经宿主函数调用
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tf-net = { path = "../tf-net" }

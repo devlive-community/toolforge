@@ -20,6 +20,43 @@ interface host {
     /// 读取用户选择的文件（需要 fs:user-selected 权限）
     file-size: func(path: string) -> result<u64, failure>;
     read-file: func(path: string, offset: u64, length: u32) -> result<list<u8>, failure>;
+    /// 写入用户选择的文件，覆盖原内容（需要 fs:user-selected 权限）
+    write-file: func(path: string, data: list<u8>) -> result<_, failure>;
+
+    /// 由宿主发送的 HTTP 请求（需要 network 权限）
+    record http-request {
+        method: string,
+        url: string,
+        headers: list<tuple<string, string>>,
+        body: option<list<u8>>,
+        timeout-ms: u32,
+        follow-redirects: bool,
+        max-redirects: u32,
+        use-proxy: bool,
+        max-body: u64,
+    }
+
+    record http-response {
+        status: u16,
+        reason: string,
+        version: string,
+        url: string,
+        headers: list<tuple<string, string>>,
+        body: list<u8>,
+        redirects: list<string>,
+        elapsed-ms: u64,
+    }
+
+    /// 发送请求并读取完整响应；在任务中可被取消，并报告读取进度
+    http-send: func(request: http-request) -> result<http-response, failure>;
+
+    /// 在 127.0.0.1 上监听一次性回调（需要 network 权限）；port 为 0 时由系统分配。
+    /// 返回监听编号与实际端口；只接受第一个匹配路径的 GET 请求
+    callback-listen: func(port: u16, path: string, timeout-ms: u32) -> result<tuple<u32, u16>, failure>;
+    /// 收到回调时返回查询字符串，仍在等待时为 none
+    callback-poll: func(id: u32) -> result<option<string>, failure>;
+    /// 停止监听并释放端口
+    callback-close: func(id: u32);
 }
 
 world plugin {

@@ -1,0 +1,14 @@
+[package]
+name = "tf-net"
+description = "Native networking for ToolForge plugins: HTTP requests and loopback callbacks"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+tf-plugin-api.workspace = true
+reqwest = { version = "0.13", default-features = false, features = ["blocking", "http2", "rustls-no-provider", "system-proxy"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+tiny_http = "0.12"
+url = "2"

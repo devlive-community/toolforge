@@ -4,14 +4,19 @@
   "name": "fixture",
   "description": "fixture",
   "category": "other",
-  "permissions": ["fs:user-selected"],
+  "permissions": ["fs:user-selected", "network"],
   "functions": {
     "echo": {},
     "sum": {},
     "fail": {},
     "panic": {},
     "spin": {},
+    "write": {},
+    "listen": {},
+    "poll": {},
+    "close": {},
     "count": { "task": true },
+    "fetch": { "task": true },
     "read": { "task": true }
   }
 }

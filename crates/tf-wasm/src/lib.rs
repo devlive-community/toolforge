@@ -1,15 +1,19 @@
 //! WASM 插件运行时：用 wasmtime 加载符合 `wit/plugin.wit` 的组件，包装为原生 [`ToolPlugin`]，
 //! 这样在线安装的插件可以与内置插件一样注册到插件注册表。
 //!
-//! 隔离：WASI 不开放任何目录、环境变量与网络；读取文件只能通过 `read-file` 宿主函数，
-//! 且插件需在 manifest 中声明 `fs:user-selected`。每个插件的内存上限 1 GB，
+//! 隔离：WASI 不开放任何目录、环境变量与网络；读写文件只能通过 `read-file` / `write-file` 宿主函数，
+//! 且插件需在 manifest 中声明 `fs:user-selected`；HTTP 请求与本机回调监听由宿主执行（`tf-net`），
+//! 插件需声明 `network`。每个插件的内存上限 1 GB，
 //! 普通调用 30 秒超时；插件崩溃（trap）后丢弃实例，下次调用重新实例化。
 
+use std::collections::HashMap;
 use std::io::{Read, Seek, SeekFrom};
 use std::sync::{Mutex, OnceLock};
 use std::time::Duration;
 
 use serde_json::{Map, Value};
+use tf_net::CallbackServer;
+use tf_plugin_api::net::{HttpRequest, NETWORK_PERMISSION};
 use tf_plugin_api::{
     Detection, LogLevel, Manifest, PluginError, PluginResult, TaskContext, ToolPlugin,
 };
@@ -34,6 +38,8 @@ const MEMORY_LIMIT: usize = 1 << 30;
 /// 单次 read-file 的上限
 const MAX_READ: u32 = 4 * 1024 * 1024;
 pub const FS_PERMISSION: &str = "fs:user-selected";
+/// 每个插件实例同时存在的回调监听上限
+const MAX_CALLBACKS: usize = 4;
 
 /// 宿主的 IANA 时区名，经 WASI 环境变量 TZ 传给插件（插件内置时区库，读取系统时区会失败）
 fn local_time_zone() -> String {
@@ -76,6 +82,10 @@ struct State {
     limits: StoreLimits,
     task: Option<TaskSlot>,
     can_read_files: bool,
+    can_network: bool,
+    /// 回调监听；实例丢弃时随之关闭并释放端口
+    callbacks: HashMap<u32, CallbackServer>,
+    next_callback: u32,
 }
 
 impl State {
@@ -91,6 +101,13 @@ impl WasiView for State {
             ctx: &mut self.wasi,
             table: &mut self.table,
         }
+    }
+}
+
+fn to_failure(err: PluginError) -> host::Failure {
+    host::Failure {
+        code: err.code,
+        params: Value::Object(err.params).to_string(),
     }
 }
 
@@ -163,6 +180,88 @@ impl host::Host for State {
             .map_err(|e| failure("fs.io", e))?;
         Ok(buf)
     }
+
+    fn write_file(&mut self, path: String, data: Vec<u8>) -> Result<(), host::Failure> {
+        if !self.can_read_files {
+            return Err(failure("plugin.permission_denied", FS_PERMISSION));
+        }
+        tf_net::write_file(&path, &data).map_err(to_failure)
+    }
+
+    fn http_send(
+        &mut self,
+        request: host::HttpRequest,
+    ) -> Result<host::HttpResponse, host::Failure> {
+        if !self.can_network {
+            return Err(failure("plugin.permission_denied", NETWORK_PERMISSION));
+        }
+        let request = HttpRequest {
+            method: request.method,
+            url: request.url,
+            headers: request.headers,
+            body: request.body,
+            timeout_ms: request.timeout_ms,
+            follow_redirects: request.follow_redirects,
+            max_redirects: request.max_redirects,
+            use_proxy: request.use_proxy,
+            max_body: request.max_body,
+        };
+        let task = self.task();
+        let response = tf_net::send(
+            &request,
+            &|| task.is_some_and(|t| t.is_cancelled()),
+            &|done, total| {
+                if let Some(t) = task {
+                    t.progress(done, total);
+                }
+            },
+        )
+        .map_err(to_failure)?;
+        Ok(host::HttpResponse {
+            status: response.status,
+            reason: response.reason,
+            version: response.version,
+            url: response.url,
+            headers: response.headers,
+            body: response.body,
+            redirects: response.redirects,
+            elapsed_ms: response.elapsed_ms,
+        })
+    }
+
+    fn callback_listen(
+        &mut self,
+        port: u16,
+        path: String,
+        timeout_ms: u32,
+    ) -> Result<(u32, u16), host::Failure> {
+        if !self.can_network {
+            return Err(failure("plugin.permission_denied", NETWORK_PERMISSION));
+        }
+        if self.callbacks.len() >= MAX_CALLBACKS {
+            return Err(failure("net.too_many_listeners", MAX_CALLBACKS));
+        }
+        let server =
+            CallbackServer::listen(port, &path, Duration::from_millis(u64::from(timeout_ms)))
+                .map_err(to_failure)?;
+        self.next_callback = self.next_callback.wrapping_add(1);
+        let id = self.next_callback;
+        let port = server.port();
+        self.callbacks.insert(id, server);
+        Ok((id, port))
+    }
+
+    fn callback_poll(&mut self, id: u32) -> Result<Option<String>, host::Failure> {
+        let server = self
+            .callbacks
+            .get(&id)
+            .ok_or_else(|| failure("net.callback_closed", id))?;
+        server.poll().map_err(to_failure)
+    }
+
+    fn callback_close(&mut self, id: u32) {
+        self.callbacks.remove(&id);
+    }
 }
 
 struct Instance {
@@ -231,6 +330,13 @@ impl WasmPlugin {
             limits: StoreLimitsBuilder::new().memory_size(MEMORY_LIMIT).build(),
             task: None,
             can_read_files: self.manifest.permissions.iter().any(|p| p == FS_PERMISSION),
+            can_network: self
+                .manifest
+                .permissions
+                .iter()
+                .any(|p| p == NETWORK_PERMISSION),
+            callbacks: HashMap::new(),
+            next_callback: 0,
         };
         let mut store = Store::new(engine(), state);
         store.limiter(|state| &mut state.limits);

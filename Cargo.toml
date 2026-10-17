@@ -6,6 +6,7 @@ members = [
     "crates/tf-plugin-api",
     "crates/tf-package",
     "crates/tf-plugin-guest",
+    "crates/tf-net",
     "crates/tf-wasm",
     "crates/xtask",
     "plugins/*/backend",
@@ -25,6 +26,7 @@ serde_json = { version = "1", features = ["preserve_order", "arbitrary_precision
 thiserror = "2"
 tf-core = { path = "crates/tf-core" }
 tf-plugin-api = { path = "crates/tf-plugin-api" }
+tf-net = { path = "crates/tf-net" }
 tf-package = { path = "crates/tf-package" }
 tf-wasm = { path = "crates/tf-wasm" }
 tfp-archive = { path = "plugins/archive/backend" }

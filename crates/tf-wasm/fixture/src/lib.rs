@@ -1,4 +1,4 @@
-//! tf-wasm 测试夹具：覆盖调用、错误、崩溃、超时、任务日志与读取文件。
+//! tf-wasm 测试夹具：覆盖调用、错误、崩溃、超时、任务日志、读写文件、HTTP 请求与回调监听。
 
 use std::io::Read;
 
@@ -10,6 +10,7 @@ use tf_plugin_api::{
 pub struct Fixture {
     manifest: Manifest,
     calls: std::sync::atomic::AtomicU64,
+    callback: std::sync::Mutex<Option<tf_plugin_guest::net::Callback>>,
 }
 
 impl Default for Fixture {
@@ -17,6 +18,7 @@ impl Default for Fixture {
         Self {
             manifest: Manifest::from_static(include_str!("../manifest.json")),
             calls: Default::default(),
+            callback: Default::default(),
         }
     }
 }
@@ -44,6 +46,30 @@ impl ToolPlugin for Fixture {
             }
             "tz" => Ok(json!(std::env::var("TZ").ok())),
             "fail" => Err(PluginError::new("fixture.failed").with("reason", "asked")),
+            "write" => {
+                let path = args["path"].as_str().unwrap_or_default();
+                let text = args["text"].as_str().unwrap_or_default();
+                tf_plugin_guest::net::write_file(path, text.as_bytes())?;
+                Ok(Value::Null)
+            }
+            "listen" => {
+                let callback = tf_plugin_guest::net::Callback::listen(
+                    0,
+                    "/cb",
+                    std::time::Duration::from_secs(30),
+                )?;
+                let port = callback.port();
+                *self.callback.lock().unwrap() = Some(callback);
+                Ok(json!(port))
+            }
+            "poll" => match self.callback.lock().unwrap().as_ref() {
+                Some(callback) => Ok(json!(callback.poll()?)),
+                None => Err(PluginError::new("fixture.no_callback")),
+            },
+            "close" => {
+                self.callback.lock().unwrap().take();
+                Ok(Value::Null)
+            }
             "panic" => panic!("boom"),
             "spin" => loop {
                 std::hint::black_box(calls);
@@ -65,6 +91,21 @@ impl ToolPlugin for Fixture {
                     ctx.progress(i, total);
                 }
                 Ok(json!({ "counted": total }))
+            }
+            "fetch" => {
+                let mut request = tf_plugin_guest::net::HttpRequest::new(
+                    "POST",
+                    args["url"].as_str().unwrap_or_default(),
+                );
+                request.headers.push(("X-Fixture".into(), "1".into()));
+                request.body = Some(b"ping".to_vec());
+                let response = tf_plugin_guest::net::send(&request, Some(ctx))?;
+                Ok(json!({
+                    "status": response.status,
+                    "reason": response.reason,
+                    "body": String::from_utf8_lossy(&response.body),
+                    "redirects": response.redirects,
+                }))
             }
             "read" => {
                 let path = args["path"].as_str().unwrap_or_default();

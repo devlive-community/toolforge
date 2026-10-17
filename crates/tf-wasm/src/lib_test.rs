@@ -162,6 +162,122 @@ fn reads_files_only_with_permission() {
     std::fs::remove_file(path).unwrap();
 }
 
+/// 回显方法、请求头与请求体；/redirect 302 到 /echo
+fn echo_server() -> String {
+    let server = tiny_http::Server::http("127.0.0.1:0").unwrap();
+    let base = format!(
+        "http://127.0.0.1:{}",
+        server.server_addr().to_ip().unwrap().port()
+    );
+    let own = base.clone();
+    std::thread::spawn(move || {
+        for mut request in server.incoming_requests() {
+            if request.url() == "/redirect" {
+                let to = tiny_http::Header::from_bytes("Location", format!("{own}/echo")).unwrap();
+                let _ = request.respond(tiny_http::Response::empty(302).with_header(to));
+                continue;
+            }
+            let mut body = String::new();
+            request.as_reader().read_to_string(&mut body).unwrap();
+            let fixture = request
+                .headers()
+                .iter()
+                .any(|h| h.field.as_str().as_str().eq_ignore_ascii_case("x-fixture"));
+            let text = format!("{} {body} {fixture}", request.method());
+            let _ = request.respond(tiny_http::Response::from_string(text));
+        }
+    });
+    base
+}
+
+#[test]
+fn sends_http_requests_through_the_host() {
+    let base = echo_server();
+    let plugin = load();
+    let ctx = Ctx::default();
+    let out = plugin
+        .run_task("fetch", json!({ "url": format!("{base}/redirect") }), &ctx)
+        .unwrap();
+    assert_eq!(out["status"], 200);
+    assert_eq!(out["reason"], "OK");
+    // 302 按惯例改为不带正文的 GET，自定义请求头保留
+    assert_eq!(out["body"], "GET  true");
+    assert_eq!(out["redirects"], json!([format!("{base}/echo")]));
+    let out = plugin
+        .run_task("fetch", json!({ "url": format!("{base}/echo") }), &ctx)
+        .unwrap();
+    assert_eq!(out["body"], "POST ping true");
+    // 取消的任务在读取响应前结束
+    ctx.cancel.store(true, Ordering::SeqCst);
+    let err = plugin
+        .run_task("fetch", json!({ "url": format!("{base}/echo") }), &ctx)
+        .unwrap_err();
+    assert_eq!(err.code, "task.cancelled");
+    let err = plugin
+        .run_task("fetch", json!({ "url": "ftp://x" }), &Ctx::default())
+        .unwrap_err();
+    assert_eq!(err.code, "net.unsupported_scheme");
+}
+
+#[test]
+fn listens_for_one_callback_and_releases_the_port() {
+    let plugin = load();
+    let port = plugin.call("listen", json!({})).unwrap().as_u64().unwrap();
+    assert_eq!(plugin.call("poll", json!({})).unwrap(), Value::Null);
+    let url = format!("http://127.0.0.1:{port}/cb?code=1&state=s");
+    tf_net::ensure_crypto_provider();
+    let client = reqwest::blocking::Client::builder()
+        .no_proxy()
+        .build()
+        .unwrap();
+    assert_eq!(client.get(&url).send().unwrap().status(), 200);
+    assert_eq!(plugin.call("poll", json!({})).unwrap(), "code=1&state=s");
+    plugin.call("close", json!({})).unwrap();
+    assert_eq!(
+        plugin.call("poll", json!({})).unwrap_err().code,
+        "fixture.no_callback"
+    );
+    // 关闭后端口释放
+    std::net::TcpListener::bind(("127.0.0.1", port as u16)).unwrap();
+
+    // 实例崩溃被丢弃时，监听也随之关闭
+    let port = plugin.call("listen", json!({})).unwrap().as_u64().unwrap();
+    assert!(plugin.call("panic", json!({})).is_err());
+    std::net::TcpListener::bind(("127.0.0.1", port as u16)).unwrap();
+}
+
+#[test]
+fn network_and_writes_need_permissions() {
+    let path = std::env::temp_dir().join(format!("tf-wasm-write-{}", std::process::id()));
+    let args = json!({ "path": path.to_string_lossy(), "text": "写入" });
+    let plugin = load();
+    plugin.call("write", args.clone()).unwrap();
+    assert_eq!(std::fs::read_to_string(&path).unwrap(), "写入");
+    std::fs::remove_file(&path).unwrap();
+
+    let mut manifest = Manifest::from_static(MANIFEST);
+    manifest.permissions.clear();
+    let locked = WasmPlugin::load(manifest, fixture()).unwrap();
+    let denied = |result: PluginResult<Value>| result.unwrap_err();
+    let err = denied(locked.call("write", args));
+    assert_eq!(
+        (err.code.as_str(), &err.params["detail"]),
+        ("plugin.permission_denied", &json!("fs:user-selected"))
+    );
+    let err = denied(locked.run_task(
+        "fetch",
+        json!({ "url": "http://127.0.0.1:9/" }),
+        &Ctx::default(),
+    ));
+    assert_eq!(
+        (err.code.as_str(), &err.params["detail"]),
+        ("plugin.permission_denied", &json!("network"))
+    );
+    let err = denied(locked.call("listen", json!({})));
+    assert_eq!(err.code, "plugin.permission_denied");
+    assert!(!path.exists());
+}
+
 #[test]
 fn detects_and_rejects_invalid_components() {
     let plugin = load();

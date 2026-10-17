@@ -8203,6 +8203,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tf-net"
+version = "0.2.0"
+dependencies = [
+ "reqwest",
+ "rustls",
+ "tf-plugin-api",
+ "tiny_http",
+ "url",
+]
+
+[[package]]
 name = "tf-package"
 version = "0.2.0"
 dependencies = [
@@ -8229,6 +8240,7 @@ name = "tf-plugin-guest"
 version = "0.2.0"
 dependencies = [
  "serde_json",
+ "tf-net",
  "tf-plugin-api",
  "wit-bindgen",
 ]
@@ -8238,8 +8250,11 @@ name = "tf-wasm"
 version = "0.2.0"
 dependencies = [
  "jiff",
+ "reqwest",
  "serde_json",
+ "tf-net",
  "tf-plugin-api",
+ "tiny_http",
  "wasmtime",
  "wasmtime-wasi",
 ]
