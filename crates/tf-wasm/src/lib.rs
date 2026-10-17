@@ -280,14 +280,18 @@ impl host::Host for State {
         if self.streams.len() >= MAX_STREAMS {
             return Err(failure("net.too_many_streams", MAX_STREAMS));
         }
-        let (stream, head) = HttpStream::open(&StreamRequest {
-            method: request.method,
-            url: request.url,
-            headers: request.headers,
-            body: request.body,
-            timeout_ms: request.timeout_ms,
-            http2_prior_knowledge: request.http2_prior_knowledge,
-        })
+        let task = self.task();
+        let (stream, head) = HttpStream::open(
+            &StreamRequest {
+                method: request.method,
+                url: request.url,
+                headers: request.headers,
+                body: request.body,
+                timeout_ms: request.timeout_ms,
+                http2_prior_knowledge: request.http2_prior_knowledge,
+            },
+            &|| task.is_some_and(|t| t.is_cancelled()),
+        )
         .map_err(to_failure)?;
         self.next_stream = self.next_stream.wrapping_add(1);
         let id = self.next_stream;

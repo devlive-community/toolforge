@@ -112,7 +112,7 @@ impl ToolPlugin for Fixture {
                     "GET",
                     args["url"].as_str().unwrap_or_default(),
                 );
-                let mut stream = tf_plugin_guest::net::Stream::open(&request)?;
+                let mut stream = tf_plugin_guest::net::Stream::open(&request, Some(ctx))?;
                 let mut text = String::new();
                 loop {
                     match stream.read(std::time::Duration::from_secs(5))? {

@@ -10,8 +10,12 @@ type Body = Channel<Bytes, Infallible>;
 
 /// /stream 分三块发送并带 trailers；/slow 发送一块后不再结束；/echo 回显方法、头与正文
 async fn handle(request: http::Request<Incoming>) -> Result<http::Response<Body>, Infallible> {
-    let (mut tx, body) = Channel::new(8);
     let path = request.uri().path().to_owned();
+    if path == "/hold" {
+        // 迟迟不发送响应头：用于测试等待期间取消
+        tokio::time::sleep(Duration::from_secs(30)).await;
+    }
+    let (mut tx, body) = Channel::new(8);
     let header = request
         .headers()
         .get("x-test")
@@ -98,7 +102,7 @@ fn streams_http2_chunks_and_trailers() {
     let addr = serve(true);
     let mut request = StreamRequest::new("POST", &format!("http://{addr}/stream"));
     request.http2_prior_knowledge = true;
-    let (mut stream, head) = HttpStream::open(&request).unwrap();
+    let (mut stream, head) = HttpStream::open(&request, &|| false).unwrap();
     assert_eq!((head.status, head.version.as_str()), (200, "HTTP/2"));
     assert!(
         head.headers
@@ -122,7 +126,7 @@ fn sends_headers_and_body_over_both_protocols() {
         request.http2_prior_knowledge = h2;
         request.headers.push(("x-test".into(), "hi".into()));
         request.body = Some(b"payload".to_vec());
-        let (mut stream, head) = HttpStream::open(&request).unwrap();
+        let (mut stream, head) = HttpStream::open(&request, &|| false).unwrap();
         assert_eq!(head.version, if h2 { "HTTP/2" } else { "HTTP/1.1" });
         let (chunks, trailers) = read_all(&mut stream);
         assert_eq!(chunks.concat(), "PUT hi payload");
@@ -136,7 +140,7 @@ fn reports_pending_reads_and_deadlines() {
     let mut request = StreamRequest::new("GET", &format!("http://{addr}/slow"));
     request.http2_prior_knowledge = true;
     request.timeout_ms = 1500;
-    let (mut stream, _) = HttpStream::open(&request).unwrap();
+    let (mut stream, _) = HttpStream::open(&request, &|| false).unwrap();
     assert_eq!(
         stream.read(Duration::from_secs(5)).unwrap(),
         StreamEvent::Data(b"first".to_vec())
@@ -160,21 +164,38 @@ fn reports_connection_and_request_errors() {
     let closed = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
     let port = closed.local_addr().unwrap().port();
     drop(closed);
-    let err = HttpStream::open(&StreamRequest::new(
-        "GET",
-        &format!("http://127.0.0.1:{port}/"),
-    ))
+    let err = HttpStream::open(
+        &StreamRequest::new("GET", &format!("http://127.0.0.1:{port}/")),
+        &|| false,
+    )
     .err()
     .unwrap();
     assert_eq!(err.code, "net.connect");
-    let err = HttpStream::open(&StreamRequest::new("GET", "ws://x/"))
+    let err = HttpStream::open(&StreamRequest::new("GET", "ws://x/"), &|| false)
         .err()
         .unwrap();
     assert_eq!(err.code, "net.unsupported_scheme");
     let mut bad = StreamRequest::new("GET", "http://127.0.0.1:1/");
     bad.headers.push(("bad header".into(), "x".into()));
     // 连接失败先于请求头校验也可以，只要不 panic
-    assert!(HttpStream::open(&bad).is_err());
+    assert!(HttpStream::open(&bad, &|| false).is_err());
+}
+
+#[test]
+fn cancels_while_waiting_for_headers() {
+    let addr = serve(true);
+    let mut request = StreamRequest::new("GET", &format!("http://{addr}/hold"));
+    request.http2_prior_knowledge = true;
+    let started = std::time::Instant::now();
+    let calls = std::cell::Cell::new(0);
+    let err = HttpStream::open(&request, &|| {
+        calls.set(calls.get() + 1);
+        calls.get() > 2
+    })
+    .err()
+    .unwrap();
+    assert_eq!(err.code, "task.cancelled");
+    assert!(started.elapsed() < Duration::from_secs(5));
 }
 
 #[test]
@@ -182,12 +203,12 @@ fn dropping_a_stream_releases_it() {
     let addr = serve(true);
     let mut request = StreamRequest::new("GET", &format!("http://{addr}/slow"));
     request.http2_prior_knowledge = true;
-    let (stream, _) = HttpStream::open(&request).unwrap();
+    let (stream, _) = HttpStream::open(&request, &|| false).unwrap();
     drop(stream);
     // 同一服务仍可继续使用
     let mut request = StreamRequest::new("GET", &format!("http://{addr}/stream"));
     request.http2_prior_knowledge = true;
-    let (mut stream, _) = HttpStream::open(&request).unwrap();
+    let (mut stream, _) = HttpStream::open(&request, &|| false).unwrap();
     assert_eq!(read_all(&mut stream).0.concat(), "onetwothree");
 }
 
@@ -196,15 +217,18 @@ fn dropping_a_stream_releases_it() {
 #[test]
 #[ignore]
 fn tls_with_system_roots() {
-    let (mut stream, head) =
-        HttpStream::open(&StreamRequest::new("GET", "https://www.example.com/")).unwrap();
+    let (mut stream, head) = HttpStream::open(
+        &StreamRequest::new("GET", "https://www.example.com/"),
+        &|| false,
+    )
+    .unwrap();
     assert_eq!(head.status, 200);
     println!("negotiated {}", head.version);
     assert!(!read_all(&mut stream).0.concat().is_empty());
-    let err = HttpStream::open(&StreamRequest::new(
-        "GET",
-        "https://self-signed.badssl.com/",
-    ))
+    let err = HttpStream::open(
+        &StreamRequest::new("GET", "https://self-signed.badssl.com/"),
+        &|| false,
+    )
     .err()
     .unwrap();
     assert_eq!(err.code, "net.tls");

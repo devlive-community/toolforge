@@ -26,6 +26,8 @@ use crate::ensure_crypto_provider;
 const MAX_STREAM: Duration = Duration::from_secs(3600);
 /// 读取端积压的响应块上限；读取慢时对端被背压
 const BUFFER: usize = 64;
+/// 等待响应头时检查取消的间隔
+const CANCEL_CHECK: Duration = Duration::from_millis(100);
 
 fn runtime() -> &'static tokio::runtime::Runtime {
     static RUNTIME: OnceLock<tokio::runtime::Runtime> = OnceLock::new();
@@ -230,8 +232,12 @@ async fn pump(mut body: Incoming, deadline: Instant, tx: mpsc::Sender<Message>) 
 }
 
 impl HttpStream {
-    /// 连接并发送请求，返回响应头；之后用 `read` 逐块读取响应体
-    pub fn open(request: &StreamRequest) -> PluginResult<(Self, StreamHead)> {
+    /// 连接并发送请求，返回响应头；之后用 `read` 逐块读取响应体。
+    /// 等待响应头期间每 100 毫秒检查一次 `cancel`
+    pub fn open(
+        request: &StreamRequest,
+        cancel: &dyn Fn() -> bool,
+    ) -> PluginResult<(Self, StreamHead)> {
         ensure_crypto_provider();
         let url = url::Url::parse(&request.url).map_err(invalid)?;
         if !matches!(url.scheme(), "http" | "https") {
@@ -243,9 +249,15 @@ impl HttpStream {
         let mut tasks = Vec::new();
         let opened = rt.block_on(async {
             let deadline = Instant::now() + limit;
-            let response = tokio::time::timeout_at(deadline, connect(request, &url, &mut tasks))
-                .await
-                .map_err(|_| PluginError::new("net.timeout"))??;
+            let connecting = tokio::time::timeout_at(deadline, connect(request, &url, &mut tasks));
+            tokio::pin!(connecting);
+            let response = loop {
+                match tokio::time::timeout(CANCEL_CHECK, &mut connecting).await {
+                    Ok(result) => break result.map_err(|_| PluginError::new("net.timeout"))??,
+                    Err(_) if cancel() => return Err(tf_plugin_api::cancelled()),
+                    Err(_) => {}
+                }
+            };
             Ok::<_, PluginError>((response, deadline))
         });
         let ((response, h2), deadline) = match opened {

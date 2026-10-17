@@ -77,7 +77,10 @@ mod imp {
     pub struct Streaming(u32);
 
     impl Streaming {
-        pub fn open(request: &StreamRequest) -> PluginResult<(Self, StreamHead)> {
+        pub fn open(
+            request: &StreamRequest,
+            _ctx: Option<&dyn TaskContext>,
+        ) -> PluginResult<(Self, StreamHead)> {
             let (id, head) = host::http_stream_open(&host::StreamRequest {
                 method: request.method.clone(),
                 url: request.url.clone(),
@@ -157,8 +160,12 @@ mod imp {
     pub struct Streaming(tf_net::HttpStream);
 
     impl Streaming {
-        pub fn open(request: &StreamRequest) -> PluginResult<(Self, StreamHead)> {
-            let (stream, head) = tf_net::HttpStream::open(request)?;
+        pub fn open(
+            request: &StreamRequest,
+            ctx: Option<&dyn TaskContext>,
+        ) -> PluginResult<(Self, StreamHead)> {
+            let (stream, head) =
+                tf_net::HttpStream::open(request, &|| ctx.is_some_and(|c| c.is_cancelled()))?;
             Ok((Self(stream), head))
         }
 
@@ -208,9 +215,9 @@ pub struct Stream {
 }
 
 impl Stream {
-    /// 连接并发送请求，拿到响应头
-    pub fn open(request: &StreamRequest) -> PluginResult<Self> {
-        let (inner, head) = imp::Streaming::open(request)?;
+    /// 连接并发送请求，拿到响应头；在任务中传入 ctx，等待响应头期间也能取消
+    pub fn open(request: &StreamRequest, ctx: Option<&dyn TaskContext>) -> PluginResult<Self> {
+        let (inner, head) = imp::Streaming::open(request, ctx)?;
         Ok(Self { inner, head })
     }
 
