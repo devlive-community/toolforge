@@ -8245,6 +8245,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-csp-inspector"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+ "url",
+]
+
+[[package]]
 name = "tfm-date-calculator"
 version = "0.1.0"
 dependencies = [
@@ -8301,7 +8312,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-pg-plan-analyzer"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-semver"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-sourcemap-symbolicator"
 version = "0.1.0"
 dependencies = [
  "serde",
