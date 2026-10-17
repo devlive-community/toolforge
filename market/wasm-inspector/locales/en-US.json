@@ -1,0 +1,161 @@
+{
+  "name": "WebAssembly Module Inspector",
+  "description": "Read-only .wasm analysis: section sizes, imports and exports with signatures, memory and table limits, custom sections, validation and WAT",
+  "help": [
+    "Open or drop a .wasm file. Analysis is offline and read-only: the module is never instantiated or executed, imports are never called and WASI is not emulated.",
+    "Section sizes include the id and length fields. The size without custom sections leaves out names, producers and debug info, which is closer to the code that actually ships.",
+    "Validation uses the standard validator's default feature set (the WebAssembly 3.0 draft and standardized proposals). Modules that need proposals outside that set are flagged separately from corrupted ones.",
+    "WAT is generated on demand: browse the module outline with function bodies folded, or expand functions one by one. Text beyond 64 MB is truncated.",
+    "Only core modules are supported for now; component model components are reported as unsupported."
+  ],
+  "functions": {
+    "load": "Open module",
+    "list": "Query list",
+    "wat": "Generate WAT",
+    "function_wat": "View function",
+    "export": "Export"
+  },
+  "stages": {
+    "wasm.reading": "Reading file",
+    "wasm.parsing": "Parsing module",
+    "wasm.validating": "Validating module",
+    "wasm.printing": "Generating WAT"
+  },
+  "logs": {
+    "wasm.loaded": "Parsed {{sections}} sections and {{functions}} functions; validation: {{status}}"
+  },
+  "open": {
+    "emptyTitle": "Open a WebAssembly module",
+    "emptyHint": "See what it exports, which host functions it needs, its memory limits and which sections take up the space",
+    "openFile": "Open .wasm file",
+    "another": "Open another file",
+    "filter": "WebAssembly module",
+    "loading": "Analyzing…",
+    "cancel": "Cancel",
+    "drop": "Release to open"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "imports": "Imports ({{count}})",
+    "exports": "Exports ({{count}})",
+    "functions": "Functions ({{count}})",
+    "wat": "WAT"
+  },
+  "stats": {
+    "file": "File size",
+    "version": "Version {{version}}",
+    "withoutCustom": "Without custom sections",
+    "custom": "custom sections {{size}}",
+    "code": "Code section",
+    "functions": "Defined functions",
+    "importedFunctions": "plus {{count}} imported",
+    "imports": "Imports",
+    "types": "{{count}} types",
+    "exports": "Exports",
+    "start": "start function #{{index}}",
+    "noStart": "no start function"
+  },
+  "sections": {
+    "title": "Section layout",
+    "kind": "Section",
+    "offset": "Offset",
+    "items": "Items",
+    "size": "Size and share",
+    "empty": "The module has only a header"
+  },
+  "validation": {
+    "title": "Validation",
+    "valid": "Valid module",
+    "invalid": "Invalid module",
+    "needs_features": "Needs disabled proposals",
+    "offset": "At {{hex}} (byte {{dec}})",
+    "required": "Requires these proposals:",
+    "requiredUnknown": "The file is large, so the required proposals were not narrowed down",
+    "features": "Feature set used for validation ({{count}})",
+    "featuresHint": "The default feature set matches the WebAssembly 3.0 draft and standardized proposals; proposals still in progress are disabled by default."
+  },
+  "limits": {
+    "title": "Memories and tables",
+    "min": "min {{value}}",
+    "max": "max {{value}}",
+    "noMax": "no maximum",
+    "pageSize": "{{size}}-byte pages",
+    "is64": "64-bit",
+    "shared": "shared",
+    "imported": "imported from {{from}}",
+    "empty": "No memories or tables are defined or imported"
+  },
+  "largest": {
+    "title": "Largest functions",
+    "hint": "Click to view WAT",
+    "empty": "The module defines no functions"
+  },
+  "customs": {
+    "title": "Custom sections",
+    "empty": "No custom sections",
+    "producers": "Toolchain (producers)"
+  },
+  "list": {
+    "search": "Search names, modules or signatures",
+    "total": "{{count}} items",
+    "noMatch": "No matches",
+    "empty": {
+      "imports": "The module has no imports",
+      "exports": "The module has no exports",
+      "functions": "The module defines no functions"
+    },
+    "prev": "Previous",
+    "next": "Next",
+    "page": "Page {{page}}",
+    "kind": "Kind",
+    "module": "Module",
+    "name": "Name",
+    "type": "Type",
+    "index": "Index",
+    "signature": "Signature",
+    "locals": "Locals",
+    "size": "Size",
+    "offset": "Offset",
+    "sort": "Sort",
+    "byIndex": "By index",
+    "bySize": "By size",
+    "exportedAs": "exported as {{name}}"
+  },
+  "wat": {
+    "title": "WAT text",
+    "hint": "Convert the module to the WebAssembly text format to browse its outline or read functions one by one",
+    "generate": "Generate WAT",
+    "printing": "Generating…",
+    "outline": "Module outline",
+    "functions": "Functions",
+    "stats": "{{size}} · {{count}} functions",
+    "truncated": "The text exceeds the 64 MB limit; the rest is truncated",
+    "outlineTruncated": "The outline exceeds 4 MB; only the beginning is shown",
+    "pick": "Pick a function on the left",
+    "function": "WAT of function {{index}}"
+  },
+  "export": {
+    "title": "Export",
+    "json": "Save JSON summary",
+    "copyJson": "Copy JSON summary",
+    "wat": "Save WAT file",
+    "watFirst": "Generate the text on the WAT tab first",
+    "copied": "Copied to the clipboard",
+    "saved": "Saved"
+  },
+  "errors": {
+    "wasm.bad_magic": "Not a WebAssembly module: the file does not start with \\0asm",
+    "wasm.component": "This is a component model component; only core modules are supported for now",
+    "wasm.parse": "Corrupted module: {{detail}}",
+    "wasm.invalid": "Validation failed: {{detail}}",
+    "wasm.too_large": "The file exceeds the {{mb}} MB limit",
+    "wasm.read_failed": "Failed to read the file: {{detail}}",
+    "wasm.expired": "The analysis expired; open the file again",
+    "wasm.wat_not_ready": "WAT has not been generated yet",
+    "wasm.wat_truncated": "WAT exceeds the {{mb}} MB limit and was truncated, so it cannot be fully exported and later functions are unavailable",
+    "wasm.print": "Could not generate WAT: {{detail}}",
+    "wasm.function_not_found": "Function {{index}} was not found (imported functions have no body)",
+    "wasm.invalid_kind": "Unknown list kind: {{kind}}",
+    "wasm.invalid_format": "Unknown export format: {{format}}"
+  }
+}

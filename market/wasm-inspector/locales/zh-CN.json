@@ -1,0 +1,161 @@
+{
+  "name": "WebAssembly 模块检查器",
+  "description": "只读分析 .wasm：section 体积、导入导出与签名、内存和表限制、custom section，标准校验并查看 WAT",
+  "help": [
+    "打开或拖入一个 .wasm 文件，全程离线只读分析：不实例化、不执行模块，不调用导入，也不模拟 WASI。",
+    "section 的大小包含 id 与长度字段；「不含 custom」的体积去掉了 name、producers、调试信息等自定义 section，更接近实际下发的代码体积。",
+    "校验使用标准校验器的默认特性集（WebAssembly 3.0 草案与已标准化的提案）。模块用到默认未启用的提案时会单独标注，与格式损坏区分开。",
+    "WAT 按需生成：可浏览折叠了函数体的模块大纲，或在「函数」中逐个展开；超过 64 MB 的文本会截断。",
+    "首版只支持 core module，component model 组件会提示不支持。"
+  ],
+  "functions": {
+    "load": "打开模块",
+    "list": "查询列表",
+    "wat": "生成 WAT",
+    "function_wat": "查看函数",
+    "export": "导出"
+  },
+  "stages": {
+    "wasm.reading": "读取文件",
+    "wasm.parsing": "解析模块",
+    "wasm.validating": "校验模块",
+    "wasm.printing": "生成 WAT"
+  },
+  "logs": {
+    "wasm.loaded": "已解析 {{sections}} 个 section、{{functions}} 个函数，校验结果：{{status}}"
+  },
+  "open": {
+    "emptyTitle": "打开一个 WebAssembly 模块",
+    "emptyHint": "查看导出了什么、依赖哪些宿主函数、内存限制多少，以及体积主要花在哪些 section",
+    "openFile": "打开 .wasm 文件",
+    "another": "打开其他文件",
+    "filter": "WebAssembly 模块",
+    "loading": "正在分析…",
+    "cancel": "取消",
+    "drop": "松开即可打开"
+  },
+  "tabs": {
+    "overview": "概览",
+    "imports": "导入 ({{count}})",
+    "exports": "导出 ({{count}})",
+    "functions": "函数 ({{count}})",
+    "wat": "WAT"
+  },
+  "stats": {
+    "file": "文件大小",
+    "version": "版本 {{version}}",
+    "withoutCustom": "不含 custom section",
+    "custom": "custom section {{size}}",
+    "code": "代码段",
+    "functions": "定义的函数",
+    "importedFunctions": "另有 {{count}} 个导入函数",
+    "imports": "导入",
+    "types": "{{count}} 个类型",
+    "exports": "导出",
+    "start": "start 函数 #{{index}}",
+    "noStart": "没有 start 函数"
+  },
+  "sections": {
+    "title": "Section 布局",
+    "kind": "Section",
+    "offset": "偏移",
+    "items": "条目",
+    "size": "大小与占比",
+    "empty": "模块只有文件头"
+  },
+  "validation": {
+    "title": "校验",
+    "valid": "有效模块",
+    "invalid": "模块无效",
+    "needs_features": "需要未启用的提案",
+    "offset": "位置：{{hex}}（第 {{dec}} 字节）",
+    "required": "需要以下提案：",
+    "requiredUnknown": "文件较大，未逐个识别所需提案",
+    "features": "校验使用的特性集（{{count}} 项）",
+    "featuresHint": "默认特性集对应 WebAssembly 3.0 草案及已标准化的提案；其余仍在推进中的提案默认不启用。"
+  },
+  "limits": {
+    "title": "内存与表",
+    "min": "最小 {{value}}",
+    "max": "最大 {{value}}",
+    "noMax": "无上限",
+    "pageSize": "页大小 {{size}} 字节",
+    "is64": "64 位",
+    "shared": "共享",
+    "imported": "导入自 {{from}}",
+    "empty": "没有定义或导入内存与表"
+  },
+  "largest": {
+    "title": "最大的函数",
+    "hint": "点击查看 WAT",
+    "empty": "模块里没有定义函数"
+  },
+  "customs": {
+    "title": "Custom section",
+    "empty": "没有 custom section",
+    "producers": "工具链（producers）"
+  },
+  "list": {
+    "search": "搜索名称、模块或签名",
+    "total": "共 {{count}} 项",
+    "noMatch": "没有匹配的结果",
+    "empty": {
+      "imports": "模块没有导入",
+      "exports": "模块没有导出",
+      "functions": "模块里没有定义函数"
+    },
+    "prev": "上一页",
+    "next": "下一页",
+    "page": "第 {{page}} 页",
+    "kind": "类别",
+    "module": "模块",
+    "name": "名称",
+    "type": "类型",
+    "index": "索引",
+    "signature": "签名",
+    "locals": "局部变量",
+    "size": "大小",
+    "offset": "偏移",
+    "sort": "排序",
+    "byIndex": "按索引",
+    "bySize": "按大小",
+    "exportedAs": "导出为 {{name}}"
+  },
+  "wat": {
+    "title": "WAT 文本",
+    "hint": "把模块转换为 WebAssembly 文本格式，可浏览模块大纲或逐个查看函数",
+    "generate": "生成 WAT",
+    "printing": "正在生成…",
+    "outline": "模块大纲",
+    "functions": "函数",
+    "stats": "{{size}} · {{count}} 个函数",
+    "truncated": "文本超过 64 MB 上限，后面的部分已截断",
+    "outlineTruncated": "大纲超过 4 MB，只显示前面的部分",
+    "pick": "在左侧选择一个函数",
+    "function": "函数 {{index}} 的 WAT"
+  },
+  "export": {
+    "title": "导出",
+    "json": "保存 JSON 摘要",
+    "copyJson": "复制 JSON 摘要",
+    "wat": "保存 WAT 文件",
+    "watFirst": "请先在 WAT 页生成文本",
+    "copied": "已复制到剪贴板",
+    "saved": "已保存"
+  },
+  "errors": {
+    "wasm.bad_magic": "不是 WebAssembly 模块：文件开头没有 \\0asm 标识",
+    "wasm.component": "这是 component model 组件，暂只支持 core module",
+    "wasm.parse": "模块格式损坏：{{detail}}",
+    "wasm.invalid": "校验失败：{{detail}}",
+    "wasm.too_large": "文件超过 {{mb}} MB 上限",
+    "wasm.read_failed": "读取文件失败：{{detail}}",
+    "wasm.expired": "分析结果已失效，请重新打开文件",
+    "wasm.wat_not_ready": "还没有生成 WAT",
+    "wasm.wat_truncated": "WAT 超过 {{mb}} MB 上限已截断，无法完整导出或查看后面的函数",
+    "wasm.print": "无法生成 WAT：{{detail}}",
+    "wasm.function_not_found": "没有找到函数 {{index}}（导入的函数没有函数体）",
+    "wasm.invalid_kind": "未知的列表类型：{{kind}}",
+    "wasm.invalid_format": "未知的导出格式：{{format}}"
+  }
+}

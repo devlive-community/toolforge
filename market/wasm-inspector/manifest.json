@@ -1,0 +1,19 @@
+{
+  "id": "org.devlive.toolforge.wasm-inspector",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["wasm", "webassembly", "wat", "module", "imports", "exports", "section", "objdump", "validate", "模块", "导入", "导出", "反汇编"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write", "fs:user-selected"],
+  "functions": {
+    "load": { "task": true },
+    "list": {},
+    "wat": { "task": true },
+    "function_wat": {},
+    "export": {}
+  },
+  "sensitive": false
+}
