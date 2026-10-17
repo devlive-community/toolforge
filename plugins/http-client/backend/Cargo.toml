@@ -13,4 +13,9 @@ tf-plugin-api.workspace = true
 tfp-curl-converter.workspace = true
 reqwest = { version = "0.13", default-features = false, features = ["blocking", "http2", "rustls-no-provider", "system-proxy"] }
 url = "2"
+data-encoding = "2"
+getrandom = "0.3"
+sha2 = "0.11"
+tiny_http = "0.12"
+zeroize = "1"
 rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }

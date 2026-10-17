@@ -24,8 +24,48 @@ export interface Variable extends Pair {
   secret: boolean
 }
 
-export interface Collection { id: string; name: string }
-export interface SavedRequest { id: string; name: string; collectionId: string | null; request: Request }
+/** 集合默认使用的授权配置 id */
+export interface Collection { id: string; name: string; auth?: string | null }
+/** auth：未设置时沿用集合；'none' 不使用授权；否则为授权配置 id */
+export interface SavedRequest { id: string; name: string; collectionId: string | null; request: Request; auth?: string | null }
+
+export const AUTH_NONE = 'none'
+
+/** OAuth 授权配置：只含非敏感信息，随工作区保存 */
+export interface OAuthConfig {
+  id: string
+  name: string
+  authorizationUrl: string
+  tokenUrl: string
+  clientId: string
+  scope: string
+  redirectPort: number | null
+  redirectPath: string
+}
+
+/** 后端内存中的授权会话（令牌已遮罩） */
+export interface SessionView {
+  key: string
+  tokenType: string
+  scope: string | null
+  expiresAt: number | null
+  obtainedAt: number
+  refreshedAt: number | null
+  expired: boolean
+  hasRefreshToken: boolean
+  rotated: boolean
+  masked: string
+  lastError: string | null
+}
+
+export interface OAuthFlow {
+  flow: number
+  key: string
+  configId: string
+  authorizeUrl: string
+  redirectUri: string
+  timeoutSecs: number
+}
 export interface Environment { id: string; name: string; variables: Variable[] }
 export interface Workspace {
   version: 1
@@ -33,6 +73,7 @@ export interface Workspace {
   requests: SavedRequest[]
   environments: Environment[]
   activeEnvironmentId: string | null
+  oauthConfigs?: OAuthConfig[]
 }
 
 export interface CurlWarning { code: string; params: Record<string, unknown> }

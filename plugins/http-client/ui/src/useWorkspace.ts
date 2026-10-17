@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useEffectEvent, useRef, useState } from 'react'
 import { loadPluginState, savePluginState, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { toast } from '@toolforge/ui'
-import { newRequest, type Environment, type Request, type Workspace } from './types'
+import { newRequest, type Environment, type OAuthConfig, type Request, type Workspace } from './types'
 import { createPersistenceCoordinator, createWorkspacePersistence, type SaveStatus } from './workspacePersistence'
 
 const STATE_KEY = 'workspace-v1'
@@ -153,8 +153,38 @@ export function useWorkspace() {
     commit({ ...workspace, environments: workspace.environments.filter((item) => item.id !== id), activeEnvironmentId: workspace.activeEnvironmentId === id ? null : workspace.activeEnvironmentId })
   }
   const selectEnvironment = (id: string | null) => commit({ ...current.current.workspace, activeEnvironmentId: id })
+  /** 新建（id 为空）或更新授权配置，返回配置 id */
+  const saveOAuthConfig = async (config: OAuthConfig) => {
+    let id = config.id
+    const ok = await operate(async () => {
+      if (!id) id = await call<string>('new_id')
+      const workspace = current.current.workspace
+      const configs = workspace.oauthConfigs ?? []
+      const next = { ...config, id }
+      commit({ ...workspace, oauthConfigs: configs.some((item) => item.id === id) ? configs.map((item) => item.id === id ? next : item) : [...configs, next] })
+    })
+    return ok ? id : null
+  }
+  /** 删除授权配置，同时解除请求与集合上的绑定 */
+  const deleteOAuthConfig = (id: string) => {
+    const workspace = current.current.workspace
+    commit({
+      ...workspace,
+      oauthConfigs: (workspace.oauthConfigs ?? []).filter((item) => item.id !== id),
+      collections: workspace.collections.map((item) => item.auth === id ? { ...item, auth: null } : item),
+      requests: workspace.requests.map((item) => item.auth === id ? { ...item, auth: null } : item),
+    })
+  }
+  const setRequestAuth = (auth: string | null) => {
+    const state = current.current
+    commit({ ...state.workspace, requests: state.workspace.requests.map((item) => item.id === state.selectedId ? { ...item, auth } : item) })
+  }
+  const setCollectionAuth = (collectionId: string, auth: string | null) => {
+    const workspace = current.current.workspace
+    commit({ ...workspace, collections: workspace.collections.map((item) => item.id === collectionId ? { ...item, auth } : item) })
+  }
 
-  return { ...model, selected, editRequest, createRequest, selectRequest, editDetails, duplicateRequest, deleteRequest, saveCollection, deleteCollection, createEnvironment, editEnvironment, deleteEnvironment, selectEnvironment, receiveLaunchInput, flush }
+  return { ...model, selected, editRequest, createRequest, selectRequest, editDetails, duplicateRequest, deleteRequest, saveCollection, deleteCollection, createEnvironment, editEnvironment, deleteEnvironment, selectEnvironment, saveOAuthConfig, deleteOAuthConfig, setRequestAuth, setCollectionAuth, receiveLaunchInput, flush }
 }
 
 export type WorkspaceController = ReturnType<typeof useWorkspace>

@@ -8713,13 +8713,18 @@ dependencies = [
 name = "tfp-http-client"
 version = "0.1.0"
 dependencies = [
+ "data-encoding",
+ "getrandom 0.3.4",
  "reqwest",
  "rustls",
  "serde",
  "serde_json",
+ "sha2 0.11.0",
  "tf-plugin-api",
  "tfp-curl-converter",
+ "tiny_http",
  "url",
+ "zeroize",
 ]
 
 [[package]]

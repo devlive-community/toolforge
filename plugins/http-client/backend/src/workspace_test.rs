@@ -1,4 +1,5 @@
 use super::*;
+use crate::oauth::OAuthConfig;
 use serde_json::json;
 
 fn request() -> Request {
@@ -204,4 +205,74 @@ fn bounds_workspaces_requests_and_substitution_expansion() {
 fn ids_are_distinct_across_repeated_calls() {
     let ids: HashSet<_> = (0..1000).map(|_| new_id()).collect();
     assert_eq!(ids.len(), 1000);
+}
+
+fn with_oauth() -> Workspace {
+    let mut state = workspace();
+    state.oauth_configs = vec![OAuthConfig {
+        id: "auth".into(),
+        name: "Login".into(),
+        authorization_url: "{{base}}/authorize".into(),
+        token_url: "{{base}}/token".into(),
+        client_id: "cli".into(),
+        scope: "read".into(),
+        redirect_port: Some(8765),
+        redirect_path: "/callback".into(),
+    }];
+    state.collections[0].auth = Some("auth".into());
+    state.requests[0].auth = Some(AUTH_NONE.into());
+    state
+}
+
+#[test]
+fn stores_oauth_configs_and_bindings_without_tokens() {
+    // 旧版本保存的工作区没有授权字段
+    let stored = validate(workspace()).unwrap();
+    assert!(stored.oauth_configs.is_empty());
+    assert!(stored.requests[0].auth.is_none());
+
+    let stored = validate(with_oauth()).unwrap();
+    let saved = serde_json::to_value(&stored).unwrap();
+    assert_eq!(saved["oauthConfigs"][0]["redirectPort"], 8765);
+    assert_eq!(saved["collections"][0]["auth"], "auth");
+    assert_eq!(saved["requests"][0]["auth"], "none");
+    // 配置只有非敏感字段
+    let keys: Vec<&String> = saved["oauthConfigs"][0]
+        .as_object()
+        .unwrap()
+        .keys()
+        .collect();
+    assert!(!keys.iter().any(|k| k.contains("token") && *k != "tokenUrl"));
+    assert!(
+        !keys
+            .iter()
+            .any(|k| k.contains("secret") || k.contains("verifier"))
+    );
+    // 不认识的字段（例如令牌）不会被接受
+    let mut raw = serde_json::to_value(with_oauth()).unwrap();
+    raw["oauthConfigs"][0]["accessToken"] = json!("leak");
+    assert!(serde_json::from_value::<Workspace>(raw).is_err());
+}
+
+#[test]
+fn rejects_dangling_oauth_bindings() {
+    let mut state = with_oauth();
+    state.requests[0].auth = Some("missing".into());
+    assert_eq!(validate(state).unwrap_err().params["field"], "request.auth");
+    let mut state = with_oauth();
+    state.collections[0].auth = Some(AUTH_NONE.into());
+    assert_eq!(
+        validate(state).unwrap_err().params["field"],
+        "collection.auth"
+    );
+    let mut state = with_oauth();
+    state.oauth_configs[0].redirect_path = "/a b".into();
+    assert_eq!(validate(state).unwrap_err().code, "oauth.invalid_path");
+    let mut state = with_oauth();
+    state.oauth_configs[0].id = "collection".into();
+    state.collections[0].auth = Some("collection".into());
+    assert_eq!(
+        validate(state).unwrap_err().code,
+        "http.workspace_duplicate_id"
+    );
 }

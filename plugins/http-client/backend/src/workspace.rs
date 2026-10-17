@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use tf_plugin_api::{PluginError, PluginResult};
 
 use crate::http::{BodyKind, Pair, Request};
+use crate::oauth::{OAuthConfig, SessionArgs, validate_path};
 
 const MAX_WORKSPACE: usize = 1536 * 1024;
 const MAX_REQUEST: usize = 1024 * 1024;
@@ -13,6 +14,9 @@ const MAX_TEXT: usize = 512 * 1024;
 const MAX_URL: usize = 64 * 1024;
 const MAX_PAIRS: usize = 256;
 const MAX_VARIABLES: usize = 200;
+const MAX_OAUTH: usize = 20;
+/// 请求的授权绑定：不绑定（覆盖集合设置）
+pub const AUTH_NONE: &str = "none";
 
 fn enabled() -> bool {
     true
@@ -34,6 +38,9 @@ pub struct Variable {
 pub struct Collection {
     pub id: String,
     pub name: String,
+    /// 集合内请求默认使用的授权配置
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -43,6 +50,9 @@ pub struct SavedRequest {
     pub name: String,
     pub collection_id: Option<String>,
     pub request: Request,
+    /// 为空时沿用集合的授权；`none` 表示不使用授权；否则为授权配置 id
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -61,6 +71,9 @@ pub struct Workspace {
     pub requests: Vec<SavedRequest>,
     pub environments: Vec<Environment>,
     pub active_environment_id: Option<String>,
+    /// OAuth 授权配置（不含任何令牌）
+    #[serde(default)]
+    pub oauth_configs: Vec<OAuthConfig>,
 }
 
 #[derive(Deserialize)]
@@ -75,6 +88,9 @@ pub struct RequestArgs {
     pub request: Request,
     #[serde(default)]
     pub variables: Vec<Variable>,
+    /// 绑定的授权会话：发送时注入 Bearer
+    #[serde(default)]
+    pub oauth: Option<SessionArgs>,
 }
 
 #[derive(Deserialize)]
@@ -171,6 +187,7 @@ pub fn validate(mut workspace: Workspace) -> PluginResult<Workspace> {
     limit("collections", workspace.collections.len(), 100)?;
     limit("requests", workspace.requests.len(), 200)?;
     limit("environments", workspace.environments.len(), 50)?;
+    limit("oauthConfigs", workspace.oauth_configs.len(), MAX_OAUTH)?;
     serialized_limit(&workspace, "workspace", MAX_WORKSPACE)?;
 
     let mut ids = HashSet::new();
@@ -182,8 +199,30 @@ pub fn validate(mut workspace: Workspace) -> PluginResult<Workspace> {
         }
         Ok(())
     };
+    for config in &workspace.oauth_configs {
+        register(&config.id, &config.name, "oauth.id")?;
+        limit(
+            "oauth.authorizationUrl",
+            config.authorization_url.len(),
+            MAX_URL,
+        )?;
+        limit("oauth.tokenUrl", config.token_url.len(), MAX_URL)?;
+        limit("oauth.clientId", config.client_id.len(), 1024)?;
+        limit("oauth.scope", config.scope.len(), 4096)?;
+        if !validate_path(&config.redirect_path) {
+            return Err(PluginError::new("oauth.invalid_path"));
+        }
+    }
+    let config_exists = |id: &str| workspace.oauth_configs.iter().any(|c| c.id == id);
     for collection in &workspace.collections {
         register(&collection.id, &collection.name, "collection.id")?;
+        if let Some(auth) = &collection.auth
+            && !config_exists(auth)
+        {
+            return Err(
+                PluginError::new("http.workspace_reference").with("field", "collection.auth")
+            );
+        }
     }
     for request in &workspace.requests {
         register(&request.id, &request.name, "request.id")?;
@@ -192,6 +231,12 @@ pub fn validate(mut workspace: Workspace) -> PluginResult<Workspace> {
             && !workspace.collections.iter().any(|item| item.id == *id)
         {
             return Err(PluginError::new("http.workspace_reference").with("field", "collectionId"));
+        }
+        if let Some(auth) = &request.auth
+            && auth != AUTH_NONE
+            && !config_exists(auth)
+        {
+            return Err(PluginError::new("http.workspace_reference").with("field", "request.auth"));
         }
     }
     for environment in &mut workspace.environments {
@@ -249,6 +294,17 @@ fn replace_pairs(pairs: &mut [Pair], vars: &HashMap<&str, &str>, field: &str) ->
         pair.value = replace(&pair.value, vars, field, MAX_TEXT)?;
     }
     Ok(())
+}
+
+/// 替换单个文本中的模板变量（授权配置等使用）
+pub fn resolve_text(text: &str, variables: &[Variable], field: &str) -> PluginResult<String> {
+    validate_variables(variables)?;
+    let vars: HashMap<_, _> = variables
+        .iter()
+        .filter(|variable| variable.enabled)
+        .map(|variable| (variable.key.as_str(), variable.value.as_str()))
+        .collect();
+    replace(text, &vars, field, MAX_URL)
 }
 
 /// Substitution is a single pass over the template. Inserted values are never interpreted again.

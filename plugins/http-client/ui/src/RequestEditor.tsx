@@ -2,11 +2,12 @@ import { useEffect, useRef } from 'react'
 import { Button, Input, Select, toast } from '@toolforge/ui'
 import { useCopy, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
 import { Check, ClipboardPaste, Send, Square, Terminal } from 'lucide-react'
+import type { AuthBinding } from './AuthPanel'
 import { RequestPanel } from './RequestPanel'
 import { ResponsePanel } from './ResponsePanel'
 import { METHODS, type Method, type Reply, type Request, type Variable } from './types'
 
-export function RequestEditor({ request, variables, onChange, onRunningChange, onImport, disabled }: { request: Request; variables: Variable[]; onChange: (request: Request) => void; onRunningChange: (running: boolean) => void; onImport: () => void; disabled: boolean }) {
+export function RequestEditor({ request, variables, auth, session, onChange, onRunningChange, onImport, disabled }: { request: Request; variables: Variable[]; auth: AuthBinding; session: { configId: string; environmentId: string | null } | null; onChange: (request: Request) => void; onRunningChange: (running: boolean) => void; onImport: () => void; disabled: boolean }) {
   const { t, call, errorMessage } = usePlugin()
   const task = useTask<Reply>()
   const { copy, copied } = useCopy()
@@ -16,7 +17,7 @@ export function RequestEditor({ request, variables, onChange, onRunningChange, o
     if (!request.url.trim() || task.running || starting.current || disabled) return
     starting.current = true
     onRunningChange(true)
-    void task.start('send', { ...request, variables }).finally(() => { starting.current = false })
+    void task.start('send', { ...request, variables, oauth: session }).finally(() => { starting.current = false })
   }
   const copyCurl = async () => {
     try { await copy(await call<string>('to_curl', { ...request, variables })) }
@@ -31,7 +32,7 @@ export function RequestEditor({ request, variables, onChange, onRunningChange, o
       {task.running ? <Button type="button" onClick={() => void task.cancel()}><Square />{t('request.cancel')}</Button> : <Button type="submit" variant="primary" disabled={!request.url.trim() || disabled}><Send />{t('request.send')}</Button>}
     </form>
     <div className="grid min-h-0 flex-1 grid-cols-1 grid-rows-[minmax(20rem,1fr)_minmax(20rem,1fr)] gap-3 overflow-auto xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] xl:grid-rows-[minmax(0,1fr)]">
-      <RequestPanel request={request} onChange={onChange} />
+      <RequestPanel request={request} onChange={onChange} auth={auth} />
       <ResponsePanel task={task} />
     </div>
   </div>

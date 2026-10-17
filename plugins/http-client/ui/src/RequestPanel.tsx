@@ -1,10 +1,11 @@
 import { useState, type ReactNode } from 'react'
 import { CodeEditor, NumberInput, Panel, SegmentedControl, Switch, Tabs, cn } from '@toolforge/ui'
 import { usePlugin } from '@toolforge/plugin-ui-sdk'
+import { AuthPanel, type AuthBinding } from './AuthPanel'
 import { KeyValueEditor } from './KeyValueEditor'
 import type { BodyKind, Pair, Request } from './types'
 
-type RequestTab = 'params' | 'headers' | 'body' | 'settings'
+type RequestTab = 'params' | 'headers' | 'body' | 'auth' | 'settings'
 const count = (pairs: Pair[]) => pairs.filter((p) => p.enabled && p.key.trim()).length
 function ToggleRow({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
@@ -18,7 +19,7 @@ function ToggleRow({ label, hint, children }: { label: string; hint?: string; ch
   )
 }
 
-export function RequestPanel({ request, onChange }: { request: Request; onChange: (request: Request) => void }) {
+export function RequestPanel({ request, onChange, auth }: { request: Request; onChange: (request: Request) => void; auth: AuthBinding }) {
   const { t } = usePlugin()
   const [requestTab, setRequestTab] = useState<RequestTab>('params')
   const { params, headers, body, timeoutMs, followRedirects, useProxy } = request
@@ -44,6 +45,7 @@ export function RequestPanel({ request, onChange }: { request: Request; onChange
                 { value: 'params', label: t('request.params', { count: count(params) }) },
                 { value: 'headers', label: t('request.headers', { count: count(headers) }) },
                 { value: 'body', label: t('request.body') },
+                { value: 'auth', label: auth.effective ? t('request.authOn', { name: auth.effective.name }) : t('request.auth') },
                 { value: 'settings', label: t('request.settings') },
               ]}
             />
@@ -77,6 +79,7 @@ export function RequestPanel({ request, onChange }: { request: Request; onChange
               {bodyKind === 'none' && <p className="text-xs text-fg-subtle">{t('request.noBody')}</p>}
             </>
           )}
+          {requestTab === 'auth' && <AuthPanel binding={auth} request={request} />}
           {requestTab === 'settings' && (
             <div className="divide-y divide-border">
               <ToggleRow label={t('settings.timeout')}>

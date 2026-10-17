@@ -1,10 +1,10 @@
 {
   "id": "org.devlive.toolforge.http-client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "network",
-  "keywords": ["http", "https", "request", "api", "rest", "curl", "postman", "get", "post", "header", "请求", "接口", "调试"],
+  "keywords": ["http", "https", "request", "api", "rest", "curl", "postman", "get", "post", "header", "oauth", "pkce", "token", "请求", "接口", "调试", "授权"],
   "accent": "blue",
   "locales": ["zh-CN", "en-US"],
   "permissions": ["network", "clipboard:write", "fs:user-selected"],
@@ -15,7 +15,14 @@
     "workspace_validate": {},
     "new_id": {},
     "resolve_request": {},
-    "import_curl": {}
+    "import_curl": {},
+    "oauth_begin": {},
+    "oauth_wait": { "task": true },
+    "oauth_cancel": {},
+    "oauth_refresh": { "task": true },
+    "oauth_sessions": {},
+    "oauth_clear": {},
+    "oauth_reveal": {}
   },
   "sensitive": false
 }
