@@ -1,7 +1,9 @@
-//! 加解密插件后端：AES / SM4 / ChaCha20-Poly1305 对称加密，RSA 密钥生成、加解密与签名。
+//! 加解密插件后端：AES / SM4 / ChaCha20-Poly1305 对称加密，RSA 密钥生成、加解密与签名，
+//! SM2 签名与验签调试。
 
 mod codec;
 mod rsa_ops;
+mod sm2_ops;
 mod symmetric;
 
 use rand::RngCore;
@@ -37,18 +39,21 @@ impl Default for Crypto {
     }
 }
 
-/// PEM 格式的 RSA 公钥或私钥
+/// PEM 格式的 RSA / SM2 公钥或私钥；PKCS#8 / SPKI 里是 SM2 曲线时打开 SM2 页
 pub fn detect_key(text: &str) -> Option<Detection> {
-    let label = if text.contains("-----BEGIN RSA PRIVATE KEY-----")
-        || text.contains("-----BEGIN PRIVATE KEY-----")
-    {
-        "privateKey"
-    } else if text.contains("-----BEGIN RSA PUBLIC KEY-----")
-        || text.contains("-----BEGIN PUBLIC KEY-----")
-    {
-        "publicKey"
-    } else {
+    let private = text.contains("-----BEGIN RSA PRIVATE KEY-----")
+        || text.contains("-----BEGIN PRIVATE KEY-----");
+    let public = text.contains("-----BEGIN RSA PUBLIC KEY-----")
+        || text.contains("-----BEGIN PUBLIC KEY-----");
+    if !private && !public {
         return None;
+    }
+    let sm2 = sm2_ops::parse_key(text).is_ok();
+    let label = match (private, sm2) {
+        (true, true) => "sm2PrivateKey",
+        (true, false) => "privateKey",
+        (false, true) => "sm2PublicKey",
+        (false, false) => "publicKey",
     };
     Some(Detection::new(90, label))
 }
@@ -79,6 +84,14 @@ impl ToolPlugin for Crypto {
             "rsa_decrypt" => Ok(Value::String(rsa_ops::decrypt(parse_args(args)?)?)),
             "rsa_sign" => Ok(Value::String(rsa_ops::sign(parse_args(args)?)?)),
             "rsa_verify" => Ok(json!({ "valid": rsa_ops::verify(parse_args(args)?)? })),
+            "sm2_generate" => to_value(sm2_ops::generate()?),
+            "sm2_inspect" => to_value(sm2_ops::inspect(&parse_args::<KeyArgs>(args)?.key)?),
+            "sm2_export" => Ok(Value::String(sm2_ops::export_private(
+                &parse_args::<KeyArgs>(args)?.key,
+            )?)),
+            "sm2_sign" => to_value(sm2_ops::sign(parse_args(args)?)?),
+            "sm2_verify" => to_value(sm2_ops::verify(parse_args(args)?)?),
+            "sm2_convert" => to_value(sm2_ops::convert(parse_args(args)?)?),
             other => Err(unknown_function(other)),
         }
     }

@@ -1,10 +1,11 @@
 {
   "name": "加解密",
-  "description": "AES、SM4、ChaCha20 加解密，RSA 密钥生成、加解密与签名验签",
+  "description": "AES、SM4、ChaCha20 加解密，RSA 密钥生成、加解密与签名验签，SM2 签名验签调试",
   "help": [
     "对称加密：AES（GCM、CBC、CTR、ECB）、国密 SM4 与 ChaCha20-Poly1305。密钥可以是十六进制、Base64、文本，或用 PBKDF2-HMAC-SHA256 从口令派生。",
     "加密时 IV / nonce 留空会随机生成。打开「IV 放在密文前」后，IV 会写在输出开头，解密时自动从开头读取。",
     "RSA：生成 2048–4096 位密钥对（PKCS#8 或 PKCS#1 PEM），用 OAEP 或 PKCS#1 v1.5 加解密，用 PKCS#1 v1.5 或 PSS 签名与验签。",
+    "SM2 签名：按 GB/T 32918.2-2016 做 SM2-with-SM3 签名与验签。用户标识（默认 1234567812345678）与公钥一起参与 ZA，再计算 e = SM3(ZA ‖ 消息)；签名支持 ASN.1 DER 与 64 字节 r ‖ s。私钥只保留在当前页面，显式导出才写入文件。",
     "结果与 OpenSSL 兼容；这里输入的内容不会被保存。"
   ],
   "functions": {
@@ -15,11 +16,18 @@
     "rsa_encrypt": "RSA 加密",
     "rsa_decrypt": "RSA 解密",
     "rsa_sign": "RSA 签名",
-    "rsa_verify": "RSA 验签"
+    "rsa_verify": "RSA 验签",
+    "sm2_generate": "生成 SM2 密钥对",
+    "sm2_inspect": "识别 SM2 密钥",
+    "sm2_export": "导出 SM2 私钥",
+    "sm2_sign": "SM2 签名",
+    "sm2_verify": "SM2 验签",
+    "sm2_convert": "SM2 签名格式转换"
   },
   "tabs": {
     "symmetric": "对称加密",
-    "rsa": "RSA"
+    "rsa": "RSA",
+    "sm2": "SM2 签名"
   },
   "encodings": {
     "utf8": "文本"
@@ -89,6 +97,75 @@
     "valid": "签名有效",
     "invalid": "签名不匹配"
   },
+  "sm2": {
+    "keys": "密钥",
+    "generate": "生成测试密钥",
+    "privateKey": "私钥",
+    "publicKey": "公钥",
+    "keyPlaceholder": "PEM（PKCS#8 / SPKI）、DER 的 Hex 或 Base64，或原始十六进制",
+    "invalidKey": "无法使用",
+    "keyInfo": {
+      "private": "SM2 私钥 · {{format}}",
+      "public": "SM2 公钥 · {{format}}"
+    },
+    "formats": {
+      "pkcs8-pem": "PKCS#8 PEM",
+      "pkcs8-der": "PKCS#8 DER",
+      "spki-pem": "SPKI PEM",
+      "spki-der": "SPKI DER",
+      "raw-private": "原始 32 字节",
+      "raw-public": "原始 04 ‖ x ‖ y",
+      "raw-public-xy": "原始 x ‖ y",
+      "raw-public-compressed": "原始压缩点"
+    },
+    "derivePublic": "填入公钥",
+    "export": "导出",
+    "exported": "私钥已导出",
+    "sign": "签名",
+    "verify": "验签",
+    "convert": "格式转换",
+    "userId": "用户标识",
+    "userIdEncoding": "用户标识格式",
+    "userIdEncodings": {
+      "utf8": "文本",
+      "hex": "Hex"
+    },
+    "resetUserId": "恢复默认",
+    "userIdHint": "{{count}} 字节，ENTLA = {{bits}} 位。默认值为 {{value}}；有的实现未指定标识时使用空标识，双方不一致会导致验签失败。",
+    "userIdInvalidHex": "用户标识不是有效的十六进制",
+    "message": "消息",
+    "messageHint": "参与签名的是 ZA ‖ 消息字节，不会先单独摘要",
+    "signature": "签名",
+    "signaturePlaceholder": "粘贴要验证或转换的签名",
+    "signatureFormat": "签名格式",
+    "signatureEncoding": "签名编码",
+    "signatureFormats": {
+      "auto": "自动识别",
+      "der": "ASN.1 DER",
+      "raw": "r ‖ s（64 字节）"
+    },
+    "convertInput": "原签名",
+    "convertOutput": "转换结果",
+    "valid": "签名有效",
+    "mismatch": "签名不匹配",
+    "invalid": "输入非法",
+    "details": "计算过程",
+    "detailsEmpty": "还没有结果",
+    "detailsHint": "签名或验签后，这里列出用户标识、ZA、e 与 r、s，便于跨系统对照。",
+    "copyReport": "复制报告",
+    "bytes_one": "{{count}} 字节",
+    "bytes_other": "{{count}} 字节",
+    "report": {
+      "title": "SM2 签名验签报告",
+      "algorithm": "算法",
+      "operation": "操作",
+      "result": "结果",
+      "signed": "已签名",
+      "userIdHex": "用户标识字节",
+      "message": "消息",
+      "messageHex": "消息字节"
+    }
+  },
   "stages": {
     "crypto": {
       "generate": "正在生成密钥对…"
@@ -101,7 +178,9 @@
   },
   "detect": {
     "privateKey": "RSA 私钥",
-    "publicKey": "RSA 公钥"
+    "publicKey": "RSA 公钥",
+    "sm2PrivateKey": "SM2 私钥",
+    "sm2PublicKey": "SM2 公钥"
   },
   "errors": {
     "crypto.invalid_hex": "{{field}} 不是有效的十六进制",
@@ -121,6 +200,22 @@
     "crypto.invalid_key_pem": "不是有效的 PEM 格式 RSA 密钥",
     "crypto.encrypted_key": "不支持带口令保护的私钥，请先导出为无口令的私钥",
     "crypto.message_too_long": "消息超出该密钥与填充方式的上限：最多 {{max}} 字节（当前 {{actual}} 字节）",
-    "crypto.rsa_failed": "RSA 操作失败：{{detail}}"
+    "crypto.rsa_failed": "RSA 操作失败：{{detail}}",
+    "crypto.sm2_key_required": "请输入 SM2 密钥",
+    "crypto.sm2_invalid_key": "密钥结构无效：{{detail}}",
+    "crypto.sm2_unsupported_format": "不支持的密钥格式：{{format}}。支持 PKCS#8 私钥、SPKI 公钥（PEM 或 DER）与原始十六进制",
+    "crypto.sm2_not_ec": "这是 {{algorithm}} 密钥，不是 SM2 密钥",
+    "crypto.sm2_wrong_curve": "这是 {{curve}} 曲线的 EC 密钥，不是 SM2 曲线",
+    "crypto.sm2_key_range": "私钥数值超出范围，应在 [1, n-2] 之间",
+    "crypto.sm2_point_invalid": "公钥不是 SM2 曲线上的有效点",
+    "crypto.sm2_private_required": "签名需要私钥",
+    "crypto.sm2_user_id_too_long": "用户标识过长：最多 8191 字节（当前 {{bytes}} 字节）",
+    "crypto.sm2_signature_der": "签名不是有效的 DER 编码（{{part}}）",
+    "crypto.sm2_signature_not_minimal": "签名 DER 中 {{part}} 不是最短编码",
+    "crypto.sm2_signature_range": "签名中的 {{part}} 超出范围，应在 [1, n-1] 之间",
+    "crypto.sm2_signature_truncated": "签名数据被截断",
+    "crypto.sm2_signature_trailing": "签名后面有 {{bytes}} 字节多余数据",
+    "crypto.sm2_signature_length": "r ‖ s 格式的签名应为 64 字节，实际为 {{bytes}} 字节",
+    "crypto.sm2_failed": "SM2 操作失败：{{detail}}"
   }
 }

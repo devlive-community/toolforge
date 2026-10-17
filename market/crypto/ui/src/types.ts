@@ -29,3 +29,61 @@ export interface KeyPair {
   publicKey: string
   bits: number
 }
+
+export type Sm2Operation = 'sign' | 'verify' | 'convert'
+export type SignatureFormat = 'der' | 'raw'
+export type SignatureInput = 'auto' | SignatureFormat
+export type BinaryEncoding = 'hex' | 'base64'
+export type UserIdEncoding = 'utf8' | 'hex'
+
+export interface Sm2KeyInfo {
+  kind: 'private' | 'public'
+  format: string
+  publicKey: string
+  publicKeyPem: string
+}
+
+export interface Sm2KeyPair {
+  privateKey: string
+  publicKey: string
+}
+
+export interface Sm2Details {
+  userId: string
+  entla: number
+  za: string
+  e: string
+  messageBytes: number
+  messagePreview: string
+  publicKey: string
+}
+
+export interface Sm2SignOutput {
+  signature: string
+  format: SignatureFormat
+  r: string
+  s: string
+  details: Sm2Details
+}
+
+export interface Sm2VerifyOutput {
+  valid: boolean
+  format: SignatureFormat
+  r: string
+  s: string
+  details: Sm2Details
+}
+
+export interface Sm2ConvertOutput {
+  signature: string
+  from: SignatureFormat
+  r: string
+  s: string
+}
+
+/** 剪贴板识别出的密钥，seq 递增表示新的一次输入 */
+export interface LaunchKey {
+  seq: number
+  label: string | null
+  text: string
+}

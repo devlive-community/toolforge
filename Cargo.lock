@@ -7506,6 +7506,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "sm2"
+version = "0.13.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "98b22092ef242a118f03ee41dc46b2720c0ca076f544116dbc915cacf532cfaa"
+dependencies = [
+ "elliptic-curve",
+ "primeorder",
+ "rfc6979",
+ "signature",
+ "sm3 0.4.2",
+]
+
+[[package]]
+name = "sm3"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ebb9a3b702d0a7e33bc4d85a14456633d2b165c2ad839c5fd9a8417c1ab15860"
+dependencies = [
+ "digest 0.10.7",
+]
+
+[[package]]
 name = "sm3"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8545,6 +8567,8 @@ dependencies = [
  "serde_json",
  "sha1 0.10.7",
  "sha2 0.10.9",
+ "sm2",
+ "sm3 0.4.2",
  "sm4",
  "tf-plugin-api",
  "tf-plugin-guest",
@@ -9013,7 +9037,7 @@ dependencies = [
  "sha1 0.11.0",
  "sha2 0.11.0",
  "sha3",
- "sm3",
+ "sm3 0.5.0",
  "tf-plugin-api",
  "walkdir",
 ]

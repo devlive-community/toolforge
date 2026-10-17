@@ -1,10 +1,11 @@
 {
   "name": "Encryption",
-  "description": "Encrypt and decrypt with AES, SM4 and ChaCha20, and generate, use and verify RSA keys",
+  "description": "Encrypt and decrypt with AES, SM4 and ChaCha20, generate, use and verify RSA keys, and debug SM2 signatures",
   "help": [
     "Symmetric: AES (GCM, CBC, CTR, ECB), SM4 and ChaCha20-Poly1305. Keys can be hex, Base64, text or a password derived with PBKDF2-HMAC-SHA256.",
     "When encrypting, an empty IV or nonce is generated randomly. Turn on “Put IV before ciphertext” to store it at the start of the output; decryption then reads it from there.",
     "RSA: generate 2048–4096-bit key pairs (PKCS#8 or PKCS#1 PEM), encrypt with OAEP or PKCS#1 v1.5, and sign or verify with PKCS#1 v1.5 or PSS.",
+    "SM2 signatures: sign and verify SM2-with-SM3 per GB/T 32918.2-2016. The user ID (default 1234567812345678) and the public key go into ZA, then e = SM3(ZA ‖ message); signatures can be ASN.1 DER or 64-byte r ‖ s. Private keys stay on this page and are written to a file only when you export them.",
     "Results are compatible with OpenSSL. Nothing you type here is saved."
   ],
   "functions": {
@@ -15,11 +16,18 @@
     "rsa_encrypt": "RSA encrypt",
     "rsa_decrypt": "RSA decrypt",
     "rsa_sign": "RSA sign",
-    "rsa_verify": "RSA verify"
+    "rsa_verify": "RSA verify",
+    "sm2_generate": "Generate SM2 key pair",
+    "sm2_inspect": "Inspect SM2 key",
+    "sm2_export": "Export SM2 private key",
+    "sm2_sign": "SM2 sign",
+    "sm2_verify": "SM2 verify",
+    "sm2_convert": "Convert SM2 signature"
   },
   "tabs": {
     "symmetric": "Symmetric",
-    "rsa": "RSA"
+    "rsa": "RSA",
+    "sm2": "SM2 Signature"
   },
   "encodings": {
     "utf8": "Text"
@@ -89,6 +97,75 @@
     "valid": "Signature is valid",
     "invalid": "Signature does not match"
   },
+  "sm2": {
+    "keys": "Keys",
+    "generate": "Generate test key",
+    "privateKey": "Private key",
+    "publicKey": "Public key",
+    "keyPlaceholder": "PEM (PKCS#8 / SPKI), DER as hex or Base64, or raw hex",
+    "invalidKey": "Unusable",
+    "keyInfo": {
+      "private": "SM2 private key · {{format}}",
+      "public": "SM2 public key · {{format}}"
+    },
+    "formats": {
+      "pkcs8-pem": "PKCS#8 PEM",
+      "pkcs8-der": "PKCS#8 DER",
+      "spki-pem": "SPKI PEM",
+      "spki-der": "SPKI DER",
+      "raw-private": "raw 32 bytes",
+      "raw-public": "raw 04 ‖ x ‖ y",
+      "raw-public-xy": "raw x ‖ y",
+      "raw-public-compressed": "raw compressed point"
+    },
+    "derivePublic": "Fill public key",
+    "export": "Export",
+    "exported": "Private key exported",
+    "sign": "Sign",
+    "verify": "Verify",
+    "convert": "Convert",
+    "userId": "User ID",
+    "userIdEncoding": "User ID format",
+    "userIdEncodings": {
+      "utf8": "Text",
+      "hex": "Hex"
+    },
+    "resetUserId": "Reset",
+    "userIdHint": "{{count}} bytes, ENTLA = {{bits}} bits. The default is {{value}}; some implementations use an empty ID when none is given, and a mismatch makes verification fail.",
+    "userIdInvalidHex": "The user ID is not valid hex",
+    "message": "Message",
+    "messageHint": "ZA ‖ message bytes are signed; the message is not hashed on its own first",
+    "signature": "Signature",
+    "signaturePlaceholder": "Paste the signature to verify or convert",
+    "signatureFormat": "Signature format",
+    "signatureEncoding": "Signature encoding",
+    "signatureFormats": {
+      "auto": "Detect",
+      "der": "ASN.1 DER",
+      "raw": "r ‖ s (64 bytes)"
+    },
+    "convertInput": "Signature",
+    "convertOutput": "Converted",
+    "valid": "Signature valid",
+    "mismatch": "Signature mismatch",
+    "invalid": "Invalid input",
+    "details": "Computation",
+    "detailsEmpty": "No result yet",
+    "detailsHint": "After signing or verifying, the user ID, ZA, e, r and s are listed here for comparing across systems.",
+    "copyReport": "Copy report",
+    "bytes_one": "{{count}} byte",
+    "bytes_other": "{{count}} bytes",
+    "report": {
+      "title": "SM2 signature report",
+      "algorithm": "Algorithm",
+      "operation": "Operation",
+      "result": "Result",
+      "signed": "Signed",
+      "userIdHex": "User ID bytes",
+      "message": "Message",
+      "messageHex": "Message bytes"
+    }
+  },
   "stages": {
     "crypto": {
       "generate": "Generating key pair…"
@@ -101,7 +178,9 @@
   },
   "detect": {
     "privateKey": "RSA private key",
-    "publicKey": "RSA public key"
+    "publicKey": "RSA public key",
+    "sm2PrivateKey": "SM2 private key",
+    "sm2PublicKey": "SM2 public key"
   },
   "errors": {
     "crypto.invalid_hex": "The {{field}} is not valid hex",
@@ -121,6 +200,22 @@
     "crypto.invalid_key_pem": "The key is not a valid RSA key in PEM format",
     "crypto.encrypted_key": "Password-protected private keys are not supported; export it without a password first",
     "crypto.message_too_long": "The message is too long for this key and padding: at most {{max}} bytes (it is {{actual}})",
-    "crypto.rsa_failed": "The RSA operation failed: {{detail}}"
+    "crypto.rsa_failed": "The RSA operation failed: {{detail}}",
+    "crypto.sm2_key_required": "Enter an SM2 key",
+    "crypto.sm2_invalid_key": "Invalid key structure: {{detail}}",
+    "crypto.sm2_unsupported_format": "Unsupported key format: {{format}}. Supported: PKCS#8 private keys, SPKI public keys (PEM or DER) and raw hex",
+    "crypto.sm2_not_ec": "This is a {{algorithm}} key, not an SM2 key",
+    "crypto.sm2_wrong_curve": "This is an EC key on {{curve}}, not the SM2 curve",
+    "crypto.sm2_key_range": "The private key is out of range; it must be in [1, n-2]",
+    "crypto.sm2_point_invalid": "The public key is not a valid point on the SM2 curve",
+    "crypto.sm2_private_required": "Signing needs a private key",
+    "crypto.sm2_user_id_too_long": "The user ID is too long: at most 8191 bytes ({{bytes}} given)",
+    "crypto.sm2_signature_der": "The signature is not valid DER ({{part}})",
+    "crypto.sm2_signature_not_minimal": "{{part}} in the DER signature is not minimally encoded",
+    "crypto.sm2_signature_range": "{{part}} in the signature is out of range; it must be in [1, n-1]",
+    "crypto.sm2_signature_truncated": "The signature is truncated",
+    "crypto.sm2_signature_trailing": "The signature has {{bytes}} extra trailing bytes",
+    "crypto.sm2_signature_length": "An r ‖ s signature must be 64 bytes, got {{bytes}}",
+    "crypto.sm2_failed": "SM2 operation failed: {{detail}}"
   }
 }

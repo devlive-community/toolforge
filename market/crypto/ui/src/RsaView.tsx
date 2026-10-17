@@ -1,9 +1,9 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Badge, Button, CodeEditor, Panel, SegmentedControl, Select, Spinner, cn, toast } from '@toolforge/ui'
-import { CopyButton, useDebouncedCall, useLaunchInput, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
+import { CopyButton, useDebouncedCall, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
 import { BadgeCheck, BadgeX, FileInput, FileOutput, KeyRound, Play } from 'lucide-react'
 import { EncodingSelect } from './EncodingSelect'
-import type { Encoding, Hash, KeyInfo, KeyPair, Operation, RsaPadding, Scheme } from './types'
+import type { Encoding, Hash, KeyInfo, KeyPair, LaunchKey, Operation, RsaPadding, Scheme } from './types'
 
 function KeyEditor({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
   const { t } = usePlugin()
@@ -36,7 +36,7 @@ function Option({ label, children }: { label: string; children: ReactNode }) {
   )
 }
 
-export function RsaView({ onActivate }: { onActivate: () => void }) {
+export function RsaView({ launch }: { launch: LaunchKey | null }) {
   const { t, call, errorMessage } = usePlugin()
   const task = useTask<KeyPair>()
   const [bits, setBits] = useState(2048)
@@ -54,12 +54,13 @@ export function RsaView({ onActivate }: { onActivate: () => void }) {
   const [output, setOutput] = useState<{ text: string; valid?: boolean } | null>(null)
   const [busy, setBusy] = useState(false)
 
-  // 剪贴板中的 PEM 密钥：切到 RSA 页并填入
-  useLaunchInput((text, label) => {
-    onActivate()
-    if (label === 'privateKey') setPrivateKey(text)
-    else setPublicKey(text)
-  })
+  // 剪贴板中的 RSA PEM 密钥（SM2 密钥由 SM2 页接收）
+  const [appliedLaunch, setAppliedLaunch] = useState(0)
+  if (launch && launch.seq !== appliedLaunch && !launch.label?.startsWith('sm2')) {
+    setAppliedLaunch(launch.seq)
+    if (launch.label === 'privateKey') setPrivateKey(launch.text)
+    else setPublicKey(launch.text)
+  }
 
   const generated = task.status === 'succeeded' ? task.result : null
   const [appliedTask, setAppliedTask] = useState<string | null>(null)
