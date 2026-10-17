@@ -1,0 +1,31 @@
+[package]
+name = "tfm-grpc-client"
+description = "ToolForge market plugin: gRPC client"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[lib]
+# cdylib 编译为 WASM 组件，rlib 供本机单元测试
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+tf-plugin-guest = { path = "../../../crates/tf-plugin-guest" }
+data-encoding = "2"
+prost = "0.14"
+prost-reflect = { version = "0.16", features = ["serde"] }
+prost-types = "0.14"
+protox = "0.9"
+url = "2"
+
+[dev-dependencies]
+bytes = "1"
+http = "1"
+http-body-util = { version = "0.1", features = ["channel"] }
+hyper = { version = "1", features = ["server", "http2"] }
+hyper-util = { version = "0.1", features = ["tokio"] }
+tokio = { version = "1", features = ["rt-multi-thread", "net", "time", "macros"] }

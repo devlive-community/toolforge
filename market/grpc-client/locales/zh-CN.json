@@ -1,0 +1,157 @@
+{
+  "name": "gRPC 调试器",
+  "description": "从 .proto、描述符文件或服务器反射加载服务，编辑 ProtoJSON 发起一元与服务端流调用，查看消息、状态与 metadata",
+  "help": [
+    "定义来源三选一：本地 .proto（导入按「导入目录」顺序查找，google/protobuf 标准类型内置）、protoc 生成的 FileDescriptorSet，或连接服务器通过 Server Reflection 获取。本地定义的解析和浏览完全离线。",
+    "请求用 ProtoJSON 编写：64 位整数可写成字符串避免精度损失，bytes 为 base64，枚举可写名称；「校验」会按方法的请求类型检查字段。",
+    "明文地址使用 HTTP/2（h2c），打开 TLS 后使用系统证书校验并经 ALPN 协商 HTTP/2。截止时间会作为 grpc-timeout 发给服务器。",
+    "服务端流的消息边收边显示，可随时取消；默认最多保留 1000 条、16 MB，超过后提前结束。首版不支持客户端流与双向流。",
+    "metadata 中标记为凭据的值只在本次运行中使用：保存的设置、任务日志和导出结果里都不会出现。"
+  ],
+  "functions": {
+    "load_proto": "加载 .proto",
+    "load_descriptor": "加载描述符文件",
+    "reflect": "服务器反射",
+    "invoke": "发起调用",
+    "template": "生成请求草稿",
+    "validate": "校验请求",
+    "poll": "接收消息",
+    "cancel": "取消调用",
+    "export": "导出结果",
+    "sanitize": "清理凭据"
+  },
+  "stages": {
+    "grpc.compiling": "编译 .proto",
+    "grpc.reflecting": "查询服务器反射",
+    "grpc.calling": "发起调用"
+  },
+  "logs": {
+    "grpc.loaded": "已加载 {{services}} 个服务（{{files}} 个文件）",
+    "grpc.call": "调用 {{method}} → {{target}}",
+    "grpc.status": "{{status}}：{{messages}} 条消息，{{bytes}} 字节"
+  },
+  "kind": {
+    "unary": "一元",
+    "server": "服务端流",
+    "client": "客户端流",
+    "bidi": "双向流"
+  },
+  "source": {
+    "title": "服务定义",
+    "proto": ".proto",
+    "descriptor": "描述符",
+    "reflection": "反射",
+    "pickProto": "选择 .proto 文件",
+    "protoFilter": "Protobuf 定义",
+    "includes": "导入目录",
+    "addInclude": "添加导入目录",
+    "removeInclude": "移除导入目录",
+    "includesHint": "主文件所在目录会自动加入；import 按目录顺序查找。",
+    "pickDescriptor": "选择描述符文件",
+    "descriptorFilter": "FileDescriptorSet",
+    "descriptorHint": "protoc --include_imports --descriptor_set_out=xxx.pb 生成的文件。",
+    "reflectionHint": "连接 {{target}}，通过 Server Reflection 获取定义（使用右侧的 TLS 与 metadata 设置）。",
+    "load": "加载定义",
+    "reflect": "从服务器获取"
+  },
+  "catalog": {
+    "title": "服务与方法",
+    "stats": "{{files}} 个文件 · {{messages}} 种消息",
+    "empty": "还没有加载定义",
+    "emptyHint": "选择 .proto 或描述符文件，或通过服务器反射获取"
+  },
+  "metadata": {
+    "title": "Metadata",
+    "hint": "随请求发送的 gRPC metadata；键会转为小写，以 -bin 结尾的键其值须为 base64",
+    "secretHint": "标记为凭据的值只保留在本次运行中，保存设置、任务日志和导出时都会去掉。",
+    "enabled": "启用",
+    "key": "键",
+    "value": "值",
+    "sessionValue": "仅本次运行保留",
+    "hide": "隐藏",
+    "reveal": "显示",
+    "secret": "凭据",
+    "remove": "移除",
+    "add": "添加",
+    "button": "Metadata（{{count}}）"
+  },
+  "target": {
+    "address": "目标地址",
+    "tls": "TLS",
+    "deadline": "截止时间（秒）"
+  },
+  "call": {
+    "invoke": "调用",
+    "cancel": "取消"
+  },
+  "request": {
+    "title": "请求",
+    "types": "{{input}} → {{output}}",
+    "reset": "重新生成",
+    "validate": "校验",
+    "valid": "请求有效，编码后 {{bytes}} 字节",
+    "unsupported": "首版不支持客户端流与双向流方法",
+    "streaming": "服务端流：消息会边收边显示，可随时取消",
+    "empty": "选择一个方法",
+    "emptyHint": "在左侧加载服务定义后选择方法，会生成可编辑的 ProtoJSON 草稿"
+  },
+  "response": {
+    "title": "响应",
+    "messages": "消息（{{count}}）",
+    "headers": "响应头（{{count}}）",
+    "trailers": "Trailers（{{count}}）",
+    "receiving": "接收中…",
+    "local": "由客户端判定",
+    "stats": "{{count}} 条 · {{size}} · {{ms}} ms",
+    "truncated": "已达上限，提前结束",
+    "empty": "还没有调用",
+    "emptyHint": "选择方法、填写请求后点击「调用」",
+    "waiting": "等待服务器响应…",
+    "noMessages": "没有收到消息",
+    "older": "较早的 {{count}} 条未显示，可导出查看全部",
+    "noHeaders": "没有响应头",
+    "noTrailers": "没有 trailers"
+  },
+  "export": {
+    "title": "导出",
+    "copy": "复制 JSON",
+    "save": "保存 JSON 文件",
+    "copied": "已复制到剪贴板",
+    "saved": "已保存"
+  },
+  "errors": {
+    "grpc.method_not_found": "找不到方法 {{method}}",
+    "grpc.file_too_large": "文件 {{path}} 超过 {{mb}} MB 上限",
+    "grpc.read_failed": "无法读取 {{path}}",
+    "grpc.proto_invalid": "{{file}} 无法编译：{{detail}}",
+    "grpc.import_missing": "{{from}} 导入的 {{import}} 找不到（已在这些目录中查找：{{searched}}），请添加它所在的导入目录",
+    "grpc.too_many_files": "定义文件超过 {{limit}} 个",
+    "grpc.descriptor_invalid": "不是有效的描述符：{{detail}}",
+    "grpc.request_invalid": "请求不符合 {{message}}：{{detail}}",
+    "grpc.response_invalid": "无法解析响应消息：{{detail}}",
+    "grpc.empty_target": "请填写目标地址",
+    "grpc.invalid_target": "目标地址无效：{{detail}}",
+    "grpc.metadata_key": "metadata 键 {{key}} 只能包含小写字母、数字与 - _ .",
+    "grpc.metadata_reserved": "{{key}} 是 gRPC 保留的请求头，不能作为 metadata",
+    "grpc.metadata_binary": "{{key}} 以 -bin 结尾，值必须是 base64",
+    "grpc.metadata_value": "{{key}} 的值只能包含可见 ASCII 字符",
+    "grpc.compressed": "服务器返回了压缩消息，目前不支持",
+    "grpc.message_too_large": "单条消息超过 {{limit}} 字节上限",
+    "grpc.deadline": "截止时间内没有收到响应",
+    "grpc.reflection_failed": "服务器反射失败：{{status}} {{detail}}",
+    "grpc.reflection_incomplete": "服务器没有提供这些依赖文件：{{files}}",
+    "grpc.reflection_unavailable": "服务器没有启用 Server Reflection，请改用 .proto 或描述符文件",
+    "grpc.no_services": "定义中没有服务",
+    "grpc.definition_expired": "服务定义已失效，请重新加载",
+    "grpc.unsupported_streaming": "首版不支持客户端流与双向流方法",
+    "grpc.call_expired": "这次调用已结束",
+    "net.connect": "无法连接目标：{{detail}}",
+    "net.tls": "TLS 握手失败：{{detail}}",
+    "net.timeout": "连接超时",
+    "net.failed": "网络错误：{{detail}}",
+    "net.invalid_request": "请求无效：{{detail}}",
+    "net.unsupported_scheme": "不支持的协议 {{scheme}}",
+    "net.too_many_streams": "同时进行的调用过多",
+    "net.stream_closed": "连接已关闭"
+  }
+}

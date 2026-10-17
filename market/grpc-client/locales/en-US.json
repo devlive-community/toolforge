@@ -1,0 +1,157 @@
+{
+  "name": "gRPC Client",
+  "description": "Load services from .proto, descriptor sets or server reflection, edit ProtoJSON and make unary and server-streaming calls with messages, status and metadata",
+  "help": [
+    "Pick a definition source: local .proto files (imports are resolved in include-directory order, Google well-known types are built in), a FileDescriptorSet produced by protoc, or Server Reflection from a running server. Parsing and browsing local definitions works fully offline.",
+    "Write requests in ProtoJSON: 64-bit integers can be strings to keep their precision, bytes are base64 and enums accept names. Validate checks fields against the method's request type.",
+    "Plain addresses use HTTP/2 prior knowledge (h2c); with TLS on, certificates are checked against the system store and HTTP/2 is negotiated through ALPN. The deadline is sent as grpc-timeout.",
+    "Server-streaming messages appear as they arrive and can be cancelled at any time; by default up to 1000 messages or 16 MB are kept before the call ends early. Client and bidirectional streaming are not supported yet.",
+    "Metadata values marked as credentials are used only in this run: they never reach saved settings, task logs or exports."
+  ],
+  "functions": {
+    "load_proto": "Load .proto",
+    "load_descriptor": "Load descriptor set",
+    "reflect": "Server reflection",
+    "invoke": "Make call",
+    "template": "Generate request draft",
+    "validate": "Validate request",
+    "poll": "Receive messages",
+    "cancel": "Cancel call",
+    "export": "Export result",
+    "sanitize": "Strip credentials"
+  },
+  "stages": {
+    "grpc.compiling": "Compiling .proto",
+    "grpc.reflecting": "Querying server reflection",
+    "grpc.calling": "Calling"
+  },
+  "logs": {
+    "grpc.loaded": "Loaded {{services}} services ({{files}} files)",
+    "grpc.call": "Calling {{method}} → {{target}}",
+    "grpc.status": "{{status}}: {{messages}} messages, {{bytes}} bytes"
+  },
+  "kind": {
+    "unary": "Unary",
+    "server": "Server stream",
+    "client": "Client stream",
+    "bidi": "Bidi stream"
+  },
+  "source": {
+    "title": "Service definitions",
+    "proto": ".proto",
+    "descriptor": "Descriptor",
+    "reflection": "Reflection",
+    "pickProto": "Choose a .proto file",
+    "protoFilter": "Protobuf definitions",
+    "includes": "Include directories",
+    "addInclude": "Add include directory",
+    "removeInclude": "Remove include directory",
+    "includesHint": "The main file's folder is added automatically; imports are searched in order.",
+    "pickDescriptor": "Choose a descriptor set",
+    "descriptorFilter": "FileDescriptorSet",
+    "descriptorHint": "A file produced by protoc --include_imports --descriptor_set_out=xxx.pb.",
+    "reflectionHint": "Connect to {{target}} and fetch definitions through Server Reflection (uses the TLS and metadata settings on the right).",
+    "load": "Load definitions",
+    "reflect": "Fetch from server"
+  },
+  "catalog": {
+    "title": "Services and methods",
+    "stats": "{{files}} files · {{messages}} message types",
+    "empty": "No definitions loaded",
+    "emptyHint": "Choose a .proto or descriptor file, or use server reflection"
+  },
+  "metadata": {
+    "title": "Metadata",
+    "hint": "gRPC metadata sent with the request; keys are lowercased and values of keys ending in -bin must be base64",
+    "secretHint": "Values marked as credentials stay in this run only and are removed from saved settings, task logs and exports.",
+    "enabled": "Enabled",
+    "key": "Key",
+    "value": "Value",
+    "sessionValue": "Kept for this run only",
+    "hide": "Hide",
+    "reveal": "Show",
+    "secret": "Credential",
+    "remove": "Remove",
+    "add": "Add",
+    "button": "Metadata ({{count}})"
+  },
+  "target": {
+    "address": "Target address",
+    "tls": "TLS",
+    "deadline": "Deadline (s)"
+  },
+  "call": {
+    "invoke": "Call",
+    "cancel": "Cancel"
+  },
+  "request": {
+    "title": "Request",
+    "types": "{{input}} → {{output}}",
+    "reset": "Regenerate",
+    "validate": "Validate",
+    "valid": "Request is valid, {{bytes}} bytes encoded",
+    "unsupported": "Client and bidirectional streaming methods are not supported yet",
+    "streaming": "Server stream: messages appear as they arrive and you can cancel at any time",
+    "empty": "Choose a method",
+    "emptyHint": "Load definitions on the left and pick a method to get an editable ProtoJSON draft"
+  },
+  "response": {
+    "title": "Response",
+    "messages": "Messages ({{count}})",
+    "headers": "Headers ({{count}})",
+    "trailers": "Trailers ({{count}})",
+    "receiving": "Receiving…",
+    "local": "decided by the client",
+    "stats": "{{count}} msgs · {{size}} · {{ms}} ms",
+    "truncated": "Limit reached, ended early",
+    "empty": "No call yet",
+    "emptyHint": "Pick a method, fill in the request and click Call",
+    "waiting": "Waiting for the server…",
+    "noMessages": "No messages received",
+    "older": "{{count}} earlier messages are hidden; export to see all",
+    "noHeaders": "No response headers",
+    "noTrailers": "No trailers"
+  },
+  "export": {
+    "title": "Export",
+    "copy": "Copy JSON",
+    "save": "Save JSON file",
+    "copied": "Copied to the clipboard",
+    "saved": "Saved"
+  },
+  "errors": {
+    "grpc.method_not_found": "Method {{method}} was not found",
+    "grpc.file_too_large": "{{path}} exceeds the {{mb}} MB limit",
+    "grpc.read_failed": "Could not read {{path}}",
+    "grpc.proto_invalid": "{{file}} does not compile: {{detail}}",
+    "grpc.import_missing": "{{import}} imported by {{from}} was not found (searched: {{searched}}); add the include directory that contains it",
+    "grpc.too_many_files": "More than {{limit}} definition files",
+    "grpc.descriptor_invalid": "Not a valid descriptor set: {{detail}}",
+    "grpc.request_invalid": "The request does not match {{message}}: {{detail}}",
+    "grpc.response_invalid": "Could not decode the response message: {{detail}}",
+    "grpc.empty_target": "Enter a target address",
+    "grpc.invalid_target": "Invalid target address: {{detail}}",
+    "grpc.metadata_key": "Metadata key {{key}} may contain only lowercase letters, digits and - _ .",
+    "grpc.metadata_reserved": "{{key}} is reserved by gRPC and cannot be sent as metadata",
+    "grpc.metadata_binary": "{{key}} ends in -bin, so its value must be base64",
+    "grpc.metadata_value": "The value of {{key}} may contain only visible ASCII characters",
+    "grpc.compressed": "The server sent a compressed message, which is not supported yet",
+    "grpc.message_too_large": "A message exceeds the {{limit}} byte limit",
+    "grpc.deadline": "No response arrived before the deadline",
+    "grpc.reflection_failed": "Server reflection failed: {{status}} {{detail}}",
+    "grpc.reflection_incomplete": "The server did not provide these dependencies: {{files}}",
+    "grpc.reflection_unavailable": "The server does not enable Server Reflection; use a .proto or descriptor file instead",
+    "grpc.no_services": "The definitions contain no services",
+    "grpc.definition_expired": "The definitions expired; load them again",
+    "grpc.unsupported_streaming": "Client and bidirectional streaming methods are not supported yet",
+    "grpc.call_expired": "This call has already ended",
+    "net.connect": "Could not connect to the target: {{detail}}",
+    "net.tls": "TLS handshake failed: {{detail}}",
+    "net.timeout": "Connection timed out",
+    "net.failed": "Network error: {{detail}}",
+    "net.invalid_request": "Invalid request: {{detail}}",
+    "net.unsupported_scheme": "Unsupported scheme {{scheme}}",
+    "net.too_many_streams": "Too many calls in progress",
+    "net.stream_closed": "The connection was closed"
+  }
+}
