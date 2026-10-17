@@ -4,6 +4,17 @@ import type { AppError } from './types'
 
 const DEBOUNCE_MS = 250
 
+/** 依赖相同：同一引用，或内容相同的普通对象 / 数组（渲染中新建的参数对象不会被当成变化） */
+function same(a: unknown, b: unknown) {
+  if (Object.is(a, b)) return true
+  if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) return false
+  try {
+    return JSON.stringify(a) === JSON.stringify(b)
+  } catch {
+    return false
+  }
+}
+
 interface Settled<T> {
   token: object
   result: T | null
@@ -19,7 +30,7 @@ export function useDebouncedCall<T>(fn: string | null, args: object | null, deps
   const active = fn !== null && args !== null
   // deps 浅比较变化时生成新的请求标识（渲染期派生状态）
   const [request, setRequest] = useState({ deps, token: {} as object })
-  if (request.deps.length !== deps.length || request.deps.some((d, i) => !Object.is(d, deps[i]))) {
+  if (request.deps.length !== deps.length || request.deps.some((d, i) => !same(d, deps[i]))) {
     setRequest({ deps, token: {} })
   }
   const token = request.token
