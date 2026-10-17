@@ -14,6 +14,11 @@ updates:
     groups:
       web:
         patterns: ["*"]
+    # TypeScript 6+ 是原生预览版，编译器 API 与现有工具链（typescript-eslint、
+    # packages/plugin-build 的 ts.* 助手）不兼容，会直接让 CI web 类型检查失败
+    ignore:
+      - dependency-name: "typescript"
+        versions: [">=6"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
