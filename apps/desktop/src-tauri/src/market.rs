@@ -1,7 +1,7 @@
 //! 插件市场命令：安装、更新、卸载在线插件，读取插件索引，并通过 tfplugin:// 提供插件界面文件。
 
-use std::collections::{BTreeSet, HashSet};
-use std::sync::{Arc, Mutex};
+use std::collections::HashSet;
+use std::sync::Arc;
 
 use serde_json::Value;
 use tauri::http::{Request, Response, StatusCode};
@@ -10,7 +10,6 @@ use tf_core::{AppError, AppResult, PluginRegistry, resources};
 
 use crate::AppState;
 use crate::installed::{Assets, InstallInfo, Installed};
-use crate::migration;
 
 /// 插件列表变化（安装、卸载、启动时加载完成），前端据此刷新
 pub const PLUGINS_CHANGED: &str = "plugins://changed";
@@ -50,73 +49,7 @@ pub fn load_installed(
         if loaded > 0 {
             let _ = app.emit(PLUGINS_CHANGED, ());
         }
-        auto_install(&app, &installed, &registry, &builtin, None);
     });
-}
-
-/// 同一时间只运行一次自动安装（启动与读取索引可能同时触发）
-static AUTO_INSTALL: Mutex<()> = Mutex::new(());
-
-/// 自动安装从内置迁出、尚未安装的官方插件；index 为空时自行读取索引
-fn auto_install(
-    app: &AppHandle,
-    installed: &Installed,
-    registry: &PluginRegistry,
-    builtin: &HashSet<String>,
-    index: Option<&Value>,
-) {
-    let Ok(_guard) = AUTO_INSTALL.try_lock() else {
-        return;
-    };
-    let root = installed.root();
-    let ids: BTreeSet<String> = installed.list().into_iter().map(|info| info.id).collect();
-    let pending = migration::pending(&migration::done(root), &ids);
-    if pending.is_empty() {
-        return;
-    }
-    let fetched;
-    let index = match index {
-        Some(index) => index,
-        None => match fetch_index() {
-            Ok(value) => {
-                fetched = value;
-                &fetched
-            }
-            Err(err) => {
-                log::info!(
-                    "plugin index unavailable, migrated tools wait: {}",
-                    err.code
-                );
-                return;
-            }
-        },
-    };
-    let version = app.package_info().version.to_string();
-    for download in migration::downloads(index, &pending, &version) {
-        let result = fetch_package(&download.url, &download.sha256).and_then(|bytes| {
-            install_into(
-                app,
-                installed,
-                registry,
-                builtin,
-                &bytes,
-                Some(&download.url),
-                false,
-            )
-        });
-        match result {
-            Ok(_) => {
-                if let Err(err) = migration::mark(root, &download.id) {
-                    log::warn!("failed to record migrated plugin {}: {err}", download.id);
-                }
-            }
-            Err(err) => log::warn!(
-                "auto install of migrated plugin {} failed: {}",
-                download.id,
-                err.code
-            ),
-        }
-    }
 }
 
 /// 安装并立即启用；加载失败时撤销安装（market 命令与一键安装共用）
@@ -238,10 +171,6 @@ pub fn plugin_uninstall(
 ) -> AppResult<()> {
     state.installed.uninstall(&plugin_id)?;
     state.plugins.unregister(&plugin_id);
-    // 用户主动卸载迁出的工具后不再自动装回
-    if let Err(err) = migration::mark(state.installed.root(), &plugin_id) {
-        log::warn!("failed to record migrated plugin {plugin_id}: {err}");
-    }
     let _ = app.emit(PLUGINS_CHANGED, ());
     Ok(())
 }
@@ -263,26 +192,13 @@ pub(crate) fn fetch_index() -> AppResult<Value> {
     Ok(index)
 }
 
-/// 读取官方插件索引（JSON 数组），由前端与已安装版本比较；
-/// 读取成功后顺带补装启动时因离线没装上的迁出工具
+/// 读取官方插件索引（JSON 数组），由前端与已安装版本比较。
+/// 从内置迁出的工具不会自动安装，由用户在工具市场自行安装
 #[tauri::command]
-pub async fn market_index(app: AppHandle) -> AppResult<Value> {
-    tauri::async_runtime::spawn_blocking(move || {
-        let index = fetch_index()?;
-        let state = app.state::<AppState>();
-        let (installed, registry, builtin) = (
-            state.installed.clone(),
-            state.plugins.clone(),
-            state.builtin.clone(),
-        );
-        let (app, copy) = (app.clone(), index.clone());
-        std::thread::spawn(move || {
-            auto_install(&app, &installed, &registry, &builtin, Some(&copy));
-        });
-        Ok(index)
-    })
-    .await
-    .map_err(|e| AppError::new("plugin.crashed").with("detail", e.to_string()))?
+pub async fn market_index() -> AppResult<Value> {
+    tauri::async_runtime::spawn_blocking(fetch_index)
+        .await
+        .map_err(|e| AppError::new("plugin.crashed").with("detail", e.to_string()))?
 }
 
 fn respond(status: StatusCode, mime: &str, body: Vec<u8>) -> Response<Vec<u8>> {

@@ -10,7 +10,7 @@ use tauri::{AppHandle, Emitter, Manager};
 use tf_core::{AppError, AppResult};
 
 use crate::installed::InstallInfo;
-use crate::{AppState, market, migration, window};
+use crate::{AppState, market, version, window};
 
 /// 一键安装结果事件：前端刷新插件列表并弹 toast（文案由前端 i18n 翻译）
 pub const EXTERNAL_INSTALL: &str = "market://external-install";
@@ -134,7 +134,7 @@ fn install_from_index(app: &AppHandle, id: &str) -> AppResult<ExternalInstall> {
         .into_iter()
         .find(|info| info.id == id);
     if let Some(info) = current.as_ref()
-        && migration::at_least(&info.version, &version)
+        && version::at_least(&info.version, &version)
     {
         return Ok(ExternalInstall {
             id: id.to_owned(),
@@ -150,7 +150,7 @@ fn install_from_index(app: &AppHandle, id: &str) -> AppResult<ExternalInstall> {
     }
     if let Some(min) = entry.get("minAppVersion").and_then(Value::as_str) {
         let current_version = app.package_info().version.to_string();
-        if !migration::at_least(&current_version, min) {
+        if !version::at_least(&current_version, min) {
             return Err(AppError::new("market.needs_app")
                 .with("id", id)
                 .with("version", min));
