@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowDownToLine, ArrowLeft, ArrowRight, ChevronRight, Clock3, Layers3, Search, Sparkles } from 'lucide-react'
+import { ArrowDownToLine, ArrowLeft, ArrowRight, ChevronRight, Clock3, Layers3, Search, ShieldCheck, Sparkles } from 'lucide-react'
 import {
   catalog,
   getTool,
+  toolChannel,
   toolDescription,
   toolName,
   toolStatus,
@@ -27,6 +28,19 @@ const copy = {
     status: '发布状态',
     included: '使用方式',
     includedValue: 'ToolForge 桌面应用',
+    channelMarket: '在线插件',
+    marketIncluded: '应用内工具市场',
+    version: '当前版本',
+    marketTitle: '在线插件,独立更新',
+    marketNote: '这个工具通过应用内工具市场分发:安装一次,更新即时推送,不随应用版本重新下载。',
+    marketStepsTitle: '三步,完成在线安装',
+    marketOne: '打开 ToolForge',
+    marketOneBody: '启动桌面应用,进入「工具市场」。',
+    marketTwo: '搜索并安装',
+    marketTwoBody: '按名称搜索这个工具,点击安装,几秒内即可使用。',
+    marketThree: '打开并开始使用',
+    marketThreeBody: '安装后工具会出现在侧边栏,更新时自动提示。',
+    desktopNote: '在 ToolForge 桌面应用中使用',
     download: '下载 ToolForge',
     downloadStable: '下载稳定版',
     changelog: '查看发布日志',
@@ -39,7 +53,6 @@ const copy = {
     upcomingNote: '这个工具已收录在目录中，将在未来版本提供。请以正式发布日志为准。',
     updatingTitle: '包含尚未发布的更新',
     updatingNote: '稳定版已包含此工具的基础功能，最新改动将在后续版本提供。',
-    desktopNote: '在 ToolForge 桌面应用中使用',
     upcomingActionNote: '正式发布后即可在应用中使用',
     updatingActionNote: '稳定版可使用已发布的基础功能',
     visualCaption: '工具信息示意，非应用截图',
@@ -75,6 +88,19 @@ const copy = {
     status: 'Release status',
     included: 'Available through',
     includedValue: 'ToolForge desktop app',
+    channelMarket: 'Online plugin',
+    marketIncluded: 'In-app plugin market',
+    version: 'Current version',
+    marketTitle: 'Online plugin, independent updates',
+    marketNote: 'This tool ships through the in-app plugin market: install once, get updates pushed instantly, no app re-download required.',
+    marketStepsTitle: 'Install from the market in three steps',
+    marketOne: 'Open ToolForge',
+    marketOneBody: 'Start the desktop app and open the plugin market.',
+    marketTwo: 'Search and install',
+    marketTwoBody: 'Search for this tool by name, press install, and it is ready in seconds.',
+    marketThree: 'Open it and get to work',
+    marketThreeBody: 'Installed tools appear in the sidebar; updates are offered automatically.',
+    desktopNote: 'Use it in the ToolForge desktop app',
     download: 'Download ToolForge',
     downloadStable: 'Download stable release',
     changelog: 'View changelog',
@@ -87,7 +113,6 @@ const copy = {
     upcomingNote: 'This tool is listed in the catalog and is planned for a future release. Check the published changelog for availability.',
     updatingTitle: 'Includes unreleased updates',
     updatingNote: 'The stable app includes the existing functionality. The latest changes will arrive in a future release.',
-    desktopNote: 'Use it in the ToolForge desktop app',
     upcomingActionNote: 'Available in the app after its official release',
     updatingActionNote: 'Existing functionality is available in the stable app',
     visualCaption: 'Tool information illustration, not an app screenshot',
@@ -172,6 +197,8 @@ export default async function ToolDetailPage({
   const status = toolStatus(tool)
   const isUpcoming = status === 'upcoming'
   const notReleased = isUpcoming && !tool.updateOnly
+  // 在线插件：通过应用内工具市场分发，安装/更新步骤与内置工具不同
+  const isMarket = toolChannel(tool) === 'market' 
   const statusLabel = tool.updateOnly && isUpcoming
     ? t.pendingUpdate
     : { released: t.available, new: t.new, updated: t.updated, upcoming: t.upcoming }[status]
@@ -185,11 +212,17 @@ export default async function ToolDetailPage({
         { title: t.futureTwo, body: t.futureTwoBody },
         { title: t.futureThree, body: t.futureThreeBody },
       ]
-    : [
-        { title: t.stepOne, body: t.stepOneBody },
-        { title: t.stepTwo, body: t.stepTwoBody },
-        { title: t.stepThree, body: t.stepThreeBody },
-      ]
+    : isMarket
+      ? [
+          { title: t.marketOne, body: t.marketOneBody },
+          { title: t.marketTwo, body: t.marketTwoBody },
+          { title: t.marketThree, body: t.marketThreeBody },
+        ]
+      : [
+          { title: t.stepOne, body: t.stepOneBody },
+          { title: t.stepTwo, body: t.stepTwoBody },
+          { title: t.stepThree, body: t.stepThreeBody },
+        ]
 
   return (
     <article className={styles.detail}>
@@ -208,6 +241,7 @@ export default async function ToolDetailPage({
             <div className={styles.heroCopy}>
               <div className={styles.labels}>
                 <span className={styles.category}>{tool.categoryLabel[langTag]}</span>
+                {isMarket && <span className={styles.market}>{t.channelMarket}</span>}
                 <span className={`${styles.status} ${isUpcoming ? styles.pending : ''}`}>
                   <span aria-hidden="true" />{statusLabel}
                 </span>
@@ -225,7 +259,7 @@ export default async function ToolDetailPage({
             <Link href={`/${langTag}/tools/`} className={styles.back}>
               <ArrowLeft size={13} aria-hidden="true" />{t.back}
             </Link>
-            <p>{notReleased ? t.upcomingActionNote : tool.updateOnly && isUpcoming ? t.updatingActionNote : t.desktopNote}</p>
+            <p>{notReleased ? t.upcomingActionNote : tool.updateOnly && isUpcoming ? t.updatingActionNote : isMarket ? t.marketNote : t.desktopNote}</p>
           </div>
         </header>
 
@@ -237,6 +271,17 @@ export default async function ToolDetailPage({
               <p>{tool.updateOnly ? t.updatingNote : t.upcomingNote}</p>
             </div>
             <Link href={`/${langTag}/changelog/`}>{t.changelog}<ArrowRight size={13} aria-hidden="true" /></Link>
+          </aside>
+        )}
+
+        {isMarket && !isUpcoming && (
+          <aside className={styles.notice}>
+            <ShieldCheck size={18} aria-hidden="true" />
+            <div>
+              <h2>{t.marketTitle}</h2>
+              <p>{t.marketNote}</p>
+            </div>
+            <Link href={`/${langTag}/tools/`}>{t.viewAll}<ArrowRight size={13} aria-hidden="true" /></Link>
           </aside>
         )}
 
@@ -268,7 +313,7 @@ export default async function ToolDetailPage({
             </section>
 
             <section className={styles.howTo} aria-labelledby="tool-steps">
-              <div className={styles.sectionLabel}><Sparkles size={14} aria-hidden="true" /><h2 id="tool-steps">{notReleased ? t.futureStepsTitle : t.stepsTitle}</h2></div>
+              <div className={styles.sectionLabel}><Sparkles size={14} aria-hidden="true" /><h2 id="tool-steps">{notReleased ? t.futureStepsTitle : isMarket ? t.marketStepsTitle : t.stepsTitle}</h2></div>
               <ol className={styles.steps}>
                 {steps.map((step, index) => (
                   <li key={step.title}>
@@ -287,7 +332,8 @@ export default async function ToolDetailPage({
               <dl>
                 <div><dt>{t.category}</dt><dd>{tool.categoryLabel[langTag]}</dd></div>
                 <div><dt>{t.status}</dt><dd className={isUpcoming ? styles.pendingText : styles.accentText}>{statusLabel}</dd></div>
-                <div><dt>{t.included}</dt><dd>{t.includedValue}</dd></div>
+                <div><dt>{t.included}</dt><dd>{isMarket ? t.marketIncluded : t.includedValue}</dd></div>
+                {tool.version && <div><dt>{t.version}</dt><dd>{tool.version}</dd></div>}
               </dl>
               <Link href={`/${langTag}/changelog/`} className={styles.infoLink}>{t.changelog}<ArrowRight size={13} aria-hidden="true" /></Link>
             </section>

@@ -1,12 +1,17 @@
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
-import { toolDescription, toolName, toolStatus, type Lang, type ToolEntry, type ToolStatus } from '@/lib/catalog'
+import { toolChannel, toolDescription, toolName, toolStatus, type Lang, type ToolEntry, type ToolStatus } from '@/lib/catalog'
 import styles from './ToolCard.module.css'
 
 const labels = {
   zh: { released: '已发布', new: '新发布', updated: '已更新', upcoming: '待发布' },
   en: { released: 'Released', new: 'New', updated: 'Updated', upcoming: 'Upcoming' },
 } satisfies Record<Lang, Record<ToolStatus, string>>
+
+const channelLabels = {
+  zh: { builtin: '内置', market: '在线安装' },
+  en: { builtin: 'Built-in', market: 'Online' },
+} satisfies Record<Lang, Record<'builtin' | 'market', string>>
 
 // Shared by the catalog and related tools on detail pages.
 export function ToolCard({ tool, lang }: { tool: ToolEntry; lang: Lang }) {
@@ -18,6 +23,7 @@ export function ToolCard({ tool, lang }: { tool: ToolEntry; lang: Lang }) {
         <span className={`${styles.badge} ${status === 'upcoming' ? styles.upcoming : status === 'released' ? styles.released : styles.fresh}`}><span aria-hidden="true" />{labels[lang][status]}</span>
       </div>
       <h3>{toolName(tool, lang)}</h3>
+      <p className={styles.channel}><span className={toolChannel(tool) === 'market' ? styles.marketDot : styles.builtinDot} aria-hidden="true" />{channelLabels[lang][toolChannel(tool)]}</p>
       <p className={styles.description}>{toolDescription(tool, lang)}</p>
       <div className={styles.bottom}><span>{tool.categoryLabel[lang]}</span><ArrowUpRight size={16} aria-hidden="true" /></div>
     </Link>

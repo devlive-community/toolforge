@@ -7,11 +7,12 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { ToolCard } from '@/components/ToolCard'
-import { toolName, toolStatus, type Lang, type ToolEntry, type ToolStatus } from '@/lib/catalog'
+import { toolChannel, toolName, toolStatus, type Lang, type ToolChannel, type ToolEntry, type ToolStatus } from '@/lib/catalog'
 import styles from './ToolsBrowser.module.css'
 
 const PAGE_SIZE = 15
 const statuses: Array<'all' | ToolStatus> = ['all', 'released', 'new', 'updated', 'upcoming']
+const channels: Array<'all' | ToolChannel> = ['all', 'builtin', 'market']
 const categoryIcons: Record<string, LucideIcon> = {
   calc: Calculator, convert: ArrowLeftRight, dev: Code2, encode: Shield,
   image: ImageIcon, network: Wifi, other: Layers, system: Monitor, text: TextCursorInput,
@@ -23,6 +24,8 @@ const copy = {
     categories: '工具分类', allTools: '全部工具',
     categoriesNote: '在桌面端打开工具，所有数据处理均在本机完成。',
     filterLabel: '发布状态',
+    channelsLabel: '安装方式',
+    channels: { all: '全部来源', builtin: '内置', market: '在线安装' },
     statuses: { all: '全部状态', released: '已发布', new: '新发布', updated: '已更新', upcoming: '待发布' },
     result: '个工具', resultsLabel: '筛选结果',
     empty: '暂时没有找到匹配的工具', emptyBody: '试试其他关键词，或调整分类与发布状态。',
@@ -34,6 +37,8 @@ const copy = {
     categories: 'CATEGORIES', allTools: 'All tools',
     categoriesNote: 'Open tools in the desktop app. All processing stays on your device.',
     filterLabel: 'Release status',
+    channelsLabel: 'Install channel',
+    channels: { all: 'All channels', builtin: 'Built-in', market: 'Online' },
     statuses: { all: 'All statuses', released: 'Released', new: 'New', updated: 'Updated', upcoming: 'Upcoming' },
     result: 'tools', resultsLabel: 'Filtered results',
     empty: 'No matching tools yet', emptyBody: 'Try a different keyword, category or release status.',
@@ -42,7 +47,8 @@ const copy = {
   },
 } satisfies Record<Lang, {
   search: string; clearSearch: string; categories: string; allTools: string; categoriesNote: string
-  filterLabel: string; statuses: Record<'all' | ToolStatus, string>; result: string; resultsLabel: string
+  filterLabel: string; channelsLabel: string; channels: Record<'all' | ToolChannel, string>
+  statuses: Record<'all' | ToolStatus, string>; result: string; resultsLabel: string
   empty: string; emptyBody: string; reset: string; previous: string; next: string
   pagination: string; page: string; range: string; pageSummary: string
 }>
@@ -50,6 +56,7 @@ const copy = {
 export function ToolsBrowser({ tools, lang }: { tools: ToolEntry[]; lang: Lang }) {
   const t = copy[lang]
   const [category, setCategory] = useState('all')
+  const [channel, setChannel] = useState<'all' | ToolChannel>('all')
   const [status, setStatus] = useState<'all' | ToolStatus>('all')
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(1)
@@ -68,28 +75,48 @@ export function ToolsBrowser({ tools, lang }: { tools: ToolEntry[]; lang: Lang }
     ].join(' ').toLowerCase().includes(needle))
   }, [tools, query, lang])
 
-  // Counts remain useful while combining search, category and release status.
+  // Counts remain useful while combining search, category, channel and release status.
   const categoryCounts = useMemo(() => {
-    const matched = searched.filter((tool) => status === 'all' || toolStatus(tool) === status)
+    const matched = searched.filter((tool) =>
+      (channel === 'all' || toolChannel(tool) === channel) &&
+      (status === 'all' || toolStatus(tool) === status)
+    )
     const counts: Record<string, number> = { all: matched.length }
     for (const tool of matched) counts[tool.category] = (counts[tool.category] ?? 0) + 1
     return counts
-  }, [searched, status])
+  }, [searched, channel, status])
 
   const statusCounts = useMemo(() => {
-    const matched = searched.filter((tool) => category === 'all' || tool.category === category)
+    const matched = searched.filter((tool) =>
+      (channel === 'all' || toolChannel(tool) === channel) &&
+      (category === 'all' || tool.category === category)
+    )
     const counts: Record<string, number> = { all: matched.length }
     for (const tool of matched) {
       const toolReleaseStatus = toolStatus(tool)
       counts[toolReleaseStatus] = (counts[toolReleaseStatus] ?? 0) + 1
     }
     return counts
-  }, [searched, category])
+  }, [searched, channel, category])
+
+  const channelCounts = useMemo(() => {
+    const matched = searched.filter((tool) =>
+      (category === 'all' || tool.category === category) &&
+      (status === 'all' || toolStatus(tool) === status)
+    )
+    const counts: Record<string, number> = { all: matched.length }
+    for (const tool of matched) {
+      const toolChannelValue = toolChannel(tool)
+      counts[toolChannelValue] = (counts[toolChannelValue] ?? 0) + 1
+    }
+    return counts
+  }, [searched, category, status])
 
   const filtered = useMemo(() => searched.filter((tool) =>
     (category === 'all' || tool.category === category) &&
+    (channel === 'all' || toolChannel(tool) === channel) &&
     (status === 'all' || toolStatus(tool) === status)
-  ), [searched, category, status])
+  ), [searched, category, channel, status])
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
@@ -97,11 +124,12 @@ export function ToolsBrowser({ tools, lang }: { tools: ToolEntry[]; lang: Lang }
   const visibleTools = filtered.slice(start, start + PAGE_SIZE)
   const selectedCategory = categories.find((item) => item.slug === category)
   const categoryTitle = selectedCategory ? selectedCategory.label[lang] : t.allTools
-  const hasFilters = query.trim() !== '' || category !== 'all' || status !== 'all'
+  const hasFilters = query.trim() !== '' || category !== 'all' || channel !== 'all' || status !== 'all'
 
   const reset = () => {
     setQuery('')
     setCategory('all')
+    setChannel('all')
     setStatus('all')
     setPage(1)
   }
@@ -130,6 +158,10 @@ export function ToolsBrowser({ tools, lang }: { tools: ToolEntry[]; lang: Lang }
           <div className={styles.resultHeading}>
             <div className={styles.resultTitle}><h2>{categoryTitle}</h2><span aria-live="polite">{filtered.length} {t.result}</span></div>
             {hasFilters && <button type="button" className={styles.reset} onClick={reset}>{t.reset}<X size={12} aria-hidden="true" /></button>}
+          </div>
+          <div className={styles.channels} role="group" aria-label={t.channelsLabel}>
+            <span className={styles.channelsLabel}>{t.channelsLabel}</span>
+            {channels.map((item) => <button key={item} type="button" aria-pressed={channel === item} className={`${styles.status} ${channel === item ? styles.statusActive : ''}`} onClick={() => { setChannel(item); setPage(1) }}>{t.channels[item]}<span className={styles.statusCount}>{channelCounts[item] ?? 0}</span></button>)}
           </div>
           <div className={styles.statuses} role="group" aria-label={t.filterLabel}>
             {statuses.map((item) => <button key={item} type="button" aria-pressed={status === item} className={`${styles.status} ${status === item ? styles.statusActive : ''}`} onClick={() => { setStatus(item); setPage(1) }}>{item !== 'all' && <span className={`${styles.statusDot} ${item === 'upcoming' ? styles.upcomingDot : ''}`} aria-hidden="true" />}{t.statuses[item]}<span className={styles.statusCount}>{statusCounts[item] ?? 0}</span></button>)}

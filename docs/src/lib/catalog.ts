@@ -7,6 +7,8 @@ export const LANGS: Lang[] = ['zh', 'en']
 
 export type ToolStatus = 'released' | 'new' | 'updated' | 'upcoming'
 
+export type ToolChannel = 'builtin' | 'market'
+
 export interface ToolEntry {
   slug: string
   name: Record<Lang, string>
@@ -14,6 +16,10 @@ export interface ToolEntry {
   category: string
   categoryLabel: Record<Lang, string>
   keywords: string[]
+  /** 分发渠道：builtin 随应用内置，market 在应用内工具市场在线安装 */
+  channel?: ToolChannel
+  /** 插件 manifest 的版本号（market 插件独立发版） */
+  version?: string
   /** 发布状态：数据管线对比最新两个版本 tag 的 plugins/ 集合得出，缺失时视为已发布 */
   status?: ToolStatus
   /** status 为 upcoming 且由“有未发布的更新”引起（而非全新工具）时为 true */
@@ -50,6 +56,11 @@ export const release = releaseJson as ReleaseData
  */
 export function toolStatus(tool: ToolEntry): ToolStatus {
   return tool.status ?? 'released'
+}
+
+/** 分发渠道：缺失视为内置（历史数据兼容） */
+export function toolChannel(tool: ToolEntry): ToolChannel {
+  return tool.channel ?? 'builtin'
 }
 
 export function getTool(slug: string): ToolEntry | undefined {

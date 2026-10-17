@@ -39,3 +39,25 @@
   .card, .bottom > svg { transition: none; }
   .card:hover, .card:hover .bottom > svg { transform: none; }
 }
+
+.channel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 5px 0 -4px;
+  font-size: 10px;
+  letter-spacing: .02em;
+  color: var(--fg-subtle);
+}
+
+.builtinDot,
+.marketDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--fg-subtle);
+}
+
+.marketDot {
+  background: var(--accent);
+}

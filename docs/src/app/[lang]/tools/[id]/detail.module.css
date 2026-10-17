@@ -84,6 +84,18 @@
   color: var(--fg-muted);
   font-size: 11px;
 }
+.market {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  line-height: 1.5;
+  padding: 3px 8px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+  border-radius: 5px;
+}
 .status {
   display: inline-flex;
   align-items: center;
@@ -567,6 +579,9 @@
   }
   .category {
     font-size: 10px;
+  }
+  .market {
+    font-size: 9px;
   }
   .status {
     font-size: 9px;

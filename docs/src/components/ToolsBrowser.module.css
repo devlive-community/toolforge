@@ -131,6 +131,20 @@
 .resultTitle > span { font-size: 10px; color: var(--fg-subtle); }
 .reset { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; color: var(--fg-muted); cursor: pointer; }
 .reset:hover { color: var(--browser-accent); }
+.channels {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.channelsLabel {
+  font-size: 11px;
+  letter-spacing: .02em;
+  color: var(--fg-subtle);
+}
+
 .statuses { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 15px; margin-bottom: 22px; }
 .status {
   display: inline-flex;

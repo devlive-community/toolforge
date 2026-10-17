@@ -101,7 +101,7 @@ function releaseStatusSets() {
   }
 }
 
-function scanPlugins(baseDir, sets) {
+function scanPlugins(baseDir, sets, channel) {
   const tools = []
   if (!existsSync(baseDir)) return tools
   for (const entry of readdirSync(baseDir, { withFileTypes: true })) {
@@ -133,6 +133,8 @@ function scanPlugins(baseDir, sets) {
       category,
       categoryLabel: CATEGORY_LABELS[category] ?? { zh: category, en: category },
       keywords: manifest.keywords ?? [],
+      channel,
+      version: typeof manifest.version === 'string' ? manifest.version : undefined,
       ...toolReleaseStatus(slug, sets),
     })
     // 图标：复制到 public 供站点直接引用
@@ -151,7 +153,7 @@ const release = await loadReleaseData()
 if (!release.fallback) console.log(`[generate-data] latest release: ${release.version}`)
 const sets = releaseStatusSets()
 if (sets) console.log(`[generate-data] status tags: ${sets.prevTag} -> ${sets.latestTag}`)
-const tools = [...scanPlugins(pluginsDir, sets), ...scanPlugins(marketDir, null)]
+const tools = [...scanPlugins(pluginsDir, sets, 'builtin'), ...scanPlugins(marketDir, null, 'market')]
 tools.sort((a, b) => (a.categoryLabel.en + a.name.en).localeCompare(b.categoryLabel.en + b.name.en))
 const counts = { released: 0, new: 0, updated: 0, upcoming: 0 }
 for (const tool of tools) counts[tool.status] += 1
