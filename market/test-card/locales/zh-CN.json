@@ -34,6 +34,10 @@
     "table": "表格",
     "testOnly": "仅测试"
   },
+  "card": {
+    "label": "{{brand}} 测试卡",
+    "copyNumber": "复制卡号"
+  },
   "fields": {
     "number": "卡号",
     "holder": "持卡人（虚构）",

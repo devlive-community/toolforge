@@ -34,6 +34,10 @@
     "table": "Table",
     "testOnly": "Test only"
   },
+  "card": {
+    "label": "{{brand}} test card",
+    "copyNumber": "Copy card number"
+  },
   "fields": {
     "number": "Number",
     "holder": "Cardholder (fictional)",

@@ -1,0 +1,119 @@
+.tf-test-card {
+  --tf-test-card-accent: var(--tf-tile-green-from);
+  position: relative;
+  isolation: isolate;
+  container-type: inline-size;
+  width: 100%;
+  max-width: 400px;
+  min-width: 0;
+  aspect-ratio: 85.6 / 53.98;
+  overflow: hidden;
+  border: 1px solid var(--tf-payment-card-muted, var(--tf-on-tile));
+  border: 1px solid color-mix(in srgb, var(--tf-payment-card-fg, var(--tf-on-tile)) 16%, transparent);
+  border-radius: 18px;
+  /* Safari 15 keeps the base gradient when color-mix is unsupported. */
+  background: linear-gradient(125deg, var(--tf-payment-card-from, var(--tf-tile-green-to)), var(--tf-payment-card-to, var(--tf-tile-blue-to)));
+  background:
+    radial-gradient(ellipse at 100% 0%, color-mix(in srgb, var(--tf-test-card-accent) 32%, transparent), transparent 72%),
+    linear-gradient(125deg, var(--tf-payment-card-from, var(--tf-tile-green-to)), var(--tf-payment-card-to, var(--tf-tile-blue-to)));
+  color: var(--tf-payment-card-fg, var(--tf-on-tile));
+  box-shadow: var(--tf-shadow-card);
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--tf-payment-card-to, var(--tf-tile-blue-to)) 18%, transparent), inset 0 1px 0 color-mix(in srgb, var(--tf-payment-card-fg, var(--tf-on-tile)) 10%, transparent);
+}
+
+.tf-test-card[data-accent="blue"] { --tf-test-card-accent: var(--tf-tile-blue-from); }
+.tf-test-card[data-accent="orange"] { --tf-test-card-accent: var(--tf-tile-orange-from); }
+.tf-test-card[data-accent="cyan"] { --tf-test-card-accent: var(--tf-tile-cyan-from); }
+.tf-test-card[data-accent="pink"] { --tf-test-card-accent: var(--tf-tile-pink-from); }
+.tf-test-card[data-accent="violet"] { --tf-test-card-accent: var(--tf-tile-violet-from); }
+
+.tf-test-card::before,
+.tf-test-card::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 110%;
+  height: 165%;
+  right: -65%;
+  top: -25%;
+  border: 1px solid color-mix(in srgb, var(--tf-payment-card-fg, var(--tf-on-tile)) 12%, transparent);
+  border-radius: 50%;
+  transform: rotate(-32deg);
+  pointer-events: none;
+}
+
+.tf-test-card::after {
+  right: -53%;
+  background: color-mix(in srgb, var(--tf-payment-card-fg, var(--tf-on-tile)) 3%, transparent);
+}
+
+.tf-test-card__content {
+  position: relative;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 18px;
+  padding: clamp(16px, 5.5cqi, 23px);
+}
+
+.tf-test-card__header,
+.tf-test-card__actions,
+.tf-test-card__technology {
+  display: flex;
+  align-items: center;
+}
+
+.tf-test-card__header { justify-content: space-between; gap: 8px; }
+.tf-test-card__actions { flex-shrink: 0; gap: 6px; }
+.tf-test-card__brand { min-width: 0; font-size: 14px; font-weight: 650; letter-spacing: 0.01em; }
+
+.tf-test-card__test {
+  border: 1px solid var(--tf-payment-card-muted, var(--tf-on-tile));
+  border: 1px solid color-mix(in srgb, var(--tf-payment-card-fg, var(--tf-on-tile)) 28%, transparent);
+  border-radius: 5px;
+  padding: 3px 6px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.tf-test-card .tf-test-card__copy,
+.tf-test-card .tf-test-card__copy svg { color: var(--tf-payment-card-fg, var(--tf-on-tile)); }
+.tf-test-card .tf-test-card__copy:hover {
+  background: var(--tf-payment-card-from, var(--tf-tile-green-to));
+  background: color-mix(in srgb, var(--tf-payment-card-fg, var(--tf-on-tile)) 12%, transparent);
+}
+.tf-test-card .tf-test-card__copy:focus-visible { outline: 2px solid var(--tf-payment-card-fg, var(--tf-on-tile)); outline-offset: 2px; }
+
+.tf-test-card__technology { gap: 12px; color: var(--tf-payment-card-muted, var(--tf-on-tile)); }
+.tf-test-card__chip {
+  display: block;
+  width: 40px;
+  width: clamp(34px, 11cqi, 44px);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--tf-payment-chip-line, var(--tf-payment-card-to, var(--tf-tile-green-to)));
+  border-radius: 7px;
+  background: linear-gradient(120deg, var(--tf-payment-chip-from, var(--tf-warning-soft)), var(--tf-payment-chip-to, var(--tf-warning)));
+  color: var(--tf-payment-chip-line, var(--tf-payment-card-to, var(--tf-tile-green-to)));
+}
+.tf-test-card__chip svg { display: block; width: 100%; height: 100%; }
+
+.tf-test-card__number {
+  display: block;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-size: clamp(16px, 5.65cqi, 22px);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.025em;
+  text-shadow: 0 1px 1px var(--tf-payment-card-to, var(--tf-tile-blue-to));
+}
+
+.tf-test-card__details { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; }
+.tf-test-card__details dt { margin-bottom: 3px; color: var(--tf-payment-card-muted, var(--tf-on-tile)); font-size: 9px; line-height: 1.3; }
+.tf-test-card__details dd { margin: 0; font-family: var(--font-mono); font-size: 11px; font-size: clamp(11px, 3.3cqi, 13px); font-weight: 500; line-height: 1.25; }

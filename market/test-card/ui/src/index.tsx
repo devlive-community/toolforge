@@ -3,6 +3,7 @@ import { Badge, Button, CodeEditor, DropdownMenu, Empty, Input, NumberInput, Pan
 import { CopyButton, host, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { ChevronDown, CreditCard, Download, ExternalLink, FlaskConical, RefreshCw, ShieldCheck, TriangleAlert } from 'lucide-react'
 import { BRANDS, groupNumber, type Brand, type Category, type Checked, type Generated, type SandboxCase } from './types'
+import { PaymentCard } from './PaymentCard'
 
 type Tab = 'generate' | 'sandbox' | 'validate'
 const CATEGORIES: Category[] = ['success', 'decline', 'authentication', 'fraud', 'dispute']
@@ -98,34 +99,9 @@ function GenerateTab() {
         {error ? (
           <p className="text-[13px] text-danger">{errorMessage(error)}</p>
         ) : !result ? null : view === 'cards' ? (
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-4">
             {result.cards.map((card, index) => (
-              <div key={`${index}-${card.number}`} className="space-y-3 rounded-card border border-border bg-surface-2 p-4">
-                <div className="flex items-center justify-between">
-                  <Badge variant="primary">{t(`brands.${card.brand}`)}</Badge>
-                  <span className="text-[10px] font-semibold tracking-wide text-warning uppercase">{t('generate.testOnly')}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <code className="flex-1 font-mono text-[15px] tracking-wide text-fg" data-selectable>
-                    {groupNumber(card.number, card.brand)}
-                  </code>
-                  <CopyButton text={card.number} />
-                </div>
-                <div className="grid grid-cols-[1fr_auto_auto] gap-3 text-xs">
-                  <div className="min-w-0">
-                    <p className="text-fg-subtle">{t('fields.holder')}</p>
-                    <p className="truncate font-mono text-fg" data-selectable>{card.holder}</p>
-                  </div>
-                  <div>
-                    <p className="text-fg-subtle">{t('fields.expiry')}</p>
-                    <p className="font-mono text-fg" data-selectable>{card.expiry}</p>
-                  </div>
-                  <div>
-                    <p className="text-fg-subtle">{t('fields.cvc')}</p>
-                    <p className="font-mono text-fg" data-selectable>{card.cvc}</p>
-                  </div>
-                </div>
-              </div>
+              <PaymentCard key={`${index}-${card.number}`} card={card} />
             ))}
           </div>
         ) : (

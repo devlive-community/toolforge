@@ -76,6 +76,15 @@
   --tf-tile-cyan-from: #22d3ee;
   --tf-tile-cyan-to: #0891b2;
 
+  /* 支付测试卡：固定深色卡面，明暗主题下保持读数与测试标记的对比度 */
+  --tf-payment-card-from: #244c43;
+  --tf-payment-card-to: #102720;
+  --tf-payment-card-fg: #f3faf6;
+  --tf-payment-card-muted: #bed1c7;
+  --tf-payment-chip-from: #ebdfb8;
+  --tf-payment-chip-to: #bda36e;
+  --tf-payment-chip-line: #796947;
+
   --tf-radius-control: 7px;
   --tf-radius-popover: 10px;
   --tf-radius-card: 12px;
