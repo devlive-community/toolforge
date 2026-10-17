@@ -27,6 +27,32 @@
 .tf-test-card[data-accent="pink"] { --tf-test-card-accent: var(--tf-tile-pink-from); }
 .tf-test-card[data-accent="violet"] { --tf-test-card-accent: var(--tf-tile-violet-from); }
 
+.tf-test-card[data-bank-tone="red"] {
+  --tf-payment-card-from: var(--tf-payment-bank-red-from, var(--tf-tile-pink-to));
+  --tf-payment-card-to: var(--tf-payment-bank-red-to, var(--tf-tile-violet-to));
+  --tf-test-card-accent: var(--tf-payment-bank-red-accent, var(--tf-tile-pink-from));
+}
+.tf-test-card[data-bank-tone="blue"] {
+  --tf-payment-card-from: var(--tf-payment-bank-blue-from, var(--tf-tile-blue-to));
+  --tf-payment-card-to: var(--tf-payment-bank-blue-to, var(--tf-tile-violet-to));
+  --tf-test-card-accent: var(--tf-payment-bank-blue-accent, var(--tf-tile-blue-from));
+}
+.tf-test-card[data-bank-tone="green"] {
+  --tf-payment-card-from: var(--tf-payment-bank-green-from, var(--tf-tile-green-to));
+  --tf-payment-card-to: var(--tf-payment-bank-green-to, var(--tf-tile-blue-to));
+  --tf-test-card-accent: var(--tf-payment-bank-green-accent, var(--tf-tile-green-from));
+}
+.tf-test-card[data-bank-tone="purple"] {
+  --tf-payment-card-from: var(--tf-payment-bank-purple-from, var(--tf-tile-violet-to));
+  --tf-payment-card-to: var(--tf-payment-bank-purple-to, var(--tf-tile-blue-to));
+  --tf-test-card-accent: var(--tf-payment-bank-purple-accent, var(--tf-tile-violet-from));
+}
+.tf-test-card[data-bank-tone="orange"] {
+  --tf-payment-card-from: var(--tf-payment-bank-orange-from, var(--tf-tile-orange-to));
+  --tf-payment-card-to: var(--tf-payment-bank-orange-to, var(--tf-tile-violet-to));
+  --tf-test-card-accent: var(--tf-payment-bank-orange-accent, var(--tf-tile-orange-from));
+}
+
 .tf-test-card::before,
 .tf-test-card::after {
   content: "";
@@ -67,6 +93,7 @@
 .tf-test-card__header { justify-content: space-between; gap: 8px; }
 .tf-test-card__actions { flex-shrink: 0; gap: 6px; }
 .tf-test-card__brand { min-width: 0; font-size: 14px; font-weight: 650; letter-spacing: 0.01em; }
+.tf-test-card[data-bank-tone] .tf-test-card__brand { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .tf-test-card__test {
   border: 1px solid var(--tf-payment-card-muted, var(--tf-on-tile));
@@ -88,7 +115,9 @@
 }
 .tf-test-card .tf-test-card__copy:focus-visible { outline: 2px solid var(--tf-payment-card-fg, var(--tf-on-tile)); outline-offset: 2px; }
 
-.tf-test-card__technology { gap: 12px; color: var(--tf-payment-card-muted, var(--tf-on-tile)); }
+.tf-test-card__technology { justify-content: space-between; gap: 12px; color: var(--tf-payment-card-muted, var(--tf-on-tile)); }
+.tf-test-card__chip-group { display: inline-flex; align-items: center; gap: 12px; }
+.tf-test-card__network { font-size: 12px; font-weight: 650; letter-spacing: 0.04em; }
 .tf-test-card__chip {
   display: block;
   width: 40px;

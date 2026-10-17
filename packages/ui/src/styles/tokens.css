@@ -84,6 +84,21 @@
   --tf-payment-chip-from: #ebdfb8;
   --tf-payment-chip-to: #bda36e;
   --tf-payment-chip-line: #796947;
+  --tf-payment-bank-red-from: #7b2639;
+  --tf-payment-bank-red-to: #301923;
+  --tf-payment-bank-red-accent: #e496a5;
+  --tf-payment-bank-blue-from: #245181;
+  --tf-payment-bank-blue-to: #15273d;
+  --tf-payment-bank-blue-accent: #85b2e1;
+  --tf-payment-bank-green-from: #236348;
+  --tf-payment-bank-green-to: #143023;
+  --tf-payment-bank-green-accent: #83c7a4;
+  --tf-payment-bank-purple-from: #5c3979;
+  --tf-payment-bank-purple-to: #281c37;
+  --tf-payment-bank-purple-accent: #b398d6;
+  --tf-payment-bank-orange-from: #8f4324;
+  --tf-payment-bank-orange-to: #39241d;
+  --tf-payment-bank-orange-accent: #efb182;
 
   --tf-radius-control: 7px;
   --tf-radius-popover: 10px;

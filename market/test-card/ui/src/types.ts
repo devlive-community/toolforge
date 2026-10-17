@@ -1,5 +1,20 @@
 export const BRANDS = ['visa', 'mastercard', 'amex', 'discover', 'jcb', 'unionpay', 'diners'] as const
 export type Brand = (typeof BRANDS)[number]
+export const BANKS = ['cmb', 'ccb', 'icbc', 'abc', 'boc', 'bocom', 'psbc', 'cib', 'spdb', 'citic', 'cmbc', 'ceb', 'pab', 'cgb', 'hxb', 'bob', 'bosh', 'bon'] as const
+export type Bank = (typeof BANKS)[number]
+
+export interface BankReference {
+  url: string
+  revision: string
+  dataPath: string
+  license: string
+  licenseText: string
+}
+
+export interface BankCatalog {
+  banks: { id: Bank; brand: Brand; cardType: 'credit'; prefixes: { bin: string; length: number }[] }[]
+  source: BankReference & { checkedAt: string; comparedWith: BankReference }
+}
 
 export interface Card {
   number: string
@@ -7,6 +22,8 @@ export interface Card {
   holder: string
   expiry: string
   cvc: string
+  bank?: Bank
+  bin?: string
 }
 
 export interface Generated {
@@ -42,6 +59,8 @@ export interface Checked {
   luhn: boolean
   problems: Problem[]
   sandbox: SandboxCase | null
+  bank?: Bank
+  bin?: string
 }
 
 /** 每 4 位分组显示（Amex 为 4-6-5） */

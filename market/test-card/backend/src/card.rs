@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use tf_plugin_api::{PluginError, PluginResult};
 
+use crate::bank::{self, Bank};
 use crate::brand::{self, Brand};
 use crate::sandbox;
 
@@ -65,6 +66,7 @@ fn current_month() -> (i32, u32) {
 #[derive(Debug, Deserialize)]
 pub struct GenerateArgs {
     pub brand: Brand,
+    pub bank: Option<Bank>,
     #[serde(default = "one")]
     pub count: usize,
     pub seed: Option<String>,
@@ -79,6 +81,10 @@ fn one() -> usize {
 pub struct Card {
     pub number: String,
     pub brand: Brand,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank: Option<Bank>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bin: Option<String>,
     pub holder: String,
     /// MM/YY
     pub expiry: String,
@@ -95,11 +101,23 @@ pub struct Generated {
     pub json: String,
 }
 
-fn card(brand: Brand, rng: &mut ChaCha20Rng, now: (i32, u32)) -> Card {
-    let prefixes = brand.prefixes();
-    let prefix = &prefixes[rng.random_range(0..prefixes.len())];
-    let length = brand.default_length();
-    let mut body = prefix.clone();
+fn card(brand: Brand, bank: Option<Bank>, rng: &mut ChaCha20Rng, now: (i32, u32)) -> Card {
+    let (mut body, length, bin) = match bank {
+        Some(bank) => {
+            let prefixes = bank.prefixes();
+            let prefix = prefixes[rng.random_range(0..prefixes.len())];
+            (
+                prefix.bin.to_owned(),
+                prefix.length,
+                Some(prefix.bin.to_owned()),
+            )
+        }
+        None => {
+            let prefixes = brand.prefixes();
+            let prefix = &prefixes[rng.random_range(0..prefixes.len())];
+            (prefix.clone(), brand.default_length(), None)
+        }
+    };
     while body.len() < length - 1 {
         body.push(char::from(b'0' + rng.random_range(0..10u8)));
     }
@@ -119,6 +137,8 @@ fn card(brand: Brand, rng: &mut ChaCha20Rng, now: (i32, u32)) -> Card {
     Card {
         number,
         brand,
+        bank,
+        bin,
         holder,
         expiry,
         cvc,
@@ -133,36 +153,52 @@ pub fn generate(args: GenerateArgs) -> PluginResult<Generated> {
     if !(1..=MAX_COUNT).contains(&args.count) {
         return Err(PluginError::new("card.invalid_count").with("max", MAX_COUNT));
     }
+    if args.bank.is_some() && args.brand != Brand::Unionpay {
+        return Err(PluginError::new("card.bank_brand_mismatch").with("brand", "unionpay"));
+    }
     let mut rng = rng(args.seed.as_deref());
     let now = current_month();
     let cards: Vec<Card> = (0..args.count)
-        .map(|_| card(args.brand, &mut rng, now))
+        .map(|_| card(args.brand, args.bank, &mut rng, now))
         .collect();
-    let mut csv = csv_line(&[
-        "purpose", "mode", "brand", "number", "holder", "expiry", "cvc",
-    ]);
+    let mut csv = if args.bank.is_some() {
+        csv_line(&[
+            "purpose", "mode", "brand", "bank", "bin", "number", "holder", "expiry", "cvc",
+        ])
+    } else {
+        csv_line(&[
+            "purpose", "mode", "brand", "number", "holder", "expiry", "cvc",
+        ])
+    };
     for c in &cards {
         let brand = serde_json::to_value(c.brand)
             .ok()
             .and_then(|v| v.as_str().map(str::to_owned))
             .unwrap_or_default();
-        csv.push_str(&csv_line(&[
-            "test-only",
-            "local-format",
-            &brand,
-            &c.number,
-            &c.holder,
-            &c.expiry,
-            &c.cvc,
-        ]));
+        let mut fields = vec!["test-only", "local-format", &brand];
+        if let Some(bank) = c.bank {
+            fields.extend([bank.id(), c.bin.as_deref().unwrap_or_default()]);
+        }
+        fields.extend([
+            c.number.as_str(),
+            c.holder.as_str(),
+            c.expiry.as_str(),
+            c.cvc.as_str(),
+        ]);
+        csv.push_str(&csv_line(&fields));
     }
-    let json = serde_json::to_string_pretty(&serde_json::json!({
+    let mut export = serde_json::json!({
         "purpose": "test-only",
         "mode": "local-format",
         "note": "Format test data only: not issued cards and not sandbox cards of any payment platform",
         "cards": cards,
-    }))
-    .map_err(|e| PluginError::new("card.export_failed").with("detail", e.to_string()))?;
+    });
+    if args.bank.is_some() {
+        export["bankSource"] = serde_json::to_value(bank::SOURCE)
+            .map_err(|e| PluginError::new("card.export_failed").with("detail", e.to_string()))?;
+    }
+    let json = serde_json::to_string_pretty(&export)
+        .map_err(|e| PluginError::new("card.export_failed").with("detail", e.to_string()))?;
     Ok(Generated {
         seeded: args.seed.as_deref().is_some_and(|s| !s.trim().is_empty()),
         algorithm: ALGORITHM,
@@ -197,6 +233,10 @@ pub struct Checked {
     pub input: String,
     pub digits: String,
     pub brand: Option<Brand>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank: Option<Bank>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bin: Option<&'static str>,
     pub length: usize,
     pub allowed_lengths: Vec<usize>,
     pub luhn: bool,
@@ -228,6 +268,11 @@ pub fn validate(args: ValidateArgs) -> PluginResult<Vec<Checked>> {
             }
             let digits: String = text.chars().filter(char::is_ascii_digit).collect();
             let brand = brand::detect(&digits);
+            let bank = if problems.is_empty() && brand == Some(Brand::Unionpay) {
+                bank::detect(&digits)
+            } else {
+                None
+            };
             let allowed_lengths = brand.map(|b| b.lengths().to_vec()).unwrap_or_default();
             match brand {
                 None => problems.push(Problem::UnknownBrand),
@@ -245,6 +290,8 @@ pub fn validate(args: ValidateArgs) -> PluginResult<Vec<Checked>> {
                 sandbox: sandbox::CASES.iter().find(|c| c.number == digits).cloned(),
                 digits,
                 brand,
+                bank: bank.map(|(bank, _)| bank),
+                bin: bank.map(|(_, bin)| bin),
                 allowed_lengths,
                 luhn,
                 problems,

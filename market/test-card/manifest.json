@@ -4,14 +4,15 @@
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "dev",
-  "keywords": ["test card", "credit card", "luhn", "stripe", "sandbox", "visa", "mastercard", "unionpay", "测试卡", "信用卡", "卡号", "校验", "支付测试"],
+  "keywords": ["test card", "credit card", "luhn", "stripe", "sandbox", "visa", "mastercard", "unionpay", "bank", "bin", "测试卡", "信用卡", "银行卡", "招商银行", "建设银行", "卡号", "校验", "支付测试"],
   "accent": "orange",
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:write", "fs:user-selected"],
   "functions": {
     "generate": {},
     "validate": { "history": true },
-    "sandbox": {}
+    "sandbox": {},
+    "banks": {}
   },
   "sensitive": false
 }

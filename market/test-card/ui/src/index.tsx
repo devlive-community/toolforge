@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Badge, Button, CodeEditor, DropdownMenu, Empty, Input, NumberInput, Panel, SegmentedControl, Select, Spinner, Tabs, cn, toast } from '@toolforge/ui'
+import { Badge, Button, CodeEditor, Drawer, DropdownMenu, Empty, Input, NumberInput, Panel, SegmentedControl, Select, Spinner, Tabs, cn, toast } from '@toolforge/ui'
 import { CopyButton, host, useDebouncedCall, usePlugin } from '@toolforge/plugin-ui-sdk'
-import { ChevronDown, CreditCard, Download, ExternalLink, FlaskConical, RefreshCw, ShieldCheck, TriangleAlert } from 'lucide-react'
-import { BRANDS, groupNumber, type Brand, type Category, type Checked, type Generated, type SandboxCase } from './types'
+import { ChevronDown, CreditCard, Download, ExternalLink, FlaskConical, Info, RefreshCw, ShieldCheck, TriangleAlert } from 'lucide-react'
+import { BRANDS, groupNumber, type Bank, type BankCatalog, type Brand, type Category, type Checked, type Generated, type SandboxCase } from './types'
 import { PaymentCard } from './PaymentCard'
+import { createExportSession, saveCurrentOutput } from './exportSession'
 
 type Tab = 'generate' | 'sandbox' | 'validate'
 const CATEGORIES: Category[] = ['success', 'decline', 'authentication', 'fraud', 'dispute']
@@ -18,48 +19,124 @@ function Notice() {
   )
 }
 
+function BankSources({ open, onOpenChange, catalog }: { open: boolean; onOpenChange: (open: boolean) => void; catalog: BankCatalog | null }) {
+  const { t, errorMessage } = usePlugin()
+  return (
+    <Drawer open={open} onOpenChange={onOpenChange} title={t('bank.source')} closeLabel={t('common:close')}>
+      {catalog && (
+        <div className="space-y-5 p-5 text-xs text-fg-muted">
+          <p className="leading-relaxed">{t('bank.sourceHint')}</p>
+          <p>{t('bank.checkedAt', { date: catalog.source.checkedAt })}</p>
+          {[catalog.source, catalog.source.comparedWith].map((source) => (
+            <section key={source.url} className="space-y-2">
+              <Button variant="ghost" size="sm" onClick={() => void host.openUrl(source.url).catch((reason) => toast.error(errorMessage(reason)))}>
+                <ExternalLink />{source.url}
+              </Button>
+              <code className="block break-all text-[11px]" data-selectable>{source.revision}</code>
+              <p>{source.license}</p>
+              <pre className="whitespace-pre-wrap text-[11px] leading-relaxed" data-selectable>{source.licenseText}</pre>
+            </section>
+          ))}
+        </div>
+      )}
+    </Drawer>
+  )
+}
+
 function GenerateTab() {
   const { t, errorMessage } = usePlugin()
   const [brand, setBrand] = useState<Brand>('visa')
+  const [bank, setBank] = useState<Bank | null>(null)
   const [count, setCount] = useState(10)
   const [seed, setSeed] = useState('')
   const [nonce, setNonce] = useState(0)
   const [view, setView] = useState<'cards' | 'table'>('cards')
-  const { result, error, pending } = useDebouncedCall<Generated>('generate', { brand, count, seed }, [brand, count, seed, nonce])
+  const [sourceOpen, setSourceOpen] = useState(false)
+  const [bankRetry, setBankRetry] = useState(0)
+  const [saving, setSaving] = useState(false)
+  const [exports] = useState(createExportSession)
+  useEffect(() => { exports.activate(); return () => exports.close() }, [exports])
+  const catalog = useDebouncedCall<BankCatalog>('banks', {}, [bankRetry])
+  const generated = useDebouncedCall<Generated>('generate', { brand, bank, count, seed }, [brand, bank, count, seed, nonce])
+  const pending = generated.pending
+  const error = pending ? null : generated.error
+  const result = !pending && !error ? generated.result : null
+  const selectedBank = catalog.result?.banks.find((entry) => entry.id === bank)
+  const isCurrent = exports.capture()
+
+  const changeBank = (value: Bank | 'generic') => {
+    const next = value === 'generic' ? null : value
+    if (next === bank) return
+    exports.invalidate()
+    setBank(next)
+    if (next) setBrand('unionpay')
+  }
+  const changeBrand = (value: Brand) => { if (value !== brand) { exports.invalidate(); setBrand(value) } }
+  const changeCount = (value: number) => { if (value !== count) { exports.invalidate(); setCount(value) } }
+  const changeSeed = (value: string) => { if (value !== seed) { exports.invalidate(); setSeed(value) } }
+  const regenerate = () => { exports.invalidate(); setNonce((value) => value + 1) }
 
   const save = async (format: 'csv' | 'json') => {
-    if (!result) return
+    if (!result || saving || !isCurrent()) return
+    setSaving(true)
     try {
-      const path = await host.dialog.saveFile(`test-cards.${format}`, [{ name: format.toUpperCase(), extensions: [format] }])
-      if (!path) return
-      await host.fs.writeText(path, format === 'csv' ? result.csv : result.json)
-      toast.success(t('common:saved'))
+      const outcome = await saveCurrentOutput(
+        format === 'csv' ? result.csv : result.json,
+        isCurrent,
+        () => host.dialog.saveFile(`test-cards.${format}`, [{ name: format.toUpperCase(), extensions: [format] }]),
+        host.fs.writeText,
+      )
+      if (outcome === 'saved') toast.success(t('common:saved'))
+      if (outcome === 'changed') toast.info(t('export.changed'))
     } catch (reason) {
       toast.error(errorMessage(reason))
+    } finally {
+      setSaving(false)
     }
+  }
+
+  const copyExport = async (format: 'csv' | 'json') => {
+    if (!result || !isCurrent()) return
+    try {
+      await host.clipboard.writeText(format === 'csv' ? result.csv : result.json)
+      toast.success(t('common:copied'))
+    } catch (reason) { toast.error(errorMessage(reason)) }
   }
 
   return (
     <div className="grid h-full min-h-0 grid-cols-[minmax(260px,320px)_minmax(0,1fr)] gap-3">
-      <Panel icon={<FlaskConical />} title={t('generate.title')} bodyClassName="space-y-4 p-4">
+      <Panel icon={<FlaskConical />} title={t('generate.title')} bodyClassName="space-y-4 overflow-auto p-4">
+        <label className="block space-y-1.5">
+          <span className="text-xs font-medium text-fg-muted">{t('bank.select')}</span>
+          <Select<Bank | 'generic'>
+            value={bank ?? 'generic'}
+            onValueChange={changeBank}
+            className="w-full"
+            aria-label={t('bank.select')}
+            options={[{ value: 'generic', label: t('bank.generic') }, ...(catalog.result?.banks ?? []).map((entry) => ({ value: entry.id, label: t(`banks.${entry.id}`) }))]}
+          />
+        </label>
+        {catalog.error && <div role="alert" className="space-y-1 text-xs text-danger"><p>{errorMessage(catalog.error)}</p><Button size="sm" onClick={() => setBankRetry((value) => value + 1)}>{t('bank.retry')}</Button></div>}
         <label className="block space-y-1.5">
           <span className="text-xs font-medium text-fg-muted">{t('generate.brand')}</span>
-          <Select<Brand> value={brand} onValueChange={setBrand} className="w-full" aria-label={t('generate.brand')} options={BRANDS.map((b) => ({ value: b, label: t(`brands.${b}`) }))} />
+          <Select<Brand> value={brand} onValueChange={changeBrand} disabled={bank !== null} className="w-full" aria-label={t('generate.brand')} options={BRANDS.map((b) => ({ value: b, label: t(`brands.${b}`) }))} />
         </label>
+        {selectedBank && <div className="space-y-1.5 rounded-control border border-border bg-surface-2 p-2.5 text-[11px] text-fg-muted"><p>{t('bank.format')}</p><code className="block font-mono text-fg" data-selectable>{selectedBank.prefixes.map((prefix) => prefix.bin).join(' / ')}</code></div>}
         <label className="block space-y-1.5">
           <span className="text-xs font-medium text-fg-muted">{t('generate.count')}</span>
-          <NumberInput value={count} onValueChange={setCount} min={1} max={1000} className="w-full" aria-label={t('generate.count')} />
+          <NumberInput value={count} onValueChange={changeCount} min={1} max={1000} className="w-full" aria-label={t('generate.count')} />
         </label>
         <label className="block space-y-1.5">
           <span className="text-xs font-medium text-fg-muted">{t('generate.seed')}</span>
-          <Input value={seed} onChange={(event) => setSeed(event.target.value)} placeholder={t('generate.seedPlaceholder')} aria-label={t('generate.seed')} />
+          <Input value={seed} onChange={(event) => changeSeed(event.target.value)} placeholder={t('generate.seedPlaceholder')} aria-label={t('generate.seed')} />
           <span className="block text-[11px] text-fg-subtle">{t('generate.seedHint')}</span>
         </label>
-        <Button variant="primary" block onClick={() => setNonce((n) => n + 1)} disabled={!!seed.trim()}>
+        <Button variant="primary" block onClick={regenerate} disabled={!!seed.trim()}>
           <RefreshCw />
           {t('generate.again')}
         </Button>
         <p className="text-[11px] leading-relaxed text-fg-subtle">{t('generate.hint')}</p>
+        <Button variant="ghost" size="sm" disabled={!catalog.result} onClick={() => setSourceOpen(true)}><Info />{t('bank.source')}</Button>
       </Panel>
       <Panel
         icon={<CreditCard />}
@@ -79,16 +156,16 @@ function GenerateTab() {
             />
             <DropdownMenu
               trigger={
-                <Button size="sm" disabled={!result}>
+                <Button size="sm" disabled={!result || saving}>
                   <Download />
                   {t('export.title')}
                   <ChevronDown />
                 </Button>
               }
               items={[
-                { key: 'copy-csv', label: t('export.copyCsv'), onSelect: () => void host.clipboard.writeText(result?.csv ?? '').then(() => toast.success(t('common:copied'))) },
+                { key: 'copy-csv', label: t('export.copyCsv'), onSelect: () => void copyExport('csv') },
                 { key: 'save-csv', label: t('export.saveCsv'), onSelect: () => void save('csv') },
-                { key: 'copy-json', label: t('export.copyJson'), onSelect: () => void host.clipboard.writeText(result?.json ?? '').then(() => toast.success(t('common:copied'))) },
+                { key: 'copy-json', label: t('export.copyJson'), onSelect: () => void copyExport('json') },
                 { key: 'save-json', label: t('export.saveJson'), onSelect: () => void save('json') },
               ]}
             />
@@ -108,6 +185,7 @@ function GenerateTab() {
           <table className="w-full text-xs">
             <thead className="text-left text-fg-subtle">
               <tr>
+                {bank && <th className="px-2 py-1.5 font-normal">{t('bank.column')}</th>}
                 {(['number', 'holder', 'expiry', 'cvc'] as const).map((key) => (
                   <th key={key} className="px-2 py-1.5 font-normal">{t(`fields.${key}`)}</th>
                 ))}
@@ -116,6 +194,7 @@ function GenerateTab() {
             <tbody className="font-mono text-fg" data-selectable>
               {result.cards.map((card, index) => (
                 <tr key={`${index}-${card.number}`} className="border-t border-border">
+                  {bank && <td className="px-2 py-1.5 font-sans">{card.bank && t(`banks.${card.bank}`)}</td>}
                   <td className="px-2 py-1.5">{card.number}</td>
                   <td className="px-2 py-1.5">{card.holder}</td>
                   <td className="px-2 py-1.5">{card.expiry}</td>
@@ -126,6 +205,7 @@ function GenerateTab() {
           </table>
         )}
       </Panel>
+      <BankSources open={sourceOpen} onOpenChange={setSourceOpen} catalog={catalog.result} />
     </div>
   )
 }
@@ -223,6 +303,7 @@ function ValidateTab() {
                   </code>
                   <Badge variant={row.problems.length ? 'danger' : 'success'}>{t(row.problems.length ? 'validate.invalid' : 'validate.valid')}</Badge>
                   {row.brand && <Badge>{t(`brands.${row.brand}`)}</Badge>}
+                  {row.bank && <Badge variant="info">{t('bank.referenceMatch', { bank: t(`banks.${row.bank}`) })}</Badge>}
                 </div>
                 {row.problems.map((p) => (
                   <p key={p} className="mt-1 text-danger">

@@ -1,16 +1,18 @@
 {
   "name": "Test Cards",
-  "description": "Generate payment test card data that follows issuer ranges and Luhn, validate card numbers and look up sourced official sandbox cards",
+  "description": "Generate local test cards with domestic bank ranges and card designs, validate numbers and look up sourced official sandbox cards",
   "help": [
     "Locally generated numbers only follow issuer ranges, lengths and Luhn for form and format testing; they are not issued cards nor sandbox cards of any payment platform.",
     "For payment integration use the official sandbox cards with that platform's test keys; they come from official docs with their source and verification date.",
     "A seed makes results reproducible (expiry dates are relative to the current month); CSV / JSON exports are tagged test-only and local-format.",
-    "Validation only infers the brand from number ranges; passing Luhn does not mean a card exists, can pay or will be accepted."
+    "Validation only infers the brand from number ranges; passing Luhn does not mean a card exists, can pay or will be accepted.",
+    "Domestic bank mode uses a pinned offline reference of UnionPay credit card ranges. It generates 16-digit test numbers, exports bank/BIN fields and includes source details. The snapshot is not a live allocation registry or proof of the issuer."
   ],
   "functions": {
     "generate": "Generate test cards",
     "validate": "Validate card numbers",
-    "sandbox": "Official sandbox cards"
+    "sandbox": "Official sandbox cards",
+    "banks": "Domestic bank reference ranges"
   },
   "notice": "For development testing only: these numbers cannot be used for real payments.",
   "tabs": {
@@ -38,6 +40,37 @@
     "label": "{{brand}} test card",
     "copyNumber": "Copy card number"
   },
+  "bank": {
+    "select": "Domestic bank",
+    "generic": "Generic card (any brand)",
+    "column": "Bank",
+    "format": "UnionPay credit card · 16 digits · reference BINs",
+    "source": "Bank range sources",
+    "sourceHint": "These community data snapshots are bundled offline for format testing. The two projects may share data; this comparison is not independent verification. This is not a live issuer registry or an official bank sandbox. Selecting a bank uses its listed ranges and design; it does not create an issued card.",
+    "checkedAt": "Snapshot reviewed: {{date}}",
+    "referenceMatch": "Reference: {{bank}}",
+    "retry": "Reload bank list"
+  },
+  "banks": {
+    "cmb": "China Merchants Bank",
+    "ccb": "China Construction Bank",
+    "icbc": "ICBC",
+    "abc": "Agricultural Bank of China",
+    "boc": "Bank of China",
+    "bocom": "Bank of Communications",
+    "psbc": "Postal Savings Bank of China",
+    "cib": "Industrial Bank",
+    "spdb": "Shanghai Pudong Development Bank",
+    "citic": "China CITIC Bank",
+    "cmbc": "China Minsheng Bank",
+    "ceb": "China Everbright Bank",
+    "pab": "Ping An Bank",
+    "cgb": "China Guangfa Bank",
+    "hxb": "Hua Xia Bank",
+    "bob": "Bank of Beijing",
+    "bosh": "Bank of Shanghai",
+    "bon": "Bank of Ningbo"
+  },
   "fields": {
     "number": "Number",
     "holder": "Cardholder (fictional)",
@@ -49,7 +82,8 @@
     "copyCsv": "Copy CSV",
     "saveCsv": "Save CSV…",
     "copyJson": "Copy JSON",
-    "saveJson": "Save JSON…"
+    "saveJson": "Save JSON…",
+    "changed": "The bank or generation options changed while choosing a file. Export the updated results again."
   },
   "sandbox": {
     "title": "Official sandbox cards",
@@ -132,7 +166,7 @@
     "valid": "Valid format",
     "invalid": "Invalid",
     "sandbox": "Official {{platform}} test card: {{scenario}}",
-    "disclaimer": "Brands are inferred from number ranges only; issuer, account status and ability to pay cannot be determined."
+    "disclaimer": "Brands and bank references are inferred from bundled number ranges only. A match cannot confirm the issuer, account status or ability to pay; unlisted banks may not be recognized."
   },
   "problems": {
     "characters": "Contains characters other than digits, spaces or hyphens",
@@ -143,6 +177,7 @@
   "errors": {
     "card.invalid_count": "Count must be between 1 and {{max}}",
     "card.too_many": "At most {{max}} lines",
-    "card.export_failed": "Export failed"
+    "card.export_failed": "Export failed",
+    "card.bank_brand_mismatch": "Domestic bank reference ranges currently require UnionPay."
   }
 }

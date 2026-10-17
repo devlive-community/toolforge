@@ -1,6 +1,7 @@
 //! 支付测试卡号生成与校验（在线安装插件）：按卡组织号段、长度与 Luhn 规则生成本地格式测试数据，
 //! 校验卡号并说明失败原因，内置有来源的支付平台官方沙箱测试卡。只用于开发测试。
 
+mod bank;
 mod brand;
 mod card;
 mod sandbox;
@@ -31,6 +32,7 @@ impl ToolPlugin for TestCard {
         match function {
             "generate" => to_value(card::generate(parse_args(args)?)?),
             "validate" => to_value(card::validate(parse_args(args)?)?),
+            "banks" => to_value(bank::catalog()),
             "sandbox" => Ok(
                 json!({ "cases": sandbox::CASES, "source": sandbox::STRIPE_SOURCE, "verified": sandbox::VERIFIED }),
             ),

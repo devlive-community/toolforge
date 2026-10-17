@@ -1,16 +1,18 @@
 {
   "name": "支付测试卡",
-  "description": "生成符合号段与 Luhn 规则的支付测试卡资料，校验卡号，查询有来源的支付平台官方沙箱测试卡",
+  "description": "支持国内银行号段与卡面，生成符合 Luhn 规则的本地测试卡资料，校验卡号并查询有来源的支付平台官方沙箱测试卡",
   "help": [
     "本地生成的卡号只满足卡组织号段、长度与 Luhn 规则，用于表单与格式测试，不是已签发的卡，也不是任何支付平台的可用测试卡。",
     "支付联调请使用「官方沙箱」中的卡号，并配合对应平台的测试密钥；这些卡号来自官方文档，标注了来源与核对日期。",
     "填写种子后结果可复现（有效期以当前月份为基准），导出的 CSV / JSON 带有 test-only 与 local-format 标记。",
-    "校验只按号段规则识别品牌，通过 Luhn 不代表卡片真实存在、可以支付或会被平台接受。"
+    "校验只按号段规则识别品牌，通过 Luhn 不代表卡片真实存在、可以支付或会被平台接受。",
+    "国内银行模式使用固定版本的离线银联信用卡参考号段，生成 16 位测试号码；导出包含银行、BIN 和来源信息。号段快照不是实时分配表，也不能确认实际发卡行。"
   ],
   "functions": {
     "generate": "生成测试卡",
     "validate": "校验卡号",
-    "sandbox": "官方沙箱测试卡"
+    "sandbox": "官方沙箱测试卡",
+    "banks": "国内银行参考号段"
   },
   "notice": "仅用于开发测试：这里的卡号不能用于真实支付。",
   "tabs": {
@@ -38,6 +40,37 @@
     "label": "{{brand}} 测试卡",
     "copyNumber": "复制卡号"
   },
+  "bank": {
+    "select": "国内银行",
+    "generic": "通用卡片（不限卡组织）",
+    "column": "银行",
+    "format": "银联信用卡 · 16 位 · 参考 BIN",
+    "source": "银行号段来源",
+    "sourceHint": "内置社区号段快照，离线用于格式测试。两个项目的数据可能同源，对照结果不代表独立权威核验，也不是实时发卡行查询或银行官方沙箱。选择银行后会按所列号段生成号码并使用对应卡面，不会产生银行签发的卡片。",
+    "checkedAt": "快照核对日期：{{date}}",
+    "referenceMatch": "参考号段：{{bank}}",
+    "retry": "重新加载银行列表"
+  },
+  "banks": {
+    "cmb": "招商银行",
+    "ccb": "中国建设银行",
+    "icbc": "中国工商银行",
+    "abc": "中国农业银行",
+    "boc": "中国银行",
+    "bocom": "交通银行",
+    "psbc": "中国邮政储蓄银行",
+    "cib": "兴业银行",
+    "spdb": "上海浦东发展银行",
+    "citic": "中信银行",
+    "cmbc": "中国民生银行",
+    "ceb": "中国光大银行",
+    "pab": "平安银行",
+    "cgb": "广发银行",
+    "hxb": "华夏银行",
+    "bob": "北京银行",
+    "bosh": "上海银行",
+    "bon": "宁波银行"
+  },
   "fields": {
     "number": "卡号",
     "holder": "持卡人（虚构）",
@@ -49,7 +82,8 @@
     "copyCsv": "复制 CSV",
     "saveCsv": "保存 CSV…",
     "copyJson": "复制 JSON",
-    "saveJson": "保存 JSON…"
+    "saveJson": "保存 JSON…",
+    "changed": "选择保存位置期间银行或生成条件已变化，请重新导出当前结果。"
   },
   "sandbox": {
     "title": "官方沙箱测试卡",
@@ -77,7 +111,7 @@
     "amex": "American Express",
     "discover": "Discover",
     "jcb": "JCB",
-    "unionpay": "UnionPay",
+    "unionpay": "银联",
     "diners": "Diners Club"
   },
   "scenarios": {
@@ -132,7 +166,7 @@
     "valid": "格式正确",
     "invalid": "不通过",
     "sandbox": "这是 {{platform}} 官方测试卡：{{scenario}}",
-    "disclaimer": "只按号段规则识别品牌，不能判断发卡行、账户状态或能否支付。"
+    "disclaimer": "卡组织和银行仅按内置参考号段匹配，不能确认实际发卡行、账户状态或支付能力；未收录的银行可能无法识别。"
   },
   "problems": {
     "characters": "含有数字、空格、连字符以外的字符",
@@ -143,6 +177,7 @@
   "errors": {
     "card.invalid_count": "数量需在 1 到 {{max}} 之间",
     "card.too_many": "最多校验 {{max}} 行",
-    "card.export_failed": "导出失败"
+    "card.export_failed": "导出失败",
+    "card.bank_brand_mismatch": "国内银行参考号段目前仅支持银联卡。"
   }
 }
