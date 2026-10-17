@@ -3,13 +3,14 @@ import { invoke } from '@tauri-apps/api/core'
 import { listen } from '@tauri-apps/api/event'
 import { useTranslation } from 'react-i18next'
 import { Spinner, Toaster, toast } from '@toolforge/ui'
+import { useErrorMessage, type AppError } from '@toolforge/plugin-ui-sdk'
 import { CommandPalette } from './layout/CommandPalette'
 import { Sidebar } from './layout/Sidebar'
 import { TaskCenter } from './layout/TaskCenter'
 import { TitleBar } from './layout/TitleBar'
 import { QuitDialog } from './layout/QuitDialog'
 import { UpdateDialog } from './layout/UpdateDialog'
-import { useApp } from './stores/app'
+import { useApp, pluginById } from './stores/app'
 import { usePrefs } from './stores/prefs'
 import { subscribeTasks, useTasks } from './stores/tasks'
 import { useUpdate } from './stores/update'
@@ -20,6 +21,15 @@ import { Home } from './views/Home'
 import { Market } from './views/Market'
 import { Settings } from './views/Settings'
 import { ToolView } from './views/ToolView'
+
+/// 官网 toolforge:// 一键安装的结果事件（Rust 侧 deeplink.rs 发出）
+interface ExternalInstallEvent {
+  id: string
+  outcome: 'installed' | 'updated' | 'uptodate' | 'builtin' | 'failed'
+  version?: string
+  names?: Record<string, string> | null
+  error?: AppError | null
+}
 
 function Content() {
   const route = useApp((s) => s.route)
@@ -45,6 +55,7 @@ function Content() {
 
 export function App() {
   const { t, i18n } = useTranslation()
+  const errorMessage = useErrorMessage('common')
   const ready = useApp((s) => s.ready)
   const load = useApp((s) => s.load)
 
@@ -57,6 +68,23 @@ export function App() {
     // 在线插件加载完成、安装或卸载后刷新插件列表
     const offPlugins = listen('plugins://changed', () => {
       void useApp.getState().reloadPlugins()
+    })
+    // 官网 toolforge:// 一键安装完成后的结果提示；名称优先用索引里的本地化名称，
+    // 内置工具回退到插件列表中的名称
+    const displayName = (names?: Record<string, string> | null, id?: string) => {
+      const map = names && typeof names === 'object' ? names : {}
+      const localized = map[i18n.language] ?? map['en-US'] ?? Object.values(map)[0]
+      if (localized) return localized
+      const manifest = pluginById(useApp.getState().plugins, id ?? '')
+      if (!manifest) return id ?? ''
+      return manifest.name.startsWith('i18n:') ? i18n.t(manifest.name.slice(5), { ns: manifest.id }) : manifest.name
+    }
+    const offInstall = listen<ExternalInstallEvent>('market://external-install', ({ payload }) => {
+      const name = displayName(payload.names, payload.id)
+      if (payload.error) toast.error(errorMessage(payload.error))
+      else if (payload.outcome === 'uptodate') toast.info(t('market.online.uptodate', { name, id: payload.id }))
+      else if (payload.outcome === 'builtin') toast.info(t('market.online.builtinTool', { name, id: payload.id }))
+      else toast.success(t('market.online.installed', { name, id: payload.id, version: payload.version }))
     })
     // macOS 菜单中的「关于」「设置」
     const offNavigate = listen<'about' | 'settings'>('app://navigate', ({ payload }) => {
@@ -76,8 +104,9 @@ export function App() {
       offPlugins.then((off) => off())
       offNavigate.then((off) => off())
       offPalette.then((off) => off())
+      offInstall.then((off) => off())
     }
-  }, [])
+  }, [t, i18n, errorMessage])
 
   useEffect(() => {
     invoke('app_menu_locale', { locale: i18n.language }).catch(() => {})

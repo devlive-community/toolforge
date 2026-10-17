@@ -63,6 +63,14 @@ export function toolChannel(tool: ToolEntry): ToolChannel {
   return tool.channel ?? 'builtin'
 }
 
+/** 在线插件的应用内完整 id：官网与安装索引共用的 id 前缀 */
+export const PLUGIN_ID_PREFIX = 'org.devlive.toolforge.'
+
+/** 一键安装深链：唤起本地 ToolForge 桌面端并自动安装该在线插件 */
+export function toolInstallUrl(slug: string): string {
+  return `toolforge://plugin/install/${PLUGIN_ID_PREFIX}${slug}`
+}
+
 export function getTool(slug: string): ToolEntry | undefined {
   return catalog.find((tool) => tool.slug === slug)
 }

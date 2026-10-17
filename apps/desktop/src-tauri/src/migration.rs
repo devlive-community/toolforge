@@ -51,8 +51,8 @@ pub fn pending(done: &BTreeSet<String>, installed: &BTreeSet<String>) -> Vec<&'s
         .collect()
 }
 
-/// 数字段逐段比较；非数字段按 0 处理
-fn at_least(version: &str, min: &str) -> bool {
+/// 数字段逐段比较；非数字段按 0 处理（一键安装判断版本也用它）
+pub(crate) fn at_least(version: &str, min: &str) -> bool {
     let parts = |v: &str| -> Vec<u64> {
         v.split(['.', '-', '+'])
             .map(|p| p.parse().unwrap_or(0))

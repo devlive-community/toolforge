@@ -28,6 +28,11 @@
     "createUpdaterArtifacts": true
   },
   "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["toolforge"]
+      }
+    },
     "updater": {
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI3MjEzNUYzMjE5NjUxQzcKUldUSFVaWWg4elVoSnpJRWlBZGdFVDF3WEY3YURNQUl1eDRyL1FMMmpKK3ZWUjJCeG96RDVvMGcK",
       "endpoints": [

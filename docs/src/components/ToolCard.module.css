@@ -14,7 +14,9 @@
 }
 :global(.dark) .card { --card-accent: var(--accent); background: linear-gradient(135deg, #141b18, #101613); }
 .card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--card-accent) 55%, var(--card-line)); box-shadow: 0 8px 24px #0000000a; }
-.card:focus-visible { outline: 2px solid var(--card-accent); outline-offset: 4px; }
+/* 拉伸链接：覆盖整卡进入详情，一键安装按钮位于其上 */
+.cardLink { position: absolute; inset: 0; z-index: 1; border-radius: 8px; }
+.cardLink:focus-visible { outline: 2px solid var(--card-accent); outline-offset: 4px; }
 .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .iconBox { display: grid; place-items: center; flex-shrink: 0; width: 41px; height: 41px; border: 1px solid var(--card-line); border-radius: 9px; background: color-mix(in srgb, var(--accent-soft) 55%, var(--panel)); }
 .icon { display: block; width: 23px; height: 23px; background: var(--card-accent); mask-size: contain; mask-position: center; mask-repeat: no-repeat; opacity: .75; }

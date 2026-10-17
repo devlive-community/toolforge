@@ -448,6 +448,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "beef"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3a8241f3ebb85c056b509d4327ad0358fbbba6ffb340bf388f26350aeda225b1"
+
+[[package]]
 name = "bindgen"
 version = "0.72.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1106,6 +1112,26 @@ name = "const-oid"
 version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a6ef517f0926dd24a1582492c791b6a4818a4d94e789a334894aa15b0d12f55c"
+
+[[package]]
+name = "const-random"
+version = "0.1.18"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "87e00182fe74b066627d63b85fd550ac2998d4b0bd86bfed477a0ae4c7c71359"
+dependencies = [
+ "const-random-macro",
+]
+
+[[package]]
+name = "const-random-macro"
+version = "0.1.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9d839f2a20b0aee515dc581a6172f2321f96cab76c1a38a4c584a194955390e"
+dependencies = [
+ "getrandom 0.2.17",
+ "once_cell",
+ "tiny-keccak",
+]
 
 [[package]]
 name = "constant_time_eq"
@@ -1915,6 +1941,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.119",
+]
+
+[[package]]
+name = "dlv-list"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "442039f5147480ba31067cb00ada1adae6892028e40e45fc5de7b7df6dcc1b5f"
+dependencies = [
+ "const-random",
 ]
 
 [[package]]
@@ -3068,6 +3103,12 @@ checksum = "8a9ee70c43aaf417c914396645a0fa852624801b24ebb7ae78fe8272889ac888"
 
 [[package]]
 name = "hashbrown"
+version = "0.14.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e5274423e17b7c9fc20b6e7e208532f9b19825d82dfd615708b70edd83df41f1"
+
+[[package]]
+name = "hashbrown"
 version = "0.15.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9229cfe53dfd69f0609a49f65461bd93001ea1ef889cd5529dd176593f5338a1"
@@ -3453,7 +3494,7 @@ dependencies = [
  "tokio",
  "tower-service",
  "tracing",
- "windows-registry",
+ "windows-registry 0.6.1",
 ]
 
 [[package]]
@@ -3743,7 +3784,7 @@ checksum = "4d40460c0ce33d6ce4b0630ad68ff63d6661961c48b6dba35e5a4d81cfb48222"
 dependencies = [
  "socket2",
  "widestring",
- "windows-registry",
+ "windows-registry 0.6.1",
  "windows-result 0.4.1",
  "windows-sys 0.61.2",
 ]
@@ -4397,6 +4438,72 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f9f8bd3e56ce4dfc153cf470fffbfa98c7620958b312ca5c3a4b8d5181fd13c6"
 
 [[package]]
+name = "logos"
+version = "0.15.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ff472f899b4ec2d99161c51f60ff7075eeb3097069a36050d8037a6325eb8154"
+dependencies = [
+ "logos-derive 0.15.1",
+]
+
+[[package]]
+name = "logos"
+version = "0.16.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eb2c55a318a87600ea870ff8c2012148b44bf18b74fad48d0f835c38c7d07c5f"
+dependencies = [
+ "logos-derive 0.16.1",
+]
+
+[[package]]
+name = "logos-codegen"
+version = "0.15.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "192a3a2b90b0c05b27a0b2c43eecdb7c415e29243acc3f89cc8247a5b693045c"
+dependencies = [
+ "beef",
+ "fnv",
+ "lazy_static",
+ "proc-macro2",
+ "quote",
+ "regex-syntax",
+ "rustc_version",
+ "syn 2.0.119",
+]
+
+[[package]]
+name = "logos-codegen"
+version = "0.16.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "58b3ffaa284e1350d017a57d04ada118c4583cf260c8fb01e0fe28a2e9cf8970"
+dependencies = [
+ "fnv",
+ "proc-macro2",
+ "quote",
+ "regex-automata",
+ "regex-syntax",
+ "syn 2.0.119",
+]
+
+[[package]]
+name = "logos-derive"
+version = "0.15.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "605d9697bcd5ef3a42d38efc51541aa3d6a4a25f7ab6d1ed0da5ac632a26b470"
+dependencies = [
+ "logos-codegen 0.15.1",
+]
+
+[[package]]
+name = "logos-derive"
+version = "0.16.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "52d3a9855747c17eaf4383823f135220716ab49bea5fbea7dd42cc9a92f8aa31"
+dependencies = [
+ "logos-codegen 0.16.1",
+]
+
+[[package]]
 name = "lopdf"
 version = "0.45.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4566,6 +4673,28 @@ name = "micromap"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a86d3146ed3995b5913c414f6664344b9617457320782e64f0bb44afd49d74"
+
+[[package]]
+name = "miette"
+version = "7.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5f98efec8807c63c752b5bd61f862c165c115b0a35685bdcfd9238c7aeb592b7"
+dependencies = [
+ "cfg-if",
+ "miette-derive",
+ "unicode-width 0.1.14",
+]
+
+[[package]]
+name = "miette-derive"
+version = "7.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "db5b29714e950dbb20d5e6f74f9dcec4edbcc1067bb7f8ed198c097b8c1a818b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.119",
+]
 
 [[package]]
 name = "mime"
@@ -5309,6 +5438,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d"
 
 [[package]]
+name = "ordered-float"
+version = "2.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "68f19d67e5a2795c94e73e0bb1cc1a7edeb2e28efd39e2e1c9b7a40c1108b11c"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
+name = "ordered-multimap"
+version = "0.7.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "49203cdcae0030493bad186b28da2fa25645fa276a51b6fec8010d281e02ef79"
+dependencies = [
+ "dlv-list",
+ "hashbrown 0.14.5",
+]
+
+[[package]]
 name = "ordered-stream"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5972,6 +6120,57 @@ dependencies = [
 ]
 
 [[package]]
+name = "prost-reflect"
+version = "0.16.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "01b80ea363c31af2de2b92e3c07ed1156628f7838c4afb4df75ee78a37fedbd1"
+dependencies = [
+ "base64 0.22.1",
+ "logos 0.16.1",
+ "miette",
+ "prost",
+ "prost-types",
+ "serde",
+ "serde-value",
+]
+
+[[package]]
+name = "prost-types"
+version = "0.14.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f94967dc7688f3054c7fac87473ffae4cc4c3904800e2d9f5b857246d8963b0a"
+dependencies = [
+ "prost",
+]
+
+[[package]]
+name = "protox"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4f25a07a73c6717f0b9bbbd685918f5df9815f7efba450b83d9c9dea41f0e3a1"
+dependencies = [
+ "bytes",
+ "miette",
+ "prost",
+ "prost-reflect",
+ "prost-types",
+ "protox-parse",
+ "thiserror 2.0.20",
+]
+
+[[package]]
+name = "protox-parse"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "072eee358134396a4643dff81cfff1c255c9fbd3fb296be14bdb6a26f9156366"
+dependencies = [
+ "logos 0.15.1",
+ "miette",
+ "prost-types",
+ "thiserror 2.0.20",
+]
+
+[[package]]
 name = "pulldown-cmark"
 version = "0.13.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6508,6 +6707,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "rust-ini"
+version = "0.21.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "796e8d2b6696392a43bea58116b667fb4c29727dc5abd27d6acf338bb4f688c7"
+dependencies = [
+ "cfg-if",
+ "ordered-multimap",
+]
+
+[[package]]
 name = "rust_xlsxwriter"
 version = "0.99.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6889,6 +7098,16 @@ dependencies = [
  "serde",
  "serde_core",
  "typeid",
+]
+
+[[package]]
+name = "serde-value"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f3a1a3341211875ef120e117ea7fd5228530ae7e7036a779fdc9117be6b3282c"
+dependencies = [
+ "ordered-float",
+ "serde",
 ]
 
 [[package]]
@@ -7946,6 +8165,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "tauri-plugin-deep-link"
+version = "2.4.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "92d489b8ecceae1cd09f6e1f7606f2095ac721cc8d54cf2f0e6bb377cc52cff6"
+dependencies = [
+ "dunce",
+ "plist",
+ "rust-ini",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-plugin",
+ "tauri-utils",
+ "thiserror 2.0.20",
+ "tracing",
+ "url",
+ "windows-registry 0.5.3",
+ "windows-result 0.3.4",
+]
+
+[[package]]
 name = "tauri-plugin-dialog"
 version = "2.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8021,6 +8261,23 @@ dependencies = [
  "thiserror 2.0.20",
  "url",
  "windows 0.61.3",
+ "zbus",
+]
+
+[[package]]
+name = "tauri-plugin-single-instance"
+version = "2.4.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "db817fe9295e19b7d8357e900af31edb93703dd9fb6de524b007b47b6afc63b0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-plugin-deep-link",
+ "thiserror 2.0.20",
+ "tokio",
+ "tracing",
+ "windows-sys 0.60.2",
  "zbus",
 ]
 
@@ -8311,6 +8568,28 @@ dependencies = [
  "serde_json",
  "tf-plugin-api",
  "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-grpc-client"
+version = "0.1.0"
+dependencies = [
+ "bytes",
+ "data-encoding",
+ "http",
+ "http-body-util",
+ "hyper",
+ "hyper-util",
+ "prost",
+ "prost-reflect",
+ "prost-types",
+ "protox",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+ "tokio",
+ "url",
 ]
 
 [[package]]
@@ -9101,7 +9380,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",
- "unicode-width",
+ "unicode-width 0.2.2",
 ]
 
 [[package]]
@@ -9307,6 +9586,15 @@ checksum = "7e689342a48d2ea927c87ea50cabf8594854bf940e9310208848d680d668ed85"
 dependencies = [
  "num-conv",
  "time-core",
+]
+
+[[package]]
+name = "tiny-keccak"
+version = "2.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2c9d3793400a45f954c52e73d068316d76b6f4e36977e3fcebb13a2721e80237"
+dependencies = [
+ "crunchy",
 ]
 
 [[package]]
@@ -9545,9 +9833,11 @@ dependencies = [
  "tauri",
  "tauri-build",
  "tauri-plugin-clipboard-manager",
+ "tauri-plugin-deep-link",
  "tauri-plugin-dialog",
  "tauri-plugin-global-shortcut",
  "tauri-plugin-opener",
+ "tauri-plugin-single-instance",
  "tauri-plugin-updater",
  "tf-core",
  "tf-package",
@@ -9614,6 +9904,7 @@ dependencies = [
  "tfp-websocket",
  "tfp-xlsx-viewer",
  "tfp-xml-formatter",
+ "url",
  "zip 4.6.1",
 ]
 
@@ -10148,6 +10439,12 @@ name = "unicode-vo"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b1d386ff53b415b7fe27b50bb44679e2cc4660272694b7b6f3326d8480823a94"
+
+[[package]]
+name = "unicode-width"
+version = "0.1.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7dd6e30e90baa6f72411720665d41d89b9a3d039dc45b8faea1ddd07f617f6af"
 
 [[package]]
 name = "unicode-width"
@@ -11269,6 +11566,17 @@ checksum = "6e2e40844ac143cdb44aead537bbf727de9b044e107a0f1220392177d15b0f26"
 dependencies = [
  "windows-core 0.62.2",
  "windows-link 0.2.1",
+]
+
+[[package]]
+name = "windows-registry"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5b8a9ed28765efc97bbc954883f4e6796c33a06546ebafacbabee9696967499e"
+dependencies = [
+ "windows-link 0.1.3",
+ "windows-result 0.3.4",
+ "windows-strings 0.4.2",
 ]
 
 [[package]]

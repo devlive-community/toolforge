@@ -283,7 +283,9 @@
         "needsApp": "需要 ToolForge v{{version}} 及以上",
         "packageSize": "包大小",
         "minApp": "应用要求",
-        "installedAt": "安装时间"
+        "installedAt": "安装时间",
+        "uptodate": "已安装 {{name}}，已是最新版本",
+        "builtinTool": "{{name}} 已内置在 ToolForge 中，无需安装"
       }
     }
   },
@@ -350,6 +352,9 @@
       "package.not_installed": "{{id}} 没有安装",
       "package.checksum_mismatch": "下载的插件包校验失败",
       "market.invalid_index": "插件索引格式无效",
+      "market.not_in_index": "{{id}} 不在官方插件索引中",
+      "market.needs_app": "该插件需要 ToolForge v{{version}} 及以上，请先更新应用",
+      "market.unsigned": "只支持一键安装官方签名的插件",
       "plugin.load_failed": "插件加载失败",
       "plugin.timeout": "插件处理超时",
       "plugin.permission_denied": "插件没有 {{detail}} 权限",

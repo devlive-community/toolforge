@@ -13,6 +13,7 @@ import {
 } from '@/lib/catalog'
 import { HomeProductPreview } from '@/components/HomeProductPreview'
 import { ToolCard } from '@/components/ToolCard'
+import { InstallButton } from '@/components/InstallButton'
 import styles from './detail.module.css'
 
 const copy = {
@@ -33,11 +34,12 @@ const copy = {
     version: '当前版本',
     marketTitle: '在线插件,独立更新',
     marketNote: '这个工具通过应用内工具市场分发:安装一次,更新即时推送,不随应用版本重新下载。',
-    marketStepsTitle: '三步,完成在线安装',
-    marketOne: '打开 ToolForge',
-    marketOneBody: '启动桌面应用,进入「工具市场」。',
-    marketTwo: '搜索并安装',
-    marketTwoBody: '按名称搜索这个工具,点击安装,几秒内即可使用。',
+    marketStepsTitle: '一键安装,马上使用',
+    marketOne: '点击「一键安装」',
+    marketOneBody: '在工具列表或本页点击按钮,浏览器会请求打开 ToolForge。',
+    marketTwo: '自动下载并安装',
+    marketTwoBody: 'ToolForge 从官方插件索引取包、校验签名后自动启用。',
+    installNote: '点击「一键安装」,浏览器会唤起本地 ToolForge 自动完成安装。',
     marketThree: '打开并开始使用',
     marketThreeBody: '安装后工具会出现在侧边栏,更新时自动提示。',
     desktopNote: '在 ToolForge 桌面应用中使用',
@@ -93,11 +95,12 @@ const copy = {
     version: 'Current version',
     marketTitle: 'Online plugin, independent updates',
     marketNote: 'This tool ships through the in-app plugin market: install once, get updates pushed instantly, no app re-download required.',
-    marketStepsTitle: 'Install from the market in three steps',
-    marketOne: 'Open ToolForge',
-    marketOneBody: 'Start the desktop app and open the plugin market.',
-    marketTwo: 'Search and install',
-    marketTwoBody: 'Search for this tool by name, press install, and it is ready in seconds.',
+    marketStepsTitle: 'One click, ready to use',
+    marketOne: 'Click “One-click install”',
+    marketOneBody: 'Use the button on the tool list or this page; your browser asks to open ToolForge.',
+    marketTwo: 'It downloads and installs itself',
+    marketTwoBody: 'ToolForge fetches the package from the official plugin index, verifies the signature and enables it.',
+    installNote: 'Click one-click install and your browser launches the local ToolForge to finish installing.',
     marketThree: 'Open it and get to work',
     marketThreeBody: 'Installed tools appear in the sidebar; updates are offered automatically.',
     desktopNote: 'Use it in the ToolForge desktop app',
@@ -251,15 +254,24 @@ export default async function ToolDetailPage({
             </div>
           </div>
           <div className={styles.heroActions}>
-            <Link href={notReleased ? `/${langTag}/changelog/` : `/${langTag}/#download`} className={styles.primary}>
-              {notReleased ? <Clock3 size={16} aria-hidden="true" /> : <ArrowDownToLine size={16} aria-hidden="true" />}
-              {notReleased ? t.changelog : tool.updateOnly && isUpcoming ? t.downloadStable : t.download}
-              <ArrowRight size={14} aria-hidden="true" />
-            </Link>
+            {isMarket && !notReleased ? (
+              <>
+                <InstallButton slug={tool.slug} lang={langTag} variant="primary" />
+                <Link href={`/${langTag}/#download`} className={styles.back}>
+                  <ArrowDownToLine size={13} aria-hidden="true" />{t.download}
+                </Link>
+              </>
+            ) : (
+              <Link href={notReleased ? `/${langTag}/changelog/` : `/${langTag}/#download`} className={styles.primary}>
+                {notReleased ? <Clock3 size={16} aria-hidden="true" /> : <ArrowDownToLine size={16} aria-hidden="true" />}
+                {notReleased ? t.changelog : tool.updateOnly && isUpcoming ? t.downloadStable : t.download}
+                <ArrowRight size={14} aria-hidden="true" />
+              </Link>
+            )}
             <Link href={`/${langTag}/tools/`} className={styles.back}>
               <ArrowLeft size={13} aria-hidden="true" />{t.back}
             </Link>
-            <p>{notReleased ? t.upcomingActionNote : tool.updateOnly && isUpcoming ? t.updatingActionNote : isMarket ? t.marketNote : t.desktopNote}</p>
+            <p>{notReleased ? t.upcomingActionNote : tool.updateOnly && isUpcoming ? t.updatingActionNote : isMarket ? t.installNote : t.desktopNote}</p>
           </div>
         </header>
 

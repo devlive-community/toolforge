@@ -285,7 +285,9 @@
         "needsApp": "Requires ToolForge v{{version}} or later",
         "packageSize": "Package size",
         "minApp": "App requirement",
-        "installedAt": "Installed at"
+        "installedAt": "Installed at",
+        "uptodate": "{{name}} is already installed and up to date",
+        "builtinTool": "{{name}} is already built into ToolForge"
       }
     }
   },
@@ -352,6 +354,9 @@
       "package.not_installed": "{{id}} is not installed",
       "package.checksum_mismatch": "The downloaded package failed its checksum",
       "market.invalid_index": "Invalid plugin index",
+      "market.not_in_index": "{{id}} is not in the official plugin index",
+      "market.needs_app": "This plugin requires ToolForge v{{version}} or later; update the app first",
+      "market.unsigned": "One-click install only supports officially signed plugins",
       "plugin.load_failed": "The plugin failed to load",
       "plugin.timeout": "The plugin timed out",
       "plugin.permission_denied": "The plugin lacks the {{detail}} permission",

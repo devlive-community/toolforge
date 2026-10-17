@@ -1,4 +1,5 @@
 mod commands;
+mod deeplink;
 mod diagnostics;
 mod history;
 mod installed;
@@ -44,7 +45,17 @@ pub fn stop_services(app: &tauri::AppHandle) {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    let mut builder = tauri::Builder::default();
+    #[cfg(desktop)]
+    {
+        // 必须最先注册：二次启动（含浏览器唤起的一键安装）时把事件转发给已有实例；
+        // deep-link 特性会让插件自己处理 argv 里的链接
+        builder = builder.plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| {
+            window::show_main(app);
+        }));
+    }
+    builder
+        .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
@@ -101,6 +112,16 @@ pub fn run() {
                 installed,
                 builtin,
             });
+            // Windows / Linux 在运行时注册 toolforge:// scheme（macOS 由构建时 Info.plist 声明）
+            #[cfg(any(windows, target_os = "linux"))]
+            {
+                use tauri_plugin_deep_link::DeepLinkExt;
+                if let Err(err) = app.deep_link().register_all() {
+                    log::warn!("failed to register deep link schemes: {err}");
+                }
+            }
+            // 官网 toolforge:// 一键安装；须在 AppState 之后注册，处理链接时要用到插件状态
+            deeplink::init(app.handle());
             launcher::init(app.handle(), &prefs);
             Ok(())
         })

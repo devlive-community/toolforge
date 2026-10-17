@@ -119,8 +119,8 @@ fn auto_install(
     }
 }
 
-/// 安装并立即启用；加载失败时撤销安装
-fn install_into(
+/// 安装并立即启用；加载失败时撤销安装（market 命令与一键安装共用）
+pub(crate) fn install_into(
     app: &AppHandle,
     installed: &Installed,
     registry: &PluginRegistry,
@@ -170,7 +170,7 @@ fn install(
 }
 
 /// 下载插件包并核对 SHA-256
-fn fetch_package(url: &str, sha256: &str) -> AppResult<Vec<u8>> {
+pub(crate) fn fetch_package(url: &str, sha256: &str) -> AppResult<Vec<u8>> {
     let bytes = resources::fetch_bytes(url, MAX_PACKAGE)?;
     let actual = resources::to_hex(&sha2_digest(&bytes));
     if !actual.eq_ignore_ascii_case(sha256.trim()) {
@@ -251,7 +251,8 @@ pub fn plugin_assets(state: State<'_, AppState>, plugin_id: String) -> AppResult
     state.installed.assets(&plugin_id)
 }
 
-fn fetch_index() -> AppResult<Value> {
+/// 下载官方索引；一键安装也复用
+pub(crate) fn fetch_index() -> AppResult<Value> {
     let url = std::env::var("TOOLFORGE_PLUGIN_INDEX").unwrap_or_else(|_| INDEX_URL.to_owned());
     let bytes = resources::fetch_bytes(&url, MAX_INDEX)?;
     let index: Value = serde_json::from_slice(&bytes)
