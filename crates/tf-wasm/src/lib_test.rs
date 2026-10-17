@@ -220,6 +220,31 @@ fn sends_http_requests_through_the_host() {
 }
 
 #[test]
+fn streams_responses_through_the_host() {
+    let base = echo_server();
+    let plugin = load();
+    let out = plugin
+        .run_task(
+            "stream",
+            json!({ "url": format!("{base}/echo") }),
+            &Ctx::default(),
+        )
+        .unwrap();
+    assert_eq!(out, json!({ "status": 200, "text": "GET  false" }));
+    let mut manifest = Manifest::from_static(MANIFEST);
+    manifest.permissions.clear();
+    let locked = WasmPlugin::load(manifest, fixture()).unwrap();
+    let err = locked
+        .run_task(
+            "stream",
+            json!({ "url": format!("{base}/echo") }),
+            &Ctx::default(),
+        )
+        .unwrap_err();
+    assert_eq!(err.code, "plugin.permission_denied");
+}
+
+#[test]
 fn listens_for_one_callback_and_releases_the_port() {
     let plugin = load();
     let port = plugin.call("listen", json!({})).unwrap().as_u64().unwrap();

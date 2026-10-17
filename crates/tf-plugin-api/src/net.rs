@@ -53,3 +53,48 @@ pub struct HttpResponse {
     pub redirects: Vec<String>,
     pub elapsed_ms: u64,
 }
+
+/// 流式请求：逐块读取响应体并拿到 trailers（gRPC、SSE 等）
+#[derive(Debug, Clone, PartialEq)]
+pub struct StreamRequest {
+    pub method: String,
+    pub url: String,
+    pub headers: Vec<(String, String)>,
+    pub body: Option<Vec<u8>>,
+    /// 整个流的截止时间（毫秒），超时后流以 `net.timeout` 结束
+    pub timeout_ms: u32,
+    /// http:// 地址直接使用 HTTP/2（h2c，gRPC 明文需要）；https 由 ALPN 协商
+    pub http2_prior_knowledge: bool,
+}
+
+impl StreamRequest {
+    pub fn new(method: &str, url: &str) -> Self {
+        Self {
+            method: method.to_owned(),
+            url: url.to_owned(),
+            headers: Vec::new(),
+            body: None,
+            timeout_ms: 60_000,
+            http2_prior_knowledge: false,
+        }
+    }
+}
+
+/// 响应状态与响应头
+#[derive(Debug, Clone, PartialEq)]
+pub struct StreamHead {
+    pub status: u16,
+    pub reason: String,
+    pub version: String,
+    pub headers: Vec<(String, String)>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum StreamEvent {
+    /// 一块响应体
+    Data(Vec<u8>),
+    /// 等待期间没有新数据
+    Pending,
+    /// 响应结束，附带 trailers（没有时为空）
+    End(Vec<(String, String)>),
+}

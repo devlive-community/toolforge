@@ -3,7 +3,10 @@
 //!
 //! - HTTP 请求：reqwest（rustls），记录重定向；跨源重定向时 reqwest 会去掉 Authorization 等凭据头。
 //!   本机地址始终直连，其余可选系统代理；响应体按上限读取，可取消。
+//! - 流式请求（[`HttpStream`]）：逐块读取响应体与 trailers，用于 gRPC、SSE。
 //! - 回调监听：只绑定 127.0.0.1，只接受第一个匹配路径的 GET 请求，随后关闭；超时或关闭即释放端口。
+
+mod stream;
 
 use std::io::Read;
 use std::net::{Ipv4Addr, TcpListener};
@@ -16,6 +19,8 @@ use reqwest::header::{HeaderMap, HeaderName, HeaderValue, USER_AGENT};
 use reqwest::redirect::Policy;
 use tf_plugin_api::net::{HttpRequest, HttpResponse};
 use tf_plugin_api::{PluginError, PluginResult, cancelled};
+
+pub use stream::HttpStream;
 
 /// 宿主允许的最大响应体
 pub const MAX_BODY: u64 = 100 * 1024 * 1024;

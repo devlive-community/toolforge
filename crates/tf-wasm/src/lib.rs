@@ -2,7 +2,7 @@
 //! 这样在线安装的插件可以与内置插件一样注册到插件注册表。
 //!
 //! 隔离：WASI 不开放任何目录、环境变量与网络；读写文件只能通过 `read-file` / `write-file` 宿主函数，
-//! 且插件需在 manifest 中声明 `fs:user-selected`；HTTP 请求与本机回调监听由宿主执行（`tf-net`），
+//! 且插件需在 manifest 中声明 `fs:user-selected`；HTTP 请求（含流式）与本机回调监听由宿主执行（`tf-net`），
 //! 插件需声明 `network`。每个插件的内存上限 1 GB，
 //! 普通调用 30 秒超时；插件崩溃（trap）后丢弃实例，下次调用重新实例化。
 
@@ -12,8 +12,8 @@ use std::sync::{Mutex, OnceLock};
 use std::time::Duration;
 
 use serde_json::{Map, Value};
-use tf_net::CallbackServer;
-use tf_plugin_api::net::{HttpRequest, NETWORK_PERMISSION};
+use tf_net::{CallbackServer, HttpStream};
+use tf_plugin_api::net::{HttpRequest, NETWORK_PERMISSION, StreamEvent, StreamRequest};
 use tf_plugin_api::{
     Detection, LogLevel, Manifest, PluginError, PluginResult, TaskContext, ToolPlugin,
 };
@@ -40,6 +40,10 @@ const MAX_READ: u32 = 4 * 1024 * 1024;
 pub const FS_PERMISSION: &str = "fs:user-selected";
 /// 每个插件实例同时存在的回调监听上限
 const MAX_CALLBACKS: usize = 4;
+/// 每个插件实例同时打开的流上限
+const MAX_STREAMS: usize = 8;
+/// 单次读取流的最长等待
+const MAX_STREAM_WAIT: u32 = 5_000;
 
 /// 宿主的 IANA 时区名，经 WASI 环境变量 TZ 传给插件（插件内置时区库，读取系统时区会失败）
 fn local_time_zone() -> String {
@@ -86,6 +90,9 @@ struct State {
     /// 回调监听；实例丢弃时随之关闭并释放端口
     callbacks: HashMap<u32, CallbackServer>,
     next_callback: u32,
+    /// 流式请求；实例丢弃时中止
+    streams: HashMap<u32, HttpStream>,
+    next_stream: u32,
 }
 
 impl State {
@@ -262,6 +269,60 @@ impl host::Host for State {
     fn callback_close(&mut self, id: u32) {
         self.callbacks.remove(&id);
     }
+
+    fn http_stream_open(
+        &mut self,
+        request: host::StreamRequest,
+    ) -> Result<(u32, host::StreamHead), host::Failure> {
+        if !self.can_network {
+            return Err(failure("plugin.permission_denied", NETWORK_PERMISSION));
+        }
+        if self.streams.len() >= MAX_STREAMS {
+            return Err(failure("net.too_many_streams", MAX_STREAMS));
+        }
+        let (stream, head) = HttpStream::open(&StreamRequest {
+            method: request.method,
+            url: request.url,
+            headers: request.headers,
+            body: request.body,
+            timeout_ms: request.timeout_ms,
+            http2_prior_knowledge: request.http2_prior_knowledge,
+        })
+        .map_err(to_failure)?;
+        self.next_stream = self.next_stream.wrapping_add(1);
+        let id = self.next_stream;
+        self.streams.insert(id, stream);
+        Ok((
+            id,
+            host::StreamHead {
+                status: head.status,
+                reason: head.reason,
+                version: head.version,
+                headers: head.headers,
+            },
+        ))
+    }
+
+    fn http_stream_read(
+        &mut self,
+        id: u32,
+        wait_ms: u32,
+    ) -> Result<host::StreamEvent, host::Failure> {
+        let stream = self
+            .streams
+            .get_mut(&id)
+            .ok_or_else(|| failure("net.stream_closed", id))?;
+        let wait = Duration::from_millis(u64::from(wait_ms.min(MAX_STREAM_WAIT)));
+        match stream.read(wait).map_err(to_failure)? {
+            StreamEvent::Data(data) => Ok(host::StreamEvent::Data(data)),
+            StreamEvent::Pending => Ok(host::StreamEvent::Pending),
+            StreamEvent::End(trailers) => Ok(host::StreamEvent::End(trailers)),
+        }
+    }
+
+    fn http_stream_close(&mut self, id: u32) {
+        self.streams.remove(&id);
+    }
 }
 
 struct Instance {
@@ -337,6 +398,8 @@ impl WasmPlugin {
                 .any(|p| p == NETWORK_PERMISSION),
             callbacks: HashMap::new(),
             next_callback: 0,
+            streams: HashMap::new(),
+            next_stream: 0,
         };
         let mut store = Store::new(engine(), state);
         store.limiter(|state| &mut state.limits);

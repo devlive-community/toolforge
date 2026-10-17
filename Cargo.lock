@@ -3370,6 +3370,7 @@ dependencies = [
  "http",
  "http-body",
  "pin-project-lite",
+ "tokio",
 ]
 
 [[package]]
@@ -3407,6 +3408,7 @@ dependencies = [
  "http",
  "http-body",
  "httparse",
+ "httpdate",
  "itoa",
  "pin-project-lite",
  "smallvec",
@@ -8206,10 +8208,18 @@ dependencies = [
 name = "tf-net"
 version = "0.2.0"
 dependencies = [
+ "bytes",
+ "http",
+ "http-body-util",
+ "hyper",
+ "hyper-util",
  "reqwest",
  "rustls",
+ "rustls-platform-verifier",
  "tf-plugin-api",
  "tiny_http",
+ "tokio",
+ "tokio-rustls",
  "url",
 ]
 

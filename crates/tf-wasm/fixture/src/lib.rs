@@ -107,6 +107,24 @@ impl ToolPlugin for Fixture {
                     "redirects": response.redirects,
                 }))
             }
+            "stream" => {
+                let request = tf_plugin_guest::net::StreamRequest::new(
+                    "GET",
+                    args["url"].as_str().unwrap_or_default(),
+                );
+                let mut stream = tf_plugin_guest::net::Stream::open(&request)?;
+                let mut text = String::new();
+                loop {
+                    match stream.read(std::time::Duration::from_secs(5))? {
+                        tf_plugin_guest::net::StreamEvent::Data(d) => {
+                            text.push_str(&String::from_utf8_lossy(&d));
+                        }
+                        tf_plugin_guest::net::StreamEvent::Pending => {}
+                        tf_plugin_guest::net::StreamEvent::End(_) => break,
+                    }
+                }
+                Ok(json!({ "status": stream.head().status, "text": text }))
+            }
             "read" => {
                 let path = args["path"].as_str().unwrap_or_default();
                 let size = ctx.file_size(path)?;

@@ -17,6 +17,7 @@
     "close": {},
     "count": { "task": true },
     "fetch": { "task": true },
+    "stream": { "task": true },
     "read": { "task": true }
   }
 }

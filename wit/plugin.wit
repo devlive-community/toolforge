@@ -57,6 +57,41 @@ interface host {
     callback-poll: func(id: u32) -> result<option<string>, failure>;
     /// 停止监听并释放端口
     callback-close: func(id: u32);
+
+    /// 流式请求（需要 network 权限）：逐块读取响应体，结束时拿到 trailers；用于 gRPC、SSE
+    record stream-request {
+        method: string,
+        url: string,
+        headers: list<tuple<string, string>>,
+        body: option<list<u8>>,
+        /// 整个流的截止时间
+        timeout-ms: u32,
+        /// http:// 地址直接使用 HTTP/2（h2c）；https 由 ALPN 协商
+        http2-prior-knowledge: bool,
+    }
+
+    record stream-head {
+        status: u16,
+        reason: string,
+        version: string,
+        headers: list<tuple<string, string>>,
+    }
+
+    variant stream-event {
+        /// 一块响应体
+        data(list<u8>),
+        /// 等待期间没有新数据
+        pending,
+        /// 响应结束，附带 trailers
+        end(list<tuple<string, string>>),
+    }
+
+    /// 连接并发送请求，返回流编号与响应头
+    http-stream-open: func(request: stream-request) -> result<tuple<u32, stream-head>, failure>;
+    /// 最多等待 wait-ms 毫秒读取下一块
+    http-stream-read: func(id: u32, wait-ms: u32) -> result<stream-event, failure>;
+    /// 中止并释放流
+    http-stream-close: func(id: u32);
 }
 
 world plugin {
