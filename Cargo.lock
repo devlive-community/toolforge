@@ -8527,6 +8527,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-crypto"
+version = "0.1.0"
+dependencies = [
+ "aes 0.8.4",
+ "aes-gcm",
+ "cbc 0.1.2",
+ "chacha20poly1305",
+ "ctr",
+ "data-encoding",
+ "ecb 0.1.2",
+ "hmac 0.12.1",
+ "pbkdf2 0.12.2",
+ "rand 0.8.8",
+ "rsa",
+ "serde",
+ "serde_json",
+ "sha1 0.10.7",
+ "sha2 0.10.9",
+ "sm4",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-csp-inspector"
 version = "0.1.0"
 dependencies = [
@@ -8848,29 +8872,6 @@ dependencies = [
  "jiff",
  "serde",
  "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
-name = "tfp-crypto"
-version = "0.1.0"
-dependencies = [
- "aes 0.8.4",
- "aes-gcm",
- "cbc 0.1.2",
- "chacha20poly1305",
- "ctr",
- "data-encoding",
- "ecb 0.1.2",
- "hmac 0.12.1",
- "pbkdf2 0.12.2",
- "rand 0.8.8",
- "rsa",
- "serde",
- "serde_json",
- "sha1 0.10.7",
- "sha2 0.10.9",
- "sm4",
  "tf-plugin-api",
 ]
 
@@ -9852,7 +9853,6 @@ dependencies = [
  "tfp-color",
  "tfp-context-menu",
  "tfp-cron",
- "tfp-crypto",
  "tfp-csv-viewer",
  "tfp-curl-converter",
  "tfp-disk-usage",

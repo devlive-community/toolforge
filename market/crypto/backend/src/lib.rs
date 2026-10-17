@@ -102,6 +102,8 @@ impl ToolPlugin for Crypto {
     }
 }
 
+tf_plugin_guest::export_plugin!(Crypto);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;
