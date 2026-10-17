@@ -27,7 +27,8 @@ export function DiffTab({ today, schemes }: { today: string; schemes: StoredSche
   const scheme = schemes.find((s) => s.id === schemeId)
   const schemeArg = scheme ? toScheme(scheme) : undefined
   const args = start.trim() && end.trim() ? { start, end, includeEnd, scheme: schemeArg } : null
-  const diff = useDebouncedCall<Difference>(args ? 'diff' : null, args, [start, end, includeEnd, schemeArg])
+  // 依赖用已保存的方案对象（引用稳定）；toScheme 每次渲染都会新建对象，放进依赖会无限重渲染
+  const diff = useDebouncedCall<Difference>(args ? 'diff' : null, args, [start, end, includeEnd, scheme])
   const r = diff.result
   const n = (value: number) => value.toLocaleString()
 

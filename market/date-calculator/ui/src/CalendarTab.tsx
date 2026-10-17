@@ -28,7 +28,8 @@ export function CalendarTab({ today, schemes }: { today: Today; schemes: StoredS
   const scheme = schemes.find((s) => s.id === schemeId)
   const schemeArg = scheme ? toScheme(scheme) : undefined
   const monthArgs = { ...view, mondayFirst: weekStart === 'monday', scheme: schemeArg }
-  const cells = useDebouncedCall<Cell[]>('month', monthArgs, [view.year, view.month, weekStart, schemeArg])
+  // 依赖用已保存的方案对象（引用稳定），不用每次渲染新建的 schemeArg
+  const cells = useDebouncedCall<Cell[]>('month', monthArgs, [view.year, view.month, weekStart, scheme])
   const selectedCell = cells.result?.find((cell) => cell.date === selected)
   const info = useDebouncedCall<Info>('info', { date: selected }, [selected])
   const shift = (delta: number) =>

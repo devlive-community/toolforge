@@ -26,7 +26,8 @@ export function AddTab({ today, schemes }: { today: string; schemes: StoredSchem
   const signed = Object.fromEntries(UNITS.map((unit) => [unit, amount[unit] * k]))
   const fn = start.trim() ? (mode === 'calendar' ? 'add' : 'add_workdays') : null
   const args = mode === 'calendar' ? { start, ...signed } : { start, days: workdays * k, calendar: calendarArg }
-  const result = useDebouncedCall<Added>(fn, args, [fn, start, sign, calendarArg, workdays, ...UNITS.map((u) => amount[u])])
+  // 依赖用已保存的方案对象或日历名称（引用稳定），不用每次渲染新建的 calendarArg
+  const result = useDebouncedCall<Added>(fn, args, [fn, start, sign, scheme ?? calendar, workdays, ...UNITS.map((u) => amount[u])])
   const r = result.result
 
   return (
