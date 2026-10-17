@@ -271,6 +271,26 @@ impl Drop for CallbackServer {
         if let Some(thread) = self.thread.take() {
             let _ = thread.join();
         }
+        wait_released(self.port);
+    }
+}
+
+/// 等待监听端口真正释放。
+///
+/// tiny_http 的 `Server::drop` 只置关闭标志并自连接唤醒，`TcpListener` 是其后在
+/// 它内部 accept 线程退出时才关闭的——上面的 join 只等了外层 accept 线程。
+/// 这里轮询到能重新绑上该端口为止（探测用的 listener 立即丢弃），让「drop 返回
+/// 即端口可用」成立；最多等 2 秒，端口被外部长期占用时也不再阻塞调用方。
+fn wait_released(port: u16) {
+    let deadline = Instant::now() + Duration::from_secs(2);
+    loop {
+        if TcpListener::bind((Ipv4Addr::LOCALHOST, port)).is_ok() {
+            return;
+        }
+        if Instant::now() >= deadline {
+            return;
+        }
+        std::thread::sleep(Duration::from_millis(5));
     }
 }
 
