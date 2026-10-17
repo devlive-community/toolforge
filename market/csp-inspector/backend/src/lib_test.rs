@@ -26,6 +26,8 @@ fn inspect_returns_handle_and_stats() {
 #[test]
 fn export_requires_an_inspection() {
     let _guard = LOCK.lock().unwrap_or_else(|e| e.into_inner());
+    // The no-result precondition must not inherit another test's report.
+    *LAST.lock().unwrap_or_else(|e| e.into_inner()) = None;
     let plugin = CspInspector::default();
     let error = plugin
         .call("export", json!({ "format": "markdown" }))
