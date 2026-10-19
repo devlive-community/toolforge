@@ -1,0 +1,83 @@
+{
+  "name": "Travel Packing List",
+  "description": "Generate trip lists from editable templates by people/days, assign owners and bags, and track packing progress with weight estimates; fully offline",
+  "help": [
+    "Create a trip with people and days, then generate items from built-in templates; per-person/per-day quantity rules are computed in Rust and shared items are never doubled automatically.",
+    "Assign an owner, a bag and an optional per-item weight; items marked as excluded do not count toward progress; split one item across bags by creating separate entries.",
+    "Weight totals separate known from unknown: packed items without a weight are counted as an incomplete estimate, never treated as zero; weights are informational only, not airline or customs advice.",
+    "Trips and templates persist in the local ToolForge database; editing a template never changes created trips, and you can save templates or duplicate trips for the next journey."
+  ],
+  "functions": {
+    "generate": "Generate list",
+    "summary": "Compute summary",
+    "new_id": "Generate id",
+    "export": "Export"
+  },
+  "input": {
+    "trip": "Trip",
+    "tripName": "Trip name",
+    "tripNamePlaceholder": "e.g. Tokyo business, 3 days",
+    "people": "People",
+    "days": "Days",
+    "templates": "Templates",
+    "template.business": "Business",
+    "template.shortTrip": "Short trip",
+    "template.family": "Family",
+    "generate": "Generate from template",
+    "saveTemplate": "Save as template",
+    "items": "Items",
+    "addItem": "Add item",
+    "name": "Item",
+    "category": "Category",
+    "unit": "Unit",
+    "target": "Needed",
+    "packed": "Packed",
+    "owner": "Owner",
+    "bag": "Bag",
+    "weight": "Unit weight (g)",
+    "note": "Note",
+    "excluded": "Not taking",
+    "addBag": "Add bag",
+    "bagName": "Bag name",
+    "selfWeight": "Self weight (g)",
+    "remove": "Delete",
+    "packedPlus": "Pack +1",
+    "packedMinus": "Pack -1",
+    "empty": "Generate from a template or add items manually",
+    "run": "Compute"
+  },
+  "result": {
+    "title": "Packing board",
+    "empty": "No trip to summarize yet",
+    "progress": "Progress",
+    "byCategory": "By category",
+    "byBag": "By bag",
+    "selfWeight": "Self",
+    "packedWeight": "Packed",
+    "totalWeight": "Total",
+    "unknown": "weight unknown",
+    "incomplete": "Incomplete estimate: {{count}} packed items without weight",
+    "unpacked": "To pack",
+    "allPacked": "All packed!",
+    "excluded": "excluded: {{count}}",
+    "ownerTag": "{{owner}} carries"
+  },
+  "export": {
+    "text": "Copy to-pack list",
+    "json": "Copy JSON",
+    "saveText": "Save to-pack list",
+    "saveJson": "Save JSON"
+  },
+  "errors": {
+    "plc.people_range": "People must be 1-{{max}}",
+    "plc.days_range": "Days must be 1-{{max}}",
+    "plc.quantity_range": "Quantity must be 0-{{max}}",
+    "plc.weight_range": "Weight must be 0-{{max}} grams",
+    "plc.empty_name": "Item name cannot be empty",
+    "plc.packed_range": "Packed count cannot exceed the target (max {{max}})",
+    "plc.unknown_bag": "Item references a missing bag: {{id}}",
+    "plc.too_many_items": "At most {{max}} items",
+    "plc.too_many_bags": "At most {{max}} bags",
+    "plc.serialize": "Failed to serialize the summary: {{detail}}"
+  }
+}

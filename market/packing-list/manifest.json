@@ -1,0 +1,18 @@
+{
+  "id": "org.devlive.toolforge.packing-list",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "other",
+  "keywords": ["packing", "travel", "trip", "luggage", "checklist", "template", "weight", "行李", "旅行", "清单", "打包", "装备"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "generate": {},
+    "summary": {},
+    "new_id": {},
+    "export": {}
+  },
+  "sensitive": false
+}

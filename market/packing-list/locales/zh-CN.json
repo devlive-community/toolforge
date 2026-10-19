@@ -1,0 +1,83 @@
+{
+  "name": "旅行行李清单",
+  "description": "从可编辑模板按人数/天数生成本次清单,分清谁带、装哪个包,汇总打包进度与重量估算;离线可用",
+  "help": [
+    "新建行程填人数与天数,从内置模板生成物品;按人数/天数的数量规则在生成时由 Rust 计算,共享物品不会自动翻倍。",
+    "每件物品可指定负责人、箱包、单件重量,标记「不带」的项目不计入进度;同物品分装多个包时各自建条目。",
+    "重量汇总区分已知与未知:未填重量的已装物品单独计数,标记「不完整估算」,不把未知当零;重量仅供参考,不构成航空或海关合规建议。",
+    "行程与模板保存在本机 ToolForge 数据库;修改模板不影响已创建行程,另存模板或复制行程开启下一次旅行。"
+  ],
+  "functions": {
+    "generate": "生成清单",
+    "summary": "计算汇总",
+    "new_id": "生成 id",
+    "export": "导出"
+  },
+  "input": {
+    "trip": "行程",
+    "tripName": "行程名称",
+    "tripNamePlaceholder": "例如：东京出差 3 天",
+    "people": "人数",
+    "days": "天数",
+    "templates": "模板",
+    "template.business": "出差",
+    "template.shortTrip": "短途",
+    "template.family": "亲子",
+    "generate": "从模板生成",
+    "saveTemplate": "另存为模板",
+    "items": "物品",
+    "addItem": "添加物品",
+    "name": "物品",
+    "category": "类别",
+    "unit": "单位",
+    "target": "需要",
+    "packed": "已装",
+    "owner": "负责人",
+    "bag": "箱包",
+    "weight": "单件重量（克）",
+    "note": "备注",
+    "excluded": "不带",
+    "addBag": "添加箱包",
+    "bagName": "箱包名称",
+    "selfWeight": "自重（克）",
+    "remove": "删除",
+    "packedPlus": "已装 +1",
+    "packedMinus": "已装 -1",
+    "empty": "从模板生成或手动添加物品",
+    "run": "计算汇总"
+  },
+  "result": {
+    "title": "打包看板",
+    "empty": "还没有可汇总的行程",
+    "progress": "打包进度",
+    "byCategory": "按类别",
+    "byBag": "按箱包",
+    "selfWeight": "自重",
+    "packedWeight": "已装重量",
+    "totalWeight": "总重",
+    "unknown": "重量未知",
+    "incomplete": "不完整估算：{{count}} 件已装物品未填重量",
+    "unpacked": "待装清单",
+    "allPacked": "全部装好了！",
+    "excluded": "不带:{{count}} 项",
+    "ownerTag": "{{owner}} 带"
+  },
+  "export": {
+    "text": "复制待装清单",
+    "json": "复制 JSON",
+    "saveText": "保存待装清单",
+    "saveJson": "保存 JSON"
+  },
+  "errors": {
+    "plc.people_range": "人数需在 1-{{max}} 之间",
+    "plc.days_range": "天数需在 1-{{max}} 之间",
+    "plc.quantity_range": "数量需在 0-{{max}} 之间",
+    "plc.weight_range": "重量需在 0-{{max}} 克之间",
+    "plc.empty_name": "物品名称不能为空",
+    "plc.packed_range": "已装数量不能超过需要数量（最多 {{max}}）",
+    "plc.unknown_bag": "物品引用了不存在的箱包:{{id}}",
+    "plc.too_many_items": "物品最多 {{max}} 项",
+    "plc.too_many_bags": "箱包最多 {{max}} 个",
+    "plc.serialize": "汇总序列化失败:{{detail}}"
+  }
+}
