@@ -34,12 +34,14 @@ fn chain_for(kind: &str) -> Option<&'static [&'static str]> {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct DirectiveView {
     pub name: String,
     pub values: Vec<String>,
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PolicyView {
     pub index: usize,
     pub report_only: bool,
@@ -49,6 +51,7 @@ pub struct PolicyView {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct PolicyVerdict {
     pub index: usize,
     pub report_only: bool,
@@ -59,6 +62,7 @@ pub struct PolicyVerdict {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ResourceVerdict {
     pub index: usize,
     pub kind: String,
@@ -72,6 +76,7 @@ pub struct ResourceVerdict {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Report {
     pub document: Option<String>,
     pub policies: Vec<PolicyView>,
@@ -81,6 +86,7 @@ pub struct Report {
 }
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Stats {
     pub allowed: usize,
     pub blocked: usize,
