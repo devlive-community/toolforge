@@ -12,8 +12,8 @@ on:
       - 'apps/desktop/src-tauri/tauri.conf.json'
       - '.github/workflows/site-deploy.yml'
   release:
-    # published 偶发丢失（draft→publish / API 创建等场景），prereleased 覆盖预发布；
-    # schedule 每日 03:00 UTC 兑底，必要时手动 workflow_dispatch
+    # 只在手动发布时生效：release.yml 用 GITHUB_TOKEN 发布不会触发这里，
+    # 它在发布后通过 workflow_dispatch 显式重建；schedule 每日 03:00 UTC 兜底
     types: [published, prereleased]
   schedule:
     # 每日 03:00 UTC 重建，保持版本号与更新日志新鲜
