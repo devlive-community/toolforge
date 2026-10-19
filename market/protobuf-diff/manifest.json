@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.protobuf-diff",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["protobuf", "proto3", "descriptor", "compatibility", "breaking", "grpc", "wire", "schema", "diff", "协议", "兼容", "描述符", "破坏性", "演进"],
+  "accent": "teal",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "functions": {
+    "diff": { "task": true },
+    "export": {}
+  },
+  "sensitive": false
+}
