@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.expense-splitter",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "other",
+  "keywords": ["expense", "split", "aa", "settle", "group", "trip", "dinner", "ledger", "balance", "分账", "AA", "聚餐", "旅行", "结算", "记账"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "settle": {},
+    "new_id": {},
+    "export": {}
+  },
+  "sensitive": false
+}
