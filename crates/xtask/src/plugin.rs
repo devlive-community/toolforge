@@ -186,7 +186,30 @@ fn localized(
     out
 }
 
+/// 递归收集目录下的 .tfp 文件（CI 会把历史版本下载到 previous/ 子目录供全量重建）
+fn collect_tfp(dir: &Path, out: &mut Vec<PathBuf>) -> Result<(), String> {
+    let entries = std::fs::read_dir(dir).map_err(|e| format!("{}: {e}", dir.display()))?;
+    for entry in entries {
+        let path = entry.map_err(|e| e.to_string())?.path();
+        if path.is_dir() {
+            collect_tfp(&path, out)?;
+        } else if path.extension().is_some_and(|e| e == "tfp") {
+            out.push(path);
+        }
+    }
+    Ok(())
+}
+
+/// 版本比较键：按数字段比较，0.1.10 > 0.1.9（文件名排序对这类版本不可靠）
+fn version_key(version: &str) -> Vec<u64> {
+    version
+        .split(['.', '-'])
+        .map(|part| part.parse().unwrap_or(0))
+        .collect()
+}
+
 /// 由目录中的 .tfp 生成插件索引 registry.json；url 为 base_url + 文件名。
+/// 递归扫描子目录；同一插件存在多个历史版本时只保留版本号最高的那个。
 /// 传入旧索引时在其基础上合并：目录中有的插件替换旧条目，其余旧条目保留。
 pub fn index(dir: &Path, base_url: &str, merge: Option<&Path>) -> Result<PathBuf, String> {
     let mut plugins: Vec<serde_json::Value> = match merge {
@@ -199,15 +222,29 @@ pub fn index(dir: &Path, base_url: &str, merge: Option<&Path>) -> Result<PathBuf
         }
         None => Vec::new(),
     };
-    let mut entries: Vec<_> = std::fs::read_dir(dir)
-        .map_err(|e| format!("{}: {e}", dir.display()))?
-        .filter_map(Result::ok)
-        .map(|e| e.path())
-        .filter(|p| p.extension().is_some_and(|e| e == "tfp"))
-        .collect();
-    entries.sort();
-    for path in entries {
-        let bytes = std::fs::read(&path).map_err(|e| e.to_string())?;
+    let mut files: Vec<PathBuf> = Vec::new();
+    collect_tfp(dir, &mut files)?;
+    files.sort();
+    // 每个 id 只保留最高版本的包
+    let mut best: Vec<(String, Vec<u64>, PathBuf)> = Vec::new();
+    for path in &files {
+        let bytes = std::fs::read(path).map_err(|e| e.to_string())?;
+        let package = tf_package::open(&bytes).map_err(|e| format!("{}: {e}", path.display()))?;
+        let id = package.manifest.id.clone();
+        let key = version_key(&package.manifest.version);
+        match best.iter_mut().find(|(seen, _, _)| *seen == id) {
+            Some(entry) => {
+                if key > entry.1 {
+                    entry.1 = key;
+                    entry.2 = path.clone();
+                }
+            }
+            None => best.push((id, key, path.clone())),
+        }
+    }
+    best.sort_by(|a, b| a.0.cmp(&b.0));
+    for (_, _, path) in &best {
+        let bytes = std::fs::read(path).map_err(|e| e.to_string())?;
         let package = tf_package::open(&bytes).map_err(|e| format!("{}: {e}", path.display()))?;
         let manifest = &package.manifest;
         let file = path
@@ -244,3 +281,7 @@ pub fn index(dir: &Path, base_url: &str, merge: Option<&Path>) -> Result<PathBuf
     println!("{} ({} plugins)", out.display(), plugins.len());
     Ok(out)
 }
+
+#[cfg(test)]
+#[path = "plugin_test.rs"]
+mod tests;

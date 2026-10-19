@@ -87,7 +87,9 @@ jobs:
             gh release create "$RELEASE_TAG" --prerelease --title "Plugins" \
               --notes "Installable ToolForge plugins, published independently of app releases. The app reads registry.json from here."
           fi
-          # 下载全部已发布的 .tfp 全量重建索引：旧条目也能补上 manifest 新增的字段（如 accent）
-          gh release download "$RELEASE_TAG" --pattern '*.tfp' --dir dist/plugins 2>/dev/null || true
+          # 历史版本下载到子目录：只用于全量重建索引（旧条目也能补上 manifest 新增字段），
+          # 不会重新上传；--clobber 只覆盖本次新打包的 .tfp 与 registry.json
+          mkdir -p dist/plugins/previous
+          gh release download "$RELEASE_TAG" --pattern '*.tfp' --dir dist/plugins/previous 2>/dev/null || true
           cargo xtask plugin index dist/plugins "$BASE_URL"
           gh release upload "$RELEASE_TAG" dist/plugins/*.tfp dist/plugins/registry.json --clobber
