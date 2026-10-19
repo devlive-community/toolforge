@@ -1,0 +1,107 @@
+{
+  "name": "闪卡与间隔复习",
+  "description": "自定义问答牌组，固定档位间隔复习：首次记住 1 天，连续 3/7/14/30 天，支持 CSV 导入、撤销与备份",
+  "help": [
+    "建立牌组，手动填写问题/答案与标签，或批量导入 UTF-8 CSV（列顺序 question,answer,deck,tags，标签用分号分隔，支持引号转义）。",
+    "先显示问题，主动翻面后才出现「没记住 / 记住」；可以跳过，不强迫评分。评分前会显示两种选择对应的下次日期。",
+    "调度档位公开透明：首次记住 1 天，连续记住依次 3、7、14、30 天后保持 30；没记住回到 1 天档并清零连续计数。按实际评分日计算，不虚构逾期复习。",
+    "撤销只回退最近一次评分（恢复档位、到期日与日志）；编辑问答不会重置学习进度；重复评分不会重复计数。",
+    "牌组可暂停卡片（保留历史）；备份为含进度的 JSON，恢复前预览冲突。全部数据保存在 ToolForge 本地，调度在 Rust 完成。"
+  ],
+  "session": {
+    "title": "今日复习",
+    "loadQueue": "加载队列",
+    "limit": "单轮上限",
+    "limitUnit": "张",
+    "newLimit": "新卡",
+    "newLimitUnit": "张",
+    "counts": "到期 {{due}} · 新卡 {{fresh}} · 暂停 {{paused}}",
+    "nextDue": "下次到期：{{date}}",
+    "undo": "撤销上次评分",
+    "undoTip": "恢复档位、到期日与日志（仅最近一次）"
+  },
+  "deck": {
+    "title": "牌组",
+    "default": "默认牌组",
+    "empty": "还没有卡片：手动添加或从 CSV 导入。",
+    "emptyDeck": "该牌组没有卡片。",
+    "dueCount": "到期 {{count}}",
+    "totalCount": "{{count}} 张"
+  },
+  "add": {
+    "title": "添加卡片",
+    "question": "问题",
+    "answer": "答案",
+    "deck": "牌组（可留空）",
+    "tags": "标签（分号分隔）",
+    "submit": "添加"
+  },
+  "review": {
+    "title": "复习",
+    "idle": "点击「加载队列」开始今天的复习。",
+    "done": "本轮完成：已展示 {{count}} 张。",
+    "isNew": "新卡",
+    "position": "{{current}} / {{total}}",
+    "reveal": "翻面",
+    "forgot": "没记住",
+    "remembered": "记住",
+    "nextDate": "{{date}}",
+    "skip": "跳过"
+  },
+  "card": {
+    "pause": "暂停（保留历史）",
+    "resume": "恢复",
+    "edit": "编辑（不重置进度）",
+    "remove": "删除卡片",
+    "cancelEdit": "取消",
+    "stageLabel": "连续记住 {{stage}} 次",
+    "noDue": "未安排",
+    "historyLine": "{{date}} · {{verdict}} · {{from}}→{{to}} · {{next}}"
+  },
+  "nav": {
+    "review": "复习",
+    "import": "导入 CSV",
+    "backup": "备份"
+  },
+  "import": {
+    "title": "CSV 批量导入",
+    "format": "UTF-8 CSV，列顺序 question,answer,deck,tags；标签用分号分隔；支持引号与双引号转义；首行可为表头。空问题/超长行会跳过并逐行列出。",
+    "csvLabel": "CSV 内容",
+    "defaultDeck": "默认牌组",
+    "run": "导入",
+    "done": "导入 {{count}} 张",
+    "lineError": "第 {{line}} 行"
+  },
+  "backup": {
+    "title": "备份与恢复",
+    "export": "导出含进度的备份",
+    "pasteHint": "粘贴备份 JSON 预览冲突后恢复；冲突 = 同 id 但问答/牌组不同。",
+    "pasteLabel": "备份 JSON",
+    "preview": "预览",
+    "incoming": "备份 {{count}} 张",
+    "fresh": "全新 {{count}} 张",
+    "conflicts": "冲突 {{count}} 张",
+    "overwrite": "覆盖冲突",
+    "skipConflicts": "跳过冲突",
+    "replace": "整体替换",
+    "applied": "已恢复 {{count}} 张"
+  },
+  "errors": {
+    "fcs.bad_stage": "连续计数无效：{{value}}",
+    "fcs.bad_date": "日期格式应为 YYYY-MM-DD：{{value}}",
+    "fcs.limit_range": "单轮上限需在 1–{{max}} 张之间",
+    "fcs.new_limit_range": "新卡上限不能超过单轮上限 {{max}}",
+    "fcs.too_many_cards": "卡片数超过 {{max}} 上限",
+    "fcs.too_many_decks": "牌组数超过 {{max}} 上限",
+    "fcs.too_many_tags": "每张卡标签数超过 {{max}} 上限",
+    "fcs.too_many_rows": "CSV 行数超过 {{max}} 上限",
+    "fcs.text_too_long": "问题/答案超过 {{max}} 字",
+    "fcs.empty_question": "问题为空",
+    "fcs.bad_quote": "CSV 引号不匹配",
+    "fcs.empty_id": "卡片缺少 id",
+    "fcs.bad_backup": "备份内容无法解析",
+    "fcs.bad_version": "不支持的备份版本：{{version}}",
+    "fcs.bad_mode": "未知恢复模式：{{mode}}",
+    "fcs.serialize": "备份序列化失败"
+  }
+}

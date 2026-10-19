@@ -1,0 +1,107 @@
+{
+  "name": "Flashcards & Spaced Review",
+  "description": "Custom Q&A decks with a transparent interval ladder: first pass 1 day, then 3/7/14/30 days; CSV import, undo and backups",
+  "help": [
+    "Build decks by typing questions/answers with tags, or batch import UTF-8 CSV (columns question,answer,deck,tags; tags separated by semicolons; quotes escaped).",
+    "The question shows first; grade buttons appear only after you flip. Skipping is allowed — nothing is forced and unshown cards never count as reviewed.",
+    "The ladder is simple and public: first pass schedules 1 day, consecutive passes go 3/7/14/30 days and stay at 30; forgetting resets to 1 day. Dates follow the actual grading day — no fictional catch-up reviews.",
+    "Undo reverts the latest grade (stage, due date and log); editing a card never resets progress; grading twice cannot log twice.",
+    "Pause cards per deck (history kept); backups are progress-complete JSON with a conflict preview before restore. All data stays local; scheduling runs in Rust."
+  ],
+  "session": {
+    "title": "Today's review",
+    "loadQueue": "Load queue",
+    "limit": "Session limit",
+    "limitUnit": "cards",
+    "newLimit": "New",
+    "newLimitUnit": "cards",
+    "counts": "Due {{due}} · new {{fresh}} · paused {{paused}}",
+    "nextDue": "Next due: {{date}}",
+    "undo": "Undo last grade",
+    "undoTip": "Restores stage, due date and log (latest grade only)"
+  },
+  "deck": {
+    "title": "Decks",
+    "default": "Default deck",
+    "empty": "No cards yet: add one manually or import CSV.",
+    "emptyDeck": "This deck has no cards.",
+    "dueCount": "{{count}} due",
+    "totalCount": "{{count}} cards"
+  },
+  "add": {
+    "title": "Add card",
+    "question": "Question",
+    "answer": "Answer",
+    "deck": "Deck (optional)",
+    "tags": "Tags (semicolon separated)",
+    "submit": "Add"
+  },
+  "review": {
+    "title": "Review",
+    "idle": "Click “Load queue” to start today's review.",
+    "done": "Session complete: {{count}} shown.",
+    "isNew": "new",
+    "position": "{{current}} / {{total}}",
+    "reveal": "Flip",
+    "forgot": "Forgot",
+    "remembered": "Got it",
+    "nextDate": "{{date}}",
+    "skip": "Skip"
+  },
+  "card": {
+    "pause": "Pause (history kept)",
+    "resume": "Resume",
+    "edit": "Edit (keeps progress)",
+    "remove": "Delete card",
+    "cancelEdit": "Cancel",
+    "stageLabel": "{{stage}} consecutive passes",
+    "noDue": "unscheduled",
+    "historyLine": "{{date}} · {{verdict}} · {{from}}→{{to}} · {{next}}"
+  },
+  "nav": {
+    "review": "Review",
+    "import": "Import CSV",
+    "backup": "Backup"
+  },
+  "import": {
+    "title": "CSV import",
+    "format": "UTF-8 CSV with columns question,answer,deck,tags; tags semicolon-separated; quotes escaped; optional header row. Empty or over-long rows are skipped and listed per line.",
+    "csvLabel": "CSV content",
+    "defaultDeck": "Default deck",
+    "run": "Import",
+    "done": "Imported {{count}} cards",
+    "lineError": "Line {{line}}"
+  },
+  "backup": {
+    "title": "Backup & restore",
+    "export": "Export progress backup",
+    "pasteHint": "Paste a backup JSON to preview conflicts before restoring; a conflict means same id but different question/answer/deck.",
+    "pasteLabel": "Backup JSON",
+    "preview": "Preview",
+    "incoming": "{{count}} in backup",
+    "fresh": "{{count}} new",
+    "conflicts": "{{count}} conflicts",
+    "overwrite": "Overwrite conflicts",
+    "skipConflicts": "Skip conflicts",
+    "replace": "Replace all",
+    "applied": "Restored {{count}} cards"
+  },
+  "errors": {
+    "fcs.bad_stage": "Invalid streak: {{value}}",
+    "fcs.bad_date": "Date must be YYYY-MM-DD: {{value}}",
+    "fcs.limit_range": "Session limit must be 1–{{max}} cards",
+    "fcs.new_limit_range": "New-card limit cannot exceed the session limit {{max}}",
+    "fcs.too_many_cards": "More than {{max}} cards",
+    "fcs.too_many_decks": "More than {{max}} decks",
+    "fcs.too_many_tags": "More than {{max}} tags per card",
+    "fcs.too_many_rows": "More than {{max}} CSV rows",
+    "fcs.text_too_long": "Question/answer exceeds {{max}} characters",
+    "fcs.empty_question": "Empty question",
+    "fcs.bad_quote": "Unmatched CSV quote",
+    "fcs.empty_id": "Card has no id",
+    "fcs.bad_backup": "Backup could not be parsed",
+    "fcs.bad_version": "Unsupported backup version: {{version}}",
+    "fcs.bad_mode": "Unknown restore mode: {{mode}}",
+    "fcs.serialize": "Failed to serialize backup"
+  }
+}

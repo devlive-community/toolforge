@@ -1,0 +1,21 @@
+{
+  "id": "org.devlive.toolforge.flashcards",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": ["flashcards", "spaced repetition", "review", "learning", "memory", "csv import", "deck", "闪卡", "间隔复习", "记忆", "学习", "牌组", "背诵"],
+  "accent": "amber",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "review": {},
+    "queue": {},
+    "import_csv": {},
+    "backup": {},
+    "restore_preview": {},
+    "restore_apply": {},
+    "new_id": {}
+  },
+  "sensitive": false
+}
