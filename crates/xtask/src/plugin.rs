@@ -220,6 +220,7 @@ pub fn index(dir: &Path, base_url: &str, merge: Option<&Path>) -> Result<PathBuf
             serde_json::from_slice(&package.files["manifest.json"]).map_err(|e| e.to_string())?;
         plugins.push(serde_json::json!({
             "minAppVersion": raw.get("minAppVersion"),
+            "accent": raw.get("accent"),
             "id": manifest.id,
             "version": manifest.version,
             "category": manifest.category,

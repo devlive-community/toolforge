@@ -1,7 +1,7 @@
 name: Plugins
 
 # 在线插件独立于应用版本发布：market/*/manifest.json 的 version 递增并推送到 dev 后，
-# 只打包签名「plugins」发布中还没有的版本，上传 .tfp 并合并更新 registry.json。
+# 只打包签名「plugins」发布中还没有的版本，上传 .tfp 并全量重建 registry.json。
 # 应用从 releases/download/plugins/registry.json 读取插件索引，用户在工具市场中即可更新。
 # 版本号不变的改动不会发布；签名私钥来自仓库机密 TOOLFORGE_PLUGIN_KEY。
 on:
@@ -87,10 +87,7 @@ jobs:
             gh release create "$RELEASE_TAG" --prerelease --title "Plugins" \
               --notes "Installable ToolForge plugins, published independently of app releases. The app reads registry.json from here."
           fi
-          # 在已发布的索引上合并，未变化的插件保持原条目
-          merge=""
-          if gh release download "$RELEASE_TAG" --pattern registry.json --dir previous 2>/dev/null; then
-            merge="--merge previous/registry.json"
-          fi
-          cargo xtask plugin index dist/plugins "$BASE_URL" $merge
+          # 下载全部已发布的 .tfp 全量重建索引：旧条目也能补上 manifest 新增的字段（如 accent）
+          gh release download "$RELEASE_TAG" --pattern '*.tfp' --dir dist/plugins 2>/dev/null || true
+          cargo xtask plugin index dist/plugins "$BASE_URL"
           gh release upload "$RELEASE_TAG" dist/plugins/*.tfp dist/plugins/registry.json --clobber

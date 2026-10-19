@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 import { invoke } from '@tauri-apps/api/core'
-import { Badge, Button, Empty, Modal, Spinner, toast } from '@toolforge/ui'
+import { Badge, Button, Empty, Modal, Spinner, cn, toast } from '@toolforge/ui'
 import type { Manifest } from '@toolforge/plugin-ui-sdk'
 import { host, useErrorMessage, type AppError } from '@toolforge/plugin-ui-sdk'
 import { CloudDownload, FileUp, PackageCheck, RefreshCw, ShieldAlert, ShieldCheck, SquareArrowOutUpRight, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { usePluginText } from '../plugins/usePluginText'
-import { ToolTile } from '../plugins/ToolIcon'
+import { ToolTile, accentTiles } from '../plugins/ToolIcon'
 import { pluginById, useApp } from '../stores/app'
 import { PluginDetail, type PluginDetailInfo, type PluginDetailRow } from './PluginDetail'
 
@@ -14,6 +14,8 @@ interface IndexEntry {
   id: string
   version: string
   category: string
+  /** 图标底色（与内置工具 manifest.accent 同一规则） */
+  accent?: string | null
   names: Record<string, string>
   descriptions: Record<string, string>
   icon: string | null
@@ -49,6 +51,11 @@ function newer(a: string, b: string) {
 type Pending = { kind: 'file'; path: string } | { kind: 'url'; entry: IndexEntry }
 
 type DetailTarget = { kind: 'online'; entry: IndexEntry } | { kind: 'local'; info: InstallInfo }
+
+/** 在线插件图标的底色：与「全部工具」同一规则，accent 是什么颜色就显示什么颜色 */
+function tileFor(manifest: Manifest | undefined, accent: string | null | undefined) {
+  return accentTiles[manifest?.accent ?? accent ?? 'green'] ?? accentTiles.green
+}
 
 export function MarketOnline() {
   const { t, i18n } = useTranslation()
@@ -226,9 +233,9 @@ export function MarketOnline() {
               <div key={entry.id} className="flex flex-col gap-3 rounded-card border border-border bg-surface p-4 shadow-card">
                 <div className="flex items-start gap-3">
                   {entry.icon ? (
-                    <span aria-hidden className="tile-green inline-flex size-10 shrink-0 items-center justify-center rounded-[11px] text-on-tile shadow-tile [&>svg]:size-5" dangerouslySetInnerHTML={{ __html: entry.icon }} />
+                    <span aria-hidden className={cn(tileFor(manifest, entry.accent), 'inline-flex size-10 shrink-0 items-center justify-center rounded-[11px] text-on-tile shadow-tile [&>svg]:size-5')} dangerouslySetInnerHTML={{ __html: entry.icon }} />
                   ) : (
-                    <span className="tile-green inline-flex size-10 shrink-0 items-center justify-center rounded-[11px] text-on-tile shadow-tile">
+                    <span className={cn(tileFor(manifest, entry.accent), 'inline-flex size-10 shrink-0 items-center justify-center rounded-[11px] text-on-tile shadow-tile')}>
                       <PackageCheck className="size-5" />
                     </span>
                   )}
@@ -318,13 +325,12 @@ export function MarketOnline() {
           detailManifest ? (
             <ToolTile manifest={detailManifest} size="lg" />
           ) : detail?.kind === 'online' && detail.entry.icon ? (
-            <span aria-hidden className="tile-green inline-flex size-16 shrink-0 items-center justify-center rounded-tile text-on-tile shadow-tile [&>svg]:size-8" dangerouslySetInnerHTML={{ __html: detail.entry.icon }} />
+            <span aria-hidden className={cn(tileFor(detailManifest, detail.entry.accent), 'inline-flex size-16 shrink-0 items-center justify-center rounded-tile text-on-tile shadow-tile [&>svg]:size-8')} dangerouslySetInnerHTML={{ __html: detail.entry.icon }} />
           ) : (
-            <span className="tile-green inline-flex size-16 shrink-0 items-center justify-center rounded-tile text-on-tile shadow-tile">
+            <span className={cn(tileFor(detailManifest, detail?.kind === 'online' ? detail.entry.accent : undefined), 'inline-flex size-16 shrink-0 items-center justify-center rounded-tile text-on-tile shadow-tile')}>
               <PackageCheck className="size-8" />
             </span>
-          )
-        }
+          )}
         originBadge={
           detail?.kind === 'online' ? (
             detail.entry.signed ? (

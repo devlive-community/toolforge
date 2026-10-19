@@ -3,7 +3,8 @@ import { Wrench } from 'lucide-react'
 import type { Manifest } from '@toolforge/plugin-ui-sdk'
 import { pluginIcon } from './modules'
 
-const tiles = {
+/** manifest.accent → 图标底色工具类；与索引条目（MarketOnline）共用同一套颜色规则 */
+export const accentTiles: Record<string, string> = {
   violet: 'tile-violet',
   blue: 'tile-blue',
   green: 'tile-green',
@@ -26,7 +27,7 @@ export function ToolGlyph({ manifest, className }: { manifest: Manifest; classNa
 }
 
 export function ToolTile({ manifest, size = 'md' }: { manifest: Manifest; size?: 'sm' | 'md' | 'lg' }) {
-  const tile = tiles[manifest.accent ?? 'green'] ?? tiles.green
+  const tile = accentTiles[manifest.accent ?? 'green'] ?? accentTiles.green
   return (
     <span
       className={cn(
