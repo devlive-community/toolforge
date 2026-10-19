@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.cbor-msgpack-inspector",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["cbor", "messagepack", "msgpack", "rfc 8949", "binary", "serialization", "payload", "hex", "base64", "二进制", "序列化", "载荷", "十六进制"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "inspect": { "task": true },
+    "export": {}
+  },
+  "sensitive": false
+}
