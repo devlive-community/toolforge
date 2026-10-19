@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react'
+import { Tabs } from '@toolforge/ui'
 import { useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
+import { MeetingPlanner } from './MeetingPlanner'
 import { NowCard } from './NowCard'
 import { ToDate } from './ToDate'
 import { ToTimestamp } from './ToTimestamp'
 import type { Now, Unit, Zones } from './types'
 
+type TabKey = 'convert' | 'planner'
+
 export function TimestampTool() {
-  const { call } = usePlugin()
+  const { call, t } = usePlugin()
+  const [tab, setTab] = useState<TabKey>('convert')
   const [zones, setZones] = useState<Zones>({ local: 'UTC', all: [] })
   const [value, setValue] = useState('1700000000')
   const [unit, setUnit] = useState<Unit>('auto')
@@ -34,32 +39,49 @@ export function TimestampTool() {
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3">
-      <NowCard
-        onUse={(seconds) => {
-          setValue(String(seconds))
-          setUnit('auto')
-        }}
-      />
-      <div className="grid min-h-0 flex-1 grid-cols-2 gap-3">
-        <ToDate
-          value={value}
-          onValueChange={setValue}
-          unit={unit}
-          onUnitChange={setUnit}
-          compare={compare}
-          onCompareChange={setCompare}
-          zones={zones.all}
-          onNow={() => {
-            call<Now>('now')
-              .then((now) => {
-                setValue(String(now.seconds))
-                setUnit('auto')
-              })
-              .catch(() => {})
+      {tab === 'convert' && (
+        <NowCard
+          onUse={(seconds) => {
+            setValue(String(seconds))
+            setUnit('auto')
           }}
         />
-        <ToTimestamp key={dateInput?.seq ?? 0} initial={dateInput?.text} zones={zones.all} local={zones.local} />
-      </div>
+      )}
+      <Tabs<TabKey>
+        value={tab}
+        onValueChange={setTab}
+        aria-label={t('tab.label')}
+        items={[
+          { value: 'convert', label: t('tab.convert') },
+          { value: 'planner', label: t('tab.planner') },
+        ]}
+      />
+      {tab === 'convert' ? (
+        <div className="grid min-h-0 flex-1 grid-cols-2 gap-3">
+          <ToDate
+            value={value}
+            onValueChange={setValue}
+            unit={unit}
+            onUnitChange={setUnit}
+            compare={compare}
+            onCompareChange={setCompare}
+            zones={zones.all}
+            onNow={() => {
+              call<Now>('now')
+                .then((now) => {
+                  setValue(String(now.seconds))
+                  setUnit('auto')
+                })
+                .catch(() => {})
+            }}
+          />
+          <ToTimestamp key={dateInput?.seq ?? 0} initial={dateInput?.text} zones={zones.all} local={zones.local} />
+        </div>
+      ) : (
+        <div className="min-h-0 flex-1">
+          <MeetingPlanner zones={zones.all} />
+        </div>
+      )}
     </div>
   )
 }

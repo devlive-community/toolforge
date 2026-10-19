@@ -2,6 +2,7 @@
 
 mod convert;
 mod detect;
+mod meeting;
 mod natural;
 mod parse;
 mod zone;
@@ -38,6 +39,7 @@ impl ToolPlugin for Timestamp {
             "from_timestamp" => to_value(convert::from_timestamp(parse_args(args)?)?),
             "to_timestamp" => to_value(parse::to_timestamp(parse_args(args)?)?),
             "timezones" => to_value(zone::list()),
+            "plan" => to_value(meeting::plan(parse_args(args)?)?),
             other => Err(unknown_function(other)),
         }
     }
