@@ -1,0 +1,49 @@
+{
+  "name": "Nonogram Puzzle",
+  "description": "Black-and-white nonogram: deduce filled cells from row/column clues; puzzles are generated locally and verified to have a unique solution",
+  "help": [
+    "Offers 5×5, 10×10 and 15×15 boards. Each new puzzle is extracted from an original random pattern in Rust, then independently solved to verify uniqueness — ambiguous or unsolvable candidates are discarded, never delivered.",
+    "Left-click or drag to fill black, right-click or drag to mark empty; drags only affect undetermined cells and count as one undo step; arrow keys move, space fills, enter marks empty.",
+    "Clue completion marks and conflict highlights update only on an explicit “Check”; undetermined cells are never treated as confirmed empty. Solving requires every row and column to match.",
+    "The “Hint” uses single-line candidate-overlap reasoning and fills one cell, stating which row/column it came from; when no such inference exists it says so plainly instead of secretly inserting answers.",
+    "Export a printable file with the puzzle page and a separate solution page (HTML; print in a browser). Hint/solution usage is recorded honestly. All puzzles are self-generated — no commercial puzzle packs."
+  ],
+  "game": {
+    "title": "Nonogram",
+    "board": "Nonogram board",
+    "undo": "Undo (one drag per step)",
+    "redo": "Redo",
+    "check": "Check",
+    "hint": "Hint",
+    "solution": "View solution",
+    "usedHint": "hint used",
+    "usedSolution": "solution viewed",
+    "sizeLabel": "{{size}}×{{size}}"
+  },
+  "check": {
+    "won": "Solved! Every row and column matches its clues.",
+    "solved": "solved"
+  },
+  "hint": {
+    "row": "row {{number}}",
+    "col": "column {{number}}",
+    "black": "black",
+    "white": "empty",
+    "found": "{{line}} candidates overlap: ({{row}}, {{col}}) should be {{value}}.",
+    "none": "No cell can be determined by single-line inference on the current board; deeper branching is beyond the first-version hint."
+  },
+  "paper": {
+    "title": "Puzzle paper",
+    "namePlaceholder": "Paper title (optional)",
+    "export": "Export paper (with solution page)",
+    "hint": "Export HTML and print in a browser; page 1 is the puzzle, page 2 the solution."
+  },
+  "errors": {
+    "puz.bad_size": "Board size must be 5, 10 or 15: {{value}}",
+    "puz.bad_clues": "Incomplete clue structure",
+    "puz.bad_board": "Board data length mismatch: {{size}}",
+    "puz.solution_required": "Solution data missing",
+    "puz.solution_size": "Solution length does not match the board",
+    "puz.generation_failed": "Failed to generate a unique-solution puzzle after {{attempts}} attempts; please try again"
+  }
+}

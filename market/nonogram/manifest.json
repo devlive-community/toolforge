@@ -1,0 +1,18 @@
+{
+  "id": "org.devlive.toolforge.nonogram",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": ["nonogram", "picross", "griddler", "puzzle", "logic", "line solve", "数织", "数独类", "逻辑", "填色", "拼图"],
+  "accent": "lime",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": [],
+  "functions": {
+    "generate": {},
+    "check": {},
+    "hint": {},
+    "export_paper": {}
+  },
+  "sensitive": false
+}
