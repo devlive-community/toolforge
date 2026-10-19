@@ -189,6 +189,7 @@ export default function CspInspector() {
         <Panel
           icon={<ListChecks />}
           title={t('input.resources')}
+          bodyClassName="p-3"
           extra={
             <Button
               size="sm"
