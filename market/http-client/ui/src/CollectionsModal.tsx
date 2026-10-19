@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Badge, Button, Empty, Input, Modal } from '@toolforge/ui'
+import { Badge, Button, Empty, Input, Modal, Tooltip } from '@toolforge/ui'
 import { usePlugin } from '@toolforge/plugin-ui-sdk'
 import { Folder, Pencil, Plus, Trash2 } from 'lucide-react'
 import type { WorkspaceController } from './useWorkspace'
@@ -21,8 +21,12 @@ export function CollectionsModal({ open, onClose, controller }: { open: boolean;
       </form>
       {!controller.workspace.collections.length ? <Empty icon={<Folder />} title={t('workspace.noCollections')} /> : controller.workspace.collections.map((item) => <div key={item.id} className="flex items-center gap-2 rounded-control border border-border p-2">
         <Folder className="size-4 shrink-0 text-fg-subtle" /><span className="min-w-0 flex-1 truncate text-[13px] text-fg">{item.name}</span><Badge>{controller.workspace.requests.filter((request) => request.collectionId === item.id).length}</Badge>
-        <Button variant="ghost" size="icon-sm" onClick={() => { setEditing(item.id); setName(item.name) }} aria-label={t('workspace.renameCollection')}><Pencil /></Button>
-        <Button variant="ghost" size="icon-sm" onClick={() => { controller.deleteCollection(item.id); if (editing === item.id) { setEditing(null); setName('') } }} aria-label={t('workspace.deleteCollection')}><Trash2 /></Button>
+        <Tooltip content={t('workspace.renameCollection')}>
+          <Button variant="ghost" size="icon-sm" onClick={() => { setEditing(item.id); setName(item.name) }} aria-label={t('workspace.renameCollection')}><Pencil /></Button>
+        </Tooltip>
+        <Tooltip content={t('workspace.deleteCollection')}>
+          <Button variant="ghost" size="icon-sm" onClick={() => { controller.deleteCollection(item.id); if (editing === item.id) { setEditing(null); setName('') } }} aria-label={t('workspace.deleteCollection')}><Trash2 /></Button>
+        </Tooltip>
       </div>)}
     </div>
   </Modal>

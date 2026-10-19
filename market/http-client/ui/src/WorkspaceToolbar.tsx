@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Input, Modal, Select, Spinner } from '@toolforge/ui'
+import { Button, Input, Modal, Select, Spinner, Tooltip } from '@toolforge/ui'
 import { usePlugin } from '@toolforge/plugin-ui-sdk'
 import { Check, Copy, FolderCog, Pencil, Plus, RotateCw, Trash2, Variable } from 'lucide-react'
 import type { WorkspaceController } from './useWorkspace'
@@ -18,19 +18,31 @@ export function WorkspaceToolbar({ controller, running, onCollections, onEnviron
       <div className="flex flex-wrap items-center gap-2 rounded-card border border-border bg-surface p-3">
         <Select value={filter} onValueChange={(value) => { setCollectionFilter(value); const first = workspace.requests.find((item) => value === '*' || (item.collectionId ?? '') === value); controller.selectRequest(first?.id ?? null) }} disabled={locked} options={[{ value: '*', label: t('workspace.allCollections') }, { value: '', label: t('workspace.ungrouped') }, ...workspace.collections.map((item) => ({ value: item.id, label: item.name }))]} className="w-36" aria-label={t('workspace.collection')} />
         <Select value={controller.selectedId} onValueChange={(id) => { setCollectionFilter(filter); controller.selectRequest(id) }} disabled={locked || !requests.length} placeholder={t('workspace.empty')} options={requests.map((item) => ({ value: item.id, label: `${item.request.method} · ${item.name}` }))} className="min-w-40 flex-1 sm:max-w-72" aria-label={t('workspace.requests')} />
-        <Button size="icon-sm" variant="ghost" disabled={locked} onClick={() => void controller.createRequest(undefined, undefined, filter === '*' ? null : filter || null)} aria-label={t('workspace.new')}><Plus /></Button>
-        <Button size="icon-sm" variant="ghost" disabled={locked || !selected} onClick={() => selected && setDetails({ id: selected.id, name: selected.name, collectionId: selected.collectionId ?? '' })} aria-label={t('workspace.details')}><Pencil /></Button>
-        <Button size="icon-sm" variant="ghost" disabled={locked || !selected} onClick={() => void controller.duplicateRequest()} aria-label={t('workspace.duplicate')}><Copy /></Button>
-        <Button size="icon-sm" variant="ghost" disabled={locked || !selected} onClick={controller.deleteRequest} aria-label={t('workspace.delete')}><Trash2 /></Button>
-        <Button size="icon-sm" variant="ghost" disabled={locked} onClick={onCollections} aria-label={t('workspace.collections')}><FolderCog /></Button>
+        <Tooltip content={t('workspace.new')}>
+          <Button size="icon-sm" variant="ghost" disabled={locked} onClick={() => void controller.createRequest(undefined, undefined, filter === '*' ? null : filter || null)} aria-label={t('workspace.new')}><Plus /></Button>
+        </Tooltip>
+        <Tooltip content={t('workspace.details')}>
+          <Button size="icon-sm" variant="ghost" disabled={locked || !selected} onClick={() => selected && setDetails({ id: selected.id, name: selected.name, collectionId: selected.collectionId ?? '' })} aria-label={t('workspace.details')}><Pencil /></Button>
+        </Tooltip>
+        <Tooltip content={t('workspace.duplicate')}>
+          <Button size="icon-sm" variant="ghost" disabled={locked || !selected} onClick={() => void controller.duplicateRequest()} aria-label={t('workspace.duplicate')}><Copy /></Button>
+        </Tooltip>
+        <Tooltip content={t('workspace.delete')}>
+          <Button size="icon-sm" variant="ghost" disabled={locked || !selected} onClick={controller.deleteRequest} aria-label={t('workspace.delete')}><Trash2 /></Button>
+        </Tooltip>
+        <Tooltip content={t('workspace.collections')}>
+          <Button size="icon-sm" variant="ghost" disabled={locked} onClick={onCollections} aria-label={t('workspace.collections')}><FolderCog /></Button>
+        </Tooltip>
         <div className="ml-auto flex min-w-0 flex-wrap items-center gap-2">
           <Select value={workspace.activeEnvironmentId ?? ''} onValueChange={(id) => controller.selectEnvironment(id || null)} disabled={locked} options={[{ value: '', label: t('environment.none') }, ...workspace.environments.map((item) => ({ value: item.id, label: item.name }))]} className="w-40" aria-label={t('environment.active')} />
-          <Button size="icon-sm" variant="ghost" disabled={locked} onClick={onEnvironments} aria-label={t('environment.manage')}><Variable /></Button>
+          <Tooltip content={t('environment.manage')}>
+            <Button size="icon-sm" variant="ghost" disabled={locked} onClick={onEnvironments} aria-label={t('environment.manage')}><Variable /></Button>
+          </Tooltip>
           <span className="flex items-center gap-1 text-xs text-fg-subtle" role="status" title={controller.saveError ?? undefined}>
             {controller.saveStatus === 'saving' ? <Spinner className="size-3" /> : controller.saveStatus === 'saved' ? <Check className="size-3 text-success" /> : null}
             {t(`workspace.${controller.saveStatus}`)}
           </span>
-          {controller.saveStatus === 'error' && <Button size="icon-sm" variant="ghost" onClick={() => void controller.flush()} aria-label={t('workspace.retry')}><RotateCw /></Button>}
+          {controller.saveStatus === 'error' && <Tooltip content={t('workspace.retry')}><Button size="icon-sm" variant="ghost" onClick={() => void controller.flush()} aria-label={t('workspace.retry')}><RotateCw /></Button></Tooltip>}
         </div>
       </div>
       {controller.saveError && <p className="text-xs text-danger" role="alert">{controller.saveError}</p>}
