@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.json-schema",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "dev",

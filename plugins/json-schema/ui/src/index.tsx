@@ -93,7 +93,7 @@ function JsonSchema() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-3 overflow-auto">
+    <div className="flex h-full min-h-0 flex-col gap-3">
       <Panel className="shrink-0" title={t('settings.title')} icon={<CheckCheck />} bodyClassName="space-y-2.5 p-3">
         <div className="flex flex-wrap items-center gap-3">
           <Select<Draft> value={draft} onValueChange={setDraft} aria-label={t('settings.draft')} options={[
@@ -125,20 +125,20 @@ function JsonSchema() {
         {task.running && <div className="flex items-center gap-3"><Progress className="max-w-48 flex-1" value={null} /><span role="status" className="text-xs text-fg-muted">{t(cancelRequested ? 'status.cancelHint' : `stages.${task.stage ?? 'schema.parse'}`)}</span></div>}
       </Panel>
 
-      <div className="grid min-h-64 flex-1 grid-cols-1 gap-3 md:grid-cols-2">
+      <div className="grid min-h-0 flex-1 grid-cols-2 gap-3">
         <Panel title={t('input.instance')} icon={<FileJson />} bodyClassName="p-0" actions={<>
           <CopyButton text={instance} />
           <Button size="icon-sm" variant="ghost" aria-label={t('input.openInstance')} onClick={() => void openFile('instance')}><FolderOpen /></Button>
           <Button size="icon-sm" variant="ghost" aria-label={t('input.clearInstance')} onClick={() => change('instance', '')}><X /></Button>
         </>}>
-          <CodeEditor ref={instanceEditor} value={instance} onChange={(value) => change('instance', value)} language="json" errorLine={syntaxLine('instance')} aria-label={t('input.instance')} className="h-full min-h-56" placeholder={t('input.instanceHint')} />
+          <CodeEditor ref={instanceEditor} value={instance} onChange={(value) => change('instance', value)} language="json" errorLine={syntaxLine('instance')} aria-label={t('input.instance')} placeholder={t('input.instanceHint')} />
         </Panel>
         <Panel title={t('input.schema')} icon={<Braces />} bodyClassName="p-0" actions={<>
           <CopyButton text={schema} />
           <Button size="icon-sm" variant="ghost" aria-label={t('input.openSchema')} onClick={() => void openFile('schema')}><FolderOpen /></Button>
           <Button size="icon-sm" variant="ghost" aria-label={t('input.clearSchema')} onClick={() => change('schema', '')}><X /></Button>
         </>}>
-          <CodeEditor ref={schemaEditor} value={schema} onChange={(value) => change('schema', value)} language="json" errorLine={syntaxLine('schema')} aria-label={t('input.schema')} className="h-full min-h-56" placeholder={t('input.schemaHint')} />
+          <CodeEditor ref={schemaEditor} value={schema} onChange={(value) => change('schema', value)} language="json" errorLine={syntaxLine('schema')} aria-label={t('input.schema')} placeholder={t('input.schemaHint')} />
         </Panel>
       </div>
 
