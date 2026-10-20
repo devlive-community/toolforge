@@ -27,8 +27,9 @@ export async function savePluginState(pluginId: string, key: string, value: unkn
 /**
  * 持久化的插件状态，例如编辑器草稿。修改后防抖写入 SQLite，组件卸载时立即写入未保存的修改。
  * 返回 [值, 设置函数, 是否已从存储中加载]；加载完成前的修改会覆盖已保存的值。
+ * 设置函数支持值或基于当前值的更新函数。
  */
-export function usePluginState<T>(key: string, initial: T): [T, (value: T) => void, boolean] {
+export function usePluginState<T>(key: string, initial: T): [T, (value: T | ((prev: T) => T)) => void, boolean] {
   const { manifest, errorMessage } = usePlugin()
   const [state, setState] = useState({ value: initial, loaded: false })
   const pending = useRef<{ value: T } | null>(null)
@@ -54,9 +55,12 @@ export function usePluginState<T>(key: string, initial: T): [T, (value: T) => vo
   useEffect(() => flush, [flush])
 
   const set = useCallback(
-    (value: T) => {
-      pending.current = { value }
-      setState((prev) => ({ ...prev, value }))
+    (value: T | ((prev: T) => T)) => {
+      setState((prev) => {
+        const next = typeof value === 'function' ? (value as (prev: T) => T)(prev.value) : value
+        pending.current = { value: next }
+        return { ...prev, value: next }
+      })
       clearTimeout(timer.current)
       timer.current = setTimeout(flush, SAVE_DELAY_MS)
     },

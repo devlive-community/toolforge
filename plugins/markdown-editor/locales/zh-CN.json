@@ -4,7 +4,7 @@
   "help": [
     "支持 GitHub 风格 Markdown：表格、任务列表、脚注、删除线，以及 > [!NOTE] 等提示块。",
     "预览由 Rust 渲染：原始 HTML 按文本显示，不安全的链接会被移除，打开任何来源的文档都是安全的。",
-    "草稿会自动保存，下次打开工具时自动恢复。",
+    "支持多标签页同时编辑多个文件；可配置间隔把修改自动保存到本地文件。",
     "快捷键：⌘/Ctrl+S 保存，⌘/Ctrl+B 加粗，⌘/Ctrl+I 斜体，⌘/Ctrl+K 链接。把 .md 文件拖入窗口即可打开。"
   ],
   "functions": {
@@ -29,10 +29,22 @@
     "more": "更多"
   },
   "discard": {
-    "title": "放弃未保存的修改？",
-    "description": "“{{name}}”有尚未保存到磁盘的修改。",
-    "confirm": "放弃",
+    "title": "未保存的修改",
+    "description": "“{{name}}”有尚未保存到磁盘的修改，关闭后将丢失。",
+    "confirm": "不保存",
+    "saveClose": "保存并关闭",
     "cancel": "取消"
+  },
+  "tabs": {
+    "label": "打开的文件",
+    "close": "关闭 {{name}}"
+  },
+  "autosave": {
+    "label": "自动保存",
+    "off": "关",
+    "one": "1 秒",
+    "five": "5 秒",
+    "thirty": "30 秒"
   },
   "format": {
     "heading": "标题",

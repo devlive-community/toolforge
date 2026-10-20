@@ -24,8 +24,10 @@ import {
   Strikethrough,
   Table,
   TextQuote,
+  X,
 } from 'lucide-react'
-import type { Draft, Heading as OutlineHeading, Rendered, ViewMode } from './types'
+import type { AutoSaveMode, Draft, EditorStore, Heading as OutlineHeading, Rendered, ViewMode } from './types'
+import { AUTO_SAVE_MS } from './types'
 
 const MARKDOWN_EXTENSIONS = ['md', 'markdown', 'mdown', 'mkd', 'txt']
 const HEADING_PREFIX = /^#{1,6}\s+/
@@ -33,6 +35,8 @@ const LIST_PREFIX = /^(\s*)([-*+]|\d+\.)\s+(\[[ xX]\]\s+)?/
 const baseName = (path: string) => path.split(/[\\/]/).pop() ?? path
 const stem = (path: string) => baseName(path).replace(/\.[^.]+$/, '')
 const isMarkdown = (path: string) => MARKDOWN_EXTENSIONS.includes(path.split('.').pop()?.toLowerCase() ?? '')
+
+const EMPTY_TAB: Draft = { text: '', path: null, dirty: false }
 
 /** 预览排版：全部使用语义 token，跟随应用主题 */
 const PROSE = cn(
@@ -63,16 +67,27 @@ export function MarkdownEditor() {
   const { t, call, errorMessage } = usePlugin()
   const editor = useRef<CodeEditorHandle>(null)
   const preview = useRef<HTMLDivElement>(null)
-  const [draft, setDraft, loaded] = usePluginState<Draft>('draft', { text: t('sample'), path: null, dirty: false })
+  /** 多文件标签页；切换后按 tab 缓存光标位置（仅内存，不落库） */
+  const cursors = useRef(new Map<number, { line: number; column: number }>())
+  const [store, setStore, loaded] = usePluginState<EditorStore>('tabs', { tabs: [], active: 0 })
+  // 兼容旧版本单文件草稿：迁移为标签页后删除旧键
+  const [legacy, setLegacy, legacyLoaded] = usePluginState<Draft | null>('draft', null)
+  const [autoSave, setAutoSave] = usePluginState<AutoSaveMode>('autosave', '5s')
   const [view, setView] = usePluginState<ViewMode>('view', 'split')
   const [showOutline, setShowOutline] = usePluginState('outline', true)
   const [cursor, setCursor] = useState({ line: 1, column: 1 })
-  const [pendingOpen, setPendingOpen] = useState<(() => void) | null>(null)
+  const [pendingClose, setPendingClose] = useState<number | null>(null)
   const [busy, setBusy] = useState(false)
-  const { result } = useDebouncedCall<Rendered>('render', { source: draft.text }, [draft.text])
+
+  const activeIndex = Math.min(store.active, Math.max(store.tabs.length - 1, 0))
+  const draft = store.tabs[activeIndex] ?? EMPTY_TAB
+  const { result } = useDebouncedCall<Rendered>(draft.text ? 'render' : null, draft.text ? { source: draft.text } : null, [draft.text, activeIndex])
   const { copy } = useCopy()
 
   const name = draft.path ? baseName(draft.path) : t('file.untitled')
+
+  const patchTab = (index: number, patch: Partial<Draft>) =>
+    setStore((cur) => ({ ...cur, tabs: cur.tabs.map((tab, i) => (i === index ? { ...tab, ...patch } : tab)) }))
 
   const run = async (action: () => Promise<void>) => {
     setBusy(true)
@@ -85,24 +100,41 @@ export function MarkdownEditor() {
     }
   }
 
-  /** 有未保存修改时先确认 */
-  const guard = (action: () => void) => (draft.dirty ? setPendingOpen(() => action) : action())
+  const newTab = () =>
+    setStore((cur) => ({ tabs: [...cur.tabs, { ...EMPTY_TAB }], active: cur.tabs.length }))
 
-  const openPath = (path: string) =>
+  /** 打开磁盘文件并加载内容；同路径已打开时直接切换 */
+  const loadPath = (path: string) =>
     run(async () => {
       const text = await host.fs.readText(path)
-      setDraft({ text, path, dirty: false })
+      setStore((cur) => {
+        const existing = cur.tabs.findIndex((tab) => tab.path === path)
+        if (existing >= 0) return { ...cur, active: existing, tabs: cur.tabs.map((tab, i) => (i === existing ? { ...tab, text, dirty: false } : tab)) }
+        return { tabs: [...cur.tabs, { text, path, dirty: false }], active: cur.tabs.length }
+      })
     })
 
   const pickFile = () =>
     run(async () => {
       const path = await host.dialog.openFile([{ name: t('file.filter'), extensions: MARKDOWN_EXTENSIONS }])
-      if (path) guard(() => openPath(path))
+      if (path) await loadPath(path)
     })
+
+  const removeTab = (index: number) =>
+    setStore((cur) => {
+      const tabs = cur.tabs.filter((_, i) => i !== index)
+      const active = index < cur.active ? cur.active - 1 : Math.min(cur.active, Math.max(tabs.length - 1, 0))
+      return { tabs, active }
+    })
+
+  const requestClose = (index: number) => {
+    if (store.tabs[index]?.dirty) setPendingClose(index)
+    else removeTab(index)
+  }
 
   const saveTo = async (path: string) => {
     await host.fs.writeText(path, draft.text)
-    setDraft({ ...draft, path, dirty: false })
+    patchTab(activeIndex, { path, dirty: false })
     toast.success(t('file.saved', { name: baseName(path) }))
   }
 
@@ -114,6 +146,18 @@ export function MarkdownEditor() {
     })
 
   const save = () => (draft.path ? run(() => saveTo(draft.path!)) : saveAs())
+
+  /** 关闭前保存当前标签页；未保存过的文件先走另存为 */
+  const saveAndClose = (index: number) =>
+    run(async () => {
+      const tab = store.tabs[index]
+      if (!tab) return
+      const path = tab.path ?? (await host.dialog.saveFile(`${result?.title ?? t('file.untitled')}.md`, [{ name: t('file.filter'), extensions: ['md', 'markdown'] }]))
+      if (!path) return
+      await host.fs.writeText(path, tab.text)
+      toast.success(t('file.saved', { name: baseName(path) }))
+      removeTab(index)
+    })
 
   const exportHtml = () =>
     run(async () => {
@@ -128,8 +172,8 @@ export function MarkdownEditor() {
     })
 
   const onDrop = useEffectEvent((paths: string[]) => {
-    const path = paths.find(isMarkdown)
-    if (path) guard(() => openPath(path))
+    const files = paths.filter(isMarkdown)
+    files.forEach((path) => void loadPath(path))
   })
 
   useEffect(() => {
@@ -138,6 +182,50 @@ export function MarkdownEditor() {
       off.then((unlisten) => unlisten())
     }
   }, [])
+
+  /** 恢复后没有标签页时补一个空白页；旧版本单文件草稿迁移为第一个标签页，然后删除旧键 */
+  const ensureTabs = useEffectEvent(() => {
+    setStore((cur) => {
+      if (cur.tabs.length > 0) return cur
+      if (legacy && (legacy.text || legacy.path)) return { tabs: [legacy], active: 0 }
+      return { tabs: [{ ...EMPTY_TAB }], active: 0 }
+    })
+    setLegacy(null)
+  })
+
+  useEffect(() => {
+    if (!loaded || !legacyLoaded) return
+    const timer = setTimeout(ensureTabs, 0)
+    return () => clearTimeout(timer)
+  }, [loaded, legacyLoaded])
+
+  /** 自动保存：间隔轮询，把有磁盘文件且未保存的标签页写盘；写盘期间继续编辑的标签页保持 dirty，下一轮再存 */
+  const autoSaveTick = useEffectEvent(() => {
+    const targets = store.tabs.filter((tab) => tab.dirty && tab.path)
+    if (targets.length === 0) return
+    Promise.all(targets.map((tab) => host.fs.writeText(tab.path!, tab.text).then(() => ({ path: tab.path!, text: tab.text }))))
+      .then((saved) => {
+        setStore((cur) => ({
+          ...cur,
+          tabs: cur.tabs.map((tab) =>
+            tab.dirty && tab.path && saved.some((s) => s.path === tab.path && s.text === tab.text) ? { ...tab, dirty: false } : tab,
+          ),
+        }))
+      })
+      .catch((error) => toast.error(errorMessage(error)))
+  })
+
+  useEffect(() => {
+    if (!loaded || autoSave === 'off') return
+    const timer = setInterval(autoSaveTick, AUTO_SAVE_MS[autoSave])
+    return () => clearInterval(timer)
+  }, [loaded, autoSave])
+
+  /** 切换标签页时恢复该文件的光标行 */
+  useEffect(() => {
+    const saved = cursors.current.get(activeIndex)
+    if (saved && view !== 'preview') editor.current?.gotoLine(saved.line)
+  }, [activeIndex, view])
 
   const format = {
     heading: () => editor.current?.toggleLinePrefix('## ', HEADING_PREFIX),
@@ -193,7 +281,7 @@ export function MarkdownEditor() {
   return (
     <div className="flex h-full min-h-0 flex-col gap-3" onKeyDownCapture={onKeyDown}>
       <div className="flex flex-wrap items-center gap-1.5">
-        <Button size="sm" onClick={() => guard(() => setDraft({ text: '', path: null, dirty: false }))} disabled={busy}>
+        <Button size="sm" onClick={newTab} disabled={busy}>
           <FilePlus />
           {t('file.new')}
         </Button>
@@ -264,6 +352,59 @@ export function MarkdownEditor() {
         </div>
       </div>
 
+      <div className="flex items-center gap-1 overflow-x-auto" role="tablist" aria-label={t('tabs.label')}>
+        {store.tabs.map((tab, i) => {
+          const label = tab.path ? baseName(tab.path) : t('file.untitled')
+          return (
+            <div
+              key={i}
+              className={cn(
+                'group flex shrink-0 items-center gap-0.5 rounded-control border py-0.5 pl-2 pr-0.5 text-[12.5px]',
+                i === activeIndex ? 'border-border bg-active text-fg' : 'border-transparent text-fg-muted hover:bg-hover',
+              )}
+            >
+              <button type="button" role="tab" aria-selected={i === activeIndex} onClick={() => setStore((cur) => ({ ...cur, active: i }))} className="outline-none">
+                {label}
+                {tab.dirty && <span className="ml-1.5 inline-block size-1.5 rounded-full bg-warning align-middle" aria-label={t('file.unsaved')} />}
+              </button>
+              <Tooltip content={t('tabs.close', { name: label })}>
+                <button
+                  type="button"
+                  aria-label={t('tabs.close', { name: label })}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    requestClose(i)
+                  }}
+                  className="rounded-sm p-0.5 outline-none hover:bg-active focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <X className="size-3" />
+                </button>
+              </Tooltip>
+            </div>
+          )
+        })}
+        <Tooltip content={t('file.new')}>
+          <Button size="icon-sm" variant="ghost" aria-label={t('file.new')} onClick={newTab}>
+            <FilePlus />
+          </Button>
+        </Tooltip>
+        <div className="ml-auto flex shrink-0 items-center gap-1.5 pl-2">
+          <span className="text-xs text-fg-muted">{t('autosave.label')}</span>
+          <SegmentedControl<AutoSaveMode>
+            size="sm"
+            value={autoSave}
+            onValueChange={setAutoSave}
+            aria-label={t('autosave.label')}
+            options={[
+              { value: 'off', label: t('autosave.off') },
+              { value: '1s', label: t('autosave.one') },
+              { value: '5s', label: t('autosave.five') },
+              { value: '30s', label: t('autosave.thirty') },
+            ]}
+          />
+        </div>
+      </div>
+
       <div className={cn('grid min-h-0 flex-1 gap-3', showOutline ? 'grid-cols-[200px_minmax(0,1fr)]' : 'grid-cols-1')}>
         {showOutline && (
           <Panel icon={<ListTree />} title={t('outline.title')} bodyClassName="overflow-auto p-1.5">
@@ -312,8 +453,11 @@ export function MarkdownEditor() {
                 <CodeEditor
                   ref={editor}
                   value={draft.text}
-                  onChange={(text) => setDraft({ ...draft, text, dirty: true })}
-                  onCursorChange={setCursor}
+                  onChange={(text) => patchTab(activeIndex, { text, dirty: true })}
+                  onCursorChange={(pos) => {
+                    setCursor(pos)
+                    cursors.current.set(activeIndex, pos)
+                  }}
                   language="markdown"
                   lineWrapping
                   aria-label={name}
@@ -351,22 +495,32 @@ export function MarkdownEditor() {
       </div>
 
       <Modal
-        open={pendingOpen !== null}
-        onOpenChange={(open) => !open && setPendingOpen(null)}
+        open={pendingClose !== null}
+        onOpenChange={(open) => !open && setPendingClose(null)}
         size="sm"
         title={t('discard.title')}
         description={t('discard.description', { name })}
         footer={
           <>
-            <Button onClick={() => setPendingOpen(null)}>{t('discard.cancel')}</Button>
+            <Button onClick={() => setPendingClose(null)}>{t('discard.cancel')}</Button>
             <Button
               variant="danger"
               onClick={() => {
-                pendingOpen?.()
-                setPendingOpen(null)
+                if (pendingClose !== null) removeTab(pendingClose)
+                setPendingClose(null)
               }}
             >
               {t('discard.confirm')}
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                const index = pendingClose
+                setPendingClose(null)
+                if (index !== null) void saveAndClose(index)
+              }}
+            >
+              {t('discard.saveClose')}
             </Button>
           </>
         }

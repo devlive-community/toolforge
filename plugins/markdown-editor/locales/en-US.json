@@ -4,7 +4,7 @@
   "help": [
     "Supports GitHub Flavored Markdown: tables, task lists, footnotes, strikethrough and alerts such as > [!NOTE].",
     "The preview is rendered in Rust. Raw HTML is shown as text and unsafe links are removed, so documents from anywhere are safe to open.",
-    "Your draft is saved automatically and restored the next time you open the tool.",
+    "Edit multiple files at once with tabs; changes can be auto-saved to disk on a configurable interval.",
     "Shortcuts: ⌘/Ctrl+S save, ⌘/Ctrl+B bold, ⌘/Ctrl+I italic, ⌘/Ctrl+K link. Drop a .md file onto the window to open it."
   ],
   "functions": {
@@ -29,10 +29,22 @@
     "more": "More"
   },
   "discard": {
-    "title": "Discard unsaved changes?",
-    "description": "“{{name}}” has changes that have not been saved to disk.",
-    "confirm": "Discard",
+    "title": "Unsaved changes",
+    "description": "“{{name}}” has changes that have not been saved to disk and will be lost on close.",
+    "confirm": "Don't save",
+    "saveClose": "Save and close",
     "cancel": "Cancel"
+  },
+  "tabs": {
+    "label": "Open files",
+    "close": "Close {{name}}"
+  },
+  "autosave": {
+    "label": "Auto-save",
+    "off": "Off",
+    "one": "1s",
+    "five": "5s",
+    "thirty": "30s"
   },
   "format": {
     "heading": "Heading",

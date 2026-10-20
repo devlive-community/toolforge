@@ -32,4 +32,15 @@ export interface Draft {
   dirty: boolean
 }
 
+/** 多文件标签页状态 */
+export interface EditorStore {
+  tabs: Draft[]
+  /** 当前激活的标签页索引 */
+  active: number
+}
+
+export type AutoSaveMode = 'off' | '1s' | '5s' | '30s'
+
+export const AUTO_SAVE_MS: Record<AutoSaveMode, number> = { off: 0, '1s': 1000, '5s': 5000, '30s': 30000 }
+
 export type ViewMode = 'edit' | 'split' | 'preview'
