@@ -24,6 +24,7 @@ jobs:
             test
             docs
             chore
+            build
             style
             i18n
             ci
