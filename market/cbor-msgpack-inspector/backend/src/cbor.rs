@@ -91,7 +91,7 @@ fn mark_indefinite(mut node: Node) -> Node {
 
 fn note_duplicate(ctx: &mut Ctx, signatures: &[String], key: &Node, offset: u64) {
     let sig = signature(key);
-    if signatures.iter().any(|seen| *seen == sig) {
+    if signatures.contains(&sig) {
         ctx.push(
             WARNING,
             "bin.duplicate_key",
@@ -350,7 +350,7 @@ pub fn parse(ctx: &mut Ctx, depth: usize, offset: usize) -> Result<(Node, usize)
                     finish_node(ctx, "simple", offset as u64, 2, Some(argument.to_string()))?;
                 Ok((node, offset + 2))
             }
-            25 | 26 | 27 => {
+            25..=27 => {
                 let width = 1usize << (info - 24);
                 need(ctx, offset + 1, width)?;
                 let mut bits: u64 = 0;

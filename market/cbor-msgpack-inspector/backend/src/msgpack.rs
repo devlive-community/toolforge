@@ -17,7 +17,7 @@ fn bounded(ctx: &mut Ctx, length: u64, offset: u64) -> Result<usize, Stop> {
         ctx.diag(ERROR, "bin.length", offset);
         return Err(Stop);
     }
-    Ok(length as u64 as usize)
+    Ok(length as usize)
 }
 
 fn finish_node(
@@ -44,7 +44,7 @@ fn finish_node(
 
 fn note_duplicate(ctx: &mut Ctx, signatures: &[String], key: &Node, offset: u64) {
     let sig = signature(key);
-    if signatures.iter().any(|seen| *seen == sig) {
+    if signatures.contains(&sig) {
         ctx.push(
             WARNING,
             "bin.duplicate_key",
@@ -325,7 +325,7 @@ fn parse_ext(ctx: &mut Ctx, depth: usize, offset: usize) -> Result<(Node, usize)
         _ => 4,
     };
     let length_width = match byte {
-        0xc7 | 0xc8 | 0xc9 => 1usize << (byte - 0xc7),
+        0xc7..=0xc9 => 1usize << (byte - 0xc7),
         _ => 0,
     };
     let type_at = one + length_width;
@@ -350,7 +350,7 @@ fn parse_ext(ctx: &mut Ctx, depth: usize, offset: usize) -> Result<(Node, usize)
                     payload[0], payload[1], payload[2], payload[3], payload[4], payload[5],
                     payload[6], payload[7],
                 ]);
-                let nanoseconds = (raw >> 34) as u64;
+                let nanoseconds = raw >> 34;
                 let seconds = (raw & 0x3_ffff_ffff) as i64;
                 format!("seconds={seconds}, nanoseconds={nanoseconds}")
             }

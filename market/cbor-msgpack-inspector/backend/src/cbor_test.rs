@@ -176,7 +176,7 @@ fn simple_values_and_errors() {
     // 裸 break
     assert!(parse_err(&[0xff]).contains(&"cbor.break".to_owned()));
     // 截断
-    assert!(parse_err(&[0x19, 0x03]).is_empty() == false);
+    assert!(!parse_err(&[0x19, 0x03]).is_empty());
     // 非法 UTF-8
     assert!(parse_err(&[0x62, 0xc3, 0x28]).contains(&"cbor.utf8".to_owned()));
 }

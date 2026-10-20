@@ -96,33 +96,50 @@ fn diag_report(
     report
 }
 
-fn decode_transport(format: &'static str, encoding: &str, text: &str) -> Result<Vec<u8>, Report> {
+fn decode_transport(
+    format: &'static str,
+    encoding: &str,
+    text: &str,
+) -> Result<Vec<u8>, Box<Report>> {
     let cleaned: String = text.chars().filter(|c| !c.is_whitespace()).collect();
     match encoding {
         "hex" => {
             let cleaned = cleaned.strip_prefix("0x").unwrap_or(&cleaned);
-            if cleaned.len() % 2 != 0 || !cleaned.chars().all(|c| c.is_ascii_hexdigit()) {
-                return Err(diag_report(
+            if !cleaned.len().is_multiple_of(2) || !cleaned.chars().all(|c| c.is_ascii_hexdigit()) {
+                return Err(Box::new(diag_report(
                     format,
                     "transport.hex",
                     serde_json::Map::new(),
                     None,
-                ));
+                )));
             }
             let bytes = (0..cleaned.len() / 2)
                 .map(|index| u8::from_str_radix(&cleaned[index * 2..index * 2 + 2], 16))
                 .collect::<Result<Vec<_>, _>>()
-                .map_err(|_| diag_report(format, "transport.hex", serde_json::Map::new(), None))?;
+                .map_err(|_| {
+                    Box::new(diag_report(
+                        format,
+                        "transport.hex",
+                        serde_json::Map::new(),
+                        None,
+                    ))
+                })?;
             Ok(bytes)
         }
-        "base64" => base64_decode(&cleaned)
-            .ok_or_else(|| diag_report(format, "transport.base64", serde_json::Map::new(), None)),
-        _ => Err(diag_report(
+        "base64" => base64_decode(&cleaned).ok_or_else(|| {
+            Box::new(diag_report(
+                format,
+                "transport.base64",
+                serde_json::Map::new(),
+                None,
+            ))
+        }),
+        _ => Err(Box::new(diag_report(
             format,
             "transport.encoding",
             serde_json::Map::from_iter([("encoding".to_owned(), Value::from(encoding))]),
             None,
-        )),
+        ))),
     }
 }
 
@@ -205,7 +222,7 @@ impl BinaryInspector {
             match decode_transport(format, encoding, text) {
                 Ok(bytes) => bytes,
                 Err(report) => {
-                    let (handle, report) = store(&self.last, report);
+                    let (handle, report) = store(&self.last, *report);
                     return with_handle(handle, &report);
                 }
             }
@@ -240,9 +257,7 @@ impl BinaryInspector {
         }
         let overall = if parse_ctx.incomplete {
             "incomplete"
-        } else if stats.errors > 0 || trailing.is_some() {
-            "issues"
-        } else if stats.warnings > 0 {
+        } else if stats.errors > 0 || trailing.is_some() || stats.warnings > 0 {
             "issues"
         } else {
             "passed"

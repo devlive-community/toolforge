@@ -17,7 +17,6 @@ pub const HEX_PREVIEW: usize = 256;
 
 pub const ERROR: &str = "error";
 pub const WARNING: &str = "warning";
-pub const HINT: &str = "hint";
 
 #[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -143,22 +142,6 @@ impl<'a> Ctx<'a> {
 
     pub fn diag(&mut self, level: &'static str, code: &str, offset: u64) {
         self.push(level, code, Some(offset), serde_json::Map::new());
-    }
-
-    pub fn diagp(
-        &mut self,
-        level: &'static str,
-        code: &str,
-        offset: u64,
-        key: &str,
-        value: impl Into<Value>,
-    ) {
-        self.push(
-            level,
-            code,
-            Some(offset),
-            serde_json::Map::from_iter([(key.to_owned(), value.into())]),
-        );
     }
 
     /// 节点计数 + 原始字节预览
