@@ -8928,6 +8928,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-workout-log"
+version = "0.1.0"
+dependencies = [
+ "jiff",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-xml-formatter"
 version = "0.1.0"
 dependencies = [

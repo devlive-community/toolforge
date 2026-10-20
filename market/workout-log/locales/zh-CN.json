@@ -1,0 +1,172 @@
+{
+  "name": "力量训练日志",
+  "description": "记录自己的动作、每组次数与负重，对照历史，保存个人训练模板",
+  "help": [
+    "动作和训练记录均保存在 ToolForge 自身数据库中，安装后无需联网。",
+    "先在「动作与模板」建立自己的动作，再开始训练；填写一组后主动确认完成。",
+    "复制组与模板只带入待确认输入，正式统计只计实际完成组。",
+    "训练历史永久保留，不按条数自动清理。列表分页读取；可以选择实际训练日期或动作回顾。",
+    "完整备份以每次训练一份 JSON 文件保存；恢复时选择同一批次的全部备份卷。不同现有资料不会被静默覆盖。"
+  ],
+  "functions": {
+    "plan": "管理训练记录",
+    "export": "导出训练资料",
+    "import": "恢复备份",
+    "clock": "查看休息状态",
+    "recover": "恢复未完成保存"
+  },
+  "common": {
+    "cancel": "取消",
+    "confirm": "确认",
+    "save": "保存",
+    "retry": "重新读取并恢复保存",
+    "loading": "正在读取训练资料…"
+  },
+  "page": {
+    "previous": "上一页",
+    "next": "下一页",
+    "number": "第 {{page}} 页",
+    "total": "共 {{count}} 条"
+  },
+  "mode": {
+    "external": "外部负重",
+    "bodyweight": "自重",
+    "unknown": "负重未记录"
+  },
+  "unit": {
+    "kg": "kg",
+    "lb": "lb"
+  },
+  "status": {
+    "pending": "待确认",
+    "done": "已完成",
+    "skipped": "已跳过"
+  },
+  "exercise": {
+    "title": "我的动作",
+    "choose": "选择动作",
+    "addToWorkout": "加入本次训练",
+    "create": "新增动作",
+    "hint": "名称相同也可分别记录器械和变式。过去训练保留当时的动作快照。",
+    "empty": "先建立自己的第一个动作",
+    "archived": "已归档",
+    "restore": "恢复使用",
+    "archive": "归档",
+    "edit": "编辑动作",
+    "history": "查看历史",
+    "name": "动作名称",
+    "equipment": "器械 / 变式备注",
+    "mode": "负重记录方式",
+    "snapshotHint": "修改只影响之后新加入的动作。已有训练和模板保留原有记录方式。",
+    "archiveTitle": "调整动作可用状态",
+    "archiveHint": "归档后不再出现在新增动作选项中，已有训练与模板都保留。已归档动作可恢复使用。"
+  },
+  "set": {
+    "number": "第 {{number}} 组",
+    "reps": "实际次数",
+    "weight": "实际负重",
+    "weightPlaceholder": "填写重量",
+    "unit": "单位",
+    "note": "这一组的备注（可选）",
+    "warmup": "热身组",
+    "complete": "确认完成",
+    "save": "保存修改",
+    "skip": "跳过这组",
+    "pending": "改为待确认",
+    "add": "添加空白组",
+    "copy": "复制上一组（待确认）"
+  },
+  "workout": {
+    "title": "本次训练",
+    "defaultName": "我的训练",
+    "name": "训练名称",
+    "date": "实际训练日",
+    "note": "本次感受 / 备注（可选）",
+    "saveDetails": "保存名称、日期与备注",
+    "completedSets": "已完成 {{count}} 组",
+    "repetitions": "共 {{count}} 次",
+    "finished": "已结束",
+    "draft": "进行中",
+    "undo": "撤销最近的组操作",
+    "start": "开始新训练",
+    "begin": "建立训练草稿",
+    "empty": "把自己的动作加入这次训练",
+    "emptyHint": "每组实际次数与重量由你填写，不会自动安排训练内容。",
+    "welcome": "从自己的训练开始",
+    "welcomeHint": "可新建训练，也可打开下方的历史草稿继续记录。",
+    "finish": "结束这次训练",
+    "review": "检查未完成的组",
+    "reviewHint": "还有 {{count}} 组待确认。结束后这些组仍保留，但不会计入完成统计。",
+    "allSets": "共 {{count}} 组",
+    "confirmFinish": "保留实际记录并结束"
+  },
+  "rest": {
+    "seconds": "休息秒数",
+    "start": "开始休息",
+    "stop": "结束 / 跳过",
+    "finished": "休息时间已到",
+    "remaining": "剩余 {{seconds}} 秒",
+    "hint": "仅作当前页面的休息提示。重开后显示经过状态，不自动增加训练记录。"
+  },
+  "history": {
+    "title": "训练回顾",
+    "exercise": "按动作查看",
+    "date": "按实际日期查看",
+    "all": "全部动作",
+    "includeWarmups": "统计包括热身组",
+    "clear": "清除筛选",
+    "hint": "按创建顺序分页。选日期回顾实际训练日；每个器械/变式保持独立，原单位与换算后的公斤同时显示。",
+    "empty": "没有符合条件的训练",
+    "open": "打开 / 改错",
+    "repCount": "{{value}} 次",
+    "weightValue": "{{original}} {{unit}}（{{kg}} kg）"
+  },
+  "template": {
+    "title": "个人模板",
+    "name": "模板名称",
+    "create": "另存新模板",
+    "destination": "保存位置",
+    "save": "保存模板",
+    "hint": "从当前动作和组输入生成模板；所有组在新训练中都从待确认开始。",
+    "createHint": "在训练里排列动作、填写目标组次，再保存为个人模板。不会自动生成训练处方。",
+    "empty": "还没有个人模板",
+    "exercises": "{{count}} 个动作",
+    "use": "使用",
+    "delete": "删除模板",
+    "deleteHint": "只删除模板，已创建的训练与实际记录不会删除。",
+    "choose": "使用哪个模板",
+    "blank": "空白训练"
+  },
+  "backup": {
+    "title": "导出与恢复",
+    "csv": "导出本次 CSV",
+    "csvFilter": "训练记录 CSV",
+    "jsonFilter": "训练备份 JSON",
+    "saved": "已导出训练资料",
+    "restored": "备份卷已恢复；可继续导入同一批次的其他卷",
+    "hint": "完整备份保存到所选文件夹，每次训练一份 JSON；每卷附动作和模板资料，历史不设自动保留上限。请保留同一批次全部文件。当前训练可单独导出 CSV。",
+    "export": "导出完整备份到文件夹",
+    "import": "导入备份卷",
+    "importHint": "选择同一批备份的全部 JSON 文件。仅恢复到空资料，或继续恢复同批次；不会覆盖不同资料。每卷已导入会自动跳过，部分失败后可重试。",
+    "chooseFiles": "选择备份文件",
+    "progress": "已处理 {{done}} / {{total}} 份",
+    "privacy": "记录只在本机。备份包含个人训练与备注，请自行妥善保存。"
+  },
+  "tabs": {
+    "workout": "训练",
+    "library": "动作与模板",
+    "history": "历史回顾",
+    "backup": "备份"
+  },
+  "errors": {
+    "workout.invalid": "填写内容或已保存资料无效，请检查名称、日期、次数与负重。",
+    "workout.version": "资料版本暂不支持，原资料未被覆盖。",
+    "workout.incompleteSet": "完成前请填写实际次数；外部负重动作还需要实际重量。",
+    "workout.duplicateExercise": "该动作已在本次训练中，请直接添加组。",
+    "workout.limit": "单次训练最多 64 个动作，每动作最多 100 组；请减少本次内容。",
+    "workout.documentLimit": "单项资料过大，请减少长备注或本次内容；不会自动删除历史。",
+    "workout.noUndo": "没有可撤销的组操作。",
+    "workout.importConflict": "现有资料与备份不是同一批，已停止恢复并保留现有记录。",
+    "workout.readLimit": "资料关联读取未完成，请重试；原资料保持不变。"
+  }
+}

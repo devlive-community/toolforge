@@ -1,0 +1,14 @@
+{
+  "id": "org.devlive.toolforge.workout-log",
+  "version": "0.1.0",
+  "minAppVersion": "0.2.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "other",
+  "keywords": ["workout", "strength", "exercise", "sets", "reps", "gym", "训练", "健身", "力量", "组数", "负重"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {"plan": {}, "export": {}, "import": {}, "clock": {}, "recover": {}},
+  "sensitive": true
+}

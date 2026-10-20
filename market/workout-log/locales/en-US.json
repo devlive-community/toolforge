@@ -1,0 +1,172 @@
+{
+  "name": "Strength Workout Log",
+  "description": "Record your own exercises, actual sets and loads, compare history, and save personal routines",
+  "help": [
+    "Records use ToolForge’s existing local database. No connection is required after installation.",
+    "Create your exercises in Exercises & routines, then start a workout and confirm each actual set.",
+    "Copied sets and routines begin as pending input. Only completed sets contribute to totals.",
+    "History is retained without count-based trimming. Lists are paginated; review an actual date or an exercise.",
+    "A complete backup contains one JSON volume per workout. Keep and restore every volume from the same batch. Existing unrelated records are never silently replaced."
+  ],
+  "functions": {
+    "plan": "Manage workout records",
+    "export": "Export records",
+    "import": "Restore backup",
+    "clock": "Read rest status",
+    "recover": "Recover an interrupted save"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "retry": "Reload and recover saves",
+    "loading": "Loading your records…"
+  },
+  "page": {
+    "previous": "Previous page",
+    "next": "Next page",
+    "number": "Page {{page}}",
+    "total": "{{count}} records"
+  },
+  "mode": {
+    "external": "External load",
+    "bodyweight": "Bodyweight",
+    "unknown": "Load not recorded"
+  },
+  "unit": {
+    "kg": "kg",
+    "lb": "lb"
+  },
+  "status": {
+    "pending": "Pending",
+    "done": "Completed",
+    "skipped": "Skipped"
+  },
+  "exercise": {
+    "title": "My exercises",
+    "choose": "Choose an exercise",
+    "addToWorkout": "Add to this workout",
+    "create": "New exercise",
+    "hint": "Keep equipment and variations separate, even when names match. Past workouts keep their original snapshots.",
+    "empty": "Create your first exercise",
+    "archived": "Archived",
+    "restore": "Restore",
+    "archive": "Archive",
+    "edit": "Edit exercise",
+    "history": "History",
+    "name": "Exercise name",
+    "equipment": "Equipment / variation",
+    "mode": "Load tracking",
+    "snapshotHint": "Changes apply to newly added exercises. Existing workouts and routines keep their original tracking mode.",
+    "archiveTitle": "Change exercise availability",
+    "archiveHint": "Archived exercises leave the add menu. Past workouts and routines stay intact, and exercises can be restored."
+  },
+  "set": {
+    "number": "Set {{number}}",
+    "reps": "Actual repetitions",
+    "weight": "Actual load",
+    "weightPlaceholder": "Enter load",
+    "unit": "Unit",
+    "note": "Set note (optional)",
+    "warmup": "Warm-up",
+    "complete": "Confirm completed",
+    "save": "Save changes",
+    "skip": "Skip set",
+    "pending": "Mark pending",
+    "add": "Add blank set",
+    "copy": "Copy previous (pending)"
+  },
+  "workout": {
+    "title": "Current workout",
+    "defaultName": "My workout",
+    "name": "Workout name",
+    "date": "Actual workout date",
+    "note": "Workout note (optional)",
+    "saveDetails": "Save name, date and note",
+    "completedSets": "{{count}} completed sets",
+    "repetitions": "{{count}} total repetitions",
+    "finished": "Finished",
+    "draft": "In progress",
+    "undo": "Undo last set action",
+    "start": "New workout",
+    "begin": "Create workout draft",
+    "empty": "Add your exercises to this workout",
+    "emptyHint": "You enter the actual repetitions and load. No training program is generated.",
+    "welcome": "Start with your own workout",
+    "welcomeHint": "Create a new workout or reopen a draft below.",
+    "finish": "Finish workout",
+    "review": "Review pending sets",
+    "reviewHint": "{{count}} sets are still pending. They remain in the record but are excluded from completed totals.",
+    "allSets": "{{count}} sets",
+    "confirmFinish": "Keep actual records and finish"
+  },
+  "rest": {
+    "seconds": "Rest seconds",
+    "start": "Start rest",
+    "stop": "Stop / skip",
+    "finished": "Rest time reached",
+    "remaining": "{{seconds}} seconds left",
+    "hint": "A rest cue for this page. Reopening shows elapsed status and never adds workout records."
+  },
+  "history": {
+    "title": "Workout history",
+    "exercise": "By exercise",
+    "date": "By actual date",
+    "all": "All exercises",
+    "includeWarmups": "Include warm-up sets in totals",
+    "clear": "Clear filters",
+    "hint": "Paginated in creation order. Choose an actual date to review that day. Equipment and variations remain separate; original load and kilograms are shown together.",
+    "empty": "No matching workouts",
+    "open": "Open / correct",
+    "repCount": "{{value}} repetitions",
+    "weightValue": "{{original}} {{unit}} ({{kg}} kg)"
+  },
+  "template": {
+    "title": "Personal routines",
+    "name": "Routine name",
+    "create": "Save as new",
+    "destination": "Destination",
+    "save": "Save routine",
+    "hint": "Build a routine from these exercises and set inputs. All copied sets start pending in a new workout.",
+    "createHint": "Arrange exercises and enter your own target sets in a workout, then save it as a routine. No training program is generated.",
+    "empty": "No saved routines yet",
+    "exercises": "{{count}} exercises",
+    "use": "Use",
+    "delete": "Delete routine",
+    "deleteHint": "This only deletes the routine. Existing workouts and actual records remain.",
+    "choose": "Start from a routine",
+    "blank": "Blank workout"
+  },
+  "backup": {
+    "title": "Export and restore",
+    "csv": "Export this CSV",
+    "csvFilter": "Workout CSV",
+    "jsonFilter": "Workout backup JSON",
+    "saved": "Records exported",
+    "restored": "Volumes restored; you can continue importing this batch",
+    "hint": "Save a complete backup to a folder: one JSON volume per workout, with exercises and routines included. History has no automatic retention cap. Keep every volume from a batch. Individual workouts can also be exported as CSV.",
+    "export": "Back up everything to a folder",
+    "import": "Import backup volumes",
+    "importHint": "Choose all JSON files from one backup batch. Restore into an empty journal or continue the same batch; unrelated data is never replaced. Repeated volumes are skipped. Retry after a partial failure.",
+    "chooseFiles": "Choose backup files",
+    "progress": "Processed {{done}} / {{total}} volumes",
+    "privacy": "Records stay on this device. Backups contain personal workout notes; keep them somewhere safe."
+  },
+  "tabs": {
+    "workout": "Workout",
+    "library": "Exercises & routines",
+    "history": "History",
+    "backup": "Backup"
+  },
+  "errors": {
+    "workout.invalid": "An input or saved record is invalid. Check names, dates, repetitions and load.",
+    "workout.version": "This data version is unsupported. Existing data has not been replaced.",
+    "workout.incompleteSet": "Enter actual repetitions before completion, and actual load for externally loaded exercises.",
+    "workout.duplicateExercise": "This exercise is already present. Add another set instead.",
+    "workout.limit": "A workout supports 64 exercises and 100 sets per exercise. Reduce this workout.",
+    "workout.documentLimit": "This individual record is too large. Reduce long notes or this workout; history is never automatically deleted.",
+    "workout.noUndo": "There is no set action to undo.",
+    "workout.importConflict": "This backup belongs to another journal. Existing data has been kept.",
+    "workout.readLimit": "Related records could not be loaded. Retry; existing data is unchanged."
+  }
+}
