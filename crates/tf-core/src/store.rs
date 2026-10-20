@@ -6,7 +6,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use rusqlite::{Connection, OptionalExtension, params};
 use serde::Serialize;
-use serde_json::Value;
+use serde_json::{Map, Value};
 
 use crate::{AppError, AppResult};
 
@@ -56,6 +56,7 @@ const MIGRATIONS: &[&str] = &[
     CREATE INDEX history_updated_at ON history (updated_at DESC);
     ALTER TABLE tasks ADD COLUMN args TEXT;
 "#,
+    "ALTER TABLE tasks ADD COLUMN error_params TEXT;",
 ];
 
 pub struct Store {
@@ -74,6 +75,9 @@ pub struct TaskRecord {
     pub finished_at: Option<i64>,
     pub elapsed_ms: Option<i64>,
     pub error_code: Option<String>,
+    /// 与错误码一同保存，重新打开任务时仍能展示完整的本地化错误。
+    #[serde(skip_serializing_if = "Map::is_empty")]
+    pub error_params: Map<String, Value>,
     /// 保存了启动参数，可以重新运行
     pub rerunnable: bool,
 }
@@ -226,11 +230,19 @@ impl Store {
         id: &str,
         status: &str,
         elapsed_ms: i64,
-        error_code: Option<&str>,
+        error: Option<&AppError>,
     ) -> AppResult<()> {
         self.conn().execute(
-            "UPDATE tasks SET status = ?2, finished_at = ?3, elapsed_ms = ?4, error_code = ?5 WHERE id = ?1",
-            params![id, status, now_millis(), elapsed_ms, error_code],
+            "UPDATE tasks SET status = ?2, finished_at = ?3, elapsed_ms = ?4,
+                    error_code = ?5, error_params = ?6 WHERE id = ?1",
+            params![
+                id,
+                status,
+                now_millis(),
+                elapsed_ms,
+                error.map(|e| e.code.as_str()),
+                error.map(|e| Value::Object(e.params.clone()).to_string())
+            ],
         )?;
         Ok(())
     }
@@ -239,7 +251,7 @@ impl Store {
         let conn = self.conn();
         let mut stmt = conn.prepare(
             "SELECT id, plugin_id, function, status, started_at, finished_at, elapsed_ms, error_code,
-                    args IS NOT NULL
+                    args IS NOT NULL, error_params
              FROM tasks ORDER BY started_at DESC LIMIT ?1 OFFSET ?2",
         )?;
         let rows = stmt.query_map([limit as i64, offset as i64], |row| {
@@ -252,6 +264,10 @@ impl Store {
                 finished_at: row.get(5)?,
                 elapsed_ms: row.get(6)?,
                 error_code: row.get(7)?,
+                error_params: row
+                    .get::<_, Option<String>>(9)?
+                    .and_then(|raw| serde_json::from_str(&raw).ok())
+                    .unwrap_or_default(),
                 rerunnable: row.get(8)?,
             })
         })?;

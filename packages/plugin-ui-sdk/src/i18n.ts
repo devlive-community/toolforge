@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { formatErrorMessage } from './errorMessage'
 import { toAppError } from './types'
 
 /**
@@ -8,14 +9,7 @@ import { toAppError } from './types'
 export function useErrorMessage(ns?: string) {
   const { t, i18n } = useTranslation(ns ? [ns, 'common'] : 'common')
   return useCallback(
-    (error: unknown) => {
-      const { code, params } = toAppError(error)
-      const key = `errors.${code}`
-      for (const namespace of ns ? [ns, 'common'] : ['common']) {
-        if (i18n.exists(key, { ns: namespace })) return t(key, { ns: namespace, ...params })
-      }
-      return code
-    },
+    (error: unknown) => formatErrorMessage(toAppError(error), t, i18n, ns),
     [ns, t, i18n],
   )
 }

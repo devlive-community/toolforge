@@ -307,6 +307,7 @@ impl TaskManager {
             finished_at: None,
             elapsed_ms: None,
             error_code: None,
+            error_params: Default::default(),
             rerunnable: false,
         })?;
 
@@ -383,12 +384,7 @@ impl TaskManager {
                 let _ = flusher.join();
                 runner.flush();
 
-                let _ = store.task_finish(
-                    &id,
-                    status.as_str(),
-                    elapsed_ms as i64,
-                    error.as_ref().map(|e| e.code.as_str()),
-                );
+                let _ = store.task_finish(&id, status.as_str(), elapsed_ms as i64, error.as_ref());
                 running
                     .lock()
                     .unwrap_or_else(|e| e.into_inner())

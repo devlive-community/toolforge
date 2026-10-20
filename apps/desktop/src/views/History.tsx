@@ -227,7 +227,7 @@ function TaskRow({ task }: { task: TaskRecord }) {
         <p className="mt-0.5 text-xs text-fg-subtle">
           {time.format(task.startedAt)}
           {task.elapsedMs !== null && ` · ${t('tasks.elapsed', { ms: task.elapsedMs })}`}
-          {task.errorCode && <span className="ml-2 text-danger">{errorMessage({ code: task.errorCode })}</span>}
+          {task.errorCode && <span className="ml-2 text-danger">{errorMessage({ code: task.errorCode, params: task.errorParams })}</span>}
         </p>
       </div>
       <div className="flex shrink-0 items-center gap-1">

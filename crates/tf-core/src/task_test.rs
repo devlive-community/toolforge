@@ -138,6 +138,26 @@ fn failures_and_panics_are_reported_as_failed() {
 }
 
 #[test]
+fn failed_task_preserves_the_same_error_for_events_and_history() {
+    let (manager, dir) = manager();
+    let sink = Arc::new(Collector::default());
+    let expected = AppError::new("resource.network")
+        .with("host", "models.example.test")
+        .with("detail", "connection reset");
+    let error = expected.clone();
+    manager
+        .start("p", "download_resource", sink.clone(), move |_| Err(error))
+        .unwrap();
+    let (status, _, error) = sink.wait_finished();
+    assert_eq!(status, TaskStatus::Failed);
+    assert_eq!(error, Some(expected.clone()));
+    let history = manager.list(1, 0).unwrap().remove(0);
+    assert_eq!(history.error_code.as_deref(), Some(expected.code.as_str()));
+    assert_eq!(history.error_params, expected.params);
+    std::fs::remove_dir_all(dir).ok();
+}
+
+#[test]
 fn logs_are_batched() {
     let (manager, dir) = manager();
     let sink = Arc::new(Collector::default());

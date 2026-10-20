@@ -36,6 +36,8 @@ export interface TaskRecord {
   finishedAt: number | null
   elapsedMs: number | null
   errorCode: string | null
+  /** 旧记录可能只有错误码；新任务保留用于错误文案插值的参数。 */
+  errorParams?: Record<string, unknown>
   /** 保存了启动参数，可以重新运行 */
   rerunnable: boolean
 }

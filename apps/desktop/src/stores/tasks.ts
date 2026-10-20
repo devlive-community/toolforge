@@ -70,7 +70,14 @@ export const useTasks = create<TasksState>((set, get) => ({
         set({
           records: records.map((r) =>
             r.id === event.taskId
-              ? { ...r, status: event.status, elapsedMs: event.elapsedMs, finishedAt: Date.now(), errorCode: event.error?.code ?? null }
+              ? {
+                  ...r,
+                  status: event.status,
+                  elapsedMs: event.elapsedMs,
+                  finishedAt: Date.now(),
+                  errorCode: event.error?.code ?? null,
+                  errorParams: event.error?.params,
+                }
               : r,
           ),
           running: Math.max(0, running - 1),

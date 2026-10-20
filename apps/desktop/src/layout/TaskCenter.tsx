@@ -92,7 +92,7 @@ function TaskItem({ task }: { task: TaskRecord }) {
                 {percent !== null && <p className="text-xs text-fg-muted tabular-nums">{Math.floor(percent)}%</p>}
               </div>
             )}
-            {task.errorCode && <p className="mt-1 text-xs text-danger">{errorMessage({ code: task.errorCode })}</p>}
+            {task.errorCode && <p className="mt-1 text-xs text-danger">{errorMessage({ code: task.errorCode, params: task.errorParams })}</p>}
           </div>
         </button>
         {running && (

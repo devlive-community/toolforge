@@ -328,6 +328,7 @@
       "task.panicked": "The plugin crashed while running",
       "task.not_found": "Task not found",
       "task.spawn_failed": "Failed to start the task",
+      "task.details_missing": "Full error details are unavailable ({{code}}). See the logs.",
       "plugin.requires_task": "This operation must run as a task",
       "plugin.not_a_task": "This operation is not a task",
       "resource.missing": "The resource “{{id}}” has not been downloaded yet",
@@ -338,6 +339,7 @@
       "resource.network": "Network error while contacting {{host}}: {{detail}}",
       "resource.http_status": "{{host}} responded with HTTP {{status}}",
       "resource.size_mismatch": "The download stopped early ({{actual}} of {{expected}} bytes); try again to resume",
+      "resource.range_mismatch": "The resume response from {{host}} did not match; retry to download again",
       "resource.checksum_mismatch": "The downloaded file for “{{id}}” failed verification and was discarded",
       "shortcut.invalid": "Invalid shortcut: {{shortcut}}",
       "shortcut.unavailable": "{{shortcut}} is already used by the system or another app",
@@ -372,12 +374,13 @@
       },
       "resource": {
         "already_installed": "{{id}} is already downloaded",
-        "download_start": "Downloading {{id}} from {{host}} ({{size, number}} bytes, source {{attempt}})",
+        "download_start": "Downloading {{id}} from {{host}} ({{size, number}} bytes, attempt {{attempt}})",
         "resumed": "Resuming {{id}} from byte {{offset, number}}",
         "verified": "Checksum verified (sha256 {{sha256}}…)",
         "installed": "{{id}} is ready ({{ms}} ms)",
         "paused": "Download of {{id}} paused; it will resume from here next time",
-        "source_failed": "Source {{host}} failed: {{code}}"
+        "source_failed": "Source {{host}} failed: {{code}}",
+        "retry": "Download interrupted. Retrying {{attempt}}/{{total}} ({{host}})"
       }
     },
     "formatter": {

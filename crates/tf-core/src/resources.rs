@@ -21,6 +21,50 @@ const CHUNK: usize = 256 * 1024;
 const CONNECT_TIMEOUT: Duration = Duration::from_secs(20);
 /// 阻塞客户端的超时作用于每次等待（发送请求、每次读取），相当于无数据停滞超时
 const STALL_TIMEOUT: Duration = Duration::from_secs(30);
+const SOURCE_ATTEMPTS: usize = 3;
+
+fn retryable(error: &PluginError) -> bool {
+    match error.code.as_str() {
+        "resource.network" | "resource.range_mismatch" => true,
+        "resource.size_mismatch" => matches!(
+            (error.params.get("actual").and_then(|v| v.as_u64()),
+             error.params.get("expected").and_then(|v| v.as_u64())),
+            (Some(actual), Some(expected)) if actual < expected
+        ),
+        "resource.http_status" => error
+            .params
+            .get("status")
+            .and_then(|v| v.as_u64())
+            .is_some_and(|status| matches!(status, 408 | 429 | 500..=599)),
+        _ => false,
+    }
+}
+
+fn retry_delay(ctx: &dyn TaskContext, attempt: usize) -> PluginResult<()> {
+    let until = Instant::now() + Duration::from_millis(250 * attempt as u64);
+    while Instant::now() < until {
+        if ctx.is_cancelled() {
+            return Err(cancelled());
+        }
+        std::thread::sleep(Duration::from_millis(25));
+    }
+    Ok(())
+}
+
+fn valid_range(value: Option<&reqwest::header::HeaderValue>, offset: u64, size: u64) -> bool {
+    let Some((range, total)) = value
+        .and_then(|value| value.to_str().ok())
+        .and_then(|value| value.strip_prefix("bytes "))
+        .and_then(|value| value.split_once('/'))
+    else {
+        return false;
+    };
+    let Some((from, to)) = range.split_once('-') else {
+        return false;
+    };
+    matches!((from.parse::<u64>(), to.parse::<u64>(), total.parse::<u64>()),
+        (Ok(from), Ok(to), Ok(total)) if from == offset && to >= from && to < total && total == size)
+}
 
 #[derive(Debug, Clone, Serialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -103,10 +147,11 @@ pub fn fetch_bytes(url: &str, max: u64) -> PluginResult<Vec<u8>> {
             .with("status", status.as_u16()));
     }
     let mut body = Vec::new();
-    response
-        .take(max + 1)
-        .read_to_end(&mut body)
-        .map_err(|e| PluginError::new("resource.network").with("detail", e.to_string()))?;
+    response.take(max + 1).read_to_end(&mut body).map_err(|e| {
+        PluginError::new("resource.network")
+            .with("host", host(url))
+            .with("detail", e.to_string())
+    })?;
     if body.len() as u64 > max {
         return Err(PluginError::new("resource.too_large").with("limit", max));
     }
@@ -214,42 +259,53 @@ impl Resources {
         let client = client()?;
         let start = Instant::now();
         let mut last_error = None;
-        for (index, url) in spec.urls.iter().enumerate() {
-            ctx.log(
+        'sources: for url in &spec.urls {
+            for attempt in 1..=SOURCE_ATTEMPTS {
+                if ctx.is_cancelled() {
+                    return Err(cancelled());
+                }
+                ctx.log(
                 LogLevel::Info,
                 "resource.download_start",
-                json!({ "id": spec.id, "host": host(url), "size": spec.size, "attempt": index + 1 }),
+                json!({ "id": spec.id, "host": host(url), "size": spec.size, "attempt": attempt }),
             );
-            match self.fetch(&client, url, spec, &part, ctx) {
-                Ok(()) => {
-                    last_error = None;
-                    let record = Record {
-                        sha256: spec.sha256.clone(),
-                        size: spec.size,
-                        url: url.clone(),
-                        installed_at: now_millis() as u64,
-                    };
-                    fs::rename(&part, &file).map_err(|e| io_error(e, &file))?;
-                    let json = serde_json::to_vec_pretty(&record).unwrap_or_default();
-                    fs::write(&meta, json).map_err(|e| io_error(e, &meta))?;
-                    ctx.log(
-                        LogLevel::Info,
-                        "resource.installed",
-                        json!({ "id": spec.id, "ms": start.elapsed().as_millis() as u64 }),
-                    );
-                    break;
-                }
-                Err(err) if err.code == "task.cancelled" => {
-                    ctx.log(LogLevel::Warn, "resource.paused", json!({ "id": spec.id }));
-                    return Err(err);
-                }
-                Err(err) => {
-                    ctx.log(
-                        LogLevel::Warn,
-                        "resource.source_failed",
-                        json!({ "host": host(url), "code": err.code }),
-                    );
-                    last_error = Some(err);
+                match self.fetch(&client, url, spec, &part, ctx) {
+                    Ok(()) => {
+                        last_error = None;
+                        let record = Record {
+                            sha256: spec.sha256.clone(),
+                            size: spec.size,
+                            url: url.clone(),
+                            installed_at: now_millis() as u64,
+                        };
+                        fs::rename(&part, &file).map_err(|e| io_error(e, &file))?;
+                        let json = serde_json::to_vec_pretty(&record).unwrap_or_default();
+                        fs::write(&meta, json).map_err(|e| io_error(e, &meta))?;
+                        ctx.log(
+                            LogLevel::Info,
+                            "resource.installed",
+                            json!({ "id": spec.id, "ms": start.elapsed().as_millis() as u64 }),
+                        );
+                        break 'sources;
+                    }
+                    Err(err) if err.code == "task.cancelled" => {
+                        ctx.log(LogLevel::Warn, "resource.paused", json!({ "id": spec.id }));
+                        return Err(err);
+                    }
+                    Err(err) => {
+                        let again = attempt < SOURCE_ATTEMPTS && retryable(&err);
+                        ctx.log(
+                            LogLevel::Warn,
+                            "resource.source_failed",
+                            json!({ "host": host(url), "code": err.code }),
+                        );
+                        last_error = Some(err);
+                        if !again {
+                            break;
+                        }
+                        ctx.log(LogLevel::Warn, "resource.retry", json!({ "host": host(url), "attempt": attempt + 1, "total": SOURCE_ATTEMPTS }));
+                        retry_delay(ctx, attempt)?;
+                    }
                 }
             }
         }
@@ -277,6 +333,7 @@ impl Resources {
         let mut hasher = Sha256::new();
         let mut offset = fs::metadata(part).map(|m| m.len()).unwrap_or(0);
         if offset > spec.size {
+            fs::remove_file(part).map_err(|e| io_error(e, part))?;
             offset = 0;
         }
         if offset > 0 {
@@ -284,6 +341,9 @@ impl Resources {
             let mut buffer = vec![0u8; CHUNK];
             let mut remaining = offset;
             while remaining > 0 {
+                if ctx.is_cancelled() {
+                    return Err(cancelled());
+                }
                 let read = existing
                     .read(&mut buffer[..CHUNK.min(remaining as usize)])
                     .map_err(|e| io_error(e, part))?;
@@ -293,14 +353,42 @@ impl Resources {
                 hasher.update(&buffer[..read]);
                 remaining -= read as u64;
             }
+            drop(existing);
+            if offset == spec.size {
+                if to_hex(&hasher.clone().finalize()) == spec.sha256.to_ascii_lowercase() {
+                    ctx.progress(spec.size, spec.size);
+                    ctx.log(LogLevel::Info, "resource.verified", json!({ "id": spec.id, "sha256": &spec.sha256[..16.min(spec.sha256.len())] }));
+                    return Ok(());
+                }
+                fs::remove_file(part).map_err(|e| io_error(e, part))?;
+                offset = 0;
+                hasher = Sha256::new();
+            }
         }
 
-        let mut request = client.get(url);
+        let mut request = client
+            .get(url)
+            .header(reqwest::header::ACCEPT_ENCODING, "identity");
         if offset > 0 {
             request = request.header(reqwest::header::RANGE, format!("bytes={offset}-"));
         }
         let mut response = request.send().map_err(network)?;
         let status = response.status();
+        if (status == reqwest::StatusCode::PARTIAL_CONTENT
+            && !valid_range(
+                response.headers().get(reqwest::header::CONTENT_RANGE),
+                offset,
+                spec.size,
+            ))
+            || (status == reqwest::StatusCode::RANGE_NOT_SATISFIABLE && offset > 0)
+        {
+            match fs::remove_file(part) {
+                Ok(()) => {}
+                Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+                Err(error) => return Err(io_error(error, part)),
+            }
+            return Err(PluginError::new("resource.range_mismatch").with("host", host(url)));
+        }
         if !status.is_success() {
             return Err(PluginError::new("resource.http_status")
                 .with("status", status.as_u16())

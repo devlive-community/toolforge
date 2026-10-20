@@ -82,6 +82,7 @@ fn record(id: &str, started_at: i64) -> TaskRecord {
         finished_at: None,
         elapsed_ms: None,
         error_code: None,
+        error_params: Default::default(),
         rerunnable: false,
     }
 }
@@ -91,12 +92,75 @@ fn task_lifecycle_is_persisted() {
     let store = Store::open_in_memory().unwrap();
     store.task_insert(&record("t1", 1)).unwrap();
     store
-        .task_finish("t1", "failed", 42, Some("fs.not_found"))
+        .task_finish("t1", "failed", 42, Some(&AppError::new("fs.not_found")))
         .unwrap();
     let tasks = store.tasks(10, 0).unwrap();
     assert_eq!(tasks[0].status, "failed");
     assert_eq!(tasks[0].elapsed_ms, Some(42));
     assert_eq!(tasks[0].error_code.as_deref(), Some("fs.not_found"));
+}
+
+#[test]
+fn task_error_parameters_survive_reopening_the_database() {
+    let dir = std::env::temp_dir().join(format!(
+        "tf-store-errors-{}-{:?}",
+        now_millis(),
+        std::thread::current().id()
+    ));
+    let path = dir.join("state.db");
+    let error = AppError::new("resource.network")
+        .with("host", "models.example.test")
+        .with("detail", "connection reset");
+    {
+        let store = Store::open(&path).unwrap();
+        store.task_insert(&record("download", 1)).unwrap();
+        store
+            .task_finish("download", "failed", 223, Some(&error))
+            .unwrap();
+    }
+    {
+        let store = Store::open(&path).unwrap();
+        let task = store.tasks(1, 0).unwrap().remove(0);
+        assert_eq!(task.error_code.as_deref(), Some("resource.network"));
+        assert_eq!(task.error_params, error.params);
+        let json = serde_json::to_value(task).unwrap();
+        assert_eq!(json["errorParams"]["host"], "models.example.test");
+        store
+            .task_finish("download", "succeeded", 400, None)
+            .unwrap();
+        let task = store.tasks(1, 0).unwrap().remove(0);
+        assert!(task.error_code.is_none() && task.error_params.is_empty());
+    }
+    std::fs::remove_dir_all(dir).unwrap();
+}
+
+#[test]
+fn task_error_migration_preserves_existing_records_and_preferences() {
+    let connection = Connection::open_in_memory().unwrap();
+    for sql in &MIGRATIONS[..3] {
+        connection.execute_batch(sql).unwrap();
+    }
+    connection.pragma_update(None, "user_version", 3).unwrap();
+    connection
+        .execute(
+            "INSERT INTO tasks (id, plugin_id, function, status, started_at, error_code)
+         VALUES ('old', 'p', 'download_resource', 'failed', 1, 'resource.network')",
+            [],
+        )
+        .unwrap();
+    connection
+        .execute(
+            "INSERT INTO kv (key, value, updated_at) VALUES ('pref', '42', 1)",
+            [],
+        )
+        .unwrap();
+    let store = Store::init(connection).unwrap();
+    let task = store.tasks(10, 0).unwrap().remove(0);
+    assert_eq!(task.id, "old");
+    assert_eq!(task.error_code.as_deref(), Some("resource.network"));
+    assert!(task.error_params.is_empty());
+    assert_eq!(store.kv_get("pref").unwrap(), Some(json!(42)));
+    assert_eq!(store.tasks_count().unwrap(), 1);
 }
 
 #[test]
@@ -185,6 +249,7 @@ fn task_args_enable_rerun() {
         finished_at: None,
         elapsed_ms: None,
         error_code: None,
+        error_params: Default::default(),
         rerunnable: false,
     };
     store.task_insert(&record).unwrap();
