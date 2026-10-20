@@ -1,0 +1,81 @@
+{
+  "name": "低多边形照片艺术",
+  "description": "把照片变成可编辑的三角拼色画，导出 PNG 或真正的矢量 SVG",
+  "help": [
+    "选择图片后自动按边缘特征生成点集并剖分，每个三角形从原图采样填色。",
+    "编辑视图下点击空白处加点、拖动已有点调整轮廓、点选后按 Delete 删除；四角锚点固定防止画布缺角。",
+    "拖动一次只算一步，支持撤销 / 重做；种子与点数不变时重新打开结果一致。",
+    "导出前可调轮廓线宽、亮度与输出缩放；SVG 是真正的多边形矢量文件，不是内嵌位图。"
+  ],
+  "functions": {
+    "prepare": "生成受限工作图",
+    "generate": "按种子生成特征点并剖分",
+    "remesh": "重新剖分与取色",
+    "export": "导出 PNG 或 SVG"
+  },
+  "file": {
+    "title": "作品",
+    "open": "打开图片",
+    "openHint": "打开 PNG / JPEG 开始",
+    "filter": "图片",
+    "dimensions": "{{width}} × {{height}}",
+    "copyWork": "复制工作图数据",
+    "points": "{{count}} 点",
+    "triangles": "{{count}} 三角"
+  },
+  "options": {
+    "title": "生成与样式",
+    "count": "点数",
+    "detail": "细节权重",
+    "seed": "种子",
+    "regenerate": "重新生成",
+    "brightness": "亮度",
+    "scale": "输出缩放",
+    "strokeWidth": "轮廓线宽",
+    "background": "底色",
+    "hint": "页边距单位为像素；透明区域按底色合成。"
+  },
+  "canvas": {
+    "title": "画布",
+    "view": "视图",
+    "empty": "先打开一张图片",
+    "emptyHint": "自动生成后即可在编辑视图拖动控制点",
+    "hint": "点击空白加点，拖动已有点调整，删除点用右侧按钮；四角锚点固定。"
+  },
+  "view": {
+    "edit": "编辑",
+    "result": "成品",
+    "original": "原图"
+  },
+  "history": {
+    "undo": "撤销",
+    "redo": "重做",
+    "clear": "清空普通点"
+  },
+  "hint": {
+    "anchorFixed": "四角锚点固定，不能删除"
+  },
+  "export": {
+    "title": "导出",
+    "cancel": "取消",
+    "done": "已导出 {{width}} × {{height}}，{{triangles}} 个三角"
+  },
+  "stages": {
+    "lowpoly.sample": "正在取色…",
+    "lowpoly.render": "正在渲染…"
+  },
+  "errors": {
+    "lowpoly.source_required": "请提供图片",
+    "lowpoly.bad_data": "图片数据无效：{{detail}}",
+    "lowpoly.decode_failed": "图片解码失败：{{detail}}",
+    "lowpoly.encode_failed": "图片编码失败：{{detail}}",
+    "lowpoly.pixels_too_large": "图片超过 {{limit}} 像素",
+    "lowpoly.file_too_large": "文件超过 {{limit}}",
+    "lowpoly.degenerate": "点集无法构成三角形（全部共线或过少）",
+    "lowpoly.too_many_points": "点数超过 {{limit}}",
+    "lowpoly.bad_scale": "缩放超出范围（最大 {{max}}）",
+    "lowpoly.bad_color": "颜色无效：{{value}}",
+    "lowpoly.output_required": "请选择输出文件",
+    "lowpoly.io": "写入失败：{{path}}：{{detail}}"
+  }
+}

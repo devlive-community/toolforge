@@ -1,0 +1,81 @@
+{
+  "name": "Low-poly Photo Art",
+  "description": "Turn photos into editable triangle art and export PNG or true vector SVG",
+  "help": [
+    "Pick an image and a feature-aware point set is triangulated automatically; every triangle samples its color from the photo.",
+    "In edit view click empty space to add points, drag points to reshape outlines and press the delete button to remove; corner anchors stay fixed so the canvas never loses a corner.",
+    "One drag counts as one step with undo / redo; the same seed and point count reproduce the same result.",
+    "Stroke width, brightness and output scale are adjustable before export; the SVG is a real polygon vector file, not an embedded bitmap."
+  ],
+  "functions": {
+    "prepare": "Build the working image",
+    "generate": "Generate feature points and triangulate",
+    "remesh": "Re-triangulate and sample colors",
+    "export": "Export PNG or SVG"
+  },
+  "file": {
+    "title": "Artwork",
+    "open": "Open image",
+    "openHint": "Open a PNG / JPEG to start",
+    "filter": "Images",
+    "dimensions": "{{width}} × {{height}}",
+    "copyWork": "Copy working image data",
+    "points": "{{count}} points",
+    "triangles": "{{count}} triangles"
+  },
+  "options": {
+    "title": "Generation & style",
+    "count": "Points",
+    "detail": "Detail weight",
+    "seed": "Seed",
+    "regenerate": "Regenerate",
+    "brightness": "Brightness",
+    "scale": "Output scale",
+    "strokeWidth": "Stroke width",
+    "background": "Background",
+    "hint": "Transparent areas are composited onto the background color."
+  },
+  "canvas": {
+    "title": "Canvas",
+    "view": "View",
+    "empty": "Open an image first",
+    "emptyHint": "After auto-generation, drag control points in edit view",
+    "hint": "Click empty space to add a point, drag points to adjust, use the buttons to delete; corner anchors are fixed."
+  },
+  "view": {
+    "edit": "Edit",
+    "result": "Result",
+    "original": "Original"
+  },
+  "history": {
+    "undo": "Undo",
+    "redo": "Redo",
+    "clear": "Clear normal points"
+  },
+  "hint": {
+    "anchorFixed": "Corner anchors are fixed and cannot be deleted"
+  },
+  "export": {
+    "title": "Export",
+    "cancel": "Cancel",
+    "done": "Exported {{width}} × {{height}}, {{triangles}} triangles"
+  },
+  "stages": {
+    "lowpoly.sample": "Sampling colors…",
+    "lowpoly.render": "Rendering…"
+  },
+  "errors": {
+    "lowpoly.source_required": "Provide an image",
+    "lowpoly.bad_data": "Invalid image data: {{detail}}",
+    "lowpoly.decode_failed": "The image could not be decoded: {{detail}}",
+    "lowpoly.encode_failed": "The image could not be encoded: {{detail}}",
+    "lowpoly.pixels_too_large": "The image is larger than {{limit}} pixels",
+    "lowpoly.file_too_large": "The file is larger than {{limit}}",
+    "lowpoly.degenerate": "The points cannot form triangles (all collinear or too few)",
+    "lowpoly.too_many_points": "More than {{limit}} points",
+    "lowpoly.bad_scale": "Scale out of range (max {{max}})",
+    "lowpoly.bad_color": "Invalid color: {{value}}",
+    "lowpoly.output_required": "Choose an output file",
+    "lowpoly.io": "Writing failed: {{path}}: {{detail}}"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "org.devlive.toolforge.low-poly",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": ["low poly", "triangle", "triangulation", "polygon", "vector", "art", "avatar", "低多边形", "三角形", "拼色", "矢量", "头像"],
+  "accent": "pink",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "prepare": {},
+    "generate": {},
+    "remesh": {},
+    "export": { "task": true }
+  },
+  "sensitive": false
+}
