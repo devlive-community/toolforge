@@ -218,9 +218,9 @@ fn settlements_update_net_and_are_not_re_suggested() {
     });
     let report = settle(&ledger).unwrap();
     // 甲垫付 100 元、承担 33.34，乙转给甲 20 元：
-    // 甲 net = 10000 − 3334 + 2000 = 8666；乙 net = −3333 − 2000 = −5333
-    assert_eq!(balance_of(&report, "m1").net, 8666);
-    assert_eq!(balance_of(&report, "m2").net, -5333);
+    // 甲 net = 10000 − 3334 − 2000 = 4666；乙 net = −3333 + 2000 = −1333
+    assert_eq!(balance_of(&report, "m1").net, 4666);
+    assert_eq!(balance_of(&report, "m2").net, -1333);
     // 已结算部分不再出现在建议里
     let to_m1: i64 = report
         .transfers
@@ -228,7 +228,150 @@ fn settlements_update_net_and_are_not_re_suggested() {
         .filter(|t| t.to == "m1")
         .map(|t| t.cents)
         .sum();
-    assert_eq!(to_m1, 8666);
+    assert_eq!(to_m1, 4666);
+}
+
+fn actual_settlement(id: &str, from: &str, to: &str, cents: &str) -> Settlement {
+    Settlement {
+        id: id.to_owned(),
+        from: from.to_owned(),
+        to: to.to_owned(),
+        cents: cents.to_owned(),
+        date: Some("2026-10-20".to_owned()),
+    }
+}
+
+fn assert_settlement_conservation(report: &Report) {
+    assert_eq!(report.balances.iter().map(|b| b.net).sum::<i64>(), 0);
+    assert_eq!(
+        report.balances.iter().map(|b| b.paid).sum::<i64>(),
+        report.total_cents
+    );
+    assert_eq!(
+        report.balances.iter().map(|b| b.owed).sum::<i64>(),
+        report.total_cents
+    );
+    assert_eq!(
+        report.balances.iter().map(|b| b.settled_out).sum::<i64>(),
+        report.balances.iter().map(|b| b.settled_in).sum::<i64>()
+    );
+    let mut remaining: Vec<_> = report.balances.iter().map(|b| b.net).collect();
+    for transfer in &report.transfers {
+        assert!(transfer.cents > 0);
+        assert_ne!(transfer.from, transfer.to);
+        let from = report
+            .balances
+            .iter()
+            .position(|b| b.id == transfer.from)
+            .unwrap();
+        let to = report
+            .balances
+            .iter()
+            .position(|b| b.id == transfer.to)
+            .unwrap();
+        remaining[from] += transfer.cents;
+        remaining[to] -= transfer.cents;
+    }
+    assert!(remaining.iter().all(|net| *net == 0));
+}
+
+#[test]
+fn partial_settlement_leaves_only_the_unpaid_amount() {
+    let mut activity = ledger(vec![expense("e1", "m1", "100", equal(&["m1", "m2"]))]);
+    activity
+        .settlements
+        .push(actual_settlement("s1", "m2", "m1", "20"));
+    let report = settle(&activity).unwrap();
+    assert_eq!(balance_of(&report, "m1").net, 3000);
+    assert_eq!(balance_of(&report, "m2").net, -3000);
+    assert_eq!(report.transfers.len(), 1);
+    assert_eq!(report.transfers[0].from, "m2");
+    assert_eq!(report.transfers[0].to, "m1");
+    assert_eq!(report.transfers[0].cents, 3000);
+    assert_settlement_conservation(&report);
+}
+
+#[test]
+fn full_settlement_needs_no_further_transfers() {
+    let mut activity = ledger(vec![expense("e1", "m1", "100", equal(&["m1", "m2"]))]);
+    activity
+        .settlements
+        .push(actual_settlement("s1", "m2", "m1", "50"));
+    let report = settle(&activity).unwrap();
+    assert!(report.balances.iter().all(|balance| balance.net == 0));
+    assert!(report.transfers.is_empty());
+    assert_settlement_conservation(&report);
+}
+
+#[test]
+fn overpayment_suggests_returning_only_the_excess() {
+    let mut activity = ledger(vec![expense("e1", "m1", "100", equal(&["m1", "m2"]))]);
+    activity
+        .settlements
+        .push(actual_settlement("s1", "m2", "m1", "60"));
+    let report = settle(&activity).unwrap();
+    assert_eq!(balance_of(&report, "m1").net, -1000);
+    assert_eq!(balance_of(&report, "m2").net, 1000);
+    assert_eq!(report.transfers.len(), 1);
+    assert_eq!(report.transfers[0].from, "m1");
+    assert_eq!(report.transfers[0].to, "m2");
+    assert_eq!(report.transfers[0].cents, 1000);
+    assert_settlement_conservation(&report);
+}
+
+#[test]
+fn reverse_direction_settlement_increases_the_remaining_debt() {
+    let mut activity = ledger(vec![expense("e1", "m1", "100", equal(&["m1", "m2"]))]);
+    activity
+        .settlements
+        .push(actual_settlement("s1", "m1", "m2", "20"));
+    let report = settle(&activity).unwrap();
+    assert_eq!(balance_of(&report, "m1").net, 7000);
+    assert_eq!(balance_of(&report, "m2").net, -7000);
+    assert_eq!(report.transfers.len(), 1);
+    assert_eq!(report.transfers[0].from, "m2");
+    assert_eq!(report.transfers[0].to, "m1");
+    assert_eq!(report.transfers[0].cents, 7000);
+    assert_settlement_conservation(&report);
+}
+
+#[test]
+fn multiple_settlements_conserve_balances_without_rewriting_history() {
+    let mut activity = ledger(vec![expense("e1", "m1", "120", equal(&["m1", "m2", "m3"]))]);
+    activity.settlements = vec![
+        actual_settlement("s1", "m2", "m1", "10"),
+        actual_settlement("s2", "m3", "m1", "15"),
+        actual_settlement("s3", "m2", "m3", "5"),
+    ];
+    let snapshot = activity.settlements.clone();
+    for count in 0..=activity.settlements.len() {
+        let mut prefix = activity.clone();
+        prefix.settlements.truncate(count);
+        assert_settlement_conservation(&settle(&prefix).unwrap());
+    }
+    let report = settle(&activity).unwrap();
+    assert_eq!(balance_of(&report, "m1").net, 5500);
+    assert_eq!(balance_of(&report, "m2").net, -2500);
+    assert_eq!(balance_of(&report, "m3").net, -3000);
+    assert_eq!(report.transfers.len(), 2);
+    assert_eq!(report.transfers[0].from, "m3");
+    assert_eq!(report.transfers[0].to, "m1");
+    assert_eq!(report.transfers[0].cents, 3000);
+    assert_eq!(report.transfers[1].from, "m2");
+    assert_eq!(report.transfers[1].to, "m1");
+    assert_eq!(report.transfers[1].cents, 2500);
+    for (stored, original) in activity.settlements.iter().zip(&snapshot) {
+        assert_eq!(stored.id, original.id);
+        assert_eq!(stored.from, original.from);
+        assert_eq!(stored.to, original.to);
+        assert_eq!(stored.cents, original.cents);
+        assert_eq!(stored.date, original.date);
+    }
+    assert_eq!(report.settlements[0].cents, 1000);
+    assert_eq!(report.settlements[1].cents, 1500);
+    assert_eq!(report.settlements[2].cents, 500);
+    assert_eq!(activity.expenses[0].total, "120");
+    assert_settlement_conservation(&report);
 }
 
 #[test]

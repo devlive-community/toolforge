@@ -398,7 +398,7 @@ pub fn settle(ledger: &Ledger) -> Result<Report, PluginError> {
             owed: owed[index],
             settled_out: settled_out[index],
             settled_in: settled_in[index],
-            net: paid[index] - owed[index] - settled_out[index] + settled_in[index],
+            net: paid[index] - owed[index] + settled_out[index] - settled_in[index],
         })
         .collect();
 
