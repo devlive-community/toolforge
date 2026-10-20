@@ -414,11 +414,7 @@ pub fn run(args: Args, ctx: &dyn TaskContext) -> PluginResult<Report> {
         args.name.as_deref().unwrap_or("stitched"),
         args.format.extension(),
     );
-    std::fs::write(&output, &encoded).map_err(|e| {
-        PluginError::new("stitch.io")
-            .with("path", output.to_string_lossy().as_ref())
-            .with("detail", e.to_string())
-    })?;
+    tf_plugin_guest::net::write_file(output.to_string_lossy().as_ref(), &encoded)?;
 
     // imageops::thumbnail 返回的就是 RGBA8 的 ImageBuffer，直接按 PNG 编码
     let thumbnail = encode(

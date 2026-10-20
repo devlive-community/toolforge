@@ -1,0 +1,169 @@
+{
+  "name": "Image Stitcher",
+  "description": "Combine multiple images into one, or produce a paginated contact sheet PDF with labels",
+  "help": [
+    "Everything runs locally; files never leave your computer.",
+    "Images are stitched in the order added; use move up / down to rearrange them.",
+    "Contact sheets paginate by paper size: images fit entirely in their cells, numbering runs continuously, and the result is a multi-page PDF.",
+    "Labels use the standard PDF font (ASCII only) unless you provide a TTF/OTF font file for non-Latin names or notes."
+  ],
+  "functions": {
+    "stitch": "Stitch images",
+    "plan_contact_sheet": "Compute contact sheet pagination",
+    "export_contact_sheet": "Export contact sheet PDF"
+  },
+  "tabs": {
+    "stitch": "Stitch",
+    "sheet": "Contact sheet"
+  },
+  "files": {
+    "title": "Images",
+    "add": "Add",
+    "drop": "Drop images or click to open",
+    "dropHint": "Stitched in the order added, adjustable later",
+    "remove": "Remove",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "filter": "Images",
+    "cancel": "Cancel",
+    "start": "Start stitching",
+    "clear": "Clear"
+  },
+  "options": {
+    "title": "Options",
+    "layout": "Layout",
+    "align": "Alignment",
+    "columns": "Columns",
+    "gap": "Spacing (px)",
+    "background": "Background",
+    "format": "Output format",
+    "quality": "JPEG quality",
+    "output": "Output folder",
+    "sameDir": "Same as first image",
+    "resetDir": "Reset",
+    "name": "File name"
+  },
+  "layout": {
+    "horizontal": "Row",
+    "vertical": "Column",
+    "grid": "Grid",
+    "gridHint": "Each column is as wide as its widest image, each row as tall as its tallest image; images are centered in their cells"
+  },
+  "align": {
+    "start": "Start",
+    "center": "Center",
+    "end": "End"
+  },
+  "background": {
+    "transparent": "Transparent",
+    "white": "White",
+    "black": "Black",
+    "custom": "Custom",
+    "hex": "Color (#RRGGBB or #RRGGBBAA)",
+    "jpegHint": "JPEG has no transparency, so a white background is used"
+  },
+  "result": {
+    "title": "Result",
+    "summary": "{{width}} × {{height}}",
+    "cancelled": "Cancelled",
+    "running": "Stitching…",
+    "empty": "No result yet",
+    "emptyHint": "Add at least two images and start stitching",
+    "reveal": "Reveal in folder",
+    "elapsed": "in {{ms}} ms"
+  },
+  "logs": {
+    "title": "Live log",
+    "empty": "Logs appear here once the stitching starts",
+    "jumpLatest": "Jump to latest",
+    "stitch": {
+      "image_loaded": "[{{index}}/{{count}}] Loaded {{file}} ({{width}} × {{height}})",
+      "done": "Wrote {{output}}: {{count}} images stitched to {{width}} × {{height}}, {{bytes, number}} bytes in {{ms}} ms"
+    }
+  },
+  "stages": {
+    "stitch.decode": "Reading images…",
+    "stitch.compose": "Stitching…",
+    "stitch.encode": "Encoding…"
+  },
+  "sheet": {
+    "items": "Images",
+    "add": "Add",
+    "addHint": "Add photos to lay out",
+    "addDesc": "Drag them into the window; numbers follow the list order",
+    "notePlaceholder": "Note (optional, e.g. “by the sea”)",
+    "note": "Note for {{name}}",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "remove": "Remove {{name}}",
+    "options": "Sheet options",
+    "paper": "Paper",
+    "orientation": "Orientation",
+    "portrait": "Portrait",
+    "landscape": "Landscape",
+    "columns": "Columns",
+    "rows": "Rows",
+    "margin": "Margin",
+    "gap": "Gap",
+    "unitHint": "Margin, gap and label height are in millimeters",
+    "labelHeight": "Label height",
+    "fontSize": "Font size (pt)",
+    "title": "Sheet title (optional)",
+    "titlePlaceholder": "e.g. 2026 trip picks",
+    "showNumber": "Number",
+    "showName": "File name",
+    "showPageNumber": "Page numbers",
+    "font": "Label font (optional)",
+    "fontHint": "Choose a TTF/OTF font file",
+    "fontFilter": "Font files",
+    "fontReset": "Clear font",
+    "fontDesc": "Without a font the standard PDF Helvetica is used (ASCII only); provide a font file for non-Latin names or notes",
+    "preview": "Preview",
+    "pageOf": "Page {{page}} / {{count}}",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "export": "Export PDF",
+    "cancel": "Cancel",
+    "running": "Generating…",
+    "empty": "Add images to lay out a sheet",
+    "emptyHint": "A single image works too; extra images paginate automatically",
+    "report": "{{images}} images · {{pages}} pages",
+    "elapsed": "in {{ms}} ms",
+    "missingGlyphs": "Missing glyphs in the selected font: {{chars}}",
+    "reveal": "Reveal in folder",
+    "logs": "Live log",
+    "logsEmpty": "Logs appear here once the export starts",
+    "jumpLatest": "Jump to latest",
+    "stages": {
+      "sheet.decode": "Reading images…",
+      "sheet.compose": "Laying out…",
+      "sheet.pdf": "Building PDF…"
+    }
+  },
+  "errors": {
+    "stitch.too_few": "Add at least two images",
+    "stitch.too_many": "At most {{limit}} images can be stitched at once",
+    "stitch.output_dir_missing": "The output folder does not exist: {{path}}",
+    "stitch.file_too_large": "The image is larger than {{limit}}",
+    "stitch.pixels_too_large": "The result would be too large ({{width}} × {{height}})",
+    "stitch.invalid_color": "Invalid color: {{color}}",
+    "stitch.decode_failed": "The image could not be decoded: {{detail}}",
+    "stitch.encode_failed": "The image could not be encoded: {{detail}}",
+    "stitch.io": "File I/O failed: {{path}}: {{detail}}",
+    "sheet.empty": "Add some images first",
+    "sheet.too_many_images": "At most {{limit}} images can be laid out at once",
+    "sheet.too_many_pages": "The sheet would exceed {{limit}} pages; use fewer images or a larger grid",
+    "sheet.negative": "Margin, gap and label height cannot be negative",
+    "sheet.bad_font_size": "The font size must be between 4 and 48 pt",
+    "sheet.bad_grid": "Columns and rows must be at least 1",
+    "sheet.margin_too_wide": "The margin is too wide; no usable space remains",
+    "sheet.cell_too_small": "Cells are too small: reduce rows/columns, label height or margin",
+    "sheet.output_required": "Choose an output file",
+    "sheet.font_io": "Reading the font failed: {{path}}: {{detail}}",
+    "sheet.font_failed": "The font could not be parsed: {{detail}}",
+    "sheet.encode_failed": "Encoding a thumbnail failed: {{detail}}",
+    "sheet.pdf_failed": "Building the PDF failed: {{detail}}",
+    "sheet.layout_mismatch": "Layout and thumbnails disagree; please retry",
+    "sheet.io": "Writing failed: {{path}}: {{detail}}"
+  }
+}

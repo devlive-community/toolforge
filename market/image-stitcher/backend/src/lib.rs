@@ -1,5 +1,7 @@
-//! 图片拼接插件后端：把多张位图按行、列或网格拼成一张图。
+//! 图片拼接插件后端：把多张位图按行、列或网格拼成一张图，并生成联系印样 PDF。
 
+mod contact;
+mod pdf;
 mod stitch;
 
 use std::io::Cursor;
@@ -78,33 +80,26 @@ fn inspect_one(path: &str) -> InspectEntry {
         thumbnail: None,
         error: None,
     };
-    let bytes = match std::fs::metadata(path) {
-        Ok(meta) if meta.len() > MAX_FILE => {
+    let size = match tf_plugin_guest::net::file_size(path) {
+        Ok(size) => size,
+        Err(e) => {
             return InspectEntry {
-                error: Some(PluginError::new("stitch.file_too_large").with("limit", "200 MB")),
+                error: Some(e),
                 ..base
             };
         }
-        Ok(_) => match std::fs::read(path) {
-            Ok(bytes) => bytes,
-            Err(e) => {
-                return InspectEntry {
-                    error: Some(
-                        PluginError::new("stitch.io")
-                            .with("path", path)
-                            .with("detail", e.to_string()),
-                    ),
-                    ..base
-                };
-            }
-        },
+    };
+    if size > MAX_FILE {
+        return InspectEntry {
+            error: Some(PluginError::new("stitch.file_too_large").with("limit", "200 MB")),
+            ..base
+        };
+    }
+    let bytes = match tf_plugin_guest::net::read_file(path, 0, size.min(u32::MAX as u64) as u32) {
+        Ok(bytes) => bytes,
         Err(e) => {
             return InspectEntry {
-                error: Some(
-                    PluginError::new("stitch.io")
-                        .with("path", path)
-                        .with("detail", e.to_string()),
-                ),
+                error: Some(e),
                 ..base
             };
         }
@@ -142,6 +137,7 @@ impl ToolPlugin for ImageStitcher {
                         .collect::<Vec<_>>(),
                 )
             }
+            "plan_contact_sheet" => to_value(contact::plan(parse_args(args)?)?),
             _ => Err(unknown_function(function)),
         }
     }
@@ -149,10 +145,13 @@ impl ToolPlugin for ImageStitcher {
     fn run_task(&self, function: &str, args: Value, ctx: &dyn TaskContext) -> PluginResult<Value> {
         match function {
             "stitch" => to_value(stitch::run(parse_args(args)?, ctx)?),
+            "export_contact_sheet" => to_value(contact::export(parse_args(args)?, ctx)?),
             _ => self.call(function, args),
         }
     }
 }
+
+tf_plugin_guest::export_plugin!(ImageStitcher);
 
 #[cfg(test)]
 #[path = "lib_test.rs"]

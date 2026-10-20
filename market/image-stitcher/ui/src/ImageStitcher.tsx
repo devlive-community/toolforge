@@ -1,14 +1,26 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { Badge, Button, Empty, Input, LogViewer, NumberInput, Panel, Progress, SegmentedControl, Select, Spinner, Tooltip, cn, toast } from '@toolforge/ui'
+import { useEffect, useRef, useState } from 'react'
+import { Badge, Button, Empty, Input, LogViewer, NumberInput, Panel, Progress, SegmentedControl, Select, Spinner, Tabs, Tooltip, cn, toast } from '@toolforge/ui'
 import { host, usePlugin, useTask } from '@toolforge/plugin-ui-sdk'
-import { ArrowDown, ArrowUp, FolderOpen, FolderSearch, Images, Play, ScrollText, Settings2, Square, TriangleAlert, Upload, X } from 'lucide-react'
+import { ArrowDown, ArrowUp, FolderOpen, FolderSearch, Images, LayoutGrid, Play, ScrollText, Settings2, Square, TriangleAlert, Upload, X } from 'lucide-react'
 import { formatBytes } from './format'
+import { ContactSheet } from './ContactSheet'
 import { FORMATS, FORMAT_LABELS, type Align, type BackgroundKind, type Format, type InspectEntry, type Layout, type Report } from './types'
 
 const IMAGE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'bmp', 'tif', 'tiff']
 const isImage = (path: string) => IMAGE_EXTENSIONS.includes(path.split('.').pop()?.toLowerCase() ?? '')
 
-function Field({ label, children }: { label: ReactNode; children: ReactNode }) {
+type Mode = 'stitch' | 'sheet'
+
+interface SharedProps {
+  entries: InspectEntry[]
+  onEntriesChange: (update: (prev: InspectEntry[]) => InspectEntry[]) => void
+  onMove: (index: number, offset: number) => void
+  onPick: () => void
+  adding: boolean
+  hovering: boolean
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
       <p className="text-xs font-medium text-fg-muted">{label}</p>
@@ -19,21 +31,10 @@ function Field({ label, children }: { label: ReactNode; children: ReactNode }) {
 
 export function ImageStitcher() {
   const { t, call, errorMessage } = usePlugin()
-  const task = useTask<Report>()
+  const [mode, setMode] = useState<Mode>('stitch')
   const [entries, setEntries] = useState<InspectEntry[]>([])
   const [hovering, setHovering] = useState(false)
   const [adding, setAdding] = useState(false)
-  const [layout, setLayout] = useState<Layout>('horizontal')
-  const [align, setAlign] = useState<Align>('center')
-  const [columns, setColumns] = useState(2)
-  const [gap, setGap] = useState(0)
-  const [bgKind, setBgKind] = useState<BackgroundKind>('transparent')
-  // 存不带 # 的十六进制值（后端会自己 trim），避免被约定扫描当成硬编码颜色
-  const [bgHex, setBgHex] = useState('f0f0f0')
-  const [format, setFormat] = useState<Format>('png')
-  const [quality, setQuality] = useState(85)
-  const [outputDir, setOutputDir] = useState<string | null>(null)
-  const [name, setName] = useState('stitched')
 
   const inspect = async (paths: string[]) => {
     if (paths.length === 0) return
@@ -73,11 +74,6 @@ export function ImageStitcher() {
   }
 
   const pick = () => run(async () => inspect(await host.dialog.openFiles([{ name: t('files.filter'), extensions: IMAGE_EXTENSIONS }])))
-  const pickDir = () =>
-    run(async () => {
-      const dir = await host.dialog.openDirectory()
-      if (dir) setOutputDir(dir)
-    })
 
   const move = (index: number, offset: number) =>
     setEntries((prev) => {
@@ -86,6 +82,61 @@ export function ImageStitcher() {
       const next = [...prev]
       ;[next[index], next[target]] = [next[target], next[index]]
       return next
+    })
+
+  const shared: SharedProps = {
+    entries,
+    onEntriesChange: setEntries,
+    onMove: move,
+    onPick: pick,
+    adding,
+    hovering,
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col gap-3">
+      <Tabs
+        value={mode}
+        onValueChange={setMode}
+        className="self-start"
+        items={[
+          { value: 'stitch', label: t('tabs.stitch'), icon: <Images /> },
+          { value: 'sheet', label: t('tabs.sheet'), icon: <LayoutGrid /> },
+        ]}
+      />
+      <div className="min-h-0 flex-1">{mode === 'stitch' ? <StitchView {...shared} /> : <ContactSheet {...shared} />}</div>
+    </div>
+  )
+}
+
+/** 拼接视图：行、列或网格拼成一张图 */
+function StitchView({ entries, onEntriesChange, onMove, onPick, adding, hovering }: SharedProps) {
+  const { t, errorMessage } = usePlugin()
+  const task = useTask<Report>()
+  const [layout, setLayout] = useState<Layout>('horizontal')
+  const [align, setAlign] = useState<Align>('center')
+  const [columns, setColumns] = useState(2)
+  const [gap, setGap] = useState(0)
+  const [bgKind, setBgKind] = useState<BackgroundKind>('transparent')
+  // 存不带 # 的十六进制值（后端会自己 trim），避免被约定扫描当成硬编码颜色
+  const [bgHex, setBgHex] = useState('f0f0f0')
+  const [format, setFormat] = useState<Format>('png')
+  const [quality, setQuality] = useState(85)
+  const [outputDir, setOutputDir] = useState<string | null>(null)
+  const [name, setName] = useState('stitched')
+
+  const run = async (action: () => Promise<void>) => {
+    try {
+      await action()
+    } catch (error) {
+      toast.error(errorMessage(error))
+    }
+  }
+
+  const pickDir = () =>
+    run(async () => {
+      const dir = await host.dialog.openDirectory()
+      if (dir) setOutputDir(dir)
     })
 
   const report = task.result
@@ -115,11 +166,11 @@ export function ImageStitcher() {
           extra={entries.length > 0 && <Badge>{entries.length}</Badge>}
           actions={
             <>
-              <Button size="sm" onClick={pick} disabled={task.running}>
+              <Button size="sm" onClick={onPick} disabled={task.running}>
                 <Upload />
                 {t('files.add')}
               </Button>
-              <Button size="sm" onClick={() => setEntries([])} disabled={task.running || entries.length === 0}>
+              <Button size="sm" onClick={() => onEntriesChange(() => [])} disabled={task.running || entries.length === 0}>
                 {t('common:clear')}
               </Button>
             </>
@@ -130,7 +181,7 @@ export function ImageStitcher() {
           {entries.length === 0 ? (
             <button
               type="button"
-              onClick={pick}
+              onClick={onPick}
               className={cn(
                 'flex h-full min-h-32 w-full flex-col items-center justify-center gap-2 rounded-card border-2 border-dashed text-center outline-none transition-colors',
                 'focus-visible:ring-2 focus-visible:ring-ring',
@@ -163,13 +214,19 @@ export function ImageStitcher() {
                     )}
                   </div>
                   <div className="flex shrink-0 items-center opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
-                    <Button variant="ghost" size="icon-sm" aria-label={t('files.moveUp')} disabled={task.running || index === 0} onClick={() => move(index, -1)}>
+                    <Button variant="ghost" size="icon-sm" aria-label={t('files.moveUp')} disabled={task.running || index === 0} onClick={() => onMove(index, -1)}>
                       <ArrowUp />
                     </Button>
-                    <Button variant="ghost" size="icon-sm" aria-label={t('files.moveDown')} disabled={task.running || index === entries.length - 1} onClick={() => move(index, 1)}>
+                    <Button variant="ghost" size="icon-sm" aria-label={t('files.moveDown')} disabled={task.running || index === entries.length - 1} onClick={() => onMove(index, 1)}>
                       <ArrowDown />
                     </Button>
-                    <Button variant="ghost" size="icon-sm" aria-label={t('files.remove')} disabled={task.running} onClick={() => setEntries((prev) => prev.filter((e) => e.path !== entry.path))}>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label={t('files.remove')}
+                      disabled={task.running}
+                      onClick={() => onEntriesChange((prev) => prev.filter((e) => e.path !== entry.path))}
+                    >
                       <X />
                     </Button>
                   </div>
@@ -280,9 +337,7 @@ export function ImageStitcher() {
           {task.running && (
             <div className="space-y-1.5">
               <Progress value={progress} />
-              <p className="text-xs text-fg-muted tabular-nums">
-                {t(`stages.${task.stage ?? 'stitch.decode'}`)}
-              </p>
+              <p className="text-xs text-fg-muted tabular-nums">{t(`stages.${task.stage ?? 'stitch.decode'}`)}</p>
             </div>
           )}
           {task.running ? (

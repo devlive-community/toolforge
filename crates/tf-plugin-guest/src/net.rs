@@ -74,6 +74,14 @@ mod imp {
         host::write_file(path, data).map_err(error)
     }
 
+    pub fn file_size(path: &str) -> PluginResult<u64> {
+        host::file_size(path).map_err(error)
+    }
+
+    pub fn read_file(path: &str, offset: u64, length: u32) -> PluginResult<Vec<u8>> {
+        host::read_file(path, offset, length).map_err(error)
+    }
+
     pub struct Streaming(u32);
 
     impl Streaming {
@@ -123,6 +131,7 @@ mod imp {
 #[cfg(not(target_arch = "wasm32"))]
 mod imp {
     use super::*;
+    use tf_plugin_api::PluginError;
 
     pub fn send(
         request: &HttpRequest,
@@ -157,6 +166,41 @@ mod imp {
         tf_net::write_file(path, data)
     }
 
+    pub fn file_size(path: &str) -> PluginResult<u64> {
+        let meta = std::fs::metadata(path).map_err(|e| {
+            PluginError::new("fs.io")
+                .with("path", path)
+                .with("detail", e.to_string())
+        })?;
+        if meta.is_dir() {
+            return Err(PluginError::new("fs.not_a_file").with("path", path));
+        }
+        Ok(meta.len())
+    }
+
+    pub fn read_file(path: &str, offset: u64, length: u32) -> PluginResult<Vec<u8>> {
+        use std::io::{Read, Seek, SeekFrom};
+        let mut file = std::fs::File::open(path).map_err(|e| {
+            PluginError::new("fs.io")
+                .with("path", path)
+                .with("detail", e.to_string())
+        })?;
+        file.seek(SeekFrom::Start(offset)).map_err(|e| {
+            PluginError::new("fs.io")
+                .with("path", path)
+                .with("detail", e.to_string())
+        })?;
+        let mut buf = Vec::with_capacity(length as usize);
+        file.take(u64::from(length))
+            .read_to_end(&mut buf)
+            .map_err(|e| {
+                PluginError::new("fs.io")
+                    .with("path", path)
+                    .with("detail", e.to_string())
+            })?;
+        Ok(buf)
+    }
+
     pub struct Streaming(tf_net::HttpStream);
 
     impl Streaming {
@@ -183,6 +227,16 @@ pub fn send(request: &HttpRequest, ctx: Option<&dyn TaskContext>) -> PluginResul
 /// 写入用户选择的文件（覆盖）
 pub fn write_file(path: &str, data: &[u8]) -> PluginResult<()> {
     imp::write_file(path, data)
+}
+
+/// 读取用户选择的文件大小（需要 `fs:user-selected` 权限）
+pub fn file_size(path: &str) -> PluginResult<u64> {
+    imp::file_size(path)
+}
+
+/// 读取用户选择文件中 [offset, offset + length) 的字节
+pub fn read_file(path: &str, offset: u64, length: u32) -> PluginResult<Vec<u8>> {
+    imp::read_file(path, offset, length)
 }
 
 /// 127.0.0.1 上的一次性回调监听，drop 时关闭并释放端口

@@ -1,0 +1,169 @@
+{
+  "name": "图片拼接",
+  "description": "把多张图片横向、纵向或网格拼成一张图，或生成带标签的分页联系印样 PDF",
+  "help": [
+    "全部处理在本机完成，文件不会离开你的电脑。",
+    "拼接按添加顺序进行，可以用上移 / 下移调整每张图的位置。",
+    "联系印样按纸张分页：图片等比完整放入格内，编号跨页连续，可导出多页 PDF。",
+    "标签默认用 PDF 标准字体（仅英文数字），中文或长文件名请提供 TTF/OTF 字体文件。"
+  ],
+  "functions": {
+    "stitch": "拼接图片",
+    "plan_contact_sheet": "计算印样分页布局",
+    "export_contact_sheet": "导出联系印样 PDF"
+  },
+  "tabs": {
+    "stitch": "拼接",
+    "sheet": "联系印样"
+  },
+  "files": {
+    "title": "图片",
+    "add": "添加",
+    "drop": "拖入图片或点击打开",
+    "dropHint": "按添加顺序拼接，可稍后调整",
+    "remove": "移除",
+    "moveUp": "上移",
+    "moveDown": "下移",
+    "filter": "图片",
+    "cancel": "取消",
+    "start": "开始拼接",
+    "clear": "清空"
+  },
+  "options": {
+    "title": "选项",
+    "layout": "布局",
+    "align": "对齐",
+    "columns": "列数",
+    "gap": "间距（像素）",
+    "background": "背景",
+    "format": "输出格式",
+    "quality": "JPEG 质量",
+    "output": "输出目录",
+    "sameDir": "与第一张图相同",
+    "resetDir": "恢复默认",
+    "name": "文件名"
+  },
+  "layout": {
+    "horizontal": "横向",
+    "vertical": "纵向",
+    "grid": "网格",
+    "gridHint": "每列宽取该列最大图宽，每行高取该行最大图高，图片在格内居中"
+  },
+  "align": {
+    "start": "起点",
+    "center": "居中",
+    "end": "终点"
+  },
+  "background": {
+    "transparent": "透明",
+    "white": "白色",
+    "black": "黑色",
+    "custom": "自定义",
+    "hex": "颜色（#RRGGBB 或 #RRGGBBAA）",
+    "jpegHint": "JPEG 不支持透明，输出时会使用白色背景"
+  },
+  "result": {
+    "title": "拼接结果",
+    "summary": "{{width}} × {{height}}",
+    "cancelled": "已取消",
+    "running": "正在拼接…",
+    "empty": "还没有拼接结果",
+    "emptyHint": "添加至少两张图片并开始拼接",
+    "reveal": "在文件夹中显示",
+    "elapsed": "用时 {{ms}} 毫秒"
+  },
+  "logs": {
+    "title": "实时日志",
+    "empty": "开始拼接后，日志会实时显示在这里",
+    "jumpLatest": "跳到最新",
+    "stitch": {
+      "image_loaded": "[{{index}}/{{count}}] 已读取 {{file}}（{{width}} × {{height}}）",
+      "done": "已生成 {{output}}：{{count}} 张图拼为 {{width}} × {{height}}，{{bytes, number}} 字节，耗时 {{ms}} ms"
+    }
+  },
+  "stages": {
+    "stitch.decode": "正在读取图片…",
+    "stitch.compose": "正在拼接…",
+    "stitch.encode": "正在编码…"
+  },
+  "sheet": {
+    "items": "图片清单",
+    "add": "添加",
+    "addHint": "添加要排版的照片",
+    "addDesc": "支持拖入窗口，编号按列表顺序连续",
+    "notePlaceholder": "说明（可选，如“海边日落”）",
+    "note": "{{name}} 的说明",
+    "moveUp": "上移",
+    "moveDown": "下移",
+    "remove": "移除 {{name}}",
+    "options": "印样设置",
+    "paper": "纸张",
+    "orientation": "方向",
+    "portrait": "竖向",
+    "landscape": "横向",
+    "columns": "列数",
+    "rows": "行数",
+    "margin": "页边距",
+    "gap": "间距",
+    "unitHint": "页边距、间距、标签高度单位为毫米",
+    "labelHeight": "标签高度",
+    "fontSize": "字号（pt）",
+    "title": "整份标题（可选）",
+    "titlePlaceholder": "如：2026 旅行选片",
+    "showNumber": "编号",
+    "showName": "文件名",
+    "showPageNumber": "页码",
+    "font": "标签字体（可选）",
+    "fontHint": "选择 TTF/OTF 字体文件",
+    "fontFilter": "字体文件",
+    "fontReset": "清除字体",
+    "fontDesc": "不选字体时用 PDF 标准 Helvetica，仅支持英文数字；中文文件名或说明请提供字体文件",
+    "preview": "印样预览",
+    "pageOf": "第 {{page}} / {{count}} 页",
+    "prevPage": "上一页",
+    "nextPage": "下一页",
+    "export": "导出 PDF",
+    "cancel": "取消",
+    "running": "正在生成…",
+    "empty": "添加图片开始排版",
+    "emptyHint": "支持单张图片；超出每页容量会自动分页",
+    "report": "{{images}} 张 · {{pages}} 页",
+    "elapsed": "用时 {{ms}} 毫秒",
+    "missingGlyphs": "以下字符在所选字体中缺字：{{chars}}",
+    "reveal": "在文件夹中显示",
+    "logs": "实时日志",
+    "logsEmpty": "开始导出后，日志会实时显示在这里",
+    "jumpLatest": "跳到最新",
+    "stages": {
+      "sheet.decode": "正在读取图片…",
+      "sheet.compose": "正在排版…",
+      "sheet.pdf": "正在生成 PDF…"
+    }
+  },
+  "errors": {
+    "stitch.too_few": "至少需要两张图片",
+    "stitch.too_many": "一次最多拼接 {{limit}} 张图片",
+    "stitch.output_dir_missing": "输出目录不存在：{{path}}",
+    "stitch.file_too_large": "图片超过 {{limit}}",
+    "stitch.pixels_too_large": "拼接结果过大（{{width}} × {{height}}）",
+    "stitch.invalid_color": "无效的颜色：{{color}}",
+    "stitch.decode_failed": "图片解码失败：{{detail}}",
+    "stitch.encode_failed": "图片编码失败：{{detail}}",
+    "stitch.io": "文件读写失败：{{path}}：{{detail}}",
+    "sheet.empty": "请先添加图片",
+    "sheet.too_many_images": "一次最多处理 {{limit}} 张图片",
+    "sheet.too_many_pages": "印样超过 {{limit}} 页，请减少图片或调大行列",
+    "sheet.negative": "页边距、间距与标签高度不能为负",
+    "sheet.bad_font_size": "字号需要在 4-48 pt 之间",
+    "sheet.bad_grid": "行列数至少为 1",
+    "sheet.margin_too_wide": "页边距过大，页面没有可用空间",
+    "sheet.cell_too_small": "格子太小：请减少行列数、缩小标签高度或页边距",
+    "sheet.output_required": "请选择输出文件",
+    "sheet.font_io": "读取字体失败：{{path}}：{{detail}}",
+    "sheet.font_failed": "字体解析失败：{{detail}}",
+    "sheet.encode_failed": "缩略图编码失败：{{detail}}",
+    "sheet.pdf_failed": "PDF 生成失败：{{detail}}",
+    "sheet.layout_mismatch": "布局与缩略图不一致，请重试",
+    "sheet.io": "写入失败：{{path}}：{{detail}}"
+  }
+}

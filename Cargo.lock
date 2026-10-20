@@ -8752,6 +8752,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-image-stitcher"
+version = "0.2.0"
+dependencies = [
+ "data-encoding",
+ "image",
+ "lopdf",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+ "ttf-parser",
+]
+
+[[package]]
 name = "tfm-jwt"
 version = "0.1.0"
 dependencies = [
@@ -9282,17 +9296,6 @@ dependencies = [
 
 [[package]]
 name = "tfp-image-palette"
-version = "0.1.0"
-dependencies = [
- "data-encoding",
- "image",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
-name = "tfp-image-stitcher"
 version = "0.1.0"
 dependencies = [
  "data-encoding",
@@ -10038,7 +10041,6 @@ dependencies = [
  "tfp-image-converter",
  "tfp-image-info",
  "tfp-image-palette",
- "tfp-image-stitcher",
  "tfp-input-stats",
  "tfp-ip-calculator",
  "tfp-json-formatter",
