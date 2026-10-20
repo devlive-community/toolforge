@@ -8549,6 +8549,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-cbor-msgpack-inspector"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-cors-inspector"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+ "url",
+]
+
+[[package]]
 name = "tfm-crypto"
 version = "0.1.0"
 dependencies = [
@@ -8602,6 +8623,37 @@ name = "tfm-editorconfig"
 version = "0.1.0"
 dependencies = [
  "regex",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-expense-splitter"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-flashcards"
+version = "0.1.0"
+dependencies = [
+ "jiff",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-geojson-inspector"
+version = "0.1.0"
+dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -8669,6 +8721,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-jwt"
+version = "0.1.0"
+dependencies = [
+ "aes-gcm",
+ "data-encoding",
+ "ed25519-dalek",
+ "jiff",
+ "jsonwebtoken",
+ "p256",
+ "rand 0.8.8",
+ "rsa",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-lcov-viewer"
 version = "0.1.0"
 dependencies = [
@@ -8681,7 +8752,37 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-nonogram"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-packing-list"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-pg-plan-analyzer"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-protobuf-diff"
 version = "0.1.0"
 dependencies = [
  "serde",
@@ -9210,22 +9311,6 @@ name = "tfp-json-to-code"
 version = "0.1.0"
 dependencies = [
  "indexmap 2.14.2",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
-name = "tfp-jwt"
-version = "0.1.0"
-dependencies = [
- "data-encoding",
- "ed25519-dalek",
- "jiff",
- "jsonwebtoken",
- "p256",
- "rand 0.8.8",
- "rsa",
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -9914,7 +9999,6 @@ dependencies = [
  "tfp-json-query",
  "tfp-json-schema",
  "tfp-json-to-code",
- "tfp-jwt",
  "tfp-local-server",
  "tfp-log-viewer",
  "tfp-markdown-editor",
