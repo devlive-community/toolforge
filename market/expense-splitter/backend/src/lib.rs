@@ -98,6 +98,16 @@ fn csv(report: &ledger::Report) -> String {
             ));
         }
     }
+    for settlement in &report.settlements {
+        out.push_str(&format!(
+            "settlement,{},{},{},{},{}\n",
+            csv_escape(&settlement.id),
+            csv_escape(&settlement.from),
+            csv_escape(&settlement.to),
+            format_cents(settlement.cents),
+            csv_escape(settlement.date.as_deref().unwrap_or_default()),
+        ));
+    }
     for transfer in &report.transfers {
         out.push_str(&format!(
             "transfer,{},{},{},\n",
@@ -132,6 +142,23 @@ fn text(report: &ledger::Report, members: &[Member]) -> String {
             format_cents(balance.settled_in),
             format_cents(balance.net),
         ));
+    }
+    if !report.settlements.is_empty() {
+        out.push_str("\nActual settlements:\n");
+        for settlement in &report.settlements {
+            out.push_str(&format!(
+                "- {}{}: {} -> {}: {}\n",
+                settlement.id,
+                settlement
+                    .date
+                    .as_ref()
+                    .map(|date| format!(" ({date})"))
+                    .unwrap_or_default(),
+                name_of(&settlement.from),
+                name_of(&settlement.to),
+                format_cents(settlement.cents),
+            ));
+        }
     }
     if report.transfers.is_empty() {
         out.push_str("\nNo transfers needed.\n");

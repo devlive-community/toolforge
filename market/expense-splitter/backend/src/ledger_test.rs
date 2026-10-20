@@ -1,5 +1,4 @@
 use super::*;
-use tf_plugin_api::PluginError;
 
 fn members() -> Vec<Member> {
     vec![
@@ -230,6 +229,63 @@ fn settlements_update_net_and_are_not_re_suggested() {
         .map(|t| t.cents)
         .sum();
     assert_eq!(to_m1, 8666);
+}
+
+#[test]
+fn settlement_report_preserves_metadata_and_parsed_cents() {
+    let mut activity = ledger(vec![]);
+    activity.settlements = vec![
+        Settlement {
+            id: "s1".to_owned(),
+            from: "m2".to_owned(),
+            to: "m1".to_owned(),
+            cents: "12.34".to_owned(),
+            date: Some("2026-10-20".to_owned()),
+        },
+        Settlement {
+            id: "s2".to_owned(),
+            from: "m3".to_owned(),
+            to: "m1".to_owned(),
+            cents: "0.01".to_owned(),
+            date: None,
+        },
+    ];
+    let report = settle(&activity).unwrap();
+    assert_eq!(report.settlements.len(), 2);
+    let first = &report.settlements[0];
+    assert_eq!(first.id, "s1");
+    assert_eq!(first.from, "m2");
+    assert_eq!(first.to, "m1");
+    assert_eq!(first.cents, 1234);
+    assert_eq!(first.date.as_deref(), Some("2026-10-20"));
+    assert_eq!(report.settlements[1].id, "s2");
+    assert_eq!(report.settlements[1].cents, 1);
+    assert_eq!(report.settlements[1].date, None);
+    assert_eq!(balance_of(&report, "m2").settled_out, first.cents);
+    assert_eq!(balance_of(&report, "m3").settled_out, 1);
+    assert_eq!(balance_of(&report, "m1").settled_in, 1235);
+}
+
+#[test]
+fn settlement_records_require_valid_members_and_positive_amounts() {
+    for (from, to, cents, code) in [
+        ("missing", "m1", "1", "esp.unknown_member"),
+        ("m2", "missing", "1", "esp.unknown_member"),
+        ("m1", "m1", "1", "esp.self_settlement"),
+        ("m2", "m1", "0", "esp.settlement_positive"),
+        ("m2", "m1", "-1", "esp.bad_total"),
+        ("m2", "m1", "1.234", "esp.bad_total"),
+    ] {
+        let mut activity = ledger(vec![]);
+        activity.settlements.push(Settlement {
+            id: "s1".to_owned(),
+            from: from.to_owned(),
+            to: to.to_owned(),
+            cents: cents.to_owned(),
+            date: Some("2026-10-20".to_owned()),
+        });
+        assert_eq!(settle(&activity).unwrap_err().code, code);
+    }
 }
 
 #[test]

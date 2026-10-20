@@ -129,10 +129,24 @@ pub struct Transfer {
     pub cents: i64,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct SettlementRecord {
+    pub id: String,
+    pub from: String,
+    pub to: String,
+    /// 已校验的金额（分）
+    pub cents: i64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<String>,
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Report {
     pub expenses: Vec<ExpenseSplit>,
+    #[serde(default)]
+    pub settlements: Vec<SettlementRecord>,
     pub balances: Vec<Balance>,
     pub transfers: Vec<Transfer>,
     pub total_cents: i64,
@@ -321,6 +335,7 @@ pub fn settle(ledger: &Ledger) -> Result<Report, PluginError> {
     if ledger.settlements.len() > MAX_SETTLEMENTS {
         return Err(errp("esp.too_many_settlements", "max", MAX_SETTLEMENTS));
     }
+    let mut settlements = Vec::with_capacity(ledger.settlements.len());
     for settlement in &ledger.settlements {
         require_member(&ledger.members, &settlement.from)?;
         require_member(&ledger.members, &settlement.to)?;
@@ -331,6 +346,13 @@ pub fn settle(ledger: &Ledger) -> Result<Report, PluginError> {
         if cents <= 0 {
             return Err(err("esp.settlement_positive"));
         }
+        settlements.push(SettlementRecord {
+            id: settlement.id.clone(),
+            from: settlement.from.clone(),
+            to: settlement.to.clone(),
+            cents,
+            date: settlement.date.clone(),
+        });
     }
 
     let mut expense_splits = Vec::with_capacity(ledger.expenses.len());
@@ -358,12 +380,11 @@ pub fn settle(ledger: &Ledger) -> Result<Report, PluginError> {
 
     let mut settled_out = vec![0i64; ledger.members.len()];
     let mut settled_in = vec![0i64; ledger.members.len()];
-    for settlement in &ledger.settlements {
+    for settlement in &settlements {
         let from = require_member(&ledger.members, &settlement.from)?;
         let to = require_member(&ledger.members, &settlement.to)?;
-        let cents = parse_cents(&settlement.cents, "esp.bad_total")?;
-        settled_out[from] += cents;
-        settled_in[to] += cents;
+        settled_out[from] += settlement.cents;
+        settled_in[to] += settlement.cents;
     }
 
     let balances: Vec<Balance> = ledger
@@ -420,6 +441,7 @@ pub fn settle(ledger: &Ledger) -> Result<Report, PluginError> {
 
     Ok(Report {
         expenses: expense_splits,
+        settlements,
         balances,
         transfers,
         total_cents,

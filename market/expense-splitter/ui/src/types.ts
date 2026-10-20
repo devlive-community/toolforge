@@ -75,8 +75,18 @@ export interface Transfer {
   cents: number
 }
 
+export interface SettlementRecord {
+  id: string
+  from: string
+  to: string
+  /** 后端校验并解析后的整数分值 */
+  cents: number
+  date?: string | null
+}
+
 export interface Report {
   expenses: ExpenseSplit[]
+  settlements: SettlementRecord[]
   balances: Balance[]
   transfers: Transfer[]
   totalCents: number

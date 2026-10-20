@@ -103,6 +103,64 @@ fn export_requires_report_and_renders_formats() {
 }
 
 #[test]
+fn actual_settlements_are_preserved_in_all_export_formats() {
+    let plugin = ExpenseSplitter::default();
+    let mut args = settle_args(SAMPLE);
+    args["ledger"]["settlements"] = serde_json::json!([
+        {"id": "s,\"1", "from": "m2", "to": "m1", "cents": "12.34", "date": "2026-10-20"},
+        {"id": "s2", "from": "m3", "to": "m1", "cents": "0.01"}
+    ]);
+    let report = plugin.call("settle", args).unwrap();
+    let output = |format: &str| {
+        plugin
+            .call(
+                "export",
+                serde_json::json!({"format": format, "report": report}),
+            )
+            .unwrap()["content"]
+            .as_str()
+            .unwrap()
+            .to_owned()
+    };
+    let parsed: Value = serde_json::from_str(&output("json")).unwrap();
+    assert_eq!(parsed["settlements"][0]["id"], "s,\"1");
+    assert_eq!(parsed["settlements"][0]["from"], "m2");
+    assert_eq!(parsed["settlements"][0]["to"], "m1");
+    assert_eq!(parsed["settlements"][0]["cents"], 1234);
+    assert_eq!(parsed["settlements"][0]["date"], "2026-10-20");
+    assert_eq!(parsed["settlements"][1]["cents"], 1);
+    assert!(parsed["settlements"][1].get("date").is_none());
+    let csv = output("csv");
+    assert!(csv.contains("settlement,\"s,\"\"1\",m2,m1,12.34,2026-10-20\n"));
+    assert!(csv.contains("settlement,s2,m3,m1,0.01,\n"));
+    let text = output("text");
+    assert!(text.contains("Actual settlements:\n"));
+    assert!(text.contains("- s,\"1 (2026-10-20): 乙 -> 甲: 12.34\n"));
+    assert!(text.contains("- s2: 丙 -> 甲: 0.01\n"));
+}
+
+#[test]
+fn legacy_reports_without_settlement_details_remain_exportable() {
+    let plugin = ExpenseSplitter::default();
+    let mut report = plugin.call("settle", settle_args(SAMPLE)).unwrap();
+    report.as_object_mut().unwrap().remove("settlements");
+    for format in ["csv", "text", "json"] {
+        let exported = plugin
+            .call(
+                "export",
+                serde_json::json!({"format": format, "report": report}),
+            )
+            .unwrap();
+        assert!(!exported["content"].as_str().unwrap().is_empty());
+        if format == "json" {
+            let parsed: Value =
+                serde_json::from_str(exported["content"].as_str().unwrap()).unwrap();
+            assert_eq!(parsed["settlements"], serde_json::json!([]));
+        }
+    }
+}
+
+#[test]
 fn settle_validation_errors_carry_params() {
     let plugin = ExpenseSplitter::default();
     let err: PluginError = plugin
