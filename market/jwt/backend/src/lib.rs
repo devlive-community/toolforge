@@ -1,8 +1,9 @@
-//! JWT 插件后端：解码（无需密钥）、签名校验与签发。
+//! JWT 插件后端：解码（无需密钥）、签名校验与签发、JWE 五段式解密调试。
 //! 令牌与密钥属于敏感数据，manifest 标记 sensitive，不写入历史。
 
 mod claims;
 mod detect;
+mod jwe;
 mod keys;
 mod token;
 
@@ -37,10 +38,14 @@ impl ToolPlugin for Jwt {
             "decode" => to_value(token::decode(parse_args(args)?)?),
             "verify" => to_value(token::verify(parse_args(args)?)?),
             "sign" => to_value(token::sign(parse_args(args)?)?),
+            "decrypt_jwe" => to_value(jwe::decrypt(parse_args(args)?)?),
+            "parse_jwe" => to_value(jwe::parse(parse_args(args)?)?),
             other => Err(unknown_function(other)),
         }
     }
 }
+
+tf_plugin_guest::export_plugin!(Jwt);
 
 #[cfg(test)]
 #[path = "lib_test.rs"]

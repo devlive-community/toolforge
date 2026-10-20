@@ -30,3 +30,28 @@ export interface Verified {
 export const SAMPLE_TOKEN =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
 export const SAMPLE_SECRET = 'your-256-bit-secret'
+
+export interface Decrypted {
+  header: unknown
+  parts: [number, number, number, number, number]
+  alg: string
+  enc: string
+  encryptedKeyLen: number
+  plaintext: string
+  kind: string
+  plaintextBase64: string
+}
+
+export interface ParsedJwe {
+  header: unknown
+  parts: [number, number, number, number, number]
+  alg: string
+  enc: string
+  encryptedKeyLen: number
+}
+
+export type JweKeyEncoding = 'hex' | 'base64url'
+
+export const SAMPLE_JWE =
+  'eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..BwcHBwcHBwcHBwcH.Zw_KMAAvvYOj.09Bj38RM1qHx6ecwYHlJmA'
+export const SAMPLE_JWE_KEY_HEX = '000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f'

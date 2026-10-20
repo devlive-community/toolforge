@@ -9,7 +9,8 @@
   ],
   "tabs": {
     "decode": "解析与校验",
-    "sign": "签发"
+    "sign": "签发",
+    "jwe": "JWE 解密"
   },
   "decode": {
     "token": "令牌",
@@ -54,6 +55,25 @@
     "result": "生成的令牌",
     "open": "在解析中打开"
   },
+  "jwe": {
+    "token": "JWE 令牌",
+    "placeholder": "粘贴 JWE 五段式令牌（header.encrypted_key.iv.ciphertext.tag）…",
+    "empty": "粘贴 JWE 令牌开始解密",
+    "emptyHint": "示例令牌为 dir + A256GCM，密钥已预填",
+    "keyTitle": "内容加密密钥（CEK）",
+    "keyPlaceholder": "256 位密钥（Hex 或 Base64URL）",
+    "keyEncoding": "密钥格式",
+    "hintKey": "输入 256 位密钥后自动解密；示例密钥为 Hex 的 00…1f",
+    "hintPem": "粘贴 PEM 格式的 RSA 私钥后自动解密",
+    "partHeader": "Header",
+    "partKey": "Encrypted Key",
+    "partIv": "IV",
+    "partCiphertext": "Ciphertext",
+    "partTag": "Tag",
+    "encryptedKeyLen": "加密密钥长度",
+    "plaintext": "明文",
+    "kindBinary": "二进制"
+  },
   "detect": {
     "token": "使用 {{alg}} 签名的 JWT"
   },
@@ -70,6 +90,26 @@
     "jwt.algorithm_mismatch": "密钥类型与算法不匹配",
     "jwt.verify_failed": "校验失败",
     "jwt.payload_not_object": "Payload 必须是 JSON 对象",
-    "jwt.sign_failed": "签发失败"
+    "jwt.sign_failed": "签发失败",
+    "jwe.too_large": "令牌过大，上限为 {{max}} 字节",
+    "jwe.bad_parts": "JWE 令牌应为五段，以 . 分隔，当前 {{count}} 段",
+    "jwe.bad_base64url": "段内容不是合法的 Base64URL：{{value}}",
+    "jwe.header_too_large": "Protected Header 过大",
+    "jwe.bad_header_json": "Protected Header 不是合法的 JSON",
+    "jwe.missing_alg": "Protected Header 缺少 alg",
+    "jwe.missing_enc": "Protected Header 缺少 enc",
+    "jwe.crit_unsupported": "不支持 crit 扩展头",
+    "jwe.zip_unsupported": "不支持 zip 压缩头",
+    "jwe.unsupported_combo": "不支持的算法组合：{{alg}} + {{enc}}",
+    "jwe.encrypted_key_expected_empty": "dir 模式要求 encrypted key 段为空",
+    "jwe.key_required": "请提供密钥",
+    "jwe.bad_key_encoding": "不支持的密钥编码：{{value}}",
+    "jwe.bad_key_len": "密钥长度必须为 {{expected}} 字节，当前 {{actual}} 字节",
+    "jwe.bad_hex": "密钥不是合法的十六进制",
+    "jwe.bad_private_key": "私钥格式不正确（支持 PKCS#8 / PKCS#1 PEM）",
+    "jwe.bad_cek_len": "解出的 CEK 长度必须为 {{expected}} 字节，当前 {{actual}} 字节",
+    "jwe.decrypt_failed": "解密失败：密钥不匹配或数据被篡改",
+    "jwe.bad_iv_len": "IV 长度必须为 {{expected}} 字节，当前 {{actual}} 字节",
+    "jwe.bad_tag_len": "Tag 长度必须为 {{expected}} 字节，当前 {{actual}} 字节"
   }
 }

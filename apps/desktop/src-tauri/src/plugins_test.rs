@@ -97,10 +97,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
             "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQ\n-----END OPENSSH PRIVATE KEY-----",
             "ssh-key",
         ),
-        (
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.c2ln",
-            "jwt",
-        ),
         ("550e8400-e29b-41d4-a716-446655440000", "uuid"),
         ("#16a34a", "color"),
         ("rgb(22 163 74)", "color"),
@@ -136,6 +132,7 @@ fn clipboard_samples_suggest_the_right_tool_first() {
         );
     }
     for text in [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.c2ln",
         "hello world",
         "readme.md",
         "12345",

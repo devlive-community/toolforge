@@ -9,7 +9,8 @@
   ],
   "tabs": {
     "decode": "Decode & verify",
-    "sign": "Sign"
+    "sign": "Sign",
+    "jwe": "JWE decrypt"
   },
   "decode": {
     "token": "Token",
@@ -54,6 +55,25 @@
     "result": "Signed token",
     "open": "Open in decoder"
   },
+  "jwe": {
+    "token": "JWE token",
+    "placeholder": "Paste a five-part JWE (header.encrypted_key.iv.ciphertext.tag)…",
+    "empty": "Paste a JWE token to decrypt it",
+    "emptyHint": "The sample token is dir + A256GCM with its key pre-filled",
+    "keyTitle": "Content encryption key (CEK)",
+    "keyPlaceholder": "256-bit key (hex or Base64URL)",
+    "keyEncoding": "Key format",
+    "hintKey": "Enter a 256-bit key to decrypt automatically; the sample key is hex 00…1f",
+    "hintPem": "Paste a PEM RSA private key to decrypt automatically",
+    "partHeader": "Header",
+    "partKey": "Encrypted Key",
+    "partIv": "IV",
+    "partCiphertext": "Ciphertext",
+    "partTag": "Tag",
+    "encryptedKeyLen": "Encrypted key length",
+    "plaintext": "Plaintext",
+    "kindBinary": "Binary"
+  },
   "detect": {
     "token": "JWT signed with {{alg}}"
   },
@@ -70,6 +90,26 @@
     "jwt.algorithm_mismatch": "The key type does not match the algorithm",
     "jwt.verify_failed": "Verification failed",
     "jwt.payload_not_object": "The payload must be a JSON object",
-    "jwt.sign_failed": "Signing failed"
+    "jwt.sign_failed": "Signing failed",
+    "jwe.too_large": "Token too large; the limit is {{max}} bytes",
+    "jwe.bad_parts": "A JWE token must have five dot-separated parts, got {{count}}",
+    "jwe.bad_base64url": "Part is not valid Base64URL: {{value}}",
+    "jwe.header_too_large": "The protected header is too large",
+    "jwe.bad_header_json": "The protected header is not valid JSON",
+    "jwe.missing_alg": "The protected header is missing alg",
+    "jwe.missing_enc": "The protected header is missing enc",
+    "jwe.crit_unsupported": "The crit header extension is not supported",
+    "jwe.zip_unsupported": "The zip compression header is not supported",
+    "jwe.unsupported_combo": "Unsupported algorithm combination: {{alg}} + {{enc}}",
+    "jwe.encrypted_key_expected_empty": "dir mode requires an empty encrypted key part",
+    "jwe.key_required": "A key is required",
+    "jwe.bad_key_encoding": "Unsupported key encoding: {{value}}",
+    "jwe.bad_key_len": "The key must be {{expected}} bytes, got {{actual}}",
+    "jwe.bad_hex": "The key is not valid hexadecimal",
+    "jwe.bad_private_key": "The private key is not valid (PKCS#8 / PKCS#1 PEM supported)",
+    "jwe.bad_cek_len": "The decrypted CEK must be {{expected}} bytes, got {{actual}}",
+    "jwe.decrypt_failed": "Decryption failed: the key does not match or the data was tampered with",
+    "jwe.bad_iv_len": "The IV must be {{expected}} bytes, got {{actual}}",
+    "jwe.bad_tag_len": "The tag must be {{expected}} bytes, got {{actual}}"
   }
 }

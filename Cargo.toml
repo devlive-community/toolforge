@@ -52,7 +52,6 @@ tfp-input-stats = { path = "plugins/input-stats/backend" }
 tfp-ip-calculator = { path = "plugins/ip-calculator/backend" }
 tfp-json-formatter = { path = "plugins/json-formatter/backend" }
 tfp-json-to-code = { path = "plugins/json-to-code/backend" }
-tfp-jwt = { path = "plugins/jwt/backend" }
 tfp-local-server = { path = "plugins/local-server/backend" }
 tfp-log-viewer = { path = "plugins/log-viewer/backend" }
 tfp-markdown-editor = { path = "plugins/markdown-editor/backend" }

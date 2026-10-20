@@ -1,18 +1,19 @@
 import { useState } from 'react'
 import { Tabs } from '@toolforge/ui'
 import { useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
-import { PenLine, ScanSearch } from 'lucide-react'
+import { Lock, PenLine, ScanSearch } from 'lucide-react'
 import { DecodeView } from './DecodeView'
+import { JweView } from './JweView'
 import { SignView } from './SignView'
 import { SAMPLE_TOKEN } from './types'
 
 export function JwtTool() {
   const { t } = usePlugin()
-  const [tab, setTab] = useState<'decode' | 'sign'>('decode')
+  const [tab, setTab] = useState<'decode' | 'jwe' | 'sign'>('decode')
   const [token, setToken] = useState(SAMPLE_TOKEN)
   useLaunchInput((text) => {
     setToken(text)
-    setTab('decode')
+    setTab(text.trim().split('.').length === 5 ? 'jwe' : 'decode')
   })
 
   return (
@@ -23,12 +24,15 @@ export function JwtTool() {
         className="self-start"
         items={[
           { value: 'decode', label: t('tabs.decode'), icon: <ScanSearch /> },
+          { value: 'jwe', label: t('tabs.jwe'), icon: <Lock /> },
           { value: 'sign', label: t('tabs.sign'), icon: <PenLine /> },
         ]}
       />
       <div className="min-h-0 flex-1">
         {tab === 'decode' ? (
           <DecodeView token={token} onTokenChange={setToken} />
+        ) : tab === 'jwe' ? (
+          <JweView />
         ) : (
           <SignView
             onOpen={(next) => {

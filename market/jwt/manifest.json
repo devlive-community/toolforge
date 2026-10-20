@@ -1,17 +1,19 @@
 {
   "id": "org.devlive.toolforge.jwt",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "encode",
-  "keywords": ["jwt", "json web token", "token", "bearer", "hs256", "rs256", "decode", "verify", "sign", "令牌", "解析", "签名", "校验"],
+  "keywords": ["jwt", "json web token", "jwe", "token", "bearer", "hs256", "rs256", "decode", "verify", "sign", "decrypt", "令牌", "解析", "签名", "校验", "解密"],
   "accent": "violet",
   "locales": ["zh-CN", "en-US"],
   "permissions": ["clipboard:read", "clipboard:write"],
   "functions": {
     "decode": {},
     "verify": {},
-    "sign": {}
+    "sign": {},
+    "decrypt_jwe": {},
+    "parse_jwe": {}
   },
   "sensitive": true
 }
