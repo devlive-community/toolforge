@@ -1,4 +1,5 @@
 use std::net::TcpListener;
+use std::time::{Duration, Instant};
 
 use serde_json::json;
 
@@ -8,33 +9,54 @@ use super::*;
 fn lists_listeners_with_their_processes() {
     let listener = TcpListener::bind("127.0.0.1:0").unwrap();
     let port = listener.local_addr().unwrap().port();
+    let pid = std::process::id();
     let tool = PortManager::default();
-    // macOS 上按进程遍历文件描述符来关联端口与进程；并行测试同时开关套接字时
-    // 本进程可能被暂时跳过，重试几次直到拿到 PID
-    let mut attempt = 0;
-    let (out, socket) = loop {
+    // 并行测试 fork 的子进程会短暂继承监听器，随后可能在进程查询前退出。
+    // 等待同一次快照同时包含当前进程的监听器与进程信息，不能只检查 PID 非空。
+    let deadline = Instant::now() + Duration::from_secs(2);
+    let out = loop {
         let out = tool.call("list", json!({})).unwrap();
-        let socket = out["sockets"]
+        let own_listener = out["sockets"].as_array().unwrap().iter().any(|socket| {
+            socket["port"] == port
+                && socket["protocol"] == "tcp"
+                && socket["pids"]
+                    .as_array()
+                    .is_some_and(|pids| pids.iter().any(|owner| *owner == pid))
+        });
+        let own_process = out["processes"]
             .as_array()
             .unwrap()
             .iter()
-            .find(|s| s["port"] == port && s["protocol"] == "tcp")
-            .expect("own listener")
-            .clone();
-        attempt += 1;
-        if socket["pids"].as_array().is_some_and(|p| !p.is_empty()) || attempt >= 5 {
-            break (out, socket);
+            .any(|process| process["pid"] == pid);
+        if (own_listener && own_process) || Instant::now() >= deadline {
+            break out;
         }
-        std::thread::sleep(std::time::Duration::from_millis(50));
+        std::thread::sleep(
+            Duration::from_millis(50).min(deadline.saturating_duration_since(Instant::now())),
+        );
     };
+    let socket = out["sockets"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|s| s["port"] == port && s["protocol"] == "tcp")
+        .expect("own listener");
     assert_eq!(socket["state"], "listen");
-    let pid = socket["pids"][0].as_u64().expect("listener has a pid");
+    assert!(
+        socket["pids"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|owner| *owner == pid),
+        "listener must belong to this process: {socket}"
+    );
     assert!(
         out["processes"]
             .as_array()
             .unwrap()
             .iter()
-            .any(|p| p["pid"] == pid)
+            .any(|p| p["pid"] == pid),
+        "listener owner {pid} must have process information: {out}"
     );
     assert_eq!(
         tool.call("nope", json!({})).unwrap_err().code,
