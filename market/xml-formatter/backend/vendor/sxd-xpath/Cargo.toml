@@ -1,0 +1,26 @@
+[package]
+name = "sxd-xpath"
+version = "0.4.2"
+edition = "2015"
+authors = ["Jake Goulding <jake.goulding@gmail.com>"]
+
+description = "A Rust XML XPath library"
+readme = "README.md"
+keywords = ["xml", "xpath"]
+
+repository = "https://github.com/shepmaster/sxd-xpath"
+documentation = "https://docs.rs/sxd-xpath/"
+
+license = "MIT/Apache-2.0"
+
+[badges]
+travis-ci = { repository = "shepmaster/sxd-xpath", branch = "master" }
+appveyor = { repository = "shepmaster/sxd-xpath", branch = "master", service = "github" }
+
+[features]
+unstable = []
+
+[dependencies]
+peresil = "0.3.0"
+sxd-document = ">= 0.2, < 0.4"
+quick-error = "1.1.0"

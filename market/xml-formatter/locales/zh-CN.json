@@ -1,0 +1,111 @@
+{
+  "name": "XML 格式化",
+  "description": "格式化、压缩和校验 XML，使用 XPath 1.0 查询元素、属性与命名空间。",
+  "help": [
+    "支持 XML、SVG、XHTML 等良构文档；注释、CDATA、XML 声明、DOCTYPE 与处理指令都会保留。",
+    "校验会检查标签配对、未闭合元素、多个根元素与根元素之外的文本，并定位到出错的行列。",
+    "格式化时会去除元素之间多余的空白；文本内容保持不变。",
+    "XPath 查询直接解析原文，保留混合文本与空白；上下文固定为文档根。无前缀名称只匹配无命名空间元素，默认命名空间需绑定查询前缀。",
+    "结果区分节点集、字符串、数字和布尔值；数字采用 XPath 1.0 浮点语义。Q{URI}名称是可定位的逻辑路径，不是可直接执行的 XPath 1.0。片段为重新序列化，不是原文摘录。",
+    "查询不支持 DTD、外部实体、变量、id()/lang() 和 XPath 2/3 扩展；不访问外部资源。支持全部 13 个轴及列出的核心函数；支持范围见查询页。",
+    "查询上限为 512 KiB XML、8000 个节点/属性、64 层 XML、2048 字节表达式、32 层表达式及 4 MiB 完整结果；计算有 200 万步/3 秒预算，可取消。超限明确失败，不返回伪完整结果。分页预览会标记截断，完整值可复制（256 KiB 内）或完整导出。"
+  ],
+  "modes": {
+    "format": "格式化",
+    "minify": "压缩",
+    "validate": "校验"
+  },
+  "output": {
+    "format": "输出（已格式化）",
+    "minify": "输出（已压缩）",
+    "validate": "校验通过的文档"
+  },
+  "input": "输入（XML）",
+  "placeholder": "在此粘贴或输入 XML…",
+  "indent": "缩进",
+  "indent2": "2 空格",
+  "indent4": "4 空格",
+  "indentTab": "Tab",
+  "summary": "{{elements}} 个元素 · {{attributes}} 个属性 · 深度 {{depth}}",
+  "detect": {
+    "document": "格式化这段 XML"
+  },
+  "errors": {
+    "xml.empty": "输入为空",
+    "xml.syntax": "第 {{line}} 行第 {{column}} 列附近存在语法错误",
+    "xml.unclosed": "第 {{line}} 行的 <{{tag}}> 没有闭合",
+    "xml.multiple_roots": "第 {{line}} 行出现了第二个根元素",
+    "xml.text_outside_root": "第 {{line}} 行的文本位于根元素之外",
+    "xml.no_root": "缺少根元素",
+    "xml.too_large": "内容过大（超过 {{limit}}）",
+    "xml.serialize_failed": "生成输出失败",
+    "xpath.limit": "查询超出资源上限（{{limit}}）；完整结果未生成，请缩小文档或表达式范围。",
+    "xpath.xml": "XML 解析失败：{{detail}}",
+    "xpath.dtd": "XPath 查询不支持 DTD 或外部实体。",
+    "xpath.unsupported": "此查询能力尚不支持：{{name}}",
+    "xpath.namespace_invalid": "命名空间绑定非法或重复：{{prefix}}",
+    "xpath.unbound_prefix": "查询前缀尚未绑定：{{prefix}}",
+    "xpath.syntax": "XPath 表达式语法错误：{{detail}}",
+    "xpath.expression_empty": "请输入 XPath 表达式。",
+    "xpath.evaluate": "XPath 求值失败：{{detail}}",
+    "xpath.page_invalid": "查询分页或结果索引无效。",
+    "xpath.no_fragment": "该结果类型没有可序列化的 XML 片段，请复制值。",
+    "xpath.expired": "结果已失效，请重新查询。",
+    "xpath.export_failed": "生成查询报告失败。"
+  },
+  "xpath": {
+    "formatTab": "XML 排版",
+    "queryTab": "XPath 查询",
+    "expression": "XPath 表达式",
+    "expressionPlaceholder": "例如 //c:item[@id=\"one\"] 或 count(//c:item)",
+    "run": "查询",
+    "cancel": "取消",
+    "namespaceHint": "默认 XML 命名空间需要绑定查询前缀；URI 按原值匹配，查询从文档根开始。",
+    "prefix": "前缀",
+    "uri": "命名空间 URI",
+    "removeNamespace": "移除命名空间",
+    "addNamespace": "添加命名空间",
+    "xmlFile": "XML 文件",
+    "jsonFile": "JSON 报告",
+    "paste": "粘贴 XML",
+    "open": "打开 XML",
+    "sample": "载入示例",
+    "copied": "已复制完整结果",
+    "results": "查询结果",
+    "copyValue": "复制值",
+    "copyFragment": "复制片段",
+    "export": "导出完整 JSON 报告",
+    "running": "正在计算，可随时取消…",
+    "empty": "输入 XML 和表达式后点击查询",
+    "emptyHint": "查询原始文档，不需要先格式化。",
+    "count": "{{count}} 个节点 · {{ms}} ms",
+    "scalarHint": "标量结果按类型展示。数字采用 XPath 1.0 浮点语义；NaN 和 Infinity 以文本保留。",
+    "truncated": "此处仅显示预览；复制获取完整值，较大内容请导出。",
+    "zero": "匹配节点数为 0，表达式已成功执行。",
+    "fragment": "重新序列化片段（非原文摘录）",
+    "prev": "上一页",
+    "next": "下一页",
+    "page": "第 {{number}} 页",
+    "total": "共 {{count}} 个节点",
+    "saved": "完整结果已保存",
+    "support": "XPath 1.0 · 13 个轴；count/string/boolean/number、位置、名称、字符串及数学核心函数；id()/lang()、变量、DTD 与扩展函数不支持。",
+    "types": {
+      "nodeset": "节点集",
+      "string": "字符串",
+      "number": "数字",
+      "boolean": "布尔值"
+    },
+    "nodes": {
+      "root": "文档根",
+      "element": "元素",
+      "attribute": "属性",
+      "text": "文本",
+      "comment": "注释",
+      "processingInstruction": "处理指令",
+      "namespace": "命名空间"
+    }
+  },
+  "stages": {
+    "xpath.evaluating": "正在执行 XPath…"
+  }
+}

@@ -109,7 +109,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
         ("30 9 * * MON-FRI", "cron"),
         ("192.168.1.0/24", "ip-calculator"),
         ("10.0.0.1", "ip-calculator"),
-        ("<a><b>1</b></a>", "xml-formatter"),
         ("0xDEADBEEF", "base-converter"),
         ("github.com", "dns-lookup"),
         ("name\tage\nAda\t36\n", "csv-viewer"),
@@ -132,6 +131,7 @@ fn clipboard_samples_suggest_the_right_tool_first() {
         );
     }
     for text in [
+        "<a><b>1</b></a>",
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.c2ln",
         "hello world",
         "readme.md",

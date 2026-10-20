@@ -12,7 +12,7 @@ members = [
     "plugins/*/backend",
     "market/*/backend",
 ]
-exclude = ["crates/tf-wasm/fixture"]
+exclude = ["crates/tf-wasm/fixture", "market/xml-formatter/backend/vendor/sxd-xpath"]
 
 [workspace.package]
 version = "0.2.1"
@@ -87,7 +87,6 @@ tfp-unit-converter = { path = "plugins/unit-converter/backend" }
 tfp-uuid = { path = "plugins/uuid/backend" }
 tfp-websocket = { path = "plugins/websocket/backend" }
 tfp-xlsx-viewer = { path = "plugins/xlsx-viewer/backend" }
-tfp-xml-formatter = { path = "plugins/xml-formatter/backend" }
 
 [profile.release]
 codegen-units = 1

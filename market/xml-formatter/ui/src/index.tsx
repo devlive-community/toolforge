@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { Select } from '@toolforge/ui'
-import { FormatterTool, usePlugin, type FormatterResult } from '@toolforge/plugin-ui-sdk'
+import { Select, Tabs, cn } from '@toolforge/ui'
+import { FormatterTool, usePlugin, usePluginState, type FormatterResult } from '@toolforge/plugin-ui-sdk'
 import { Minimize, ShieldCheck, Sparkles } from 'lucide-react'
+
+import { XPathQuery } from './XPathQuery'
 
 type Indent = '2' | '4' | 'tab'
 
@@ -11,7 +13,7 @@ interface XmlResult extends FormatterResult {
 
 const SAMPLE = `<?xml version="1.0" encoding="UTF-8"?><!-- ToolForge 插件清单 --><toolforge version="0.1.0"><plugin id="org.devlive.toolforge.json-formatter" category="dev"><name lang="zh-CN">JSON 格式化</name><name lang="en-US">JSON Formatter</name><functions><function name="format"/><function name="minify"/></functions></plugin><plugin id="org.devlive.toolforge.hash" category="dev"><name lang="zh-CN">哈希计算</name><description><![CDATA[MD5 & SHA <fast>]]></description></plugin></toolforge>`
 
-function XmlFormatter() {
+function XmlFormatting() {
   const { t } = usePlugin()
   const [indent, setIndent] = useState<Indent>('2')
   return (
@@ -49,4 +51,14 @@ function XmlFormatter() {
   )
 }
 
-export default XmlFormatter
+export default function XmlFormatter() {
+  const { t } = usePlugin()
+  const [mode, setMode] = usePluginState('view', 'format')
+  return (
+    <div className="flex h-full min-h-0 flex-col gap-3">
+      <Tabs value={mode} onValueChange={setMode} items={[{ value: 'format', label: t('xpath.formatTab') }, { value: 'query', label: t('xpath.queryTab') }]} />
+      <div className={cn('min-h-0 flex-1', mode !== 'format' && 'hidden')}><XmlFormatting /></div>
+      <div className={cn('min-h-0 flex-1', mode !== 'query' && 'hidden')}><XPathQuery /></div>
+    </div>
+  )
+}

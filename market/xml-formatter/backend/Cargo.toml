@@ -1,13 +1,20 @@
 [package]
-name = "tfp-xml-formatter"
+name = "tfm-xml-formatter"
 description = "ToolForge plugin: XML formatter"
 version = "0.1.0"
 edition.workspace = true
 license.workspace = true
 authors.workspace = true
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
 serde.workspace = true
 serde_json.workspace = true
 tf-plugin-api.workspace = true
 quick-xml = "0.42"
+
+tf-plugin-guest = { path = "../../../crates/tf-plugin-guest" }
+sxd-document = "0.3.2"
+sxd-xpath = { path = "vendor/sxd-xpath" }
