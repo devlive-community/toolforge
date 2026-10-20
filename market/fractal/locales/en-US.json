@@ -1,0 +1,82 @@
+{
+  "name": "Fractal Explorer",
+  "description": "Explore Mandelbrot and Julia fractals offline with anchored zoom, pan, favorite views and PNG export",
+  "help": [
+    "The mouse wheel zooms anchored at the pointer and dragging pans the view; double-click in the Mandelbrot view to pick a c parameter and switch to Julia.",
+    "Black pixels mean the orbit did not escape within the iteration limit — an observation of this run, not a mathematical proof.",
+    "A notice appears when the view reaches the double-precision limit; zooming deeper adds no new detail.",
+    "Save the current view as a favorite and restore it with one click; export runs as a cancellable task with per-row progress."
+  ],
+  "functions": {
+    "preview": "Render a preview frame",
+    "export": "Render at full size and export PNG"
+  },
+  "view": {
+    "title": "View & parameters",
+    "kind": "Fractal",
+    "juliaX": "c real",
+    "juliaY": "c imaginary",
+    "maxIter": "Iterations",
+    "palette": "Palette",
+    "brightness": "Brightness",
+    "reset": "Reset view",
+    "hint": "Double-click the canvas to set the picked point as the Julia parameter c."
+  },
+  "kind": {
+    "mandelbrot": "Mandelbrot",
+    "julia": "Julia"
+  },
+  "palette": {
+    "spectrum": "Spectrum",
+    "ember": "Ember",
+    "ocean": "Ocean",
+    "mono": "Mono"
+  },
+  "brightness": {
+    "normal": "Normal",
+    "bright": "Bright",
+    "dim": "Dim"
+  },
+  "favorites": {
+    "title": "Favorite views",
+    "add": "Save current",
+    "empty": "No favorites yet — set up a view and press Save current.",
+    "item": "{{kind}} · {{span}}",
+    "remove": "Remove favorite"
+  },
+  "canvas": {
+    "title": "Canvas",
+    "empty": "Waiting for the first frame",
+    "emptyHint": "Wheel to zoom, drag to pan, double-click to pick c",
+    "hint": "The wheel zooms anchored at the pointer; drag pans; double-click sets the picked point as c.",
+    "span": "span {{span}}",
+    "iter": "iter {{iter}}"
+  },
+  "status": {
+    "rendering": "Rendering…",
+    "legend": "Black = not escaped within {{iter}} iterations (an observation, not a mathematical proof)",
+    "precision": "Double-precision limit reached; zooming deeper adds no new detail"
+  },
+  "history": {
+    "undo": "Undo view",
+    "redo": "Redo view"
+  },
+  "export": {
+    "title": "Export PNG",
+    "width": "Width",
+    "height": "Height",
+    "rendering": "Rendering row by row…",
+    "cancel": "Cancel",
+    "done": "Exported {{width}} × {{height}} in {{seconds}} s"
+  },
+  "errors": {
+    "fractal.bad_span": "Invalid view width: {{value}}",
+    "fractal.bad_iter": "Iterations must be between 1 and {{max}}",
+    "fractal.bad_palette": "Unknown palette: {{value}}",
+    "fractal.bad_julia": "The absolute value of the real part of c must not exceed 4: {{value}}",
+    "fractal.pixels_too_large": "More than {{limit}} pixels",
+    "fractal.output_required": "Choose an output file",
+    "fractal.encode_failed": "The PNG could not be encoded: {{detail}}",
+    "fractal.io": "Writing failed: {{path}}: {{detail}}"
+  }
+}

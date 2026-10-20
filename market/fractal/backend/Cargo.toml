@@ -1,0 +1,18 @@
+[package]
+name = "tfm-fractal"
+description = "ToolForge plugin: explore Mandelbrot and Julia fractals offline"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+tf-plugin-guest = { path = "../../../crates/tf-plugin-guest" }
+data-encoding = "2"
+image = { version = "0.25", default-features = false, features = ["png"] }

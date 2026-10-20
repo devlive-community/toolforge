@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.fractal",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "graphics",
+  "keywords": ["fractal", "mandelbrot", "julia", "math", "explore", "分形", "曼德博", "茱莉亚", "数学", "探索"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "preview": {},
+    "export": { "task": true }
+  },
+  "sensitive": false
+}

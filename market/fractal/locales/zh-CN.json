@@ -1,0 +1,82 @@
+{
+  "name": "分形探索器",
+  "description": "离线探索 Mandelbrot 与 Julia 分形，滚轮缩放、拖动平移、收藏视角并导出 PNG",
+  "help": [
+    "滚轮以指针为锚点缩放，拖动平移视角；Mandelbrot 视图双击可选取 c 参数并切换到 Julia。",
+    "黑色像素表示在迭代上限内未逃逸，仅是本次计算的观察结果，不是数学证明。",
+    "视角缩放到双精度极限时会出现提示，更深的放大不再增加新细节。",
+    "收藏当前视角后可一键恢复；导出为 PNG 任务，支持逐行进度与取消。"
+  ],
+  "functions": {
+    "preview": "渲染预览帧",
+    "export": "全尺寸渲染并导出 PNG"
+  },
+  "view": {
+    "title": "视角与参数",
+    "kind": "分形类型",
+    "juliaX": "c 实部",
+    "juliaY": "c 虚部",
+    "maxIter": "迭代上限",
+    "palette": "配色",
+    "brightness": "亮度",
+    "reset": "重置视角",
+    "hint": "双击画布可把点选位置设为 Julia 参数 c。"
+  },
+  "kind": {
+    "mandelbrot": "Mandelbrot",
+    "julia": "Julia"
+  },
+  "palette": {
+    "spectrum": "光谱",
+    "ember": "余烬",
+    "ocean": "海洋",
+    "mono": "黑白"
+  },
+  "brightness": {
+    "normal": "标准",
+    "bright": "明亮",
+    "dim": "暗淡"
+  },
+  "favorites": {
+    "title": "收藏视角",
+    "add": "收藏当前",
+    "empty": "还没有收藏，调好视角后点「收藏当前」。",
+    "item": "{{kind}} · {{span}}",
+    "remove": "删除收藏"
+  },
+  "canvas": {
+    "title": "画布",
+    "empty": "正在等待第一帧",
+    "emptyHint": "滚轮缩放，拖动平移，双击选 c",
+    "hint": "滚轮以指针为锚点缩放；拖动平移；双击把点选位置设为 c。",
+    "span": "宽 {{span}}",
+    "iter": "迭代 {{iter}}"
+  },
+  "status": {
+    "rendering": "渲染中…",
+    "legend": "黑色 = {{iter}} 次迭代内未逃逸（观察结果，非数学证明）",
+    "precision": "已到双精度极限，继续放大不会再出现新细节"
+  },
+  "history": {
+    "undo": "撤销视角",
+    "redo": "重做视角"
+  },
+  "export": {
+    "title": "导出 PNG",
+    "width": "宽度",
+    "height": "高度",
+    "rendering": "正在逐行渲染…",
+    "cancel": "取消",
+    "done": "已导出 {{width}} × {{height}}，用时 {{seconds}} 秒"
+  },
+  "errors": {
+    "fractal.bad_span": "视角宽度无效：{{value}}",
+    "fractal.bad_iter": "迭代次数需在 1 到 {{max}} 之间",
+    "fractal.bad_palette": "未知配色：{{value}}",
+    "fractal.bad_julia": "c 实部绝对值需不超过 4：{{value}}",
+    "fractal.pixels_too_large": "像素总数超过 {{limit}}",
+    "fractal.output_required": "请选择输出文件",
+    "fractal.encode_failed": "PNG 编码失败：{{detail}}",
+    "fractal.io": "写入失败：{{path}}：{{detail}}"
+  }
+}
