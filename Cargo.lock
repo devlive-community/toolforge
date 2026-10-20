@@ -8808,6 +8808,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-low-poly"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "image",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-nonogram"
 version = "0.1.0"
 dependencies = [
@@ -8854,6 +8866,16 @@ dependencies = [
  "csv",
  "data-encoding",
  "jiff",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-registry-viewer"
+version = "0.1.0"
+dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",

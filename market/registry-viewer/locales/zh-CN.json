@@ -1,0 +1,91 @@
+{
+  "name": "注册表导出查看器",
+  "description": "只读查看 Windows .reg 导出文件，并对比两份导出的真实差异",
+  "help": [
+    "只解析用户提供的 .reg 文本（Registry Editor 5.00），不连接、不修改本机注册表；REGEDIT4 明确不支持。",
+    "区分 REG_SZ / DWORD / QWORD / BINARY / EXPAND_SZ / MULTI_SZ 与未知类型；整数以十进制与十六进制并列显示，多字符串保留边界。",
+    "对比按键路径与值名匹配（不区分大小写，保留原拼写），区分类型变化与数据变化；「仅另一文件未包含」不代表线上注册表已删除。",
+    "删键 / 删值 / 重复赋值按操作声明标注；这类文件不能当成最终快照做状态差异。"
+  ],
+  "functions": {
+    "parse": "解析 .reg 文件",
+    "diff": "对比两份导出"
+  },
+  "mode": {
+    "label": "模式",
+    "view": "查看",
+    "diff": "对比"
+  },
+  "file": {
+    "title": "导出文件",
+    "open": "打开",
+    "none": "尚未选择文件",
+    "filter": "注册表导出",
+    "keys": "{{count}} 键",
+    "values": "{{count}} 值",
+    "issues": "{{count}} 提示"
+  },
+  "keys": {
+    "title": "键",
+    "filter": "按路径过滤…",
+    "empty": "没有匹配的键"
+  },
+  "values": {
+    "title": "值",
+    "empty": "选择左侧的键查看值",
+    "emptyHint": "键的值会显示类型、解读值与行号",
+    "none": "此键没有值",
+    "keyLine": "键定义于第 {{line}} 行"
+  },
+  "value": {
+    "default": "默认值",
+    "duplicate": "重复赋值",
+    "deleted": "删值声明",
+    "unknownType": "未知类型 {{id}}"
+  },
+  "diff": {
+    "title": "对比",
+    "run": "开始对比",
+    "running": "正在对比…",
+    "identical": "两份文件没有差异",
+    "count": "共 {{count}} 处差异",
+    "deleteHint": "文件包含删除声明，不能当成最终状态快照看待。",
+    "empty": "选择两份文件后开始对比",
+    "emptyHint": "差异按类型变化 / 数据变化 / 单侧存在分组列出"
+  },
+  "diffKind": {
+    "keyAdded": "B 新增键",
+    "keyMissing": "A 独有键",
+    "valueAdded": "B 新增值",
+    "valueMissing": "A 独有值",
+    "typeChanged": "类型变化",
+    "dataChanged": "数据变化"
+  },
+  "export": {
+    "json": "导出 JSON",
+    "csv": "导出差异 CSV",
+    "saved": "已保存 {{name}}"
+  },
+  "errors": {
+    "reg.unsupported_version": "仅支持 Registry Editor Version 5.00；REGEDIT4 不支持",
+    "reg.bad_header": "不是有效的 .reg 文件（缺少版本头）",
+    "reg.encoding": "文件编码不受支持（需要 UTF-16LE BOM 或 UTF-8）",
+    "reg.file_too_large": "文件超过 {{limit}}",
+    "reg.bad_hex": "hex 数据无效：{{token}}",
+    "reg.io": "读取失败：{{path}}：{{detail}}"
+  },
+  "issues": {
+    "reg.odd_utf16_length": "UTF-16 数据长度为奇数字节（可能损坏）",
+    "reg.missing_terminator": "缺少字符串终止符",
+    "reg.bad_dword_length": "DWORD 长度不是 4 字节",
+    "reg.bad_qword_length": "QWORD 长度不是 8 字节",
+    "reg.unknown_type_zero": "类型号为 0（REG_NONE）",
+    "reg.delete_value": "删值声明（=-）",
+    "reg.value_outside_key": "值出现在任何键之前",
+    "reg.value_in_delete_key": "删键声明内不应有值",
+    "reg.bad_value_line": "无法解析的值行",
+    "reg.keys_truncated": "键数量超出上限，结果被截断",
+    "reg.values_truncated": "值数量超出上限，结果被截断",
+    "reg.trailing_continuation": "文件以未完成的续行结尾"
+  }
+}

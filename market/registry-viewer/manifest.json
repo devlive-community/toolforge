@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.registry-viewer",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["registry", "reg", "windows registry", "regedit", "backup", "diff", "注册表", "导出", "备份", "对比"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "parse": {},
+    "diff": { "task": true }
+  },
+  "sensitive": false
+}

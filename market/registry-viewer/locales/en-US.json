@@ -1,0 +1,91 @@
+{
+  "name": "Registry Export Inspector",
+  "description": "Read-only inspector for Windows .reg export files with two-file comparison",
+  "help": [
+    "Parses only the .reg text you provide (Registry Editor 5.00) and never touches the local registry; REGEDIT4 is explicitly unsupported.",
+    "Distinguishes REG_SZ / DWORD / QWORD / BINARY / EXPAND_SZ / MULTI_SZ and unknown types; integers are shown in decimal and hex, multi-strings keep their boundaries.",
+    "Comparison matches key paths and value names case-insensitively while preserving original spelling, and separates type changes from data changes; missing on one side does not mean it was deleted from the live registry.",
+    "Delete-key and delete-value statements plus duplicate assignments are labelled as operation declarations; such files are not a final state snapshot."
+  ],
+  "functions": {
+    "parse": "Parse a .reg file",
+    "diff": "Compare two exports"
+  },
+  "mode": {
+    "label": "Mode",
+    "view": "Inspect",
+    "diff": "Compare"
+  },
+  "file": {
+    "title": "Export file",
+    "open": "Open",
+    "none": "No file selected",
+    "filter": "Registry exports",
+    "keys": "{{count}} keys",
+    "values": "{{count}} values",
+    "issues": "{{count}} notes"
+  },
+  "keys": {
+    "title": "Keys",
+    "filter": "Filter by path…",
+    "empty": "No matching keys"
+  },
+  "values": {
+    "title": "Values",
+    "empty": "Select a key to inspect its values",
+    "emptyHint": "Values show their type, interpreted data and source line",
+    "none": "This key has no values",
+    "keyLine": "Key defined at line {{line}}"
+  },
+  "value": {
+    "default": "Default",
+    "duplicate": "Duplicate",
+    "deleted": "Delete value",
+    "unknownType": "Unknown type {{id}}"
+  },
+  "diff": {
+    "title": "Comparison",
+    "run": "Compare",
+    "running": "Comparing…",
+    "identical": "The two files have no differences",
+    "count": "{{count}} differences",
+    "deleteHint": "The file contains delete statements; treat it as an operation script, not a state snapshot.",
+    "empty": "Pick two files to compare",
+    "emptyHint": "Differences are grouped into type changes, data changes and one-sided presence"
+  },
+  "diffKind": {
+    "keyAdded": "Key in B",
+    "keyMissing": "Key only in A",
+    "valueAdded": "Value in B",
+    "valueMissing": "Value only in A",
+    "typeChanged": "Type changed",
+    "dataChanged": "Data changed"
+  },
+  "export": {
+    "json": "Export JSON",
+    "csv": "Export diff CSV",
+    "saved": "Saved {{name}}"
+  },
+  "errors": {
+    "reg.unsupported_version": "Only Registry Editor Version 5.00 is supported; REGEDIT4 is not",
+    "reg.bad_header": "Not a valid .reg file (missing version header)",
+    "reg.encoding": "Unsupported encoding (UTF-16LE BOM or UTF-8 expected)",
+    "reg.file_too_large": "The file is larger than {{limit}}",
+    "reg.bad_hex": "Invalid hex data: {{token}}",
+    "reg.io": "Reading failed: {{path}}: {{detail}}"
+  },
+  "issues": {
+    "reg.odd_utf16_length": "UTF-16 data has an odd byte length (possibly corrupt)",
+    "reg.missing_terminator": "Missing string terminator",
+    "reg.bad_dword_length": "DWORD is not 4 bytes",
+    "reg.bad_qword_length": "QWORD is not 8 bytes",
+    "reg.unknown_type_zero": "Type id 0 (REG_NONE)",
+    "reg.delete_value": "Delete-value statement (=-)",
+    "reg.value_outside_key": "Value appears before any key",
+    "reg.value_in_delete_key": "A delete-key block should not contain values",
+    "reg.bad_value_line": "Unparseable value line",
+    "reg.keys_truncated": "Key count exceeded the limit; results are truncated",
+    "reg.values_truncated": "Value count exceeded the limit; results are truncated",
+    "reg.trailing_continuation": "The file ends with an unfinished continuation line"
+  }
+}
