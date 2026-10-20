@@ -195,21 +195,18 @@ fn check_position(walker: &mut Walker, value: &Value, pointer: &str) {
             return;
         };
         match index {
-            0 => {
-                if !lon(number) {
-                    walker.diag1(ERROR, "geojson.lon_range", pointer);
-                }
+            0 if !lon(number) => {
+                walker.diag1(ERROR, "geojson.lon_range", pointer);
             }
-            1 => {
-                if !lat(number) {
-                    walker.diag1(ERROR, "geojson.lat_range", pointer);
-                    // 疑似反序：第二位超出纬度范围、第一位在经度范围内时提示，
-                    // 不自动交换，也不推断坐标系
-                    if let Some(first) = items.first().and_then(Value::as_f64) {
-                        if lon(first) && number.abs() <= 180.0 {
-                            walker.diag1(HINT, "geojson.maybe_swapped", pointer);
-                        }
-                    }
+            1 if !lat(number) => {
+                walker.diag1(ERROR, "geojson.lat_range", pointer);
+                // 疑似反序：第二位超出纬度范围、第一位在经度范围内时提示，
+                // 不自动交换，也不推断坐标系
+                if let Some(first) = items.first().and_then(Value::as_f64)
+                    && lon(first)
+                    && number.abs() <= 180.0
+                {
+                    walker.diag1(HINT, "geojson.maybe_swapped", pointer);
                 }
             }
             _ => {}
@@ -293,21 +290,18 @@ fn collect_positions(
     walker: &mut Walker,
     visit: &mut dyn FnMut(&mut Walker, &Value, &str),
 ) {
-    match value {
-        Value::Array(items) => {
-            if !items.is_empty() && items.iter().all(Value::is_number) {
-                visit(walker, value, pointer);
+    if let Value::Array(items) = value {
+        if !items.is_empty() && items.iter().all(Value::is_number) {
+            visit(walker, value, pointer);
+            return;
+        }
+        for (index, item) in items.iter().enumerate() {
+            let child = format!("{pointer}/{index}");
+            collect_positions(item, &child, walker, visit);
+            if walker.incomplete {
                 return;
             }
-            for (index, item) in items.iter().enumerate() {
-                let child = format!("{pointer}/{index}");
-                collect_positions(item, &child, walker, visit);
-                if walker.incomplete {
-                    return;
-                }
-            }
         }
-        _ => {}
     }
 }
 
@@ -485,10 +479,10 @@ fn check_geometry(walker: &mut Walker, value: &Value, pointer: &str) {
                         coords,
                         &format!("{pointer}/coordinates"),
                     );
-                    if !walker.incomplete {
-                        if let Some(bbox) = object.get("bbox") {
-                            check_bbox(walker, bbox, &format!("{pointer}/bbox"), Some(coords));
-                        }
+                    if !walker.incomplete
+                        && let Some(bbox) = object.get("bbox")
+                    {
+                        check_bbox(walker, bbox, &format!("{pointer}/bbox"), Some(coords));
                     }
                 }
                 None => walker.diag1(ERROR, "geojson.coords_missing", pointer),

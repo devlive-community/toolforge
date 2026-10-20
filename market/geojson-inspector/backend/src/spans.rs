@@ -126,11 +126,8 @@ impl<'a> Scanner<'a> {
             }
             self.skip_value()?;
             self.skip_ws();
-            match self.peek() {
-                Some(',') => {
-                    self.bump();
-                }
-                _ => {}
+            if let Some(',') = self.peek() {
+                self.bump();
             }
         }
     }
@@ -152,11 +149,8 @@ impl<'a> Scanner<'a> {
             self.expect(':');
             self.skip_value()?;
             self.skip_ws();
-            match self.peek() {
-                Some(',') => {
-                    self.bump();
-                }
-                _ => {}
+            if let Some(',') = self.peek() {
+                self.bump();
             }
         }
     }

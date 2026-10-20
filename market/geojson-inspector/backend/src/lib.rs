@@ -127,10 +127,9 @@ impl GeoJsonInspector {
                 let report = rules::Report {
                     overall: "invalid",
                     incomplete: false,
-                    stats: {
-                        let mut stats = rules::Stats::default();
-                        stats.errors = 1;
-                        stats
+                    stats: rules::Stats {
+                        errors: 1,
+                        ..Default::default()
                     },
                     diagnostics: vec![diag],
                 };

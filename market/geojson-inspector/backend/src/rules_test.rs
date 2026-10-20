@@ -27,6 +27,7 @@ fn valid_feature_collection_passes() {
         "bbox": [100.0, 0.0, 103.0, 1.0]
     }));
     assert_eq!(report.overall, "passed");
+    assert!(codes(&report).is_empty());
     assert_eq!(report.stats.features, 2);
     assert_eq!(report.stats.positions, 1);
     assert_eq!(report.stats.types.get("Point"), Some(&1));
