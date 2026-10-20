@@ -1,0 +1,78 @@
+{
+  "name": "系统代理配置查看器",
+  "description": "按来源只读查看系统代理配置、PAC 与启动环境变量，区分配置了什么与实际怎么连",
+  "help": [
+    "按平台分别读取：macOS 系统配置、Windows 的 WinINet（当前用户）与 WinHTTP（默认）、Linux 的 GNOME 设置；读取失败或桌面不支持会如实标注，不会显示成直连。",
+    "单列 ToolForge 启动时继承的 HTTP_PROXY 等环境变量，大小写并存时各值保留；刷新系统配置不会把其他终端的新变量带入已运行进程。",
+    "对明显非法的端口或空地址给格式提示；原始配置可展开核对，导出前已在本地脱敏（密码遮罩）。",
+    "只显示 PAC 地址，不下载执行脚本，不做自动发现，不探测连通性，也不修改任何设置。"
+  ],
+  "functions": {
+    "inspect": "采集代理配置来源"
+  },
+  "refresh": "刷新",
+  "loading": "正在采集…",
+  "collectedAt": "采集于 {{time}}",
+  "load": {
+    "failed": "采集失败，请重试"
+  },
+  "sections": {
+    "sources": "系统配置来源",
+    "env": "启动环境变量"
+  },
+  "sources": {
+    "macos-sc": "macOS 系统配置",
+    "win-inet": "Windows WinINet（当前用户）",
+    "win-http": "Windows WinHTTP（默认）",
+    "gnome": "GNOME 设置"
+  },
+  "scope": {
+    "user": "当前用户",
+    "system": "系统级"
+  },
+  "status": {
+    "configured": "已配置",
+    "disabled": "已禁用",
+    "notConfigured": "未配置",
+    "failed": "读取失败",
+    "unsupported": "不支持"
+  },
+  "statusHint": {
+    "disabled": "留有地址但开关已关闭；启用后才会生效。",
+    "notConfigured": "该来源没有任何代理配置。",
+    "unsupported": "此平台未覆盖该来源（Linux 首版仅支持 GNOME，其他桌面无统一系统代理）。"
+  },
+  "labels": {
+    "status": "状态",
+    "pac": "PAC",
+    "autoDiscover": "自动发现（WPAD）",
+    "exclusions": "排除列表"
+  },
+  "warnings": {
+    "proxy.empty_host": "地址为空",
+    "proxy.bad_port": "端口超出 1-65535"
+  },
+  "raw": {
+    "show": "展开原始配置",
+    "hide": "收起原始配置"
+  },
+  "env": {
+    "hint": "以下变量在 ToolForge 启动时继承；刷新系统配置不会把其他终端新设置的变量带入已运行进程。",
+    "empty": "没有继承到代理相关环境变量",
+    "exclusions": "排除列表"
+  },
+  "export": {
+    "title": "代理配置摘要",
+    "collected": "采集时间",
+    "json": "导出 JSON（已脱敏）",
+    "markdown": "导出 Markdown（已脱敏）",
+    "saved": "已保存 {{name}}"
+  },
+  "errors": {
+    "proxy.sc_unavailable": "无法访问 macOS 系统配置服务",
+    "proxy.wininet_failed": "读取 WinINet（当前用户）配置失败",
+    "proxy.winhttp_failed": "读取 WinHTTP 默认配置失败",
+    "proxy.empty_host": "地址为空",
+    "proxy.bad_port": "端口超出 1-65535"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "org.devlive.toolforge.proxy-inspector",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "system",
+  "keywords": ["proxy", "http proxy", "socks", "pac", "winhttp", "wininet", "systemconfiguration", "gsettings", "environment", "代理", "系统代理", "PAC", "环境变量"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": [],
+  "functions": {
+    "inspect": {}
+  },
+  "sensitive": true
+}

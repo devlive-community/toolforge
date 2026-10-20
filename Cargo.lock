@@ -3325,7 +3325,7 @@ dependencies = [
  "rand 0.10.3",
  "resolv-conf",
  "smallvec",
- "system-configuration",
+ "system-configuration 0.7.0",
  "thiserror 2.0.20",
  "tokio",
  "tracing",
@@ -3490,7 +3490,7 @@ dependencies = [
  "percent-encoding",
  "pin-project-lite",
  "socket2",
- "system-configuration",
+ "system-configuration 0.7.0",
  "tokio",
  "tower-service",
  "tracing",
@@ -7960,6 +7960,17 @@ dependencies = [
 
 [[package]]
 name = "system-configuration"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3c879d448e9d986b661742763247d3693ed13609438cf3d006f51f5368a5ba6b"
+dependencies = [
+ "bitflags 2.13.2",
+ "core-foundation 0.9.4",
+ "system-configuration-sys",
+]
+
+[[package]]
+name = "system-configuration"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a13f3d0daba03132c0aa9767f98351b3488edc2c100cda2d2ec2b04f3d8d3c8b"
@@ -9484,6 +9495,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-proxy-inspector"
+version = "0.1.0"
+dependencies = [
+ "core-foundation 0.9.4",
+ "serde",
+ "serde_json",
+ "system-configuration 0.6.1",
+ "tf-plugin-api",
+ "windows-sys 0.61.2",
+]
+
+[[package]]
 name = "tfp-qrcode"
 version = "0.1.0"
 dependencies = [
@@ -10056,6 +10079,7 @@ dependencies = [
  "tfp-password",
  "tfp-pdf",
  "tfp-port-manager",
+ "tfp-proxy-inspector",
  "tfp-qrcode",
  "tfp-random",
  "tfp-regex",

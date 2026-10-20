@@ -1,0 +1,78 @@
+{
+  "name": "Proxy Configuration Inspector",
+  "description": "Read-only view of system proxy sources, PAC and inherited environment variables",
+  "help": [
+    "Reads per platform: macOS system configuration, Windows WinINet (current user) and WinHTTP (default), and Linux GNOME settings; failures and unsupported desktops are labelled honestly instead of shown as direct.",
+    "Lists proxy variables inherited when ToolForge started; uppercase and lowercase variants are kept side by side. Refreshing system settings does not inject variables from other terminals into a running process.",
+    "Obvious format problems (empty host, out-of-range port) get hints; the raw configuration can be expanded, and exports are masked locally.",
+    "PAC URLs are shown but never fetched or executed; no WPAD discovery, no connectivity probing and no settings are changed."
+  ],
+  "functions": {
+    "inspect": "Collect proxy configuration sources"
+  },
+  "refresh": "Refresh",
+  "loading": "Collecting…",
+  "collectedAt": "Collected {{time}}",
+  "load": {
+    "failed": "Collection failed, please retry"
+  },
+  "sections": {
+    "sources": "System configuration sources",
+    "env": "Inherited environment variables"
+  },
+  "sources": {
+    "macos-sc": "macOS System Configuration",
+    "win-inet": "Windows WinINet (current user)",
+    "win-http": "Windows WinHTTP (default)",
+    "gnome": "GNOME settings"
+  },
+  "scope": {
+    "user": "Current user",
+    "system": "System"
+  },
+  "status": {
+    "configured": "Configured",
+    "disabled": "Disabled",
+    "notConfigured": "Not configured",
+    "failed": "Read failed",
+    "unsupported": "Unsupported"
+  },
+  "statusHint": {
+    "disabled": "Addresses are present but the toggle is off; they apply only when enabled.",
+    "notConfigured": "This source has no proxy configuration.",
+    "unsupported": "This platform does not cover the source (Linux supports GNOME only in the first release; other desktops have no unified system proxy)."
+  },
+  "labels": {
+    "status": "Status",
+    "pac": "PAC",
+    "autoDiscover": "Auto-discover (WPAD)",
+    "exclusions": "Exclusions"
+  },
+  "warnings": {
+    "proxy.empty_host": "Empty host",
+    "proxy.bad_port": "Port outside 1-65535"
+  },
+  "raw": {
+    "show": "Show raw configuration",
+    "hide": "Hide raw configuration"
+  },
+  "env": {
+    "hint": "These variables were inherited when ToolForge started; refreshing does not pick up variables set in other terminals afterwards.",
+    "empty": "No proxy-related environment variables inherited",
+    "exclusions": "Exclusions"
+  },
+  "export": {
+    "title": "Proxy configuration summary",
+    "collected": "Collected at",
+    "json": "Export JSON (masked)",
+    "markdown": "Export Markdown (masked)",
+    "saved": "Saved {{name}}"
+  },
+  "errors": {
+    "proxy.sc_unavailable": "The macOS System Configuration service is unavailable",
+    "proxy.wininet_failed": "Reading the WinINet (current user) configuration failed",
+    "proxy.winhttp_failed": "Reading the WinHTTP default configuration failed",
+    "proxy.empty_host": "Empty host",
+    "proxy.bad_port": "Port outside 1-65535"
+  }
+}

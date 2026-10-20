@@ -47,6 +47,7 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
     registry.register_for(Arc::new(tfp_csv_viewer::CsvViewer::default()), os);
     registry.register_for(Arc::new(tfp_ocr::Ocr::default()), os);
     registry.register_for(Arc::new(tfp_port_manager::PortManager::default()), os);
+    registry.register_for(Arc::new(tfp_proxy_inspector::ProxyInspector::default()), os);
     registry.register_for(Arc::new(tfp_certificate::CertificateViewer::default()), os);
     registry.register_for(Arc::new(tfp_mock_data::MockData::default()), os);
     registry.register_for(Arc::new(tfp_local_server::LocalServer::default()), os);
