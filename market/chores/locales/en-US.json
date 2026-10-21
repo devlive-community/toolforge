@@ -1,0 +1,117 @@
+{
+  "name": "Household Chore Rotation",
+  "description": "Rotate household chores fairly: daily / weekly / interval repeats, rotation lists, check-offs, late make-ups and weekly stats",
+  "help": [
+    "Add family nicknames first, then chores: repeat daily, on chosen weekdays or every few days, with a fixed assignee or a rotation list.",
+    "Each chore rotates on its own list; the rotation advances by planned occurrences, so late check-offs never shift other days.",
+    "Checking off records the actual executor and time, mistakes can be undone and repeated clicks never double count; skips and completions are counted separately.",
+    "Late make-ups stay on the original planned date while keeping the actual date; rule or list changes only take effect from the chosen day, history is preserved.",
+    "Temporarily reassign one occurrence, pause chores, and copy or export the weekly table and a JSON backup."
+  ],
+  "functions": {
+    "plan": "Compute schedule, rotation and completion states"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "removed": "(removed)"
+  },
+  "members": {
+    "title": "Family",
+    "placeholder": "Family nickname",
+    "add": "Add",
+    "remove": "Remove",
+    "empty": "Add a family nickname first"
+  },
+  "chore": {
+    "title": "Chores",
+    "add": "Add chore",
+    "empty": "No chores yet — add one from the top-right",
+    "namePlaceholder": "Chore, e.g. take out trash",
+    "repeat": "Repeat",
+    "rule": {
+      "daily": "Daily",
+      "weekly": "Weekly on chosen days",
+      "weeklyShort": "Weekly",
+      "interval": "Every {{days}} days",
+      "intervalShort": "Every N days"
+    },
+    "who": "Assignee",
+    "modeFixed": "Fixed person",
+    "modeRotation": "Rotation list",
+    "fixedBy": "Fixed: {{name}}",
+    "rotationOf": "{{count}} rotating",
+    "pickMember": "Pick a member",
+    "rotationHint": "Tap members to join; tap order is the rotation order. Each chore rotates independently.",
+    "firstDate": "First date",
+    "editHint": "Changes take effect from {{from}}; earlier rotations and records stay unchanged",
+    "since": ", since {{from}}",
+    "paused": "Paused",
+    "pause": "Pause",
+    "resume": "Resume",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "weekday": {
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
+  },
+  "board": {
+    "title": "Board",
+    "view": "View",
+    "today": "Today",
+    "week": "Week",
+    "loading": "Computing schedule…",
+    "empty": "Nothing scheduled yet",
+    "emptyHint": "Today and week plans appear once you add chores",
+    "todayHeader": "Today · {{date}} {{weekday}}",
+    "dayHeader": "{{date}} {{weekday}}",
+    "overdueHeader": "Overdue",
+    "nothingToday": "Nothing scheduled today, take a rest",
+    "pendingBadge": "Pending",
+    "doneBadge": "Done",
+    "skipBadge": "Skipped",
+    "overdue": "Overdue",
+    "lateBadge": "Make-up",
+    "tempSwap": "Temp swap",
+    "done": "Done",
+    "skip": "Skip",
+    "undo": "Undo",
+    "swap": "Temp swap"
+  },
+  "stats": {
+    "title": "This week",
+    "done": "{{count}} done",
+    "skipped": "{{count}} skipped",
+    "pending": "{{count}} pending"
+  },
+  "table": {
+    "title": "Family chore table ({{from}} – {{to}})",
+    "rest": "Rest",
+    "done": "✓",
+    "skipped": "skipped",
+    "copy": "Copy table",
+    "saveTxt": "Export table TXT",
+    "saveJson": "Export JSON backup",
+    "copied": "Table copied",
+    "saved": "Saved"
+  },
+  "errors": {
+    "chore.bad_date": "Invalid date: {{value}}",
+    "chore.bad_window": "Invalid date range",
+    "chore.bad_epochs": "Chore rule epochs are inconsistent: {{chore}}",
+    "chore.too_many_members": "At most {{limit}} members",
+    "chore.too_many_chores": "At most {{limit}} chores",
+    "chore.too_many_epochs": "Too many edits",
+    "chore.piece_count": "Unexpected occurrence count",
+    "chore.bad_identity": "Bad occurrence key",
+    "chore.member_required": "Pick a fixed assignee",
+    "chore.rotation_required": "Pick at least one rotating member",
+    "chore.weekday_required": "Pick at least one weekday"
+  }
+}

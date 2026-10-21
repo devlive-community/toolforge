@@ -1,0 +1,117 @@
+{
+  "name": "家务轮值小管家",
+  "description": "按约定轮着做家务：每日/每周/隔天重复、轮换名单、完成打勾、逾期补做与周报统计",
+  "help": [
+    "先录入家人昵称，再添加家务：每天、每周指定星期或每隔若干天重复，可固定负责人或按名单轮换。",
+    "每项家务按自己的名单轮转；轮值按计划发生次数推进，晚点打勾不会改变其他日期的负责人。",
+    "完成打勾记录实际执行者和时间，误点可撤销，重复点击不会重复计数；跳过与完成分别统计。",
+    "逾期补做归到原计划日期并保留实际完成日期；修改规则或名单只从选定日期之后生效，历史不变。",
+    "支持临时换人（只影响这一次）、停用家务；可复制或导出本周轮值表和 JSON 备份。"
+  ],
+  "functions": {
+    "plan": "计算排期、轮换与完成状态"
+  },
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "removed": "（已移除）"
+  },
+  "members": {
+    "title": "家人",
+    "placeholder": "家人昵称",
+    "add": "添加",
+    "remove": "移除",
+    "empty": "先添加家人昵称"
+  },
+  "chore": {
+    "title": "家务",
+    "add": "添加家务",
+    "empty": "还没有家务，点右上角添加",
+    "namePlaceholder": "家务内容，如：倒垃圾",
+    "repeat": "重复",
+    "rule": {
+      "daily": "每天",
+      "weekly": "每周指定星期",
+      "weeklyShort": "每周",
+      "interval": "每隔 {{days}} 天",
+      "intervalShort": "每隔几天"
+    },
+    "who": "负责人",
+    "modeFixed": "固定一人",
+    "modeRotation": "轮换名单",
+    "fixedBy": "固定：{{name}}",
+    "rotationOf": "{{count}} 人轮换",
+    "pickMember": "选择成员",
+    "rotationHint": "点选参与成员，顺序即轮换顺序；每项家务独立轮转。",
+    "firstDate": "首次日期",
+    "editHint": "修改从 {{from}} 起生效，此前的轮值与记录保持不变",
+    "since": "，自 {{from}} 起",
+    "paused": "已停用",
+    "pause": "停用",
+    "resume": "恢复",
+    "edit": "编辑",
+    "delete": "删除"
+  },
+  "weekday": {
+    "sun": "周日",
+    "mon": "周一",
+    "tue": "周二",
+    "wed": "周三",
+    "thu": "周四",
+    "fri": "周五",
+    "sat": "周六"
+  },
+  "board": {
+    "title": "看板",
+    "view": "视图",
+    "today": "今日",
+    "week": "本周",
+    "loading": "正在计算排期…",
+    "empty": "还没有排期",
+    "emptyHint": "添加家务后会自动生成今日与本周安排",
+    "todayHeader": "今天 · {{date}} {{weekday}}",
+    "dayHeader": "{{date}} {{weekday}}",
+    "overdueHeader": "逾期未处理",
+    "nothingToday": "今天没有安排，休息一下",
+    "pendingBadge": "待做",
+    "doneBadge": "已完成",
+    "skipBadge": "已跳过",
+    "overdue": "逾期",
+    "lateBadge": "补做",
+    "tempSwap": "临时换人",
+    "done": "完成",
+    "skip": "跳过",
+    "undo": "撤销",
+    "swap": "临时换人"
+  },
+  "stats": {
+    "title": "本周统计",
+    "done": "完成 {{count}}",
+    "skipped": "跳过 {{count}}",
+    "pending": "待做 {{count}}"
+  },
+  "table": {
+    "title": "家庭轮值表（{{from}} 至 {{to}}）",
+    "rest": "休息",
+    "done": "✓",
+    "skipped": "跳过",
+    "copy": "复制轮值表",
+    "saveTxt": "导出轮值表 TXT",
+    "saveJson": "导出 JSON 备份",
+    "copied": "轮值表已复制",
+    "saved": "已保存"
+  },
+  "errors": {
+    "chore.bad_date": "日期无效：{{value}}",
+    "chore.bad_window": "日期范围无效",
+    "chore.bad_epochs": "家务规则纪元异常：{{chore}}",
+    "chore.too_many_members": "成员最多 {{limit}} 人",
+    "chore.too_many_chores": "家务最多 {{limit}} 项",
+    "chore.too_many_epochs": "修改次数过多",
+    "chore.piece_count": "排期数量异常",
+    "chore.bad_identity": "任务编号异常",
+    "chore.member_required": "请选择固定负责人",
+    "chore.rotation_required": "请至少选择一名轮换成员",
+    "chore.weekday_required": "请至少选择一个星期"
+  }
+}

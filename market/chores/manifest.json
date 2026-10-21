@@ -1,0 +1,15 @@
+{
+  "id": "org.devlive.toolforge.chores",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": ["chore", "household", "rotation", "family", "家务", "轮值", "家庭", "值日"],
+  "accent": "green",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "plan": {}
+  },
+  "sensitive": false
+}
