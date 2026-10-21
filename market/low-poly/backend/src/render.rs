@@ -218,3 +218,7 @@ fn draw_line(
         }
     }
 }
+
+#[cfg(test)]
+#[path = "render_test.rs"]
+mod tests;
