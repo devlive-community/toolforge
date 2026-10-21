@@ -1,7 +1,7 @@
 //! 两份导出的差异：按键路径（不区分大小写）与值名（不区分大小写）比较。
 
 use serde::Serialize;
-use tf_plugin_api::{PluginError, PluginResult, TaskContext, cancelled};
+use tf_plugin_api::{PluginResult, TaskContext, cancelled};
 
 use crate::doc::{KeyNode, RegDoc, ValueEntry};
 
@@ -44,10 +44,6 @@ pub struct DiffReport {
     pub identical: bool,
     /// 删除指令（[-键] / 值=-）存在时为 true：文件不是最终状态快照
     pub has_delete_statements: bool,
-}
-
-fn errp(code: &str, key: &str, value: impl Into<serde_json::Value>) -> PluginError {
-    PluginError::new(code).with(key, value)
 }
 
 fn casefold(text: &str) -> String {
@@ -185,7 +181,7 @@ fn diff_values(key_a: &KeyNode, key_b: &KeyNode, entries: &mut Vec<DiffEntry>) {
 }
 
 /// 值名（casefold）→ 最后一条赋值
-fn last_by_name<'a>(values: &'a [ValueEntry]) -> std::collections::HashMap<String, &'a ValueEntry> {
+fn last_by_name(values: &[ValueEntry]) -> std::collections::HashMap<String, &ValueEntry> {
     let mut map = std::collections::HashMap::new();
     for value in values {
         map.insert(casefold(&value.name), value);
@@ -209,3 +205,7 @@ fn type_ids_equal(a: &crate::value::RegValue, b: &crate::value::RegValue) -> boo
 fn display_of(value: &ValueEntry) -> String {
     value.value.display()
 }
+
+#[cfg(test)]
+#[path = "diff_test.rs"]
+mod tests;

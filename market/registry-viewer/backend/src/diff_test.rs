@@ -7,10 +7,12 @@ fn sample_a() -> String {
 [HKEY_CURRENT_USER\Software\App]
 "Keep"="same"
 "Typed"="text"
-"Typed"=dword:00000001
+"Repeated"="text"
+"Repeated"=dword:00000001
 "Changed"="old"
 "OnlyA"="a"
-"#.to_owned()
+"#
+    .to_owned()
 }
 
 fn sample_b() -> String {
@@ -19,12 +21,14 @@ fn sample_b() -> String {
 [HKEY_CURRENT_USER\Software\App]
 "Keep"="same"
 "Typed"=dword:00000002
+"Repeated"=dword:00000002
 "Changed"="new"
 "OnlyB"="b"
 
 [HKEY_CURRENT_USER\Software\New]
 "Fresh"="yes"
-"#.to_owned()
+"#
+    .to_owned()
 }
 
 #[test]
@@ -41,18 +45,40 @@ fn diffs_types_data_and_presence() {
             .collect()
     };
     // 大小写不敏感匹配，不制造虚假增删
-    assert!(!report.entries.iter().any(|e| e.value_name.as_deref().map(|n| n.eq_ignore_ascii_case("keep")).unwrap_or(false)));
+    assert!(!report.entries.iter().any(|e| {
+        e.value_name
+            .as_deref()
+            .map(|n| n.eq_ignore_ascii_case("keep"))
+            .unwrap_or(false)
+    }));
     // 同名不同类型 → 类型变化
     let typed = kinds("Typed");
     assert!(typed.iter().any(|k| matches!(k, DiffKind::TypeChanged)));
+    // 重复赋值只比较最后一条：DWORD 1 → DWORD 2，不能误报类型变化
+    let repeated = kinds("Repeated");
+    assert_eq!(repeated.len(), 1);
+    assert!(matches!(repeated[0], DiffKind::DataChanged));
     // 类型一致数据不同 → 数据变化
     let changed = kinds("Changed");
     assert!(changed.iter().any(|k| matches!(k, DiffKind::DataChanged)));
     // 单侧存在
-    assert!(kinds("OnlyA").iter().any(|k| matches!(k, DiffKind::ValueMissing)));
-    assert!(kinds("OnlyB").iter().any(|k| matches!(k, DiffKind::ValueAdded)));
+    assert!(
+        kinds("OnlyA")
+            .iter()
+            .any(|k| matches!(k, DiffKind::ValueMissing))
+    );
+    assert!(
+        kinds("OnlyB")
+            .iter()
+            .any(|k| matches!(k, DiffKind::ValueAdded))
+    );
     // B 独有键
-    assert!(report.entries.iter().any(|e| matches!(e.kind, DiffKind::KeyAdded) && e.path.ends_with("New")));
+    assert!(
+        report
+            .entries
+            .iter()
+            .any(|e| matches!(e.kind, DiffKind::KeyAdded) && e.path.ends_with("New"))
+    );
     assert!(!report.identical);
     assert!(!report.has_delete_statements);
 }
@@ -77,7 +103,11 @@ fn identical_files_and_value_name_case() {
 "#;
     let c = doc::parse(case).unwrap();
     let report = diff(&a, &c, None).unwrap();
-    assert!(report.identical, "value name case should not diff: {:?}", report.entries);
+    assert!(
+        report.identical,
+        "value name case should not diff: {:?}",
+        report.entries
+    );
 }
 
 #[test]

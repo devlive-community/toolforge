@@ -57,8 +57,10 @@ fn errp(code: &str, key: &str, value: impl Into<serde_json::Value>) -> PluginErr
 pub fn decode_text(bytes: &[u8]) -> PluginResult<String> {
     if bytes.starts_with(&[0xFF, 0xFE]) {
         let units: Vec<u16> = bytes[2..]
-            .chunks_exact(2)
-            .map(|pair| u16::from_le_bytes([pair[0], pair[1]]))
+            .as_chunks::<2>()
+            .0
+            .iter()
+            .map(|pair| u16::from_le_bytes(*pair))
             .collect();
         return Ok(String::from_utf16_lossy(&units));
     }

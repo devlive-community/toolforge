@@ -23,19 +23,6 @@ pub enum RegValue {
 }
 
 impl RegValue {
-    /// 类型名（前端徽章）
-    pub fn type_name(&self) -> &'static str {
-        match self {
-            Self::Sz { .. } => "REG_SZ",
-            Self::ExpandSz { .. } => "REG_EXPAND_SZ",
-            Self::MultiSz { .. } => "REG_MULTI_SZ",
-            Self::Dword { .. } => "REG_DWORD",
-            Self::Qword { .. } => "REG_QWORD",
-            Self::Binary { .. } => "REG_BINARY",
-            Self::Unknown { .. } => "REG_UNKNOWN",
-        }
-    }
-
     /// 数据等价比较（类型与内容都必须一致；"同字节不同类型"视为变化）
     pub fn same(&self, other: &RegValue) -> bool {
         match (self, other) {
@@ -122,12 +109,14 @@ impl RegValue {
 
 /// 解码 UTF-16LE 文本；无终止符记诊断
 fn decode_utf16(bytes: &[u8], _double_terminate: bool, issues: &mut Vec<String>) -> String {
-    if bytes.len() % 2 != 0 {
+    if !bytes.len().is_multiple_of(2) {
         issues.push("reg.odd_utf16_length".to_owned());
     }
     let units: Vec<u16> = bytes
-        .chunks_exact(2)
-        .map(|pair| u16::from_le_bytes([pair[0], pair[1]]))
+        .as_chunks::<2>()
+        .0
+        .iter()
+        .map(|pair| u16::from_le_bytes(*pair))
         .take_while(|unit| *unit != 0)
         .collect();
     if bytes.len() >= 2 && !bytes.ends_with(&[0, 0]) {
@@ -138,12 +127,14 @@ fn decode_utf16(bytes: &[u8], _double_terminate: bool, issues: &mut Vec<String>)
 
 /// REG_MULTI_SZ：字符串以 \0 分隔，列表以双 \0 结束
 fn decode_multi_sz(bytes: &[u8], issues: &mut Vec<String>) -> Vec<String> {
-    if bytes.len() % 2 != 0 {
+    if !bytes.len().is_multiple_of(2) {
         issues.push("reg.odd_utf16_length".to_owned());
     }
     let units: Vec<u16> = bytes
-        .chunks_exact(2)
-        .map(|pair| u16::from_le_bytes([pair[0], pair[1]]))
+        .as_chunks::<2>()
+        .0
+        .iter()
+        .map(|pair| u16::from_le_bytes(*pair))
         .collect();
     let mut items = Vec::new();
     let mut current: Vec<u16> = Vec::new();
