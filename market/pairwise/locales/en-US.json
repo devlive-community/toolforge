@@ -1,0 +1,46 @@
+{
+  "name": "Pairwise Test Matrix",
+  "description": "Generate constrained pairwise test cases with reproducible seeds, independently checked coverage evidence, and CSV/JSON export",
+  "help": [
+    "Give every factor a name and a JSON array of discrete values. Strings, numbers, booleans and null remain distinct types; numbers never pass through floating point. Use at least two factors and at most 12 values per factor.",
+    "Forbidden combinations are arrays of tuples: a case is excluded when all terms in a tuple match. Terms must refer to existing factors and typed values. Scripts and expressions are not supported.",
+    "Enumerate complete cases within the budget to establish pair feasibility, choose cases with seeded greedy coverage, then independently validate every case and pair. Click a pair to inspect the cases covering it.",
+    "Proven infeasible pairs and pairs of unknown feasibility are separate. Cancellation or a budget limit retains partial evidence, blocks completed CSV export, and permits explicitly marked partial JSON export.",
+    "The current model is saved locally. JSON bundles contain the normalized model, seed, algorithm version, limits, cases and evidence. Import recomputes coverage rather than trusting completion claims. CSV uses JSON scalar notation to retain value types.",
+    "Limits: 12 factors, 50,000 full combinations, 100 forbidden tuples, 1,000 output cases and five seconds of solving. Completed results are reproducible; time-limited partial results can differ. No guarantee of minimal case count or detection of every defect."
+  ],
+  "functions": { "generate": "Generate or verify a matrix", "prepare": "Normalize a model", "cases": "Read a page of test cases", "pairs": "Read pair coverage evidence", "export": "Export a test plan" },
+  "input": {
+    "title": "Parameter model", "autosaved": "Saved locally", "open": "Import model or plan JSON", "example": "Load example", "mode": "Model editor", "form": "Factors", "json": "Model JSON",
+    "valuesHint": "One factor per row; values are a JSON array, for example [\"Chrome\", \"Firefox\"]. The number 1, the string \"1\", and true are distinct values.",
+    "factorName": "Factor name", "valuesFor": "Values for {{name}}", "addFactor": "Add factor", "removeFactor": "Remove factor", "constraints": "Forbidden tuples (optional)",
+    "constraintHint": "Terms in one tuple cannot occur together. Example: [[{\"factor\":\"OS\",\"value\":\"Linux\"},{\"factor\":\"Browser\",\"value\":\"Safari\"}]]. Use [] for no constraints.",
+    "seed": "Seed", "maxCases": "Maximum output cases", "maxCombinations": "Combinations to scan", "budgetMs": "Solver time budget", "milliseconds": "{{value}} ms", "limitNumber": "{{value}}",
+    "limitsHint": "At most 50,000 full combinations. Scan and time limits retain partial evidence.", "generate": "Generate / verify coverage", "cancel": "Cancel and retain evidence", "jsonFile": "JSON model or test plan"
+  },
+  "result": {
+    "loading": "Loading the current selection…",
+    "title": "Matrix & coverage evidence", "cases": "Test cases", "combinations": "Full combinations", "coverage": "Feasible pair coverage", "notProven": "Unproven", "percent": "{{value}}%",
+    "enumerated": "Checked {{scanned}} / {{total}} combinations; {{valid}} satisfy the constraints.", "enumerationPartial": "Checked {{scanned}} / {{total}} combinations and found {{valid}} valid ones. Feasibility of the remainder is unproven.",
+    "unsatisfiable": "This model has no solution: constraints exclude every complete case. Review the forbidden tuples.",
+    "views": "Result view", "matrix": "Cases", "pairs": "Pair evidence", "model": "Model", "allPairs": "All pairs", "clearPair": "Clear pair filter", "noWitnesses": "No test cases cover this pair", "noRows": "No matching results",
+    "caseId": "Case", "pair": "Parameter values", "state": "Coverage", "witnesses": "Cases", "findCases": "Inspect {{count}} covering cases", "useModel": "Edit this model",
+    "boundary": "Evidence concerns pair coverage in this model. It guarantees neither minimum case count nor detection of every defect.",
+    "empty": "Cover parameter pairs with fewer complete cases", "emptyHint": "Edit factors or import JSON, then inspect each pair and its supporting test cases.", "algorithm": "{{version}} · seed {{seed}}", "logs": "Task log", "noLogs": "Waiting for task logs", "latest": "Latest logs"
+  },
+  "pair": { "covered": "Covered", "uncovered": "Feasible, uncovered", "infeasible": "Proven infeasible", "unknown": "Unknown feasibility" },
+  "status": { "complete": "Coverage complete", "incomplete": "Partial result", "unsatisfiable": "No solution" },
+  "reason": { "cancelled": "Solving was cancelled. Only partial evidence is available; this is not a completed plan.", "timeLimit": "Time budget reached. Results are incomplete; adjust the model or budget and retry.", "combinationLimit": "Scan limit reached. Unvisited combinations remain unknown, not infeasible.", "caseLimit": "Output case limit reached. Some feasible pairs remain uncovered.", "uncovered": "Independent verification found uncovered or unknown pairs. This plan is incomplete." },
+  "export": { "csv": "Export completed cases as CSV", "json": "Export model and plan JSON", "partial": "Export partial evidence JSON", "saved": "File saved" },
+  "page": { "previous": "Previous", "next": "Next", "number": "Page {{page}}", "total": "{{count}} items" },
+  "stages": { "parse": "Read and validate model", "enumerate": "Establish pair feasibility", "cover": "Choose pairwise cases", "verify": "Independently verify evidence", "done": "Finished", "export": "Export plan" },
+  "logs": { "pairwise.enumerate": "Checking {{total}} complete combinations", "pairwise.result": "Result: {{status}}, retaining {{cases}} cases" },
+  "errors": {
+    "pairwise.output_limit": "Export exceeds 8 MiB. Reduce cases or shorten values.",
+    "pairwise.scalar": "Values must be null, booleans, numbers or strings up to 240 bytes. Numbers are limited to 80 characters and absolute exponents of 1,000.", "pairwise.input_limit": "Input exceeds 8 MiB.", "pairwise.json": "Invalid JSON syntax or structure at line {{line}}, column {{column}}.",
+    "pairwise.factors": "Use 2–12 factors.", "pairwise.factor_name": "Factor names must be nonempty, at most 80 bytes, and contain no control characters.", "pairwise.duplicate_factor": "Duplicate factor name: {{name}}.", "pairwise.values": "Factor {{name}} needs 1–12 values.", "pairwise.duplicate_value": "Factor {{name}} has duplicate values. Numbers 1 and 1.0 are also duplicates.",
+    "pairwise.combination_limit": "The full model exceeds 50,000 combinations. Reduce factors or values.", "pairwise.constraints": "At most 100 forbidden tuples are supported.", "pairwise.constraint_reference": "A forbidden tuple is empty, repeats a factor, or references an unknown factor or typed value.",
+    "pairwise.limits": "Invalid budget: 1–1,000 cases, 1–5,000 milliseconds, 1–50,000 scanned combinations.", "pairwise.seed": "Seed exceeds 80 bytes.", "pairwise.invalid_case": "An imported case is incomplete, out of range, violates a constraint, or the case count exceeds 1,000.",
+    "pairwise.input": "Provide one input: factors, JSON, or a user-selected file.", "pairwise.version": "Unsupported bundle format or algorithm version; reproducibility claims cannot be verified.", "pairwise.file": "Could not read or save the file. Select it again.", "pairwise.encoding": "File is not valid UTF-8 JSON.", "pairwise.expired": "This transient result has expired. Generate or import the plan again.", "pairwise.page": "Invalid pagination or pair filter.", "pairwise.partial_export": "An incomplete plan cannot be exported as completed CSV. Export explicitly marked partial JSON instead.", "pairwise.format": "Only CSV and JSON exports are supported."
+  }
+}

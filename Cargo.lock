@@ -8884,6 +8884,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-pairwise"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-pg-plan-analyzer"
 version = "0.1.0"
 dependencies = [

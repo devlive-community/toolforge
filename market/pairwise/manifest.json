@@ -1,0 +1,20 @@
+{
+  "id": "org.devlive.toolforge.pairwise",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["pairwise", "test", "matrix", "combinatorial", "coverage", "constraints", "两两", "组合测试", "矩阵", "覆盖"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "generate": { "task": true },
+    "prepare": {},
+    "cases": {},
+    "pairs": {},
+    "export": { "task": true }
+  },
+  "sensitive": false
+}
