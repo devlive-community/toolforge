@@ -1,0 +1,136 @@
+{
+  "name": "Fridge Stock & Date Tracker",
+  "description": "Track food by purchase batch with remaining amounts, label dates and opened states; overdue/soon groups with exportable lists",
+  "help": [
+    "Every purchase is its own batch: record amount and unit, the purchase date and the label date you copy from the package; batches on different dates never merge and a missing date stays unknown.",
+    "Log consumption or discards against a specific batch and the remaining amount updates; opening only records a date without deducting, plus an optional custom attention date.",
+    "The board groups items into overdue, soon (adjustable lead days), unknown date, normal and depleted, sorted by label date so earlier dates get used first.",
+    "Same-dimension units (g/kg, ml/L) convert in Rust; count units like pack/box are never guessed against weights. Conservation holds: intake + adjustments − consumed − discarded = remaining.",
+    "Undo the latest movement of a batch; editing intake with history keeps an adjustment record and never allows a negative remainder; copy/export lists and a JSON backup."
+  ],
+  "functions": {
+    "review": "Compute conservation and date buckets",
+    "apply": "Validate and record quantity transactions"
+  },
+  "common": {
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "removed": "(removed)"
+  },
+  "members": {
+    "add": "Add",
+    "remove": "Remove"
+  },
+  "add": {
+    "title": "New batch",
+    "namePlaceholder": "Food name, e.g. yogurt",
+    "location": "Storage location",
+    "intake": "Amount & unit",
+    "purchasedDate": "Purchased",
+    "labelDate": "Label date (optional)",
+    "submit": "Add batch",
+    "hint": "Buy on different days, keep separate batches; a missing label date lands in \"unknown\" and never gets an invented expiry."
+  },
+  "filters": {
+    "title": "Filters & settings",
+    "location": "By location",
+    "all": "All",
+    "opened": "By opened",
+    "openedOnly": "Opened only",
+    "soonDays": "Soon lead days",
+    "locations": "Locations",
+    "locationPlaceholder": "Custom location name",
+    "inUse": "in use"
+  },
+  "location": {
+    "fridge": "Fridge",
+    "freezer": "Freezer",
+    "pantry": "Pantry"
+  },
+  "board": {
+    "title": "Stock board",
+    "empty": "No batches yet",
+    "emptyHint": "Add your first batch from the left panel",
+    "hint": "Conservation is validated in Rust: intake + adjustments − consumed − discarded = remaining. This tool makes no food-safety claims."
+  },
+  "group": {
+    "overdue": "Past label date",
+    "soon": "Soon (within {{days}} days)",
+    "unknown": "Unknown date",
+    "ok": "Normal",
+    "depleted": "Used up",
+    "empty": "Nothing in this group"
+  },
+  "label": {
+    "overdue": "Overdue",
+    "soon": "Soon",
+    "ok": "OK",
+    "unknown": "Unknown date",
+    "none": ""
+  },
+  "unit": {
+    "g": "g",
+    "kg": "kg",
+    "ml": "ml",
+    "l": "L",
+    "piece": "pc",
+    "pack": "pack",
+    "bag": "bag",
+    "box": "box",
+    "bottle": "bottle",
+    "can": "can"
+  },
+  "batch": {
+    "labelDate": "Label date",
+    "attentionDate": "Attention date",
+    "openedDate": "Opened date",
+    "labelOn": "Label {{date}}",
+    "attentionOn": "Attention {{date}}{{state}}",
+    "openedOn": "Opened {{date}}",
+    "openedBadge": "Opened",
+    "remaining": "{{remaining}}/{{intake}} {{unit}} left",
+    "consume": "Consume",
+    "discard": "Discard",
+    "open": "Open",
+    "unopen": "Un-open",
+    "adjustIntake": "Adjust intake",
+    "adjustHint": "With history, intake edits keep an adjustment record and can never push the remainder negative.",
+    "editDates": "Edit dates",
+    "detail": "Movement history",
+    "undoLast": "Undo latest movement",
+    "delete": "Delete batch",
+    "amount": "Amount",
+    "intake": "Intake",
+    "unit": "Unit",
+    "conserved": "Intake {{intake}} + adjusted {{adjusted}} − consumed {{consumed}} − discarded {{discarded}} = {{remaining}} left",
+    "noMovements": "No movements yet"
+  },
+  "movement": {
+    "adjust": "Adjusted",
+    "consume": "Consumed",
+    "discard": "Discarded"
+  },
+  "table": {
+    "title": "Fridge list ({{date}})",
+    "copy": "Copy list",
+    "saveTxt": "Export list TXT",
+    "saveJson": "Export JSON backup",
+    "copied": "List copied",
+    "saved": "Saved"
+  },
+  "errors": {
+    "fridge.bad_date": "Invalid date: {{value}}",
+    "fridge.bad_unit": "Unknown unit: {{value}}",
+    "fridge.unit_mismatch": "Units cannot be converted: {{value}}",
+    "fridge.bad_amount": "Invalid amount (must be positive and within limits)",
+    "fridge.over_amount": "More than this batch has left",
+    "fridge.batch_not_found": "Batch not found or already deleted",
+    "fridge.bad_op": "Invalid operation",
+    "fridge.bad_movement": "Bad movement record: {{id}}",
+    "fridge.too_many_batches": "At most {{limit}} batches",
+    "fridge.too_many_movements": "Movement record limit reached",
+    "fridge.name_required": "Enter a food name",
+    "fridge.location_in_use": "Batches still use this location; move or delete them first"
+  }
+}

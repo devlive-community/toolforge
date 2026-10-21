@@ -1,0 +1,136 @@
+{
+  "name": "冰箱食材与到期提醒",
+  "description": "按批次记录食材余量、标签日期与开封状态，逾期/临近分组提醒，清单可复制导出",
+  "help": [
+    "每次入库是独立批次：记录数量与单位、入库日和你抄录的标签日期；不同日期不合并批次，未填日期保持未知。",
+    "从指定批次登记消耗或丢弃，剩余量同步减少；开封只记录日期不扣量，另可自设开封后关注日。",
+    "看板按逾期、临近（提前天数可调）、未知日期、正常、已用完分组，组内按标签日期排序帮你先吃早到期的。",
+    "同维单位（g/kg、ml/L）自动换算；包/个等计数单位不与重量互猜。数量守恒：入库+调整−消耗−丢弃=剩余。",
+    "错记可撤销该批最近一笔变动；有历史后修改入库量会留调整记录且不允许余量为负；可复制/导出清单与 JSON 备份。"
+  ],
+  "functions": {
+    "review": "计算余量守恒与日期分档",
+    "apply": "校验并落账数量事务"
+  },
+  "common": {
+    "confirm": "确认",
+    "cancel": "取消",
+    "save": "保存",
+    "removed": "（已移除）"
+  },
+  "members": {
+    "add": "添加",
+    "remove": "移除"
+  },
+  "add": {
+    "title": "入库批次",
+    "namePlaceholder": "食材名称，如：酸奶",
+    "location": "存放位置",
+    "intake": "数量与单位",
+    "purchasedDate": "入库日期",
+    "labelDate": "标签日期（可选）",
+    "submit": "入库",
+    "hint": "不同日期买入请分批入库；未填标签日期会归入「未知日期」，不会自动补保质期。"
+  },
+  "filters": {
+    "title": "筛选与设置",
+    "location": "按位置",
+    "all": "全部",
+    "opened": "按开封",
+    "openedOnly": "只看已开封",
+    "soonDays": "临近提前天数",
+    "locations": "位置管理",
+    "locationPlaceholder": "自定义位置名称",
+    "inUse": "使用中"
+  },
+  "location": {
+    "fridge": "冷藏",
+    "freezer": "冷冻",
+    "pantry": "常温"
+  },
+  "board": {
+    "title": "食材看板",
+    "empty": "还没有入库批次",
+    "emptyHint": "从左侧录入第一批食材开始",
+    "hint": "数量守恒在 Rust 校验：入库 + 调整 − 消耗 − 丢弃 = 剩余；本工具不判断食品安全。"
+  },
+  "group": {
+    "overdue": "已过标签日期",
+    "soon": "临近（{{days}} 天内）",
+    "unknown": "日期未知",
+    "ok": "正常",
+    "depleted": "已用完",
+    "empty": "这一组暂时没有批次"
+  },
+  "label": {
+    "overdue": "已过期",
+    "soon": "临近",
+    "ok": "正常",
+    "unknown": "日期未知",
+    "none": ""
+  },
+  "unit": {
+    "g": "克",
+    "kg": "千克",
+    "ml": "毫升",
+    "l": "升",
+    "piece": "个",
+    "pack": "包",
+    "bag": "袋",
+    "box": "盒",
+    "bottle": "瓶",
+    "can": "罐"
+  },
+  "batch": {
+    "labelDate": "标签日期",
+    "attentionDate": "开封后关注日",
+    "openedDate": "开封日期",
+    "labelOn": "标签 {{date}}",
+    "attentionOn": "关注日 {{date}}{{state}}",
+    "openedOn": "开封于 {{date}}",
+    "openedBadge": "已开封",
+    "remaining": "余 {{remaining}}/{{intake}} {{unit}}",
+    "consume": "消耗",
+    "discard": "丢弃",
+    "open": "开封",
+    "unopen": "取消开封",
+    "adjustIntake": "调整入库量",
+    "adjustHint": "有消耗历史后修改入库量会留调整记录，且不允许把剩余调成负数。",
+    "editDates": "编辑日期",
+    "detail": "变动明细",
+    "undoLast": "撤销最近一笔变动",
+    "delete": "删除批次",
+    "amount": "数量",
+    "intake": "入库量",
+    "unit": "单位",
+    "conserved": "入库 {{intake}} + 调整 {{adjusted}} − 消耗 {{consumed}} − 丢弃 {{discarded}} = 剩余 {{remaining}}",
+    "noMovements": "还没有变动记录"
+  },
+  "movement": {
+    "adjust": "调整",
+    "consume": "消耗",
+    "discard": "丢弃"
+  },
+  "table": {
+    "title": "冰箱清单（{{date}}）",
+    "copy": "复制清单",
+    "saveTxt": "导出清单 TXT",
+    "saveJson": "导出 JSON 备份",
+    "copied": "清单已复制",
+    "saved": "已保存"
+  },
+  "errors": {
+    "fridge.bad_date": "日期无效：{{value}}",
+    "fridge.bad_unit": "未知单位：{{value}}",
+    "fridge.unit_mismatch": "单位不匹配，无法换算：{{value}}",
+    "fridge.bad_amount": "数量无效（须为正且不超上限）",
+    "fridge.over_amount": "超出该批剩余量，无法扣减",
+    "fridge.batch_not_found": "批次不存在或已被删除",
+    "fridge.bad_op": "操作无效",
+    "fridge.bad_movement": "变动记录异常：{{id}}",
+    "fridge.too_many_batches": "批次最多 {{limit}} 条",
+    "fridge.too_many_movements": "变动记录数已达上限",
+    "fridge.name_required": "请填写食材名称",
+    "fridge.location_in_use": "该位置还有批次使用，先移动或删除批次"
+  }
+}

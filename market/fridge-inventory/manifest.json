@@ -1,0 +1,16 @@
+{
+  "id": "org.devlive.toolforge.fridge-inventory",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "other",
+  "keywords": ["fridge", "food", "expiry", "inventory", "batch", "冰箱", "食材", "到期", "库存", "批次"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "review": {},
+    "apply": {}
+  },
+  "sensitive": false
+}
