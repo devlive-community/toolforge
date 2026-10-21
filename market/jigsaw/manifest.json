@@ -1,0 +1,18 @@
+{
+  "id": "org.devlive.toolforge.jigsaw",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": ["jigsaw", "puzzle", "photo", "game", "拼图", "照片", "拼图游戏", "小游戏"],
+  "accent": "amber",
+  "locales": ["zh-CN", "en-US"],
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "prepare": {},
+    "newgame": { "task": true },
+    "place": {},
+    "verify": {}
+  },
+  "sensitive": false
+}

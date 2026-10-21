@@ -1,0 +1,84 @@
+{
+  "name": "Photo Jigsaw",
+  "description": "Cut your own photos into tabbed jigsaw puzzles and piece them back together, with cropping, hints, saves and records",
+  "help": [
+    "Pick a photo, drag the crop range, choose 3×3 / 4×4 / 6×6 and start; pieces keep a fixed orientation so the game is about finding the right spot.",
+    "The wheel zooms anchored at the pointer and dragging empty space pans; a piece dropped near its target snaps to the exact slot, wrong spots stay unfinished.",
+    "Filter edge / corner / inner pieces, toggle a faint image hint, or reveal one piece with the hint button (counted).",
+    "Placed pieces lock in place; the game is only complete when every piece sits at its exact slot. Progress auto-saves and you can switch between photos."
+  ],
+  "functions": {
+    "prepare": "Read the photo and build a bounded working image",
+    "newgame": "Crop the view and generate pieces",
+    "place": "Judge piece placement and snapping",
+    "verify": "Validate the finished state"
+  },
+  "file": {
+    "filter": "Images",
+    "name": "Photo: {{name}}"
+  },
+  "game": {
+    "title": "Current game",
+    "progress": "{{placed}} / {{total}} placed",
+    "clock": "Time {{time}}",
+    "hints": "Hints ×{{count}}",
+    "hint": "Hint one piece",
+    "reshuffle": "Reshuffle",
+    "ghost": "Faint photo",
+    "abandon": "Abandon game",
+    "hintText": "Wheel zooms, drag empty space to pan; pieces snap near their target and lock once placed."
+  },
+  "setup": {
+    "title": "New game",
+    "pick": "Choose a photo",
+    "crop": "Crop range",
+    "cropHint": "Drag on the preview to set the crop (currently {{width}} × {{height}})",
+    "grid": "Puzzle size",
+    "gridItem": "{{cols}}×{{rows}} ({{count}} pieces)",
+    "cancelGenerate": "Cancel generation",
+    "start": "Start puzzle",
+    "hint": "Pick a photo to start; everything stays on this machine and the original file is never modified."
+  },
+  "saves": {
+    "title": "Saved games",
+    "item": "{{name}} · {{cols}}×{{rows}} · {{placed}}/{{total}}",
+    "remove": "Delete save"
+  },
+  "records": {
+    "title": "Completion records",
+    "clear": "Clear records",
+    "independent": "No hints",
+    "withHints": "Hints ×{{count}}"
+  },
+  "filter": {
+    "all": "All",
+    "edge": "Edge",
+    "corner": "Corner",
+    "inner": "Inner"
+  },
+  "canvas": {
+    "title": "Puzzle board",
+    "empty": "Start a photo jigsaw first",
+    "emptyHint": "Pick a photo, set the crop, choose a size, then start",
+    "hint": "Wheel to zoom · drag empty space to pan · pieces snap near their target slot"
+  },
+  "finish": {
+    "title": "Complete! Every piece is in place",
+    "saved": "The result was added to completion records",
+    "done": "Done"
+  },
+  "errors": {
+    "jigsaw.source_required": "Provide a photo",
+    "jigsaw.bad_data": "Invalid photo data: {{detail}}",
+    "jigsaw.decode_failed": "The photo could not be decoded: {{detail}}",
+    "jigsaw.encode_failed": "The photo could not be encoded: {{detail}}",
+    "jigsaw.pixels_too_large": "The photo is larger than {{limit}} pixels",
+    "jigsaw.file_too_large": "The file is larger than {{limit}}",
+    "jigsaw.file_unreadable": "Reading the file failed: {{path}}: {{detail}}",
+    "jigsaw.bad_grid": "Unsupported size: {{value}}",
+    "jigsaw.crop_too_small": "The crop range is too small: {{value}}",
+    "jigsaw.piece_count": "Unexpected piece count: {{value}}",
+    "jigsaw.bad_identity": "Bad piece identity: {{value}}",
+    "jigsaw.inconsistent": "Completion check failed — make sure every piece is at its exact slot"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "name": "照片拼图小游戏",
+  "description": "把自己的照片切成凹凸边拼图慢慢拼回去，支持取景、提示、存档与成绩记录",
+  "help": [
+    "选照片、划取景范围、选 3×3 / 4×4 / 6×6 规格即可开局；拼片方向固定，专注找位置。",
+    "滚轮以指针为锚点缩放，空白处拖动平移；快放对时吸附到精确格位，放错则保留未完成状态。",
+    "可按边片 / 角片 / 内片筛选，可开关淡原图提示，也可主动提示一片（计入提示次数）。",
+    "已放置的拼片锁定；全部拼片按身份放对才算完成，进度自动存档，换照片后还能切回继续。"
+  ],
+  "functions": {
+    "prepare": "读取照片并生成受限工作图",
+    "newgame": "裁剪取景范围并生成拼片",
+    "place": "判定拼片放置与吸附",
+    "verify": "校验完成状态"
+  },
+  "file": {
+    "filter": "图片",
+    "name": "照片：{{name}}"
+  },
+  "game": {
+    "title": "对局",
+    "progress": "已放 {{placed}} / {{total}}",
+    "clock": "用时 {{time}}",
+    "hints": "提示 ×{{count}}",
+    "hint": "提示一片",
+    "reshuffle": "重新打散",
+    "ghost": "淡原图",
+    "abandon": "放弃对局",
+    "hintText": "滚轮缩放，空白处拖动平移；放到目标附近会自动吸附，放对后锁定。"
+  },
+  "setup": {
+    "title": "新对局",
+    "pick": "选择照片",
+    "crop": "取景范围",
+    "cropHint": "在预览图上拖拽划出取景范围（当前 {{width}} × {{height}}）",
+    "grid": "拼图规格",
+    "gridItem": "{{cols}}×{{rows}}（{{count}} 片）",
+    "cancelGenerate": "取消生成",
+    "start": "开始拼图",
+    "hint": "选一张照片即可开局；照片只在本机处理，不会修改原图。"
+  },
+  "saves": {
+    "title": "历史存档",
+    "item": "{{name}} · {{cols}}×{{rows}} · {{placed}}/{{total}}",
+    "remove": "删除存档"
+  },
+  "records": {
+    "title": "完成记录",
+    "clear": "清空记录",
+    "independent": "独立完成",
+    "withHints": "提示 ×{{count}}"
+  },
+  "filter": {
+    "all": "全部",
+    "edge": "边片",
+    "corner": "角片",
+    "inner": "内片"
+  },
+  "canvas": {
+    "title": "拼图区",
+    "empty": "先开一局照片拼图",
+    "emptyHint": "选照片、划取景、选规格，然后开始",
+    "hint": "滚轮缩放 · 空白处拖动平移 · 拼片拖到目标格位附近自动吸附"
+  },
+  "finish": {
+    "title": "完成！全部拼片都放对了",
+    "saved": "成绩已记入完成记录",
+    "done": "好的"
+  },
+  "errors": {
+    "jigsaw.source_required": "请提供照片",
+    "jigsaw.bad_data": "照片数据无效：{{detail}}",
+    "jigsaw.decode_failed": "照片解码失败：{{detail}}",
+    "jigsaw.encode_failed": "照片编码失败：{{detail}}",
+    "jigsaw.pixels_too_large": "照片超过 {{limit}} 像素",
+    "jigsaw.file_too_large": "文件超过 {{limit}}",
+    "jigsaw.file_unreadable": "读取文件失败：{{path}}：{{detail}}",
+    "jigsaw.bad_grid": "不支持的规格：{{value}}",
+    "jigsaw.crop_too_small": "取景范围过小：{{value}}",
+    "jigsaw.piece_count": "拼片数量不符：{{value}}",
+    "jigsaw.bad_identity": "拼片身份异常：{{value}}",
+    "jigsaw.inconsistent": "完成校验未通过，请检查是否有拼片不在正确位置"
+  }
+}
