@@ -1,0 +1,44 @@
+{
+  "id": "org.devlive.toolforge.junit-viewer",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": [
+    "junit",
+    "xml",
+    "pytest",
+    "surefire",
+    "test report",
+    "测试报告",
+    "失败用例",
+    "慢测试"
+  ],
+  "accent": "blue",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [
+    "fs:user-selected"
+  ],
+  "functions": {
+    "load": {
+      "task": true
+    },
+    "browse": {
+      "task": true
+    },
+    "detail": {
+      "task": true
+    },
+    "content": {
+      "task": true
+    },
+    "export": {
+      "task": true
+    }
+  },
+  "sensitive": true
+}

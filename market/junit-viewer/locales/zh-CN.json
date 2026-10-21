@@ -1,0 +1,146 @@
+{
+  "name": "JUnit 测试报告",
+  "description": "离线查看 JUnit XML 的失败、异常、慢测试与日志，保留来源和用例身份。",
+  "loading": "正在读取…",
+  "cancel": "取消任务",
+  "privacy": "离线分析 · 日志以纯文本显示 · 报告不写入历史",
+  "limits": "每次最多 32 个文件；单文件 16 MiB，合计 32 MiB；深度 64 层，最多 50,000 项。仅支持 UTF-8 XML。",
+  "open": {
+    "title": "打开报告",
+    "add": "追加报告",
+    "filter": "JUnit XML"
+  },
+  "empty": {
+    "title": "让失败用例更容易定位",
+    "hint": "打开或拖入 JUnit XML 报告，按来源、测试套件和用例浏览，定位失败堆栈与耗时较长的测试。"
+  },
+  "counts": {
+    "tests": "实际用例",
+    "passed": "通过",
+    "failures": "失败",
+    "errors": "错误",
+    "skipped": "跳过",
+    "unknown": "未知"
+  },
+  "status": {
+    "all": "全部状态",
+    "passed": "通过",
+    "failure": "断言失败",
+    "error": "运行错误",
+    "skipped": "已跳过",
+    "unknown": "无法判定"
+  },
+  "summary": {
+    "files": "{{count}} 个来源",
+    "time": "已知用例耗时 {{known}} 秒 · {{missing}} 项耗时缺失或非法（不是零）"
+  },
+  "source": {
+    "title": "来源文件",
+    "all": "全部",
+    "identity": "来源 #{{id}} · {{count}} 个用例"
+  },
+  "suite": {
+    "title": "测试套件",
+    "unnamed": "未命名套件",
+    "identity": "来源 #{{source}} · 套件 #{{id}} · {{count}} 项",
+    "noChildren": "没有下级套件，当前范围的用例见右侧。",
+    "back": "上一级套件",
+    "selected": "当前范围：套件 #{{id}} 及其下级",
+    "declaredActual": "报告声明 / 实际用例（含下级，去除嵌套重复计数）",
+    "times": "声明耗时 {{declared}} 秒 · 已知用例之和 {{known}} 秒 · 缺失 {{missing}} 项"
+  },
+  "cases": {
+    "title": "测试用例",
+    "total": "匹配 {{count}} 个用例",
+    "unnamed": "未命名用例",
+    "noClass": "无 classname",
+    "identity": "来源 #{{source}} / 套件 #{{suite}} / 用例 #{{id}}",
+    "empty": "没有匹配的用例",
+    "search": "搜索用例名或 classname",
+    "status": "筛选状态",
+    "original": "报告原顺序",
+    "slow": "耗时从长到短",
+    "sort": "排序"
+  },
+  "detail": {
+    "title": "用例与日志",
+    "empty": "选择测试套件或用例",
+    "hint": "查看声明统计、failure / error 详情及 stdout / stderr。",
+    "chooseLog": "选择一段详情或日志",
+    "plainText": "内容按需分段读取，只作文本展示，不执行其中的标记或脚本。",
+    "text": "报告文本内容",
+    "characters": "{{count}} 个字符",
+    "view": "用例或详情视图"
+  },
+  "diagnostics": {
+    "title": "报告诊断",
+    "count": "诊断 {{count}} 项",
+    "none": "没有发现统计或格式诊断。",
+    "time": "耗时非法，保留为未知",
+    "declared": "套件声明的统计不是合法整数",
+    "counts": "报告声明与实际用例统计不一致（声明 / 实际）",
+    "extension": "存在扩展元素，未据此推断最终状态",
+    "status": "未知的状态值",
+    "conflict": "存在冲突状态，无法判定最终结果",
+    "name": "用例缺少 name，状态保留为未知"
+  },
+  "page": {
+    "previous": "上一页",
+    "next": "下一页",
+    "label": "第 {{value}} 页",
+    "title": "分页"
+  },
+  "time": {
+    "missing": "—",
+    "value": "{{value}} 秒"
+  },
+  "export": {
+    "csv": "CSV",
+    "json": "JSON",
+    "markdown": "Markdown",
+    "hint": "导出当前来源、套件、状态与搜索范围；不包含完整 stdout / stderr 或失败正文。",
+    "saved": "报告已保存"
+  },
+  "logs": {
+    "title": "任务日志",
+    "empty": "暂无日志",
+    "latest": "最新日志",
+    "loaded": "已读取 {{count}} 个用例"
+  },
+  "stages": {
+    "reading": "读取报告",
+    "parsing": "解析报告",
+    "exporting": "导出报告"
+  },
+  "errors": {
+    "junit.size": "报告过大（单文件 16 MiB，合计 32 MiB）。",
+    "junit.entries": "报告超过条目预算，未截断或导入部分结果。",
+    "junit.depth": "XML 嵌套超过 64 层。",
+    "junit.attribute": "XML 属性超过 4 KiB，无法导入。",
+    "junit.xml": "XML 损坏或不受支持：{{detail}}",
+    "junit.dtd": "不允许 DTD 或外部实体。",
+    "junit.root": "根元素必须是 testsuite 或 testsuites。",
+    "junit.files": "请选择 1 至 32 个报告文件。",
+    "junit.read": "无法读取报告文件。",
+    "junit.encoding": "仅支持 UTF-8 XML 文件。",
+    "junit.expired": "报告缓存已失效，请重新打开文件。",
+    "junit.page": "分页范围或筛选参数无效。",
+    "junit.format": "不支持此导出格式。",
+    "junit.output": "导出超过 64 MiB，请缩小筛选范围。",
+    "junit.export": "导出报告失败。"
+  },
+  "help": [
+    "打开或拖入一个或多个 UTF-8 JUnit XML 报告。追加时重复选择的同一文件仍保留为独立来源，不合并同名用例。",
+    "按来源文件和套件逐级选择；用例支持状态与名称筛选、耗时排序。套件声明和实际统计分开，实际统计包含下级但每个用例只计一次。",
+    "缺失或非法耗时为未知，不当作零。扩展结果、冲突或未知状态会给出诊断；不推断没有历史依据的 flaky 概率。",
+    "选择详情块后按字符分页查看正文与日志，只作纯文本展示。导出遵循当前用例筛选，CSV/JSON/Markdown 均不包含完整日志。",
+    "最多 32 个文件、单文件 16 MiB、合计 32 MiB，深度 64，200,000 个 XML 元素/文件，套件/用例/详情共 50,000 项。属性最多 4 KiB，导出最多 64 MiB；超限明确拒绝，不裁剪。禁止 DTD 与外部实体。报告仅保留最近一次的临时解析缓存，不创建数据库。"
+  ],
+  "functions": {
+    "load": "读取测试报告",
+    "browse": "筛选与分页浏览",
+    "detail": "读取详情块列表",
+    "content": "按需读取文本",
+    "export": "导出筛选结果"
+  }
+}

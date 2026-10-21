@@ -8821,6 +8821,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-junit-viewer"
+version = "0.1.0"
+dependencies = [
+ "quick-xml 0.42.0",
+ "roxmltree",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-jwt"
 version = "0.1.0"
 dependencies = [

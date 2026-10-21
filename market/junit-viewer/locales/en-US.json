@@ -1,0 +1,146 @@
+{
+  "name": "JUnit Test Reports",
+  "description": "Inspect JUnit XML failures, errors, slow tests and logs offline, preserving source and case identity.",
+  "loading": "Loading…",
+  "cancel": "Cancel task",
+  "privacy": "Offline · Plain-text logs · Reports excluded from history",
+  "limits": "Up to 32 files; 16 MiB per file, 32 MiB total; depth 64; 50,000 entries. UTF-8 XML only.",
+  "open": {
+    "title": "Open reports",
+    "add": "Add reports",
+    "filter": "JUnit XML"
+  },
+  "empty": {
+    "title": "Find the test that needs attention",
+    "hint": "Open or drop JUnit XML reports. Browse sources, suites and testcases to inspect failures, stack traces and slow tests."
+  },
+  "counts": {
+    "tests": "Actual cases",
+    "passed": "Passed",
+    "failures": "Failures",
+    "errors": "Errors",
+    "skipped": "Skipped",
+    "unknown": "Unknown"
+  },
+  "status": {
+    "all": "All statuses",
+    "passed": "Passed",
+    "failure": "Assertion failure",
+    "error": "Runtime error",
+    "skipped": "Skipped",
+    "unknown": "Undetermined"
+  },
+  "summary": {
+    "files": "{{count}} sources",
+    "time": "Known testcase time: {{known}} s · {{missing}} missing/invalid durations (not zero)"
+  },
+  "source": {
+    "title": "Source files",
+    "all": "All",
+    "identity": "Source #{{id}} · {{count}} cases"
+  },
+  "suite": {
+    "title": "Test suites",
+    "unnamed": "Unnamed suite",
+    "identity": "Source #{{source}} · Suite #{{id}} · {{count}} cases",
+    "noChildren": "No child suites. Cases in this scope appear on the right.",
+    "back": "Parent suite",
+    "selected": "Scope: suite #{{id}} and descendants",
+    "declaredActual": "Declared / actual cases (including descendants, counted once)",
+    "times": "Declared {{declared}} s · Known testcase sum {{known}} s · Missing {{missing}}"
+  },
+  "cases": {
+    "title": "Testcases",
+    "total": "{{count}} matching cases",
+    "unnamed": "Unnamed case",
+    "noClass": "No classname",
+    "identity": "Source #{{source}} / Suite #{{suite}} / Case #{{id}}",
+    "empty": "No matching cases",
+    "search": "Search case name or classname",
+    "status": "Filter status",
+    "original": "Report order",
+    "slow": "Slowest first",
+    "sort": "Sort"
+  },
+  "detail": {
+    "title": "Details & logs",
+    "empty": "Select a suite or testcase",
+    "hint": "Inspect declared metrics, failure / error details and stdout / stderr.",
+    "chooseLog": "Select a detail or log block",
+    "plainText": "Text is loaded in chunks on demand. Markup and scripts are never executed.",
+    "text": "Report text content",
+    "characters": "{{count}} characters",
+    "view": "Cases or details view"
+  },
+  "diagnostics": {
+    "title": "Report diagnostics",
+    "count": "{{count}} diagnostics",
+    "none": "No metric or format diagnostics found.",
+    "time": "Invalid duration, preserved as unknown",
+    "declared": "Suite declares an invalid integer count",
+    "counts": "Declared and actual testcase counts differ (declared / actual)",
+    "extension": "Extension element found; final outcome is not inferred from it",
+    "status": "Unknown status value",
+    "conflict": "Conflicting outcomes; final status is undetermined",
+    "name": "Case has no name; status preserved as unknown"
+  },
+  "page": {
+    "previous": "Previous page",
+    "next": "Next page",
+    "label": "Page {{value}}",
+    "title": "Pagination"
+  },
+  "time": {
+    "missing": "—",
+    "value": "{{value}} s"
+  },
+  "export": {
+    "csv": "CSV",
+    "json": "JSON",
+    "markdown": "Markdown",
+    "hint": "Export the current source, suite, status and search scope. Full stdout / stderr and failure bodies are excluded.",
+    "saved": "Report saved"
+  },
+  "logs": {
+    "title": "Task logs",
+    "empty": "No task logs",
+    "latest": "Latest logs",
+    "loaded": "Loaded {{count}} testcases"
+  },
+  "stages": {
+    "reading": "Reading reports",
+    "parsing": "Parsing reports",
+    "exporting": "Exporting report"
+  },
+  "errors": {
+    "junit.size": "Report exceeds the 16 MiB per-file or 32 MiB total limit.",
+    "junit.entries": "Report exceeds the entry budget; no partial result was imported.",
+    "junit.depth": "XML nesting exceeds 64 levels.",
+    "junit.attribute": "An XML attribute exceeds 4 KiB.",
+    "junit.xml": "Malformed or unsupported XML: {{detail}}",
+    "junit.dtd": "DTD and external entities are not allowed.",
+    "junit.root": "The root must be testsuite or testsuites.",
+    "junit.files": "Select between 1 and 32 report files.",
+    "junit.read": "Could not read the report file.",
+    "junit.encoding": "Only UTF-8 XML files are supported.",
+    "junit.expired": "The report cache expired. Reopen the files.",
+    "junit.page": "Invalid page range or filter.",
+    "junit.format": "Unsupported export format.",
+    "junit.output": "Export exceeds 64 MiB. Narrow the filter.",
+    "junit.export": "Could not export the report."
+  },
+  "help": [
+    "Open or drop one or more UTF-8 JUnit XML reports. Adding a file again retains a separate source; duplicate names are never merged.",
+    "Browse source files and suites, filter case names and statuses, and sort by duration. Declared suite metrics are separate from actual descendant cases counted once.",
+    "Missing and invalid durations stay unknown. Unsupported extensions and conflicting outcomes produce diagnostics. No flakiness probability is inferred.",
+    "Select a detail block to read its body or logs in character pages as plain text. CSV/JSON/Markdown exports follow case filters and exclude full logs.",
+    "Limits: 32 files, 16 MiB each, 32 MiB total, depth 64, 200,000 XML elements per file, 50,000 suites/cases/blocks, 4 KiB per attribute, 64 MiB export. Limits fail explicitly. DTD and external entities are rejected. Only the latest parsed report is cached transiently; no database is created."
+  ],
+  "functions": {
+    "load": "Load test reports",
+    "browse": "Browse filtered pages",
+    "detail": "Read detail block metadata",
+    "content": "Read text chunks",
+    "export": "Export filtered cases"
+  }
+}
