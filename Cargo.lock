@@ -8840,6 +8840,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-knitting"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-lcov-viewer"
 version = "0.1.0"
 dependencies = [

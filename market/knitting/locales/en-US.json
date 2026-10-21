@@ -1,0 +1,251 @@
+{
+  "name": "Knitting Row & Repeat Counter",
+  "description": "Track rows, rounds, pattern repeats and confirmed stitch changes with independent parts and undo",
+  "document": {
+    "title": "Knitting progress",
+    "boundary": "Plans are reminders, not completed work. Stitch changes are applied only when a row or round is confirmed.",
+    "rows": "rows",
+    "rounds": "rounds",
+    "completed": "Completed",
+    "next": "Next row or round",
+    "stitches": "Current stitches",
+    "initial": "Initial stitches",
+    "note": "Notes",
+    "segments": "Pattern segments",
+    "segment": "Segment",
+    "range": "Rows / rounds",
+    "repeat": "Units per repeat × repeats",
+    "reminders": "Stitch reminders",
+    "reminder": "Reminder",
+    "start": "Start",
+    "interval": "Interval",
+    "delta": "Stitch change",
+    "times": "Occurrences"
+  },
+  "locale": "en-US",
+  "help": [
+    "Create a project with separate parts, choosing flat rows or circular rounds and initial stitches. Progress and the last selected part are saved locally in the host application database.",
+    "Add your own repeat segments. Appended segments begin after both the current progress and the last configured segment, so adding a new section never rewrites completed rows. Finishing all planned sections still allows deliberate free counting.",
+    "Reminders have a first row or round, a positive interval, a signed stitch change, and a number of occurrences. Select execute or skip for every reminder due on the next row. Choosing alone never changes stitches; confirming the row applies changes in rule-list order.",
+    "Undo restores the previous row count, repeat position, stitch count and pending reminder choices together. Stitch correction is also undoable. Copying a part preserves its rules and original row numbers but starts at zero progress and initial stitches.",
+    "Space completes one row or round only on the counter view. Holding the key does not repeat, and input fields, buttons and editors retain their normal keyboard behavior. A saved status is shown only after the database acknowledges the update.",
+    "Existing rules can be removed only before progress begins and with no undo entries; later additions must be in the future. Clearing or deleting requires confirmation. Clearing keeps the rules and notes but resets progress and its undo stack.",
+    "JSON backups preserve the whole workshop, including selections and undo. Restoring explicitly replaces the current workshop. Markdown is a readable summary; it is not a restorable backup. No commercial patterns or diagrams are included.",
+    "Limits: 50 projects, 20 parts per project, 20 pattern segments and 20 reminders per part; 100,000 rows or rounds and undo entries, 1,000,000 stitches, 10,000 rule repetitions; 8 MiB stored document and 32 MiB export. No automatic trimming is performed."
+  ],
+  "functions": {
+    "inspect": "Inspect saved progress",
+    "apply": "Validate and update workshop",
+    "restore": "Restore a JSON workshop backup",
+    "export": "Export backup or progress summary"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "projects": {
+    "title": "Projects",
+    "add": "New project",
+    "parts": "{{count}} parts",
+    "empty": "No projects yet"
+  },
+  "part": {
+    "title": "Parts",
+    "add": "Add part",
+    "empty": "Add an independent part to this project",
+    "defaultName": "Body",
+    "copyName": "{{name}} copy",
+    "progress": {
+      "rows": "{{count}} rows · {{stitches}} stitches",
+      "rounds": "{{count}} rounds · {{stitches}} stitches"
+    }
+  },
+  "mode": {
+    "rows": "Flat knitting · rows",
+    "rounds": "Circular knitting · rounds"
+  },
+  "one": {
+    "rows": "row",
+    "rounds": "round"
+  },
+  "counter": {
+    "title": "Knitting progress",
+    "empty": "Know exactly what comes next",
+    "emptyHint": "Create a project and a part, then add your own pattern repeats and stitch reminders.",
+    "completed": {
+      "rows": "Completed rows",
+      "rounds": "Completed rounds"
+    },
+    "stitches": "Current stitches",
+    "initial": "Initial: {{value}} stitches",
+    "next": {
+      "rows": "Next row · {{line}}",
+      "rounds": "Next round · {{line}}"
+    },
+    "complete": {
+      "rows": "Complete a row",
+      "rounds": "Complete a round"
+    },
+    "undo": "Undo previous progress step",
+    "shortcut": "Space to count · holding never repeats"
+  },
+  "segment": {
+    "title": "Pattern segments",
+    "add": "Append segment",
+    "name": "Segment {{index}}",
+    "remove": "Remove segment",
+    "empty": "No repeat segments; free counting is available.",
+    "range": "{{unit}} {{start}}–{{end}} · {{rows}} per repeat × {{repeats}}",
+    "position": "{{unit}} {{row}} / {{rows}} · repeat {{repeat}} / {{repeats}}",
+    "completed": "{{value}} full repeats completed",
+    "finished": "All configured segments are finished. Continue freely or append a future segment.",
+    "free": "No pattern segment on this row or round. Advance only when you finish it."
+  },
+  "reminder": {
+    "title": "Stitch reminders",
+    "add": "Add reminder",
+    "name": "Reminder {{index}}",
+    "remove": "Remove reminder",
+    "forNext": "Due on the next row or round ({{count}})",
+    "none": "No stitch changes are due. Confirm only when this row or round is finished.",
+    "occurrence": "Occurrence {{value}} of {{total}}",
+    "execute": "Confirm for this row",
+    "skip": "Skip this occurrence",
+    "notActual": "These choices are plans for this row. Stitches change only when you confirm completion, in rule-list order.",
+    "pending": "Choose execute or skip for {{count}} remaining reminders.",
+    "invalidStitches": "The selected changes would make stitches negative or exceed the limit. Skip a change or correct the count.",
+    "projected": "After completion: {{value}} stitches. The current count has not changed yet.",
+    "empty": "No reminders configured.",
+    "schedule": "First {{unit}} {{start}} · every {{interval}} · {{repeats}} occurrences",
+    "actual": "Executed {{executed}} · skipped {{skipped}}",
+    "finished": "No future occurrence",
+    "next": "Next: {{unit}} {{value}}"
+  },
+  "rules": {
+    "locked": "Progress already exists. Append future rules, or copy the part / explicitly clear progress before removing existing rules."
+  },
+  "history": {
+    "empty": "No progress steps to undo",
+    "line": "Row / round completed",
+    "adjust": "Stitch count corrected",
+    "completed": "Completed: {{before}} → {{after}} {{unit}}",
+    "stitches": "Stitches: {{before}} → {{after}}"
+  },
+  "forms": {
+    "project": "New project",
+    "part": "New part",
+    "copy": "Copy part rules",
+    "segment": "Append a pattern segment",
+    "reminder": "New stitch reminder",
+    "details": "Names & notes",
+    "adjust": "Correct the actual stitch count"
+  },
+  "formHints": {
+    "project": "Each part has its own counters and rules. Duplicate names do not share progress.",
+    "part": "Start this part from zero completed rows or rounds.",
+    "copy": "Copy rules and their row numbers, notes, and initial stitches. Progress and undo start empty.",
+    "segment": "Choose rows per repeat and repeat count. The new segment is placed after existing segments and completed work.",
+    "reminder": "Use a future first row, positive interval and repetition count. Positive changes add stitches; negative changes remove stitches.",
+    "details": "Editing names or notes does not advance progress.",
+    "adjust": "Confirm a measured correction. It does not advance a row and can be undone. Before the first row it also updates initial stitches."
+  },
+  "fields": {
+    "name": "Name",
+    "partName": "Part name",
+    "projectName": "Project name",
+    "stitches": "Stitches",
+    "mode": "Knitting mode",
+    "rows": "Rows / rounds per repeat",
+    "repeats": "Number of repeats",
+    "start": "First row / round",
+    "interval": "Interval in rows / rounds",
+    "delta": "Stitch change, e.g. +2 or -2",
+    "note": "Your notes"
+  },
+  "actions": {
+    "details": "Edit names and notes",
+    "adjust": "Correct stitch count",
+    "copy": "Copy part rules",
+    "clear": "Clear part progress",
+    "deletePart": "Delete part",
+    "deleteProject": "Delete project"
+  },
+  "confirm": {
+    "clear": "Clear this part’s progress?",
+    "part": "Delete this part and its progress?",
+    "project": "Delete this project and all its parts?",
+    "segment": "Remove this pattern segment?",
+    "reminder": "Remove this stitch reminder?",
+    "restore": "Replace the workshop with this backup?",
+    "hint": "This action changes saved data. Export a JSON backup first if you may need it later.",
+    "restoreHint": "All current projects and progress will be replaced by the selected backup. Export the current workshop first if needed."
+  },
+  "files": {
+    "json": "Export JSON backup",
+    "markdown": "Export Markdown summary",
+    "copy": "Copy current part summary",
+    "restore": "Restore JSON backup",
+    "backup": "Knitting workshop JSON",
+    "saved": "File saved",
+    "copied": "Part summary copied"
+  },
+  "save": {
+    "loading": "Loading local progress…",
+    "ready": "Local progress ready",
+    "saving": "Processing and saving…",
+    "saved": "Saved on this device",
+    "error": "Not saved / action failed",
+    "retry": "Retry"
+  },
+  "views": {
+    "label": "Part view",
+    "counter": "Counter",
+    "rules": "Pattern & reminders",
+    "history": "Undo steps"
+  },
+  "page": {
+    "previous": "Previous",
+    "next": "Next",
+    "number": "Page {{page}}",
+    "total": "{{count}} items"
+  },
+  "stages": {
+    "validate": "Validate saved progress",
+    "update": "Apply confirmed action",
+    "restore": "Read workshop backup",
+    "view": "Prepare progress view",
+    "done": "Finished",
+    "export": "Prepare export"
+  },
+  "logs": {
+    "title": "Task log",
+    "empty": "No task logs yet",
+    "latest": "Latest"
+  },
+  "errors": {
+    "knitting.name": "Names are required, at most 80 characters, and cannot contain control characters.",
+    "knitting.number": "Enter a whole number within the allowed range. Rows, intervals and repetition counts must be positive.",
+    "knitting.invalid_state": "The saved document or backup is inconsistent. No changes were applied.",
+    "knitting.version": "Unsupported workshop backup version.",
+    "knitting.limits": "A project, part, note, rule or numeric limit was exceeded.",
+    "knitting.segment": "Invalid or overlapping pattern segment; repeat count and ending row must stay within the limits.",
+    "knitting.reminder": "Invalid stitch reminder: use a positive interval, 1–10,000 occurrences, a nonzero change, and an end no later than row 100,000.",
+    "knitting.selection": "The selected project, part or rule no longer exists.",
+    "knitting.history_limit": "The undo-step limit was reached. Export a backup before copying or clearing the part.",
+    "knitting.state_limit": "Stored workshop exceeds 8 MiB, or the input file exceeds the read limit. Export and explicitly remove unneeded data.",
+    "knitting.export_limit": "Export exceeds 32 MiB. Export a smaller workshop.",
+    "knitting.past_rule": "A new reminder must start after the last completed row or round.",
+    "knitting.edit_locked": "Existing rules can be removed only at zero progress with an empty undo stack. Copy or explicitly clear the part first.",
+    "knitting.stale_line": "Progress already changed. That completion was not repeated.",
+    "knitting.row_limit": "This part reached the 100,000-row or round limit.",
+    "knitting.stitches": "A confirmed stitch change would make the count negative or greater than 1,000,000.",
+    "knitting.pending": "Choose execute or skip for every due reminder before completing the row.",
+    "knitting.no_undo": "No progress step is available to undo.",
+    "knitting.confirmation": "This action requires explicit confirmation.",
+    "knitting.operation": "Invalid operation or request identifier.",
+    "knitting.file": "Could not read or save the selected file.",
+    "knitting.format": "Only JSON and Markdown exports are supported.",
+    "knitting.stale_state": "The workshop changed while this result was being prepared. Reload and try again."
+  }
+}

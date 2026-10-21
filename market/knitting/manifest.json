@@ -1,0 +1,19 @@
+{
+  "id": "org.devlive.toolforge.knitting",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "other",
+  "keywords": ["knitting", "row", "round", "stitch", "repeat", "craft", "编织", "行数", "圈数", "加针", "减针", "花样"],
+  "accent": "pink",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "functions": {
+    "inspect": { "task": true },
+    "apply": { "task": true },
+    "restore": { "task": true },
+    "export": { "task": true }
+  },
+  "sensitive": false
+}

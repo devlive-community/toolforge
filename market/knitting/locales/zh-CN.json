@@ -1,0 +1,251 @@
+{
+  "name": "编织行数与花样计数器",
+  "description": "分部件记录行圈数、花样循环与已确认的加减针，支持撤销和本地进度恢复",
+  "document": {
+    "title": "编织进度",
+    "boundary": "计划仅作为提醒；只有确认完成本行或本圈时才计入针数变更。",
+    "rows": "行",
+    "rounds": "圈",
+    "completed": "已完成",
+    "next": "下一行／圈",
+    "stitches": "当前针数",
+    "initial": "初始针数",
+    "note": "备注",
+    "segments": "花样段落",
+    "segment": "段落",
+    "range": "行／圈范围",
+    "repeat": "每组行／圈数 × 组数",
+    "reminders": "加减针提醒",
+    "reminder": "提醒",
+    "start": "开始行／圈",
+    "interval": "间隔",
+    "delta": "针数变更",
+    "times": "次数"
+  },
+  "locale": "zh-CN",
+  "help": [
+    "建立作品及独立部件，选择片织按行计数或圈织按圈计数，并设置初始针数。进度及上次选择的部件保存到应用现有本地数据库。",
+    "填写自己的花样段落：每组多少行／圈、重复几组。接续段落会放在既有段落和已完成进度之后，不改写已织的花样位置；所有配置段落结束后仍可手动继续计数。",
+    "加减针提醒需设置首行、正间隔、正重复次数和非零的带符号针数变更。下一行到期的每条提醒都要选择执行或跳过；选择本身不改变实际针数，确认完成本行时按规则列表顺序一起提交。",
+    "撤销一次会同时恢复已完成行圈数、花样位置、针数和该行待确认选择。针数校正也可撤销；复制部件保留规则及其原始行号、备注和初始针数，进度及撤销记录从零开始。",
+    "仅在进度计数视图可按空格完成一行／圈，长按不会连续增加，文本框、编辑器和按钮保留正常按键行为。只有数据库确认写入成功后才显示已保存。",
+    "只有零进度且没有撤销记录时才能删除已有规则，开始后可追加未来规则。清空或删除需二次确认；清空保留规则和备注，并重置进度及撤销栈。",
+    "JSON 备份保留完整作品、选中部件和撤销数据；恢复会明确替换当前作品集。Markdown 用于阅读摘要，不能当作可恢复备份。不提供商业花样或图解。",
+    "上限：50 个作品，每个作品 20 个部件，每部件 20 个段落及 20 条提醒；10 万行／圈及撤销记录、100 万针、1 万次规则重复；存储数据 8 MiB，导出 32 MiB。不会按数量自动裁剪数据。"
+  ],
+  "functions": {
+    "inspect": "读取和校验作品进度",
+    "apply": "确认并更新编织状态",
+    "restore": "恢复 JSON 作品备份",
+    "export": "导出备份或进度摘要"
+  },
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认操作"
+  },
+  "projects": {
+    "title": "我的作品",
+    "add": "新建作品",
+    "parts": "{{count}} 个部件",
+    "empty": "还没有作品"
+  },
+  "part": {
+    "title": "独立部件",
+    "add": "添加部件",
+    "empty": "为当前作品添加独立部件",
+    "defaultName": "主体",
+    "copyName": "{{name}} 副本",
+    "progress": {
+      "rows": "已完成 {{count}} 行 · {{stitches}} 针",
+      "rounds": "已完成 {{count}} 圈 · {{stitches}} 针"
+    }
+  },
+  "mode": {
+    "rows": "片织 · 按行计数",
+    "rounds": "圈织 · 按圈计数"
+  },
+  "one": {
+    "rows": "行",
+    "rounds": "圈"
+  },
+  "counter": {
+    "title": "编织进度",
+    "empty": "下一行，心里有数",
+    "emptyHint": "建立作品和部件，加入自己的花样循环与加减针提醒，随时接着织。",
+    "completed": {
+      "rows": "已完成行数",
+      "rounds": "已完成圈数"
+    },
+    "stitches": "当前实际针数",
+    "initial": "初始 {{value}} 针",
+    "next": {
+      "rows": "接下来 · 第 {{line}} 行",
+      "rounds": "接下来 · 第 {{line}} 圈"
+    },
+    "complete": {
+      "rows": "完成一行",
+      "rounds": "完成一圈"
+    },
+    "undo": "撤销上一步进度",
+    "shortcut": "空格记一次 · 长按不连加"
+  },
+  "segment": {
+    "title": "花样段落",
+    "add": "接续段落",
+    "name": "段落 {{index}}",
+    "remove": "删除段落",
+    "empty": "未设置重复段落，可自由计数。",
+    "range": "第 {{start}}–{{end}} {{unit}} · 每组 {{rows}}，重复 {{repeats}} 组",
+    "position": "本组第 {{row}} / {{rows}} {{unit}} · 第 {{repeat}} / {{repeats}} 组",
+    "completed": "已完成 {{value}} 个完整重复组",
+    "finished": "已完成配置的花样段落，可继续计数或接续新段落。",
+    "free": "这一行／圈没有花样段落，织完后再确认推进。"
+  },
+  "reminder": {
+    "title": "加减针计划",
+    "add": "添加提醒",
+    "name": "提醒 {{index}}",
+    "remove": "删除提醒",
+    "forNext": "下一行／圈提醒（{{count}}）",
+    "none": "本行／圈没有加减针提醒，织完后确认即可。",
+    "occurrence": "第 {{value}} / {{total}} 次提醒",
+    "execute": "本行确认执行",
+    "skip": "跳过本次",
+    "notActual": "这些是本行的计划选择；只有点击完成，才按规则列表顺序计入实际针数。",
+    "pending": "还有 {{count}} 条提醒需要选择执行或跳过。",
+    "invalidStitches": "所选变更会让针数为负或超过上限，请调整选择或校正针数。",
+    "projected": "完成后将为 {{value}} 针；当前实际针数尚未改变。",
+    "empty": "还没有加减针提醒。",
+    "schedule": "从第 {{start}} {{unit}}起，每隔 {{interval}}，共 {{repeats}} 次",
+    "actual": "已执行 {{executed}} 次 · 已跳过 {{skipped}} 次",
+    "finished": "后续没有提醒",
+    "next": "下次：第 {{value}} {{unit}}"
+  },
+  "rules": {
+    "locked": "已有进度，可继续追加未来规则；如需删除原有规则，请复制部件或明确清空进度后再操作。"
+  },
+  "history": {
+    "empty": "暂无可撤销的进度操作",
+    "line": "确认完成行／圈",
+    "adjust": "校正实际针数",
+    "completed": "已完成：{{before}} → {{after}} {{unit}}",
+    "stitches": "实际针数：{{before}} → {{after}}"
+  },
+  "forms": {
+    "project": "新建作品",
+    "part": "添加独立部件",
+    "copy": "复制部件规则",
+    "segment": "接续花样段落",
+    "reminder": "添加加减针提醒",
+    "details": "作品名称与部件备注",
+    "adjust": "校正当前实际针数"
+  },
+  "formHints": {
+    "project": "部件之间独立计数，同名也不会共享进度。",
+    "part": "新部件从完成 0 行／圈开始。",
+    "copy": "保留原规则及行号、备注和初始针数，进度与撤销记录从零开始。",
+    "segment": "填写每组行圈数与重复组数，新段落接在已有段落和已完成进度之后。",
+    "reminder": "首行必须在已完成进度之后，间隔和次数为正整数；正数加针，负数减针。",
+    "details": "修改名称或备注不会推进进度。",
+    "adjust": "仅确认实测针数，不推进一行，并可撤销。第一行之前校正也会更新初始针数。"
+  },
+  "fields": {
+    "name": "名称",
+    "partName": "部件名称",
+    "projectName": "作品名称",
+    "stitches": "针数",
+    "mode": "编织方式",
+    "rows": "每组行／圈数",
+    "repeats": "重复次数",
+    "start": "首个提醒行／圈",
+    "interval": "间隔行／圈数",
+    "delta": "针数变更，如 +2 或 -2",
+    "note": "自己的编织备注"
+  },
+  "actions": {
+    "details": "修改名称与备注",
+    "adjust": "校正实际针数",
+    "copy": "复制部件规则",
+    "clear": "清空部件进度",
+    "deletePart": "删除当前部件",
+    "deleteProject": "删除当前作品"
+  },
+  "confirm": {
+    "clear": "确认清空当前部件的进度？",
+    "part": "确认删除当前部件及其进度？",
+    "project": "确认删除当前作品及所有部件？",
+    "segment": "确认删除这个花样段落？",
+    "reminder": "确认删除这条加减针提醒？",
+    "restore": "用备份替换当前作品集？",
+    "hint": "此操作会变更已保存的数据。如以后可能需要，请先导出 JSON 备份。",
+    "restoreHint": "当前全部作品和进度会被所选备份替换；如需保留，请先导出当前作品集。"
+  },
+  "files": {
+    "json": "导出 JSON 备份",
+    "markdown": "导出 Markdown 摘要",
+    "copy": "复制当前部件摘要",
+    "restore": "恢复 JSON 备份",
+    "backup": "编织作品 JSON 备份",
+    "saved": "文件已保存",
+    "copied": "部件摘要已复制"
+  },
+  "save": {
+    "loading": "正在读取本地进度…",
+    "ready": "本地进度已就绪",
+    "saving": "正在处理并保存…",
+    "saved": "已保存到本机",
+    "error": "未保存／操作失败",
+    "retry": "重试"
+  },
+  "views": {
+    "label": "部件视图",
+    "counter": "进度计数",
+    "rules": "花样与提醒",
+    "history": "撤销记录"
+  },
+  "page": {
+    "previous": "上一页",
+    "next": "下一页",
+    "number": "第 {{page}} 页",
+    "total": "共 {{count}} 条"
+  },
+  "stages": {
+    "validate": "校验作品与进度",
+    "update": "应用已确认操作",
+    "restore": "读取作品备份",
+    "view": "整理进度视图",
+    "done": "处理完成",
+    "export": "准备导出"
+  },
+  "logs": {
+    "title": "任务日志",
+    "empty": "暂无任务日志",
+    "latest": "最新日志"
+  },
+  "errors": {
+    "knitting.name": "名称不能为空、超过 80 个字符或包含控制字符。",
+    "knitting.number": "请输入范围内的整数；行圈数、间隔及重复次数必须为正数。",
+    "knitting.invalid_state": "作品数据或备份不一致，本次没有应用任何更改。",
+    "knitting.version": "不支持此版本的作品备份。",
+    "knitting.limits": "作品、部件、备注、规则或数值超过上限。",
+    "knitting.segment": "花样段落无效或重叠；重复次数及结束行号必须在上限内。",
+    "knitting.reminder": "提醒无效：间隔为正数，次数 1–10,000，变更不能为 0，最后提醒不能超过第 100,000 行／圈。",
+    "knitting.selection": "所选作品、部件或规则不存在。",
+    "knitting.history_limit": "已达到撤销记录上限，请备份后复制或清空部件。",
+    "knitting.state_limit": "作品存储数据超过 8 MiB，或输入文件超过读取上限。请先备份，再明确删除不需要的数据。",
+    "knitting.export_limit": "导出超过 32 MiB，请减少作品集大小。",
+    "knitting.past_rule": "新增提醒必须从已完成行／圈之后开始。",
+    "knitting.edit_locked": "只有零进度且没有撤销记录时才能删除已有规则，请先复制或明确清空部件。",
+    "knitting.stale_line": "进度已改变，本次没有重复计数。",
+    "knitting.row_limit": "该部件已达到 100,000 行／圈上限。",
+    "knitting.stitches": "所选变更会让实际针数为负或超过 1,000,000。",
+    "knitting.pending": "完成本行前，请为每条到期提醒选择执行或跳过。",
+    "knitting.no_undo": "没有可撤销的进度操作。",
+    "knitting.confirmation": "此操作需要明确确认。",
+    "knitting.operation": "操作或请求标识无效。",
+    "knitting.file": "无法读取或保存所选文件。",
+    "knitting.format": "仅支持 JSON 或 Markdown 导出。",
+    "knitting.stale_state": "整理结果期间作品已改变，请重新读取后重试。"
+  }
+}
