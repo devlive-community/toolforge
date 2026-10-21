@@ -1,18 +1,32 @@
 use crate::env;
-use std::sync::Mutex;
-
-/// env 操作不是线程安全的：串行执行避免测试并行污染
-static ENV_LOCK: Mutex<()> = Mutex::new(());
+use std::process::Command;
 
 #[test]
 fn collects_case_variants_and_masks_values() {
-    let _guard = ENV_LOCK.lock().unwrap();
-    unsafe {
-        std::env::set_var("HTTP_PROXY", "http://user:secret@proxy.corp:8080");
-        std::env::set_var("HTTPS_PROXY", "https://proxy.corp:443");
-        std::env::set_var("NO_PROXY", "localhost,.corp");
-        std::env::set_var("https_proxy", "http://other:3128");
-        std::env::set_var("ALL_PROXY", "   ");
+    const CHILD_MARKER: &str = "TOOLFORGE_PROXY_INSPECTOR_ENV_TEST_CHILD";
+    if std::env::var_os(CHILD_MARKER).is_none() {
+        // Give the child its fixture at launch. Never mutate the parallel
+        // test runner's process environment, even while holding a Rust mutex.
+        let mut child = Command::new(std::env::current_exe().unwrap());
+        child.args([
+            "--exact",
+            "env::tests::collects_case_variants_and_masks_values",
+            "--nocapture",
+        ]);
+        for (name, _) in env::PROXY_VARS {
+            child.env_remove(name);
+        }
+        let status = child
+            .env(CHILD_MARKER, "1")
+            .env("HTTP_PROXY", "http://user:secret@proxy.corp:8080")
+            .env("HTTPS_PROXY", "https://proxy.corp:443")
+            .env("NO_PROXY", "localhost,.corp")
+            .env("https_proxy", "http://other:3128")
+            .env("ALL_PROXY", "   ")
+            .status()
+            .expect("environment fixture child should run");
+        assert!(status.success(), "environment fixture child failed");
+        return;
     }
     let vars = env::collect();
     let find = |name: &str| vars.iter().find(|v| v.name == name).cloned();
@@ -20,24 +34,21 @@ fn collects_case_variants_and_masks_values() {
     // 凭据已遮罩
     assert_eq!(http.value, "http://user:••••@proxy.corp:8080");
     assert!(!http.is_exclusions);
-    // 大小写并存：各值保留
+    // Unix preserves distinct names; Windows resolves both case variants
+    // to the value from the last assignment to its case-insensitive key.
     let lower = find("https_proxy").expect("https_proxy should exist");
     assert_eq!(lower.value, "http://other:3128");
     let upper = find("HTTPS_PROXY").expect("HTTPS_PROXY should exist");
+    #[cfg(not(windows))]
     assert_eq!(upper.value, "https://proxy.corp:443");
+    #[cfg(windows)]
+    assert_eq!(upper.value, "http://other:3128");
     // NO_PROXY 是排除列表：不遮罩，标记为排除
     let no_proxy = find("NO_PROXY").expect("NO_PROXY should exist");
     assert_eq!(no_proxy.value, "localhost,.corp");
     assert!(no_proxy.is_exclusions);
     // 空值跳过
     assert!(find("ALL_PROXY").is_none());
-    unsafe {
-        std::env::remove_var("HTTP_PROXY");
-        std::env::remove_var("HTTPS_PROXY");
-        std::env::remove_var("NO_PROXY");
-        std::env::remove_var("https_proxy");
-        std::env::remove_var("ALL_PROXY");
-    }
 }
 
 #[test]

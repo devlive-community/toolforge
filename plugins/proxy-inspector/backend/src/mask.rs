@@ -23,7 +23,7 @@ pub fn mask_url(input: &str) -> String {
 }
 
 /// 遮罩 host:port 形式之外的一般地址（host 里不会出现 '@'；出现即按 userinfo 处理）
-#[cfg_attr(windows, expect(dead_code))]
+#[cfg(any(target_os = "macos", target_os = "linux", test))]
 pub fn mask_host(input: &str) -> String {
     match input.rsplit_once('@') {
         Some((userinfo, host)) => match userinfo.split_once(':') {

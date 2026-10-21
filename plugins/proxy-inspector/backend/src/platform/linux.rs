@@ -104,7 +104,7 @@ pub fn gnome_settings() -> Result<Source, crate::model::SourceFailure> {
     let pac_url = (mode == "auto")
         .then(|| get("org.gnome.system.proxy", "autoconfig-url").ok())
         .flatten()
-        .map(|url| mask_url(&parse_value(&url).as_str().unwrap_or_default()));
+        .map(|url| mask_url(parse_value(&url).as_str().unwrap_or_default()));
     let exclusions = match get("org.gnome.system.proxy", "ignore-hosts") {
         Ok(text) => parse_value(&text)
             .as_array()

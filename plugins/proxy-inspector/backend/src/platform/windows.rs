@@ -20,17 +20,25 @@ fn fail(id: &'static str, code: &str) -> SourceFailure {
     }
 }
 
+/// Copies an optional Windows UTF-16 string before its allocation is freed.
+///
+/// # Safety
+/// A non-null pointer must refer to an aligned, readable, null-terminated UTF-16
+/// allocation that remains valid and unmodified for this call.
 unsafe fn read_pwstr(pointer: *const u16) -> Option<String> {
     if pointer.is_null() {
         return None;
     }
     let mut length = 0usize;
-    while *pointer.add(length) != 0 {
+    // SAFETY: The caller guarantees a readable, null-terminated allocation,
+    // so every element through the terminating zero remains in bounds.
+    while unsafe { *pointer.add(length) } != 0 {
         length += 1;
     }
-    Some(String::from_utf16_lossy(std::slice::from_raw_parts(
-        pointer, length,
-    )))
+    // SAFETY: The non-null, aligned allocation remains valid and unmodified;
+    // the scan above established the readable slice length before its zero.
+    let text = unsafe { std::slice::from_raw_parts(pointer, length) };
+    Some(String::from_utf16_lossy(text))
 }
 
 /// 拆 host:port；IPv6 "[::1]:8080" 去方括号
