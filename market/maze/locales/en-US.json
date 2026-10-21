@@ -1,0 +1,180 @@
+{
+  "name": "Maze Maker & Explorer",
+  "description": "Create reproducible orthogonal mazes, resume local progress, and export monochrome puzzles with separate answer pages.",
+  "title": "Maze workshop",
+  "algorithm": "DFS / SplitMix64 · v1",
+  "functions": {
+    "inspect": "Load saved progress and board",
+    "apply": "Generate a puzzle or apply a legal action",
+    "preview": "Preview a page of puzzles",
+    "export": "Export PDF, PNG or SVG"
+  },
+  "generate": {
+    "title": "Create & reproduce",
+    "mode": "Puzzle source",
+    "new": "Create",
+    "code": "Reproduction code",
+    "preset": "{{value}} × {{value}}",
+    "rows": "Rows",
+    "cols": "Columns",
+    "entrance": "Entrance",
+    "exit": "Exit",
+    "entranceSide": "Entrance edge",
+    "exitSide": "Exit edge",
+    "entranceIndex": "Entrance position",
+    "exitIndex": "Exit position",
+    "portHint": "Positions start at 1: top/bottom count from the left; left/right count from the top. Entrance and exit must be different cells.",
+    "seed": "Seed (optional)",
+    "seedHint": "Leave empty for a new puzzle",
+    "codeHint": "Paste an M1 code to restore dimensions, ports and seed. Play starts again at the entrance.",
+    "codePlaceholder": "M1.…",
+    "start": "Create puzzle",
+    "import": "Reproduce puzzle",
+    "limits": "2–40 cells per side, up to 1,600 cells; two-second generation limit. Size and route length are facts, not difficulty ratings."
+  },
+  "side": {
+    "top": "Top",
+    "right": "Right",
+    "bottom": "Bottom",
+    "left": "Left"
+  },
+  "move": {
+    "top": "Move up",
+    "right": "Move right",
+    "bottom": "Move down",
+    "left": "Move left"
+  },
+  "board": {
+    "label": "Maze board: use arrow keys or click adjacent cells",
+    "keys": "Click the board, then use arrow keys or adjacent cells. One move per key press; holding a key does not repeat. The dot is your position; S is start, E is exit.",
+    "startMark": "S",
+    "exitMark": "E"
+  },
+  "code": {
+    "copy": "Copy full reproduction code",
+    "copied": "Reproduction code copied"
+  },
+  "stats": {
+    "facts": "{{rows}} × {{cols}} · {{cells}} cells · {{length}} steps from entrance to exit",
+    "steps": "Valid moves",
+    "visited": "Cells visited",
+    "hints": "Hints used"
+  },
+  "state": {
+    "playing": "Exploring",
+    "finished": "Exit reached"
+  },
+  "tabs": {
+    "label": "Maze view",
+    "play": "Play",
+    "paper": "Print & export"
+  },
+  "actions": {
+    "undo": "Go back one move (undo its count)",
+    "restart": "Restart at the entrance",
+    "hint": "Hint: next step",
+    "hideTrail": "Hide trail",
+    "showTrail": "Show trail",
+    "answer": "Reveal full route",
+    "hideAnswer": "Hide answer route",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close"
+  },
+  "confirm": {
+    "answer": "Reveal the complete route?",
+    "answerHint": "This records that the answer was viewed. Hiding it or undoing a move will not erase that record.",
+    "replace": "Reset current puzzle progress?",
+    "replaceHint": "Only one maze is saved. This replaces the puzzle or clears its position, trail, hints and score. Cancel to keep the current progress."
+  },
+  "score": {
+    "independent": "Independent finish · {{steps}} moves · {{hints}} hints",
+    "assisted": "Assisted finish · {{steps}} moves · {{hints}} hints (hint or answer used)"
+  },
+  "notice": {
+    "ready": "Local progress loaded.",
+    "new": "New puzzle saved. Start at the entrance.",
+    "blocked": "Move blocked: choose a connected adjacent cell. Invalid moves do not count.",
+    "finished": "Exit reached. Undo a move to continue or create another puzzle.",
+    "moved": "Position and trail saved.",
+    "undo": "One move undone. Hint and answer-use records remain.",
+    "restart": "Restarted; hint and answer-use records reset.",
+    "hint": "The dashed circle is the next cell toward the exit. No move was made.",
+    "answer": "Full-answer use recorded.",
+    "trail": "Trail display preference saved.",
+    "cancelled": "Task cancelled. Previous progress is unchanged."
+  },
+  "save": {
+    "loading": "Loading local progress…",
+    "saving": "Processing and saving…",
+    "saved": "Saved in ToolForge",
+    "ready": "Local progress ready",
+    "error": "Operation failed; previous progress retained",
+    "retry": "Retry save / load"
+  },
+  "empty": {
+    "title": "Explore a maze of your own",
+    "hint": "Create a puzzle on the left or paste a reproduction code. Progress is saved in ToolForge’s local database so you can resume later."
+  },
+  "paper": {
+    "count": "Puzzles",
+    "perPage": "Per page",
+    "sheet": "Content",
+    "puzzle": "Puzzles only",
+    "answer": "Answers only",
+    "both": "Puzzles + separate answer pages",
+    "preview": "Preview page",
+    "previewAlt": "A4 maze puzzle preview",
+    "hint": "Monochrome A4 vectors; up to 12 puzzles and 24 pages. The first matches the current puzzle; later ones use fixed batch seeds. Previewing the combined set shows puzzles only. Requesting answer preview/export records answer use. For single PNG/SVG choose puzzles or answers only.",
+    "working": "Generating or exporting…",
+    "empty": "Preview the puzzle sheets",
+    "noSpoiler": "The default preview has no answer. Your play trail is never printed.",
+    "saved": "File saved",
+    "export": {
+      "pdf": "Export PDF set",
+      "svg": "Current puzzle SVG",
+      "png": "Current puzzle PNG"
+    }
+  },
+  "page": {
+    "previous": "Previous page",
+    "next": "Next page",
+    "label": "Page {{page}}"
+  },
+  "logs": {
+    "title": "Task logs",
+    "empty": "No logs yet",
+    "latest": "Latest logs"
+  },
+  "help": [
+    "Generate orthogonal grids with 2–40 cells per side. Every puzzle is checked independently for connectivity, no cycles, and distinct entrance/exit cells. Port positions start at 1.",
+    "An empty seed makes a new puzzle. The full M1 reproduction code contains algorithm version, dimensions, ports and seed. Paste it to restart the same puzzle under the same version; its ID is derived from those parameters.",
+    "Focus the board and use arrow keys or click neighboring cells. Walls, diagonal moves, teleports and boundary exits do not count. Held keys do not repeat. Undo removes the last valid move while retaining hint counts and answer-use facts.",
+    "Hints give a legal next step toward the exit from the current position without moving. Full answers must be requested; answer-sheet preview/export also records assistance. Finishing captures the score at that moment. Viewing answers afterward does not rewrite it; undoing and finishing again records a new score.",
+    "One puzzle is saved using ToolForge SQLite, including position, full move history and display preferences. The screen updates only after storage acknowledgement; failed writes retain prior progress and can be retried. Restart/replacement needs confirmation. No separate database or automatic history trimming.",
+    "Paper and screen share wall coordinates. A4 PDF supports 1/2/4 puzzles per page, up to 12 puzzles and 24 pages, with matching question/answer IDs and dashed monochrome routes. PNG has a 1,600-pixel longest edge; SVG/PDF are vectors. Generation/export can be cancelled. Limits: 50,000 moves, 100,000 hints, 64 MiB export; excess is rejected explicitly."
+  ],
+  "errors": {
+    "maze.port": "Port position is outside its edge.",
+    "maze.same_port": "Entrance and exit must be different cells.",
+    "maze.size": "Use integer rows/columns from 2 to 40 and integer port positions.",
+    "maze.seed": "Seeds must contain 1–80 UTF-8 bytes without control characters.",
+    "maze.version": "Unsupported saved-state or generation version.",
+    "maze.code": "Invalid reproduction code. Paste the complete M1 code.",
+    "maze.disconnected": "Maze connectivity and unique paths could not be verified. No puzzle was saved.",
+    "maze.time": "Generation time budget exceeded. Reduce grid or batch size.",
+    "maze.state": "Saved identity, moves or hints are invalid. Existing data was not overwritten.",
+    "maze.no_game": "Create a maze first.",
+    "maze.confirm": "Restarting or replacing a puzzle needs confirmation.",
+    "maze.limits": "Move, hint, revision or export limit reached. Nothing was automatically trimmed.",
+    "maze.paper": "Invalid paper options: up to 12 puzzles, 1/2/4 per page. PNG/SVG support one puzzle and one sheet type.",
+    "maze.page": "Invalid paper page.",
+    "maze.export": "Could not produce the export file.",
+    "maze.answer_confirm": "Record answer use before requesting answer content.",
+    "maze.format": "Only PDF, PNG and SVG exports are supported.",
+    "maze.file": "Choose an output file.",
+    "maze.operation": "Could not start the action. Retry.",
+    "maze.busy": "Wait for the current action to finish.",
+    "maze.stale": "Progress changed. The stale result was not saved. Reload to continue."
+  }
+}

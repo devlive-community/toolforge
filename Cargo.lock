@@ -8886,6 +8886,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-maze"
+version = "0.1.0"
+dependencies = [
+ "image",
+ "lopdf",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-nonogram"
 version = "0.1.0"
 dependencies = [
