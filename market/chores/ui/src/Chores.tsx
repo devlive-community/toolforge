@@ -145,24 +145,18 @@ export function Chores() {
       toast.error(t('errors.chore.too_many_members', { limit: MAX_MEMBERS }))
       return
     }
-    setMembers((prev) => [...prev, { id: crypto.randomUUID(), name }])
+    setMembers([...members, { id: crypto.randomUUID(), name }])
     setMemberInput('')
   }
 
   const removeMember = (id: string) => {
-    setMembers((prev) => prev.filter((m) => m.id !== id))
-    setRecords((prev) => {
-      // 历史记录里的执行者快照保留；仅清理以该成员为临时换人的覆盖
-      const next: Record<string, OccurrenceRecord> = {}
-      for (const [key, record] of Object.entries(prev)) {
-        if (record.assignee === id) {
-          next[key] = { ...record, assignee: undefined }
-        } else {
-          next[key] = record
-        }
-      }
-      return next
-    })
+    setMembers(members.filter((m) => m.id !== id))
+    // 历史记录里的执行者快照保留；仅清理以该成员为临时换人的覆盖
+    const next: Record<string, OccurrenceRecord> = {}
+    for (const [key, record] of Object.entries(records)) {
+      next[key] = record.assignee === id ? { ...record, assignee: undefined } : record
+    }
+    setRecords(next)
   }
 
   const openEditor = (chore: Chore | null) => {
@@ -212,11 +206,11 @@ export function Chores() {
         name,
         epochs: [epochFromDraft(draft, draft.startDate || today)],
       }
-      setChores((prev) => [...prev, chore])
+      setChores([...chores, chore])
     } else if (editorId) {
       // 修改只从今天生效：追加纪元；与最后一个纪元同日则直接替换
-      setChores((prev) =>
-        prev.map((chore) => {
+      setChores(
+        chores.map((chore) => {
           if (chore.id !== editorId) return chore
           const epochs = [...chore.epochs]
           const nextEpoch = epochFromDraft(draft, today > epochs[epochs.length - 1].from ? today : epochs[epochs.length - 1].from)
@@ -233,8 +227,8 @@ export function Chores() {
   }
 
   const togglePause = (chore: Chore) => {
-    setChores((prev) =>
-      prev.map((item) => {
+    setChores(
+      chores.map((item) => {
         if (item.id !== chore.id) return item
         if (item.pausedFrom) {
           // 恢复：从今天起按原规则重新排期，停用期间不补生成
@@ -251,56 +245,52 @@ export function Chores() {
   }
 
   const deleteChore = (id: string) => {
-    setChores((prev) => prev.filter((chore) => chore.id !== id))
-    setRecords((prev) => {
-      const next: Record<string, OccurrenceRecord> = {}
-      for (const [key, record] of Object.entries(prev)) {
-        if (!key.startsWith(`${id}|`)) next[key] = record
-      }
-      return next
-    })
+    setChores(chores.filter((chore) => chore.id !== id))
+    const next: Record<string, OccurrenceRecord> = {}
+    for (const [key, record] of Object.entries(records)) {
+      if (!key.startsWith(`${id}|`)) next[key] = record
+    }
+    setRecords(next)
   }
 
   /** 完成一次：重复点击幂等，逾期补做保留计划日期并记录实际日期 */
   const complete = (occurrence: Occurrence) => {
     if (occurrence.status === 'done') return
-    setRecords((prev) => ({
-      ...prev,
+    setRecords({
+      ...records,
       [occurrence.key]: {
-        ...prev[occurrence.key],
+        ...records[occurrence.key],
         status: 'done',
-        executor: prev[occurrence.key]?.executor ?? occurrence.assigneeId,
+        executor: records[occurrence.key]?.executor ?? occurrence.assigneeId,
         actualDate: today,
       },
-    }))
+    })
   }
 
   const skip = (occurrence: Occurrence) => {
     if (occurrence.status === 'skipped') return
-    setRecords((prev) => ({
-      ...prev,
-      [occurrence.key]: { ...prev[occurrence.key], status: 'skipped' },
-    }))
-  }
-
-  const undo = (occurrence: Occurrence) => {
-    setRecords((prev) => {
-      const next = { ...prev }
-      const record = next[occurrence.key]
-      if (record?.assignee) {
-        next[occurrence.key] = { assignee: record.assignee }
-      } else {
-        delete next[occurrence.key]
-      }
-      return next
+    setRecords({
+      ...records,
+      [occurrence.key]: { ...records[occurrence.key], status: 'skipped' },
     })
   }
 
+  const undo = (occurrence: Occurrence) => {
+    const next = { ...records }
+    const record = next[occurrence.key]
+    if (record?.assignee) {
+      next[occurrence.key] = { assignee: record.assignee }
+    } else {
+      delete next[occurrence.key]
+    }
+    setRecords(next)
+  }
+
   const reassign = (occurrence: Occurrence, memberId: string) => {
-    setRecords((prev) => ({
-      ...prev,
-      [occurrence.key]: { ...prev[occurrence.key], assignee: memberId },
-    }))
+    setRecords({
+      ...records,
+      [occurrence.key]: { ...records[occurrence.key], assignee: memberId },
+    })
   }
 
   const statusButton = (occurrence: Occurrence) => {

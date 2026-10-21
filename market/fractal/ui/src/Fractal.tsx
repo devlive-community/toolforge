@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   Badge,
   Button,
@@ -60,7 +60,7 @@ interface ComplexPoint {
 export function Fractal() {
   const { t, call, errorMessage } = usePlugin()
   const task = useTask<ExportReport>()
-  const [project, setProject] = usePluginState<Project>('project', {
+  const [stored, setProject] = usePluginState<Project>('project', {
     view: { ...DEFAULT_VIEW },
     favorites: [],
   })
@@ -84,7 +84,29 @@ export function Fractal() {
   const undoRef = useRef<View[]>([])
   const redoRef = useRef<View[]>([])
 
-  const view = project.view
+  // 规整持久化状态：旧版本写入的残缺数据一律回退默认值，避免渲染崩溃
+  const normalized = useMemo<Project>(
+    () =>
+      stored && typeof stored === 'object' && stored.view && Array.isArray(stored.favorites)
+        ? stored
+        : { view: { ...DEFAULT_VIEW }, favorites: [] },
+    [stored],
+  )
+  const projectRef = useRef<Project>(normalized)
+  useEffect(() => {
+    projectRef.current = normalized
+  }, [normalized])
+
+  /** 直接值写入（同步维护 ref，连续滚轮/拖动不丢更新，旧宿主共享包也可用） */
+  const writeProject = useCallback(
+    (next: Project) => {
+      projectRef.current = next
+      setProject(next)
+    },
+    [setProject],
+  )
+
+  const view = normalized.view
 
   // 供非 React 事件（原生 wheel / 拖动收尾）读取最新视角；effect 内同步避免渲染期写 ref
   const viewRef = useRef(view)
@@ -94,16 +116,17 @@ export function Fractal() {
 
   const applyView = useCallback(
     (next: View) => {
-      setProject((prev) => ({ ...prev, view: next }))
+      writeProject({ ...projectRef.current, view: next })
     },
-    [setProject],
+    [writeProject],
   )
 
   const patchView = useCallback(
     (part: Partial<View>) => {
-      setProject((prev) => ({ ...prev, view: { ...prev.view, ...part } }))
+      const base = projectRef.current
+      writeProject({ ...base, view: { ...base.view, ...part } })
     },
-    [setProject],
+    [writeProject],
   )
 
   /** 推入撤销栈（记录变更前的视角） */
@@ -279,10 +302,11 @@ export function Fractal() {
   }
 
   const addFavorite = () => {
-    setProject((prev) => ({
-      ...prev,
-      favorites: [...prev.favorites, { id: crypto.randomUUID(), view: { ...prev.view } }],
-    }))
+    const base = projectRef.current
+    writeProject({
+      ...base,
+      favorites: [...base.favorites, { id: crypto.randomUUID(), view: { ...base.view } }],
+    })
   }
 
   const restoreFavorite = (favorite: Favorite) => {
@@ -291,7 +315,8 @@ export function Fractal() {
   }
 
   const removeFavorite = (id: string) => {
-    setProject((prev) => ({ ...prev, favorites: prev.favorites.filter((f) => f.id !== id) }))
+    const base = projectRef.current
+    writeProject({ ...base, favorites: base.favorites.filter((f) => f.id !== id) })
   }
 
   const setExportDim = (key: 'width' | 'height', value: number) => {
@@ -425,11 +450,11 @@ export function Fractal() {
             </Button>
           }
         >
-          {project.favorites.length === 0 ? (
+          {normalized.favorites.length === 0 ? (
             <p className="text-xs text-fg-subtle">{t('favorites.empty')}</p>
           ) : (
             <ul className="max-h-40 space-y-1 overflow-auto">
-              {project.favorites.map((favorite) => (
+              {normalized.favorites.map((favorite) => (
                 <li key={favorite.id} className="flex items-center gap-1">
                   <button
                     type="button"

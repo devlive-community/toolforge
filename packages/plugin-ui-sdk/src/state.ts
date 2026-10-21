@@ -27,18 +27,27 @@ export async function savePluginState(pluginId: string, key: string, value: unkn
 /**
  * 持久化的插件状态，例如编辑器草稿。修改后防抖写入 SQLite，组件卸载时立即写入未保存的修改。
  * 返回 [值, 设置函数, 是否已从存储中加载]；加载完成前的修改会覆盖已保存的值。
- * 设置函数支持值或基于当前值的更新函数。
+ * 设置函数支持值或基于当前值的更新函数；更新函数立即解析，
+ * 待写入的永远是可序列化的值（否则旧版宿主共享包会把函数存进 SQLite）。
  */
 export function usePluginState<T>(key: string, initial: T): [T, (value: T | ((prev: T) => T)) => void, boolean] {
   const { manifest, errorMessage } = usePlugin()
   const [state, setState] = useState({ value: initial, loaded: false })
+  const stateRef = useRef<T>(initial)
   const pending = useRef<{ value: T } | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   useEffect(() => {
     let alive = true
     loadPluginState<T>(manifest.id, key)
-      .then((saved) => alive && setState((prev) => ({ value: pending.current || saved === null ? prev.value : saved, loaded: true })))
+      .then((saved) => {
+        if (!alive) return
+        setState((prev) => {
+          const value = pending.current || saved === null ? prev.value : (saved as T)
+          stateRef.current = value
+          return { value, loaded: true }
+        })
+      })
       .catch(() => alive && setState((prev) => ({ ...prev, loaded: true })))
     return () => {
       alive = false
@@ -56,11 +65,10 @@ export function usePluginState<T>(key: string, initial: T): [T, (value: T | ((pr
 
   const set = useCallback(
     (value: T | ((prev: T) => T)) => {
-      setState((prev) => {
-        const next = typeof value === 'function' ? (value as (prev: T) => T)(prev.value) : value
-        pending.current = { value: next }
-        return { ...prev, value: next }
-      })
+      const next = typeof value === 'function' ? (value as (prev: T) => T)(stateRef.current) : value
+      stateRef.current = next
+      pending.current = { value: next }
+      setState((prev) => ({ ...prev, value: next }))
       clearTimeout(timer.current)
       timer.current = setTimeout(flush, SAVE_DELAY_MS)
     },
