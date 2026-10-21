@@ -1,0 +1,136 @@
+{
+  "inputs": {
+    "src/shared.js": {
+      "bytes": 82,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/style.css": {
+      "bytes": 28,
+      "imports": []
+    },
+    "src/lazy.js": {
+      "bytes": 33,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/a.js": {
+      "bytes": 178,
+      "imports": [
+        {
+          "path": "src/shared.js",
+          "kind": "import-statement",
+          "original": "./shared.js"
+        },
+        {
+          "path": "remote-pkg",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "src/style.css",
+          "kind": "import-statement",
+          "original": "./style.css"
+        },
+        {
+          "path": "src/lazy.js",
+          "kind": "dynamic-import",
+          "original": "./lazy.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/b.js": {
+      "bytes": 61,
+      "imports": [
+        {
+          "path": "src/shared.js",
+          "kind": "import-statement",
+          "original": "./shared.js"
+        }
+      ],
+      "format": "esm"
+    }
+  },
+  "outputs": {
+    "dist/a-5ABQURBT.js": {
+      "imports": [
+        {
+          "path": "dist/chunk-GDODLRL4.js",
+          "kind": "import-statement"
+        },
+        {
+          "path": "remote-pkg",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "dist/chunk-QNQHKHHZ.js",
+          "kind": "dynamic-import"
+        }
+      ],
+      "exports": [],
+      "entryPoint": "src/a.js",
+      "cssBundle": "dist/a-WCVDUQYJ.css",
+      "inputs": {
+        "src/a.js": {
+          "bytesInOutput": 134
+        },
+        "src/style.css": {
+          "bytesInOutput": 0
+        }
+      },
+      "bytes": 194
+    },
+    "dist/b-C3TEREKJ.js": {
+      "imports": [
+        {
+          "path": "dist/chunk-GDODLRL4.js",
+          "kind": "import-statement"
+        }
+      ],
+      "exports": [],
+      "entryPoint": "src/b.js",
+      "inputs": {
+        "src/b.js": {
+          "bytesInOutput": 25
+        }
+      },
+      "bytes": 85
+    },
+    "dist/chunk-GDODLRL4.js": {
+      "imports": [],
+      "exports": [
+        "label"
+      ],
+      "inputs": {
+        "src/shared.js": {
+          "bytesInOutput": 38
+        }
+      },
+      "bytes": 76
+    },
+    "dist/chunk-QNQHKHHZ.js": {
+      "imports": [],
+      "exports": [
+        "lazy"
+      ],
+      "entryPoint": "src/lazy.js",
+      "inputs": {
+        "src/lazy.js": {
+          "bytesInOutput": 27
+        }
+      },
+      "bytes": 61
+    },
+    "dist/a-WCVDUQYJ.css": {
+      "imports": [],
+      "inputs": {
+        "src/style.css": {
+          "bytesInOutput": 40
+        }
+      },
+      "bytes": 60
+    }
+  }
+}

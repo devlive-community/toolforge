@@ -1,0 +1,17 @@
+
+  dist/a-LX4P3RKJ.js ───── 194b ── 100.0%
+   └ src/a.js ──────────── 134b ─── 69.1%
+
+  dist/b-6TRMBW6K.js ────── 85b ── 100.0%
+   └ src/b.js ───────────── 25b ─── 29.4%
+
+  dist/chunk-QNQHKHHZ.js ── 61b ── 100.0%
+   └ src/lazy.js ────────── 27b ─── 44.3%
+
+  dist/a-WCVDUQYJ.css ───── 60b ── 100.0%
+   └ src/style.css ──────── 40b ─── 66.7%
+      └ src/a.js
+
+  dist/chunk-VSRC2VDR.js ── 60b ── 100.0%
+   └ src/shared.js ──────── 22b ─── 36.7%
+      └ src/b.js

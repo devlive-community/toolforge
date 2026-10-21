@@ -1,0 +1,166 @@
+{
+  "name": "构建体积分析器",
+  "description": "离线分析 esbuild metafile 的模块贡献、导入路径、目录树图及前后产物变化。",
+  "loading": "分析中…",
+  "cancel": "取消",
+  "missing": "—",
+  "bytes": "{{value}} B",
+  "delta": "{{value}} B",
+  "emptyRows": "当前范围没有记录。",
+  "boundary": "仅分析所选 metadata · 不执行构建、不读取源码 · 不推算模块压缩体积",
+  "open": {
+    "before": "打开 metafile",
+    "after": "导入对比文件",
+    "filter": "esbuild metafile JSON"
+  },
+  "side": {
+    "label": "查看哪份报告",
+    "before": "之前 / 基准",
+    "after": "之后"
+  },
+  "summary": {
+    "counts": "{{inputs}} 个输入 · {{outputs}} 个产物"
+  },
+  "mode": {
+    "analyze": "贡献与导入",
+    "compare": "前后对比"
+  },
+  "output": {
+    "title": "构建产物",
+    "search": "搜索产物路径",
+    "shared": "未声明入口（如共享 chunk）",
+    "bytes": "产物总字节",
+    "attributed": "已归因贡献",
+    "unattributed": "未归因 / 包装代码",
+    "over": "贡献和超过产物大小：",
+    "empty": "报告中没有产物"
+  },
+  "modules": {
+    "title": "模块贡献",
+    "total": "匹配 {{count}} 个模块（按贡献排序）",
+    "source": "原始源码：",
+    "unknown": "缺少输入记录",
+    "search": "搜索当前目录下的模块"
+  },
+  "imports": {
+    "output": "chunk / 产物引用",
+    "module": "模块原始导入",
+    "external": "external",
+    "internal": "内部引用",
+    "unresolved": "未解析引用",
+    "empty": "没有报告内的导入记录。"
+  },
+  "trace": {
+    "title": "引入路径",
+    "found": "在输入图中验证了一条路径",
+    "limited": "已触达 64 层预算，不能判定完整路径",
+    "unavailable": "报告未提供可验证的入口路径",
+    "boundary": "来自 metafile 的输入依赖图；只是一条已验证路径，不代表运行时唯一因果链。共享 chunk 从报告中可达的已声明入口追踪。",
+    "clear": "清除模块选择",
+    "copy": "复制引入路径",
+    "export": "导出路径 JSON"
+  },
+  "tree": {
+    "title": "模块贡献矩形树图",
+    "basis": "图表归一化基数：",
+    "over": "贡献超出总量，按归因和缩放",
+    "other": "其他分组",
+    "unattributed": "未归因",
+    "limited": "图表最多 256 块、目录最多 24 层；其余聚合为“其他”，完整模块仍可在分页列表查看。",
+    "up": "上一级",
+    "root": "产物根目录"
+  },
+  "compare": {
+    "hint": "相同路径自动对应。hash 变化的产物需明确配对，不猜测相似文件名。每个产物只能参与一对；配对只在本次会话保留。",
+    "beforePath": "之前的完整产物路径",
+    "afterPath": "之后的完整产物路径",
+    "pair": "明确配对",
+    "pairs": "手动配对 {{count}} 组",
+    "remove": "移除",
+    "back": "返回全部产物变化",
+    "usePaths": "填入配对表单",
+    "search": "搜索产物或模块路径",
+    "to": "→",
+    "manual": "手动配对",
+    "exact": "相同路径",
+    "added": "新增产物",
+    "removed": "删除产物",
+    "total": "所有产物合计："
+  },
+  "diagnostics": {
+    "title": "数据诊断",
+    "count": "诊断 {{count}} 项",
+    "none": "未发现引用或计数矛盾。",
+    "unknownImport": "有 {{count}} 条内部导入未对应输入记录",
+    "unknownOutput": "有 {{count}} 条内部产物引用未对应 output",
+    "unknownInput": "有 {{count}} 个贡献路径缺少 input 记录",
+    "unknownEntry": "入口路径未对应 input 记录",
+    "unknownCss": "CSS bundle 路径未对应 output",
+    "overAttributed": "已归因贡献超过产物大小 {{count}} B"
+  },
+  "export": {
+    "copy": "复制 Markdown",
+    "csv": "CSV",
+    "json": "JSON",
+    "markdown": "Markdown",
+    "copied": "报告已复制",
+    "saved": "报告已保存"
+  },
+  "page": {
+    "previous": "上一页",
+    "next": "下一页",
+    "label": "第 {{page}} 页"
+  },
+  "empty": {
+    "title": "找到真正进入产物的模块",
+    "hint": "打开 esbuild 构建时生成的 metafile JSON，再导入一份报告可对比。贡献以 bytesInOutput 为准，原始源码大小只作参考。"
+  },
+  "logs": {
+    "title": "任务日志",
+    "empty": "暂无日志",
+    "latest": "最新日志"
+  },
+  "functions": {
+    "load": "载入一份或两份 metafile",
+    "query": "查询分页、树图和变化",
+    "trace": "验证输入导入路径",
+    "export": "导出当前范围报告",
+    "copy": "生成有界复制文本"
+  },
+  "stages": {
+    "read": "读取 metadata",
+    "parse": "校验字段和预算",
+    "analyze": "聚合贡献与路径",
+    "export": "导出报告"
+  },
+  "errors": {
+    "bundle.size": "单份 metafile 超过 16 MiB。",
+    "bundle.depth": "JSON 嵌套超过 64 层。",
+    "bundle.json": "JSON 格式或 metafile 必填字段无效（第 {{line}} 行，第 {{column}} 列）。",
+    "bundle.entries": "超过输入、产物、导入边或贡献条目预算。",
+    "bundle.bytes": "字节数或累计和超出非负安全整数范围。",
+    "bundle.path": "路径或导入类型为空或过长。",
+    "bundle.file": "无法读取或写入所选文件。",
+    "bundle.after": "请先导入对比文件。",
+    "bundle.side": "无效的报告侧别。",
+    "bundle.expired": "会话报告已失效，请重新打开文件。",
+    "bundle.query": "无效的查询、搜索或分页范围。",
+    "bundle.output": "未选择产物，或该产物不在当前报告中。",
+    "bundle.module": "模块不在当前产物或输入记录中。",
+    "bundle.pair": "配对必须引用存在的产物，且每个产物最多出现一次。",
+    "bundle.export": "报告序列化失败。",
+    "bundle.format": "仅支持 CSV、JSON 和 Markdown 报告。",
+    "bundle.output_limit": "导出超过 64 MiB，请缩小范围。",
+    "bundle.copy_limit": "复制内容超过 64 KiB，请缩小范围或保存到文件。",
+    "bundle.encoding": "文件不是 UTF-8 JSON。",
+    "bundle.source": "不能把导出文件写到当前打开的原始 metafile，请另选文件名。"
+  },
+  "help": [
+    "只读解析 esbuild metafile，支持每份16MiB、20000个输入、2000个产物、100000条导入边和100000条贡献；JSON最多64层，路径最多2048字节，字节计数和累计和不得超过2^53-1。",
+    "模块贡献使用 bytesInOutput，与输入源码 bytes 分开。产物总字节与贡献和之间的正差单独显示；贡献超过总字节时标诊断，图表按贡献和缩放，不强行归零或归给某个模块。",
+    "点击树图目录深入，点击模块查看输入依赖链及原始导入。仅依照 metadata 的确切路径验证，external 不作为内部依赖跟随；不读取源码、执行构建或联网。",
+    "树图最多256块，余下合并为其他，仍可在后端分页列表中查看所有模块。目录最多24层，路径追踪最多64层。体积表示实际字节，不推断 gzip/Brotli，也不把未归因输入直接认定为 tree shaking 删除。",
+    "两份报告按完全相同路径自动对应，其余保留新增/删除；手动配对可明确关联hash变化的产物，不按近似名称猜测。变化按总产物和同路径模块贡献分别计算。",
+    "报告只在当前插件实例内存中保留，不建立数据库；CSV/JSON/Markdown按当前目录、搜索或对比范围导出。复制上限64KiB，文件导出64MiB。大任务可取消，取消或导入失败不替换旧缓存。"
+  ]
+}

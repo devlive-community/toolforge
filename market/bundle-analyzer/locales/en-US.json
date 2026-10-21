@@ -1,0 +1,166 @@
+{
+  "name": "Bundle Size Analyzer",
+  "description": "Inspect esbuild metafile contributions, import paths, directory treemaps and explicit output comparisons offline.",
+  "loading": "Analyzing…",
+  "cancel": "Cancel",
+  "missing": "—",
+  "bytes": "{{value}} B",
+  "delta": "{{value}} B",
+  "emptyRows": "No records in this scope.",
+  "boundary": "Selected metadata only · No builds or source reads · No inferred module compression sizes",
+  "open": {
+    "before": "Open metafile",
+    "after": "Load comparison",
+    "filter": "esbuild metafile JSON"
+  },
+  "side": {
+    "label": "Report snapshot",
+    "before": "Before / baseline",
+    "after": "After"
+  },
+  "summary": {
+    "counts": "{{inputs}} inputs · {{outputs}} outputs"
+  },
+  "mode": {
+    "analyze": "Contributions & imports",
+    "compare": "Before / after"
+  },
+  "output": {
+    "title": "Build outputs",
+    "search": "Search output paths",
+    "shared": "No declared entry (e.g. shared chunk)",
+    "bytes": "Output bytes",
+    "attributed": "Attributed contribution",
+    "unattributed": "Unattributed / wrapper",
+    "over": "Contribution exceeds output size by",
+    "empty": "This report has no outputs"
+  },
+  "modules": {
+    "title": "Module contributions",
+    "total": "{{count}} matching modules, ranked by contribution",
+    "source": "Original source:",
+    "unknown": "Missing input record",
+    "search": "Search modules in this directory"
+  },
+  "imports": {
+    "output": "Chunk / output references",
+    "module": "Original module imports",
+    "external": "external",
+    "internal": "Internal",
+    "unresolved": "Unresolved",
+    "empty": "No imports recorded in this scope."
+  },
+  "trace": {
+    "title": "Import path",
+    "found": "One path verified in the input graph",
+    "limited": "64-level budget reached; complete path is undetermined",
+    "unavailable": "No verifiable entry path is provided by this metadata",
+    "boundary": "Evidence comes from the metafile input graph: one verified path, not a unique runtime causal chain. Shared chunks are traced from reachable declared entries.",
+    "clear": "Clear module selection",
+    "copy": "Copy import path",
+    "export": "Export path JSON"
+  },
+  "tree": {
+    "title": "Contribution treemap",
+    "basis": "Chart normalization basis:",
+    "over": "Over-attributed; scaled by contribution sum",
+    "other": "Other groups",
+    "unattributed": "Unattributed",
+    "limited": "At most 256 tiles and 24 directory levels. Remaining groups are aggregated as Other; all modules remain available in paginated lists.",
+    "up": "Parent directory",
+    "root": "Output root"
+  },
+  "compare": {
+    "hint": "Identical paths match automatically. Explicitly pair outputs with changed hashes; similar names are never guessed. Each output belongs to at most one pair. Pairings last for this session.",
+    "beforePath": "Exact previous output path",
+    "afterPath": "Exact next output path",
+    "pair": "Pair explicitly",
+    "pairs": "{{count}} manual pairs",
+    "remove": "Remove",
+    "back": "Back to all output changes",
+    "usePaths": "Fill pairing form",
+    "search": "Search output or module paths",
+    "to": "→",
+    "manual": "Manual pair",
+    "exact": "Identical path",
+    "added": "Added output",
+    "removed": "Removed output",
+    "total": "All emitted outputs:"
+  },
+  "diagnostics": {
+    "title": "Data diagnostics",
+    "count": "{{count}} diagnostics",
+    "none": "No reference or count contradictions found.",
+    "unknownImport": "{{count}} internal imports have no input record",
+    "unknownOutput": "{{count}} internal output references have no output record",
+    "unknownInput": "{{count}} contributing paths have no input record",
+    "unknownEntry": "Entry path has no input record",
+    "unknownCss": "CSS bundle path has no output record",
+    "overAttributed": "Contribution exceeds output size by {{count}} B"
+  },
+  "export": {
+    "copy": "Copy Markdown",
+    "csv": "CSV",
+    "json": "JSON",
+    "markdown": "Markdown",
+    "copied": "Report copied",
+    "saved": "Report saved"
+  },
+  "page": {
+    "previous": "Previous page",
+    "next": "Next page",
+    "label": "Page {{page}}"
+  },
+  "empty": {
+    "title": "Find the modules that reached your bundle",
+    "hint": "Open a metafile JSON produced during an esbuild build. Load a second report to compare. Contributions use bytesInOutput; original source size is separate."
+  },
+  "logs": {
+    "title": "Task logs",
+    "empty": "No logs yet",
+    "latest": "Latest logs"
+  },
+  "functions": {
+    "load": "Load one or two metafiles",
+    "query": "Query pages, treemaps and changes",
+    "trace": "Verify an input import path",
+    "export": "Export scoped report rows",
+    "copy": "Produce bounded copy text"
+  },
+  "stages": {
+    "read": "Read metadata",
+    "parse": "Validate fields and budgets",
+    "analyze": "Aggregate contributions and paths",
+    "export": "Export report"
+  },
+  "errors": {
+    "bundle.size": "A metafile exceeds 16 MiB.",
+    "bundle.depth": "JSON nesting exceeds 64 levels.",
+    "bundle.json": "Invalid JSON or required metafile fields (line {{line}}, column {{column}}).",
+    "bundle.entries": "Input, output, edge or contribution budget exceeded.",
+    "bundle.bytes": "Byte counts or sums exceed the nonnegative safe-integer range.",
+    "bundle.path": "Path or import kind is empty or too long.",
+    "bundle.file": "Could not read or write the selected file.",
+    "bundle.after": "Load the second report first.",
+    "bundle.side": "Invalid report side.",
+    "bundle.expired": "The session report expired. Reopen the files.",
+    "bundle.query": "Invalid query, search or page range.",
+    "bundle.output": "No output selected, or the output is not in this report.",
+    "bundle.module": "Module is not in the current output or input records.",
+    "bundle.pair": "Pairs must reference existing outputs and use each output at most once.",
+    "bundle.export": "Could not serialize the report.",
+    "bundle.format": "Only CSV, JSON and Markdown reports are supported.",
+    "bundle.output_limit": "Export exceeds 64 MiB. Narrow the scope.",
+    "bundle.copy_limit": "Copy text exceeds 64 KiB. Narrow the scope or save to a file.",
+    "bundle.encoding": "File is not UTF-8 JSON.",
+    "bundle.source": "Choose a different export path from the open metafiles."
+  },
+  "help": [
+    "Read-only esbuild metafiles: 16 MiB each, 20,000 inputs, 2,000 outputs, 100,000 import edges and 100,000 contributions; JSON depth 64, paths 2,048 bytes, byte counts and sums at most 2^53-1.",
+    "Contributions use bytesInOutput, separately from source bytes. Positive output-minus-contribution differences remain unattributed. Over-attribution gets diagnostics and a chart scaled by the contribution sum.",
+    "Click directories to drill down and modules to inspect one verified input path and original imports. Only exact metadata references are followed; externals stay external. No source reads, builds or network access.",
+    "Treemaps have at most 256 tiles, grouping the remainder as Other. All modules remain available through backend pagination. Directory depth is 24; import traces are limited to 64 levels. No module gzip/Brotli estimates or unsupported tree-shaking claims.",
+    "Two reports match exact paths automatically; other paths remain added/removed until manually paired. Hashed outputs are never matched by approximate filenames. Output byte deltas and module contribution deltas are separate.",
+    "Reports live only in the current plugin instance. No database is created. CSV/JSON/Markdown follow the current directory, search or comparison scope. Copy limit 64 KiB; export limit 64 MiB. Tasks can be cancelled; failed/cancelled loads retain the prior cache."
+  ]
+}

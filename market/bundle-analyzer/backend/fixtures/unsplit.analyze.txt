@@ -1,0 +1,16 @@
+
+  dist/a-V6OPKI2X.js ── 745b ── 100.0%
+   ├ src/a.js ───────── 162b ─── 21.7%
+   ├ src/lazy.js ────── 160b ─── 21.5%
+   │  └ src/a.js
+   └ src/shared.js ───── 38b ──── 5.1%
+      └ src/a.js
+
+  dist/b-HBAUD2O3.js ─── 93b ── 100.0%
+   ├ src/shared.js ───── 38b ─── 40.9%
+   │  └ src/b.js
+   └ src/b.js ────────── 25b ─── 26.9%
+
+  dist/a-WCVDUQYJ.css ── 60b ── 100.0%
+   └ src/style.css ───── 40b ─── 66.7%
+      └ src/a.js
