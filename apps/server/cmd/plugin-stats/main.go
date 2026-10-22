@@ -17,6 +17,7 @@ import (
 	mysqlmigrate "github.com/golang-migrate/migrate/v4/database/mysql"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"toolforge.dev/plugin-stats/internal/api"
+	"toolforge.dev/plugin-stats/internal/asset"
 	"toolforge.dev/plugin-stats/internal/catalog"
 	"toolforge.dev/plugin-stats/internal/config"
 	"toolforge.dev/plugin-stats/internal/store"
@@ -104,7 +105,12 @@ func run(args []string) error {
 	if err = db.QueryRowContext(ctx, "SELECT version,dirty FROM schema_migrations LIMIT 1").Scan(&schema, &dirty); err != nil || schema != store.SchemaVersion || dirty {
 		return errors.New("database migration is required")
 	}
-	h := (&api.API{Store: storage, Signer: cfg.Signer, AssetBaseURL: cfg.AssetBaseURL, BuildSHA: buildSHA, Logger: slog.Default()}).Handler()
+	var presigner *asset.Presigner
+	if cfg.CosSecretID != "" {
+		presigner = &asset.Presigner{SecretID: cfg.CosSecretID, SecretKey: cfg.CosSecretKey}
+		slog.Info("download URLs are COS presigned for a private bucket")
+	}
+	h := (&api.API{Store: storage, Signer: cfg.Signer, AssetBaseURL: cfg.AssetBaseURL, Presigner: presigner, BuildSHA: buildSHA, Logger: slog.Default()}).Handler()
 	srv := &http.Server{Addr: cfg.ListenAddr, Handler: h, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 << 10, ErrorLog: slog.NewLogLogger(slog.Default().Handler(), slog.LevelError)}
 	done := make(chan error, 1)
 	go func() { done <- srv.ListenAndServe() }()

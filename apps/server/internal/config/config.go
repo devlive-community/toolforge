@@ -17,6 +17,9 @@ import (
 type Config struct {
 	ListenAddr, AssetBaseURL, DSN string
 	Signer                        *receipt.Signer
+	// COS credentials enable presigned download URLs for private buckets;
+	// both values must be set together, otherwise plain URLs are served.
+	CosSecretID, CosSecretKey string
 }
 
 func env(key, fallback string) string {
@@ -91,6 +94,11 @@ func Read(serving bool) (Config, error) {
 	c.Signer, err = receipt.New(os.Getenv("RECEIPT_ACTIVE_KID"), keys)
 	if err != nil {
 		return c, errors.New("invalid receipt keyring")
+	}
+	c.CosSecretID = os.Getenv("COS_SECRET_ID")
+	c.CosSecretKey = os.Getenv("COS_SECRET_KEY")
+	if (c.CosSecretID == "") != (c.CosSecretKey == "") {
+		return c, errors.New("COS_SECRET_ID and COS_SECRET_KEY must be set together")
 	}
 	return c, nil
 }

@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"toolforge.dev/plugin-stats/internal/asset"
 	"toolforge.dev/plugin-stats/internal/receipt"
 	"toolforge.dev/plugin-stats/internal/store"
 )
@@ -52,6 +53,31 @@ func fixtureAPI() (*API, *fakeRepo) {
 	repo := &fakeRepo{}
 	return &API{Store: repo, Signer: signer, AssetBaseURL: "https://plugins.toolforge.devlive.org", BuildSHA: "test-sha", Now: func() time.Time { return time.Unix(1700000000, 0) }}, repo
 }
+func TestDownloadPresignsForPrivateBucket(t *testing.T) {
+	a, _ := fixtureAPI()
+	a.Presigner = &asset.Presigner{SecretID: "AKIDexample", SecretKey: "secret-key", Now: a.Now}
+	h := a.Handler()
+	req := httptest.NewRequest("GET", "/v1/plugins/plugin/versions/1.0.0/download", nil)
+	req.Header.Set("Idempotency-Key", strings.Repeat("d", 32))
+	w := httptest.NewRecorder()
+	h.ServeHTTP(w, req)
+	location := w.Header().Get("Location")
+	if w.Code != 302 {
+		t.Fatalf("download status %d", w.Code)
+	}
+	for _, part := range []string{
+		"packages/plugin/1.0.0/file.tfp",
+		"q-sign-algorithm=sha1",
+		"q-ak=AKIDexample",
+		"q-sign-time=1700000000;1700000600",
+		"q-url-param-list=&q-signature=",
+	} {
+		if !strings.Contains(location, part) {
+			t.Fatalf("presigned location missing %q: %s", part, location)
+		}
+	}
+}
+
 func TestDownloadAndReceiptHTTPContract(t *testing.T) {
 	a, repo := fixtureAPI()
 	h := a.Handler()

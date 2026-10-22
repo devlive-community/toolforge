@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"toolforge.dev/plugin-stats/internal/asset"
 	"toolforge.dev/plugin-stats/internal/catalog"
 	"toolforge.dev/plugin-stats/internal/receipt"
 	"toolforge.dev/plugin-stats/internal/store"
@@ -32,9 +33,12 @@ type API struct {
 	Store        Repository
 	Signer       *receipt.Signer
 	AssetBaseURL string
-	BuildSHA     string
-	Now          func() time.Time
-	Logger       *slog.Logger
+	// Presigner signs COS download URLs for private buckets; when nil the
+	// plain asset URL is served and the bucket must allow anonymous reads.
+	Presigner *asset.Presigner
+	BuildSHA  string
+	Now       func() time.Time
+	Logger    *slog.Logger
 }
 
 func (a *API) Handler() http.Handler {
@@ -134,7 +138,11 @@ func (a *API) download(w http.ResponseWriter, r *http.Request) {
 		a.fail(w, err)
 		return
 	}
-	w.Header().Set("Location", strings.TrimRight(a.AssetBaseURL, "/")+"/"+issued.ObjectKey)
+	location := strings.TrimRight(a.AssetBaseURL, "/") + "/" + issued.ObjectKey
+	if a.Presigner != nil {
+		location = a.Presigner.Presign(a.AssetBaseURL, issued.ObjectKey)
+	}
+	w.Header().Set("Location", location)
 	w.Header().Set("X-ToolForge-Attempt-Id", issued.AttemptID)
 	w.Header().Set("X-ToolForge-Receipt", token)
 	w.Header().Set("X-ToolForge-Receipt-Expires", strconv.FormatInt(issued.ExpiresAt, 10))

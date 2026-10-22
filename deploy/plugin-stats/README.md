@@ -29,6 +29,9 @@ FLUSH PRIVILEGES;
 | secret | `DB_PASSWORD` | 上面建账号时设置的密码 |
 | secret | `DB_NAME` | `toolforge_stats` |
 | secret | `RECEIPT_KEY` | 第 2 步生成的 base64 密钥 |
+| secret | `COS_SECRET_ID` / `COS_SECRET_KEY` | 腾讯云密钥；桶为**私有读写**时必需——服务用它给 302 目标生成 10 分钟有效的预签名下载 URL，与 Plugins 发布用同一组即可（不填则要求桶公开读） |
+
+部署脚本不会改动 Nginx 与 `stats.toolforge.devlive.org` 的任何配置（HTTPS、证书、站点文件都归你自己管理）；它只安装二进制、写入 `/etc/toolforge-plugin-stats/runtime.env` 并重启 `toolforge-plugin-stats` 服务。
 
 4. 推送改动 `apps/server/**` 的提交到 `dev` → 自动测试、构建、上传、迁移、重启、健康检查，失败自动回滚旧版本；`workflow_dispatch` 可手动补部署。
 
