@@ -54,7 +54,7 @@ jobs:
           sha256sum build/plugin-stats > build/plugin-stats.sha256
       - name: Generate runtime config
         run: |
-          cp ../deploy/plugin-stats/toolforge-plugin-stats.service build/
+          cp ../../deploy/plugin-stats/toolforge-plugin-stats.service build/
           cat > build/runtime.env <<EOF
           MYSQL_DSN=${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@tcp(${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }})/${{ secrets.DB_NAME }}?allowNativePasswords=true
           STATS_LISTEN_ADDR=127.0.0.1:8088
