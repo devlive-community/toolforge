@@ -14,17 +14,39 @@ fn key(text: &str) -> CFString {
     CFString::new(text)
 }
 
+fn type_id_of(value: &CFType) -> usize {
+    unsafe { CFGetTypeID(value.to_void()) }
+}
+
 fn string_value(dict: &CFDictionary<CFString, CFType>, name: &str) -> Option<String> {
     let value = dict.find(key(name))?;
+    // 只有确为 CFString 才能按 CFString 读取；对其他类型调用 CFString API
+    // 会抛 ObjC 异常直接崩掉宿主进程（曾因此让打开插件时整个应用退出）
+    if type_id_of(&value) != CFString::type_id() {
+        return None;
+    }
     // 字典值的生存期绑定字典本身，快照读取立即转 String
     let text = unsafe { CFString::wrap_under_get_rule(value.to_void() as *const _) };
     Some(text.to_string())
 }
 
-fn bool_value(dict: &CFDictionary<CFString, CFType>, name: &str) -> Option<bool> {
+/// 读取数值（开关/端口）；开关可能是 CFNumber 或 CFBoolean
+fn number_value(dict: &CFDictionary<CFString, CFType>, name: &str) -> Option<i64> {
     let value = dict.find(key(name))?;
+    let type_id = type_id_of(&value);
+    if type_id == CFBoolean::type_id() {
+        let flag = unsafe { CFBoolean::wrap_under_get_rule(value.to_void() as *const _) };
+        return Some(i64::from(flag == CFBoolean::true_value()));
+    }
+    if type_id != CFNumber::type_id() {
+        return None;
+    }
     let number = unsafe { CFNumber::wrap_under_get_rule(value.to_void() as *const _) };
-    number.to_i32().map(|n| n != 0)
+    number.to_i64()
+}
+
+fn bool_value(dict: &CFDictionary<CFString, CFType>, name: &str) -> Option<bool> {
+    number_value(dict, name).map(|value| value != 0)
 }
 
 fn entry(
@@ -38,8 +60,9 @@ fn entry(
         return None;
     }
     let host = string_value(dict, host_key).unwrap_or_default();
-    let port = string_value(dict, port_key)
-        .and_then(|text| text.trim().parse::<u32>().ok())
+    let port = number_value(dict, port_key)
+        .map(|value| value.clamp(0, u32::MAX as i64) as u32)
+        .or_else(|| string_value(dict, port_key).and_then(|text| text.trim().parse::<u32>().ok()))
         .unwrap_or(0);
     let warnings = check_entry(&host, port);
     Some(Entry {
@@ -52,6 +75,9 @@ fn entry(
 
 fn string_array(dict: &CFDictionary<CFString, CFType>, name: &str) -> Option<Vec<String>> {
     let value = dict.find(key(name))?;
+    if type_id_of(&value) != CFArray::<CFType>::type_id() {
+        return None;
+    }
     let array = unsafe { CFArray::<CFType>::wrap_under_get_rule(value.to_void() as *const _) };
     Some(
         array
@@ -147,4 +173,46 @@ fn dict_to_json(dict: &CFDictionary<CFString, CFType>) -> serde_json::Value {
         map.insert(name, json);
     }
     serde_json::Value::Object(map)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use core_foundation::base::TCFType;
+
+    fn test_dict() -> CFDictionary<CFString, CFType> {
+        CFDictionary::from_CFType_pairs(&[
+            (key("HTTPEnable"), CFNumber::from(1).into_CFType()),
+            (key("HTTPProxy"), CFString::new("127.0.0.1").into_CFType()),
+            (key("HTTPPort"), CFNumber::from(7890).into_CFType()),
+        ])
+    }
+
+    /// SystemConfiguration 的端口值是 CFNumber；按 CFString 包装并读取是
+    /// 未定义行为，曾让整个应用在打开插件时崩溃。此测试锁死该回归。
+    #[test]
+    fn reads_enabled_entry_with_number_port() {
+        let dict = test_dict();
+        let value = entry(&dict, "HTTPEnable", "HTTPProxy", "HTTPPort", "http")
+            .expect("enabled entry must exist");
+        assert_eq!(value.host, "127.0.0.1");
+        assert_eq!(value.port, 7890);
+        assert!(value.warnings.is_empty());
+    }
+
+    #[test]
+    fn missing_enable_flag_yields_no_entry() {
+        let dict = test_dict();
+        assert!(entry(&dict, "HTTPSEnable", "HTTPSProxy", "HTTPSPort", "https").is_none());
+    }
+
+    #[test]
+    fn disabled_flag_yields_no_entry() {
+        let dict = CFDictionary::from_CFType_pairs(&[
+            (key("HTTPEnable"), CFNumber::from(0).into_CFType()),
+            (key("HTTPProxy"), CFString::new("proxy.corp").into_CFType()),
+            (key("HTTPPort"), CFNumber::from(8080).into_CFType()),
+        ]);
+        assert!(entry(&dict, "HTTPEnable", "HTTPProxy", "HTTPPort", "http").is_none());
+    }
 }
