@@ -54,6 +54,7 @@ jobs:
           sha256sum build/plugin-stats > build/plugin-stats.sha256
       - name: Generate runtime config
         run: |
+          cp ../deploy/plugin-stats/toolforge-plugin-stats.service build/
           cat > build/runtime.env <<EOF
           MYSQL_DSN=${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@tcp(${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }})/${{ secrets.DB_NAME }}?allowNativePasswords=true
           STATS_LISTEN_ADDR=127.0.0.1:8088
@@ -70,7 +71,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: 'apps/server/build/plugin-stats,apps/server/build/plugin-stats.sha256,apps/server/build/runtime.env,deploy/plugin-stats/toolforge-plugin-stats.service'
+          source: 'apps/server/build/plugin-stats,apps/server/build/plugin-stats.sha256,apps/server/build/runtime.env,apps/server/build/toolforge-plugin-stats.service'
           target: /tmp/stats-deploy
           strip_components: 0
       - name: Install and restart
@@ -94,7 +95,7 @@ jobs:
             echo "$(cut -d ' ' -f 1 plugin-stats.sha256)  plugin-stats" | sha256sum -c --status
             sudo install -m 755 plugin-stats "$release/plugin-stats"
             sudo install -m 640 -o root -g toolforge-stats runtime.env /etc/toolforge-plugin-stats/runtime.env
-            sudo install -m 644 ../../deploy/plugin-stats/toolforge-plugin-stats.service /etc/systemd/system/toolforge-plugin-stats.service
+            sudo install -m 644 toolforge-plugin-stats.service /etc/systemd/system/toolforge-plugin-stats.service
             sudo systemctl daemon-reload
             sudo systemctl enable toolforge-plugin-stats >/dev/null
             echo "==> migrate"
