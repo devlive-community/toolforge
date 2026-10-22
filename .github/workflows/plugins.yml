@@ -155,9 +155,11 @@ jobs:
               if name not in assets:
                   pending.append(slug)
               elif prior:
-                  changed = subprocess.check_output(['git', 'diff', '--name-only', prior['sourceCommit'], 'HEAD', '--', str(path.parent), 'packages/plugin-ui-sdk', 'packages/plugin-build', 'crates/tf-plugin-api', 'crates/tf-plugin-guest', 'wit', 'pnpm-lock.yaml'], text=True)
-                  # The SDK manifests only carry their decoupled release metadata;
-                  # lock-visible dependency changes still surface in cargo_changed.
+                  changed = subprocess.check_output(['git', 'diff', '--name-only', prior['sourceCommit'], 'HEAD', '--', str(path.parent), 'packages/plugin-ui-sdk', 'packages/plugin-build', 'crates/tf-plugin-api', 'crates/tf-plugin-guest', 'wit'], text=True)
+                  # pnpm-lock.yaml is deliberately absent: shared UI dependencies
+                  # load from the host bundle (window.__TF_SHARED__) and never
+                  # enter plugin bytes, so one plugin's dependency additions must
+                  # not force every published plugin to re-version.
                   inputs = [line for line in changed.splitlines() if line not in ('crates/tf-plugin-api/Cargo.toml', 'crates/tf-plugin-guest/Cargo.toml')]
                   dependency_changed = False
                   if cargo_changed:
