@@ -1,7 +1,10 @@
 [package]
 name = "tf-plugin-api"
 description = "Contract between the ToolForge host and its plugins"
-version.workspace = true
+# 插件 SDK 版本独立于应用发版：workspace 继承会让每次应用版本升级都改动
+# Cargo.lock 里的 SDK 版本，发布流水线的漂移守卫会因此要求全部已发布插件
+# 重新升版本。ABI 变化时随 wit/ 源码改动手动升这里的版本。
+version = "0.2.2"
 edition.workspace = true
 license.workspace = true
 authors.workspace = true

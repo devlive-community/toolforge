@@ -1,7 +1,9 @@
 [package]
 name = "tf-plugin-guest"
 description = "Guest-side bindings that turn a ToolPlugin into a ToolForge WASM component"
-version.workspace = true
+# 同 tf-plugin-api：SDK 版本不随应用发版继承 workspace 版本，避免发布
+# 流水线把每次应用版本升级都当成插件输入变化。
+version = "0.2.2"
 edition.workspace = true
 license.workspace = true
 authors.workspace = true
