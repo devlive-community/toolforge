@@ -143,6 +143,8 @@ Plugins workflow 固定 COSCLI **v1.0.8 Linux amd64**，固定官方 GitHub rele
 
 服务 workflow 先 Go 格式、依赖、vet、race 单元/真实 MySQL 集成检查，再构建 `CGO_ENABLED=0` Linux amd64 二进制并带提交 SHA。通过固定 known_hosts 的受限 SSH 按字节流上传，服务器不安装 Go。
 
+需要与 CI 相同产物的本地构建用 `deploy/plugin-stats/build.sh`（默认完整测试，`--skip-tests` 跳过；输出二进制与 `plugin-stats.sha256`，`-X main.buildSHA` 注入与 workflow 一致——缺失会导致 `/readyz` 校验失败并触发回滚）。
+
 服务端入口依次获得同一把部署/导入锁、验证 SHA-256、安装不可变版本目录、使用独立迁移角色执行 `migrate up`、原子切换 `current`、重启、轮询本机 `/readyz` 的 `buildSha`。失败恢复旧链接并检查旧服务；首次无旧版则停止失败服务。数据库迁移绝不自动 down。旧二进制兼容迁移是回滚前提。
 
 人工回滚应使用已保留旧制品，通过受限部署入口提交旧 SHA 与对应摘要；不要手工执行破坏性数据库回滚。当前代码不提供删除历史制品/统计数据的自动任务。索引回滚从 `snapshots/registry/<sha256>.json` 恢复已知良好内容，仍需保持统计 API URL；撤销恶意版本应先更新可信目录状态，不能只把索引降版。
