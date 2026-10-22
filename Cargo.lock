@@ -8591,6 +8591,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-boardgame-score"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-bundle-analyzer"
 version = "0.1.0"
 dependencies = [

@@ -1,0 +1,187 @@
+{
+  "name": "Board Game Scorekeeper",
+  "description": "One table, good company, every point accounted for. Offline rounds, corrections and local game history.",
+  "locale": "en-US",
+  "seat": "#{{n}}",
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "arrow": "→"
+  },
+  "games": {
+    "title": "Select game",
+    "empty": "No games yet",
+    "new": "New game",
+    "activeItem": "{{name}} · {{n}} rounds · In progress",
+    "finishedItem": "{{name}} · {{n}} rounds · Finished",
+    "welcome": "Every game deserves a good record",
+    "hint": "2–12 players, high or low score wins. Negative scores, shared places and saved games."
+  },
+  "form": {
+    "new": "Set the table",
+    "newHint": "Players, scoring direction and round settings are fixed at creation. Names can change; seat IDs stay stable.",
+    "copy": "Same table, fresh scores",
+    "copyHint": "Keep the players, direction, round target and quick steps. Preserve this game and start fresh.",
+    "copyName": "{{name}} · Next game",
+    "rename": "Rename game & players",
+    "renameHint": "Duplicate names are fine. Stable seat IDs keep each player’s history intact.",
+    "edit": "Correct a confirmed round",
+    "editHint": "Old scores are on the left, new scores on the right. Saving recalculates every later total and rank, with an audit record.",
+    "name": "Game name",
+    "players": "Players (2–12)",
+    "player": "Player {{n}} name",
+    "defaultPlayer": "Player {{n}}",
+    "remove": "Remove player",
+    "add": "Add player",
+    "direction": "Scoring direction",
+    "limit": "Fixed rounds (1–200, optional)",
+    "manual": "Leave blank to end manually, up to 200 rounds",
+    "step": "Quick step {{n}} (1–1,000,000)"
+  },
+  "direction": {
+    "high": "High score wins",
+    "low": "Low score wins"
+  },
+  "entry": {
+    "round": "Round {{n}}",
+    "unsaved": "Unsaved input",
+    "saved": "Saved round draft",
+    "hint": "Enter integers from −1,000,000 to 1,000,000. Blank is missing; 0 is an explicit score. Save typed drafts before leaving; quick steps save immediately.",
+    "score": "Player {{n}} round score",
+    "empty": "Missing",
+    "adjust": "Player {{n}} {{delta}} points and save",
+    "confirm": "Confirm round",
+    "save": "Save draft",
+    "discard": "Discard unsaved input",
+    "clear": "Clear saved draft"
+  },
+  "page": {
+    "prev": "Previous page",
+    "next": "Next page",
+    "number": "Page {{n}}",
+    "total": "{{n}} records"
+  },
+  "status": {
+    "active": "In progress",
+    "finished": "Finished",
+    "rounds": "{{n}} rounds confirmed",
+    "target": "Target: {{n}} rounds"
+  },
+  "actions": {
+    "rename": "Rename game & players",
+    "copy": "New game with this setup",
+    "delete": "Delete this game",
+    "undo": "Undo last operation",
+    "reopen": "Reopen game",
+    "finish": "Review & finish"
+  },
+  "files": {
+    "csv": "Export rounds as CSV",
+    "json": "Export full game as JSON",
+    "copy": "Copy totals & ranks",
+    "copied": "Results copied",
+    "saved": "File saved"
+  },
+  "confirm": {
+    "finish": "Review every round before finishing",
+    "finishHint": "Use the pages below to review every confirmed round. Ties share a rank. Reopen the game before correcting finished results.",
+    "reopen": "Reopen this game?",
+    "reopenHint": "The old settlement is cleared and the game becomes active. Review and confirm a new settlement after editing.",
+    "delete": "Delete this game and its history?",
+    "deleteHint": "Scores, drafts and audit history will be deleted. This cannot be undone. Export JSON first if needed.",
+    "undo": "Undo the last operation?",
+    "undoHint": "Restore scores, draft, names or settlement to their previous state and recalculate ranks. One undo step is kept; undo is also audited."
+  },
+  "result": {
+    "finished": "That’s a wrap",
+    "finishedHint": "Final confirmed ranks are shown above, with shared places for ties. Export a keepsake or start another game with the same setup.",
+    "ready": "All scheduled rounds are in",
+    "readyHint": "Scores can still be corrected. Choose Review & finish to confirm the result and mark this game as finished."
+  },
+  "tabs": {
+    "label": "Score views",
+    "entry": "This round",
+    "rounds": "Round ledger",
+    "audit": "Audit trail"
+  },
+  "table": {
+    "hint": "Confirmed rounds only. Each cell shows the round score and cumulative total. Drafts never count toward rankings.",
+    "round": "Round",
+    "actions": "Actions",
+    "edit": "Correct",
+    "cumulative": "Total {{n}}",
+    "empty": "No confirmed rounds yet"
+  },
+  "audit": {
+    "hint": "Newest first. Before/after scores retain stable player IDs. Up to 1,000 operations; history is never silently trimmed.",
+    "number": "Operation {{n}}",
+    "cell": "Round {{round}} · #{{seat}}",
+    "draftCell": "Round {{round}} draft · #{{seat}}",
+    "empty": "No operations yet"
+  },
+  "event": {
+    "draft": "Save draft",
+    "confirmRound": "Confirm round",
+    "editRound": "Correct confirmed scores",
+    "rename": "Rename",
+    "finish": "Confirm settlement",
+    "reopen": "Reopen finished game",
+    "undo": "Undo previous operation"
+  },
+  "save": {
+    "loading": "Loading local games…",
+    "saving": "Saving to ToolForge database…",
+    "saved": "Saved locally · ready to resume",
+    "ready": "Offline on this device · confirmed rounds only",
+    "error": "Operation not completed",
+    "failed": "Save failed. The last saved result remains on screen.",
+    "retry": "Retry save / load"
+  },
+  "logs": {
+    "title": "Task log",
+    "empty": "No task messages",
+    "latest": "Jump to latest"
+  },
+  "stages": {
+    "validate": "Validate game",
+    "update": "Update scores",
+    "view": "Recalculate ranks",
+    "export": "Export results",
+    "done": "Done"
+  },
+  "functions": {
+    "inspect": "Inspect scoreboard",
+    "apply": "Update game",
+    "export": "Export game"
+  },
+  "help": [
+    "Create a 2–12-player game and choose high or low score wins. Players, direction, steps and round target are fixed; names can change. Signed integer scores only; blank differs from 0. Quick steps save immediately; save typed drafts or confirm the round before leaving. All players need scores to confirm. Only confirmed rounds count toward totals. Correct old scores in the ledger to recalculate later totals; the audit trail keeps before/after values. One-step undo includes finishing and reopening. Fixed targets still require explicit review and settlement. Reopen finished games before editing. Limits: 100 games, 200 rounds per game, ±1,000,000 per player per round, 1,000 operations per game, 2 MiB total state. Limits reject operations without silently discarding history. JSON archives one complete game with drafts and audit records. CSV contains confirmed round scores only. Import is not supported in this version. Everything stays in the existing ToolForge SQLite database, without network requests."
+  ],
+  "errors": {
+    "boardgame-score": {
+      "name": "Names must contain 1–80 characters without control characters.",
+      "score": "Enter a valid integer with absolute value at most {{limit}}.",
+      "players": "Use 2–12 players. Player count is fixed after creation.",
+      "state": "Stored state is invalid or exceeds limits. Existing data was not overwritten.",
+      "storage_limit": "The 2 MiB state or revision limit was reached. Export and delete unneeded games.",
+      "missing": "Game not found. Reload saved games.",
+      "stale": "The round or state has changed. Retry from the current view.",
+      "incomplete": "Enter a score for every player. Use 0 explicitly for a zero score.",
+      "round_limit": "Use 1–200 rounds without exceeding this game’s target.",
+      "round": "Confirmed round not found.",
+      "step": "Quick steps must be distinct positive integers (1–1,000,000).",
+      "games_limit": "Up to 100 games can be saved. Export and delete unneeded games first.",
+      "events_limit": "This game reached 1,000 operations. History is preserved. Export an archive and start a fresh game with this setup.",
+      "finished": "This game is finished. Explicitly reopen it before editing.",
+      "active": "This game is already active.",
+      "confirm": "Review and confirm this operation first.",
+      "unsettled": "Confirm at least one round, then confirm or clear the draft before finishing.",
+      "undo": "No undo step is available. Only one step is kept.",
+      "unchanged": "No changes to save.",
+      "file": "File could not be saved or the path is invalid.",
+      "format": "Unsupported export format.",
+      "target": "Complete the fixed round target before settlement."
+    }
+  }
+}
