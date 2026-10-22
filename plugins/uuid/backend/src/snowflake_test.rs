@@ -34,6 +34,7 @@ fn decodes_discord_snowflake() {
 
 #[test]
 fn generated_ids_roundtrip_and_increase() {
+    let _serial = TEST_SERIAL.lock().unwrap_or_else(|e| e.into_inner());
     let now = 1_760_000_000_000;
     let ids = generate_at(&args(Preset::Twitter, 3, 17), 5000, now).unwrap();
     let numbers: Vec<u64> = ids.iter().map(|id| id.parse().unwrap()).collect();
@@ -50,6 +51,8 @@ fn generated_ids_roundtrip_and_increase() {
 
 #[test]
 fn consecutive_calls_stay_monotonic_for_same_layout() {
+    // LAST 是全局状态：两次调用之间不能被并行测试改写，否则时钟回拨分支失效
+    let _serial = TEST_SERIAL.lock().unwrap_or_else(|e| e.into_inner());
     let now = 1_770_000_000_000;
     let first = generate_at(&args(Preset::Discord, 1, 1), 3, now).unwrap();
     // 时钟回拨到更早时间仍在上次之后
@@ -61,6 +64,7 @@ fn consecutive_calls_stay_monotonic_for_same_layout() {
 
 #[test]
 fn baidu_uses_second_ticks() {
+    let _serial = TEST_SERIAL.lock().unwrap_or_else(|e| e.into_inner());
     let now = 1_760_000_000_123;
     let ids = generate_at(&args(Preset::Baidu, 0, 2_000_000), 1, now).unwrap();
     let (unix_ms, datacenter, worker, _) =
@@ -99,6 +103,7 @@ fn rejects_out_of_range_ids_and_layouts() {
 
 #[test]
 fn custom_layout_generates() {
+    let _serial = TEST_SERIAL.lock().unwrap_or_else(|e| e.into_inner());
     let custom = GenerateArgs {
         preset: Preset::Custom,
         layout: Some(Layout {

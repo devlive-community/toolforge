@@ -104,6 +104,10 @@ fn validates_count_and_custom_namespace() {
 
 #[test]
 fn snowflake_kind_uses_preset() {
+    // snowflake 生成会写全局 LAST 状态，与其他模块的时序测试互斥
+    let _serial = crate::snowflake::TEST_SERIAL
+        .lock()
+        .unwrap_or_else(|e| e.into_inner());
     let out = run(args(json!({
         "kind": "snowflake",
         "count": 10,

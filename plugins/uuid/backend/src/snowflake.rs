@@ -114,6 +114,11 @@ fn now_ms() -> i64 {
 /// 上一次生成的布局、时间刻度与序列号；同一布局在多次调用间保持严格递增
 static LAST: Mutex<Option<(Layout, i64, u64)>> = Mutex::new(None);
 
+/// 测试专用：并行测试共享 LAST 状态，串行化所有触碰它的测试，
+/// 避免「时钟回拨仍递增」这类时序断言被其他测试的写入干扰
+#[cfg(test)]
+pub(crate) static TEST_SERIAL: Mutex<()> = Mutex::new(());
+
 pub fn generate(args: &GenerateArgs, count: usize) -> PluginResult<Vec<String>> {
     generate_at(args, count, now_ms())
 }
