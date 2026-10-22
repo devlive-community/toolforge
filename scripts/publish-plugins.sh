@@ -77,7 +77,7 @@ for file in release-catalog registry; do
   put_immutable "$dir/$file.json" "snapshots/$file/$digest.json" "$digest" "$size"
 done
 catalog_digest=$(sha256sum "$dir/release-catalog.json" | cut -d ' ' -f 1)
-ssh -T -i "$PLUGIN_SSH_KEY_PATH" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o "UserKnownHostsFile=$PLUGIN_SSH_KNOWN_HOSTS_PATH" "$PLUGIN_CATALOG_SSH_TARGET" "catalog $catalog_digest" < "$dir/release-catalog.json"
+ssh -T -i "$PLUGIN_SSH_KEY_PATH" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new "$PLUGIN_CATALOG_SSH_TARGET" "sudo -n /usr/local/sbin/toolforge-plugin-stats-deploy catalog $catalog_digest" < "$dir/release-catalog.json"
 # Import rejects stale generations. Mutable pointers are updated only after its success.
 for file in release-catalog registry; do
   "$coscli" cp "$dir/$file.json" "cos://$bucket/$file.json" -c "$COS_CONFIG_PATH" --disable-log --fail-output=false --process-log=false --meta 'Content-Type:application/json#Cache-Control:public,max-age=60,must-revalidate'

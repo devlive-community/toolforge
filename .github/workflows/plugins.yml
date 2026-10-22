@@ -226,19 +226,18 @@ jobs:
           COS_SESSION_TOKEN: ${{ secrets.COS_SESSION_TOKEN }}
           COS_REGION: ${{ vars.COS_REGION || 'ap-singapore' }}
           COS_BUCKET: toolforge-1258585472
-          PLUGIN_CATALOG_SSH_TARGET: ${{ vars.PLUGIN_CATALOG_SSH_TARGET }}
-          PLUGIN_CATALOG_SSH_KEY: ${{ secrets.PLUGIN_CATALOG_SSH_KEY }}
-          PLUGIN_SSH_KNOWN_HOSTS: ${{ secrets.PLUGIN_SSH_KNOWN_HOSTS }}
+          PLUGIN_CATALOG_SSH_TARGET: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+          PLUGIN_CATALOG_SSH_KEY: ${{ secrets.SSH_KEY }}
         run: |
           set -euo pipefail
           umask 077
           task_dir=$(mktemp -d "$RUNNER_TEMP/plugin-publish.XXXXXX")
           trap 'rm -rf "$task_dir"' EXIT
-          export COS_CONFIG_PATH="$task_dir/cos.yaml" PLUGIN_SSH_KEY_PATH="$task_dir/id" PLUGIN_SSH_KNOWN_HOSTS_PATH="$task_dir/known_hosts"
+          export COS_CONFIG_PATH="$task_dir/cos.yaml" PLUGIN_SSH_KEY_PATH="$task_dir/id"
           export COSCLI_BIN="$RUNNER_TEMP/coscli" XTASK_BIN=target/release/xtask
           python3 - <<'PY'
           import json, os, pathlib, re
-          for key in ('COS_SECRET_ID','COS_SECRET_KEY','PLUGIN_CATALOG_SSH_KEY','PLUGIN_SSH_KNOWN_HOSTS'):
+          for key in ('COS_SECRET_ID','COS_SECRET_KEY','PLUGIN_CATALOG_SSH_KEY'):
               if not os.environ.get(key):
                   raise SystemExit(f'Missing protected publishing configuration: {key}')
           region = os.environ['COS_REGION']
@@ -248,7 +247,6 @@ jobs:
           # JSON is also valid YAML. Never pass credentials as process arguments or print this file.
           pathlib.Path(os.environ['COS_CONFIG_PATH']).write_text(json.dumps(config))
           pathlib.Path(os.environ['PLUGIN_SSH_KEY_PATH']).write_text(os.environ['PLUGIN_CATALOG_SSH_KEY'] + '\n')
-          pathlib.Path(os.environ['PLUGIN_SSH_KNOWN_HOSTS_PATH']).write_text(os.environ['PLUGIN_SSH_KNOWN_HOSTS'] + '\n')
           PY
-          unset COS_SECRET_ID COS_SECRET_KEY COS_SESSION_TOKEN PLUGIN_CATALOG_SSH_KEY PLUGIN_SSH_KNOWN_HOSTS
+          unset COS_SECRET_ID COS_SECRET_KEY COS_SESSION_TOKEN PLUGIN_CATALOG_SSH_KEY
           scripts/publish-plugins.sh dist/plugins
