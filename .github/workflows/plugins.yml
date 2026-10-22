@@ -4,17 +4,15 @@ name: Plugins
 on:
   push:
     branches: [dev]
+    # Only plugin-relevant inputs launch this pipeline: app releases, lockfile
+    # churn and build-tool edits must not republish unchanged online plugins.
     paths:
       - 'market/**'
       - 'packages/plugin-ui-sdk/**'
       - 'packages/plugin-build/**'
       - 'crates/tf-plugin-api/**'
       - 'crates/tf-plugin-guest/**'
-      - 'crates/tf-package/**'
-      - 'crates/xtask/**'
       - 'wit/**'
-      - 'Cargo.lock'
-      - 'pnpm-lock.yaml'
       - 'scripts/publish-plugins.sh'
       - 'scripts/cos-setup.sh'
       - 'scripts/migrate-plugin-assets.sh'
@@ -125,7 +123,7 @@ jobs:
               if changed.strip():
                   old_lock = tomllib.loads(subprocess.check_output(['git', 'show', prior['sourceCommit'] + ':Cargo.lock'], text=True))
                   new_lock = tomllib.loads(pathlib.Path('Cargo.lock').read_text())
-                  key = lambda p: (p['name'], p['version'], p.get('source'))
+                  key = lambda p: (p['name'], p.get('source'))
                   old_packages = {key(p): p for p in old_lock['package']}
                   new_packages = {key(p): p for p in new_lock['package']}
                   metadata = json.loads(subprocess.check_output(['cargo', 'metadata', '--locked', '--format-version', '1', '--filter-platform', 'wasm32-wasip2'], text=True))
@@ -133,7 +131,19 @@ jobs:
                   nodes = {n['id']: n for n in metadata['resolve']['nodes']}
                   manifests = {str(pathlib.Path(p['manifest_path']).resolve()): p['id'] for p in metadata['packages']}
                   for ident, package in packages.items():
-                      if old_packages.get(key(package)) != new_packages.get(key(package)):
+                      entry = key(package)
+                      old, new = old_packages.get(entry), new_packages.get(entry)
+                      if old is None or new is None:
+                          cargo_changed.add(ident)
+                          continue
+                      # Local path crates carry release metadata versions: a
+                      # version-only bump does not change compiled plugin bytes.
+                      # A crates.io release is always a real input change.
+                      if package.get('source') is None:
+                          drop = {'version'}
+                          old = {field: value for field, value in old.items() if field not in drop}
+                          new = {field: value for field, value in new.items() if field not in drop}
+                      if old != new:
                           cargo_changed.add(ident)
           pending = []
           for path in sorted(pathlib.Path('market').glob('*/manifest.json')):
@@ -146,6 +156,9 @@ jobs:
                   pending.append(slug)
               elif prior:
                   changed = subprocess.check_output(['git', 'diff', '--name-only', prior['sourceCommit'], 'HEAD', '--', str(path.parent), 'packages/plugin-ui-sdk', 'packages/plugin-build', 'crates/tf-plugin-api', 'crates/tf-plugin-guest', 'wit', 'pnpm-lock.yaml'], text=True)
+                  # The SDK manifests only carry their decoupled release metadata;
+                  # lock-visible dependency changes still surface in cargo_changed.
+                  inputs = [line for line in changed.splitlines() if line not in ('crates/tf-plugin-api/Cargo.toml', 'crates/tf-plugin-guest/Cargo.toml')]
                   dependency_changed = False
                   if cargo_changed:
                       manifest_path = str((path.parent / 'backend' / 'Cargo.toml').resolve())
@@ -158,7 +171,7 @@ jobs:
                           seen.add(ident)
                           frontier.extend(dep['pkg'] for dep in nodes[ident]['deps'])
                       dependency_changed = bool(seen & cargo_changed)
-                  if changed.strip() or dependency_changed:
+                  if inputs or dependency_changed:
                       raise SystemExit(f'{slug}: published plugin inputs changed without a version bump')
           (root / 'pending.txt').write_text(''.join(slug + '\n' for slug in pending))
           PY
