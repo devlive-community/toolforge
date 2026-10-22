@@ -1,0 +1,42 @@
+{
+  "id": "org.devlive.toolforge.http-cache",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "network",
+  "keywords": [
+    "http",
+    "cache",
+    "cache-control",
+    "freshness",
+    "age",
+    "etag",
+    "vary",
+    "缓存",
+    "重验证",
+    "过期"
+  ],
+  "accent": "blue",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [
+    "clipboard:write",
+    "fs:user-selected"
+  ],
+  "functions": {
+    "examples": {},
+    "inspect": {
+      "task": true
+    },
+    "query": {
+      "task": true
+    },
+    "export": {
+      "task": true
+    }
+  },
+  "sensitive": true
+}

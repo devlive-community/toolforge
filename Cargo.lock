@@ -8787,6 +8787,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-http-cache"
+version = "0.1.0"
+dependencies = [
+ "httpdate",
+ "jiff",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-http-client"
 version = "0.1.0"
 dependencies = [

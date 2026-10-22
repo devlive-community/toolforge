@@ -1,0 +1,273 @@
+{
+  "name": "HTTP 缓存语义试验台",
+  "description": "离线解释存储、有效期、年龄、Vary 与重验证，比较私有和共享缓存。",
+  "locale": "zh-CN",
+  "boundary": "离线试算 · 普通 GET／200 · 同一目标 URI · 结果是复用候选解释，不代表实际命中",
+  "common": {
+    "cancel": "取消任务",
+    "unknown": "未知",
+    "seconds": "{{n}} 秒"
+  },
+  "role": {
+    "private": "私有缓存",
+    "shared": "共享缓存"
+  },
+  "storage": {
+    "allowed": "允许存储",
+    "blocked": "禁止存储",
+    "unknown": "存储无法确定"
+  },
+  "reuse": {
+    "candidate": "可直接复用的候选",
+    "validate": "先验证或重新获取",
+    "variant": "变体不符，不能直接复用",
+    "blocked": "不允许复用",
+    "unknown": "复用无法确定"
+  },
+  "freshness": {
+    "fresh": "新鲜",
+    "stale": "已过期",
+    "unknown": "新鲜度未知"
+  },
+  "conditionStatus": {
+    "pass": "符合",
+    "fail": "受限",
+    "unknown": "未知",
+    "info": "假定"
+  },
+  "context": {
+    "request": "原请求",
+    "response": "响应",
+    "presented": "新请求"
+  },
+  "headerLabel": {
+    "requestHeaders": "原请求头部内容",
+    "responseHeaders": "响应头部内容",
+    "newRequestHeaders": "新请求头部内容"
+  },
+  "input": {
+    "title": "配置试验",
+    "case": "输入案例",
+    "baseline": "基准",
+    "experiment": "试验",
+    "copy": "复制基准",
+    "name": "案例名称",
+    "role": "缓存类型",
+    "method": "请求方法",
+    "status": "响应状态",
+    "timeTitle": "时间参数（含时区，精确到秒）",
+    "timeHint": "示例：2026-10-22T10:00:00Z。留空保留未知，不会使用本机时间。",
+    "requestTime": "请求开始",
+    "responseTime": "响应接收",
+    "now": "模拟现在",
+    "missingTime": "未提供",
+    "headerTabs": "头部内容",
+    "headerHint": "每行 Name: value，不含请求／状态行和正文。每组最多 32 KiB／128 行。",
+    "useNewRequest": "单独提供新请求头",
+    "sameRequest": "当前按与原请求相同的头部试算。启用上方选项后，可对比新请求与 Vary 指定字段。",
+    "compare": "比较两个案例",
+    "run": "开始试算",
+    "transient": "输入仅在本次页面内存中保留；不联网、不保存正文。"
+  },
+  "panes": {
+    "label": "页面区域",
+    "input": "输入",
+    "result": "结果"
+  },
+  "result": {
+    "title": "缓存判定",
+    "lifetime": "有效期",
+    "age": "当前年龄",
+    "source": "有效期来源：{{source}}",
+    "conditional": "条件请求示例",
+    "copyConditional": "复制条件头",
+    "conditionalHint": "ETag 生成 If-None-Match，Last-Modified 生成 If-Modified-Since；同时存在时前者优先。304 表示可更新匹配缓存的元数据后复用，不是新的响应正文。本工具不执行验证或 304 合并。",
+    "noValidators": "没有可用验证器。需要重新获取响应。",
+    "remaining": "剩余时间（负数表示已过期）",
+    "rawAge": "输入 Age（缺省／忽略时为 0）",
+    "ageHint": "采用保守的 corrected_initial_age 最大值公式。缺项保持未知，所有时间统一到 UTC 秒。",
+    "varyHint": "对照当前选中案例的原请求与新请求。* 永不匹配；缺失与明确空值不同。敏感字段只显示遮罩。",
+    "noVary": "响应未指定 Vary 字段，不增加变体匹配限制。",
+    "noDiagnostics": "没有附加诊断。",
+    "maskHint": "已遮罩 Authorization、Cookie、Set-Cookie、代理认证和 X-API-Key。格式错误的行不进入报告。",
+    "dirty": "输入已修改；下方仍为上一次成功试算，请重新分析后再比较。",
+    "sections": "分析明细",
+    "empty": "缓存为什么没有按预期工作？",
+    "emptyHint": "填写头部与时间，比较存储、有效期和验证条件。所有分析都在本机完成。",
+    "working": "正在分析／生成报告…"
+  },
+  "sections": {
+    "conditions": "判定过程",
+    "timing": "年龄计算",
+    "vary": "Vary 对照",
+    "directives": "缓存指令",
+    "diagnostics": "诊断与边界",
+    "headers": "遮罩后的头部"
+  },
+  "vary": {
+    "match": "相符",
+    "different": "不同／通配符",
+    "stored": "已缓存请求",
+    "presented": "新请求",
+    "absent": "字段缺失",
+    "empty": "字段存在，值为空"
+  },
+  "directives": {
+    "supported": "已覆盖",
+    "boundary": "范围外",
+    "invalid": "无效"
+  },
+  "files": {
+    "copy": "复制遮罩后的 Markdown 报告",
+    "markdown": "导出遮罩后的 Markdown",
+    "json": "导出遮罩后的 JSON",
+    "copied": "已复制",
+    "saved": "报告已保存"
+  },
+  "page": {
+    "prev": "上一页",
+    "next": "下一页",
+    "number": "第 {{n}} 页",
+    "total": "共 {{n}} 条"
+  },
+  "logs": {
+    "title": "任务记录",
+    "empty": "暂无任务记录",
+    "latest": "跳至最新",
+    "analysis_started": "开始分析 {{count}} 个案例",
+    "analysis_complete": "已完成 {{count}} 个案例",
+    "export_started": "正在导出 {{count}} 个已遮罩案例"
+  },
+  "functions": {
+    "examples": "读取示例案例",
+    "inspect": "试算缓存规则",
+    "query": "查看分析明细",
+    "export": "导出遮罩报告"
+  },
+  "timing": {
+    "apparentAge": "表观年龄",
+    "responseDelay": "响应传输时长",
+    "correctedAgeValue": "校正 Age 值",
+    "correctedInitialAge": "校正初始年龄",
+    "residentTime": "本缓存驻留时长",
+    "currentAge": "当前年龄"
+  },
+  "messages": {
+    "header_syntax": "头部 {{context}} 的第 {{line}} 行格式无效；不接收起始行、正文或折叠行，判定保留为不确定。",
+    "singleton_duplicate": "字段 {{field}} 重复出现，不采用最后一项；该字段不能给出单一可信值。",
+    "control_syntax": "{{context}} 的 Cache-Control 引号或语法不完整，无法可靠解释。",
+    "delta_clamped": "{{field}} 超出本工具的秒数范围，按 {{limit}} 饱和值处理，并禁止据此断言可直接复用。",
+    "directive_invalid": "{{context}} 指令 {{field}} 参数无效。",
+    "directive_boundary": "{{context}} 指令 {{field}} 超出首版覆盖范围；不假装已经模拟该扩展或字段级限制。",
+    "directive_duplicate": "{{context}} 中指令 {{field}} 重复出现；保留诊断，不静默采用最后一个值。",
+    "directives_limit": "缓存指令数量超出限制。",
+    "vary_invalid": "Vary 字段无效，无法确认候选变体。",
+    "vary_conservative": "Vary 按字段缺失状态与保守文本对照比较，不推断任意字段的排序、大小写或语义等价。",
+    "vary_match": "Vary 指定字段与已缓存请求相符；若无 Vary，则此项不增加限制。",
+    "vary_different": "Vary 对照不同或包含 *；不能据此直接复用该候选。",
+    "time_missing": "未填写 {{field}}，相关计算项保留为未知；不会套用本机当前时间。",
+    "date_missing": "缺少 Date，不能精确计算 apparent_age 与完整 current_age；不猜测来源生成时刻。",
+    "date_invalid": "Date 无效或重复，无法用于完整年龄计算。",
+    "age_first": "Age 为列表或多行时，按规范采用第一成员，其余成员不参与计算。",
+    "age_invalid": "Age 非法，按规范忽略该字段，以未提供 Age 时的 0 参与计算。",
+    "age_absent": "未提供 Age，以 0 参与计算；这不证明请求已经回到源站。",
+    "time_order": "时间顺序有误：需要请求开始 ≤ 响应接收 ≤ 模拟现在。年龄和剩余时间保留为未知。",
+    "date_future": "Date 晚于响应接收时间，apparent_age 按规则下限取 0，可能存在时钟偏差。",
+    "freshness_invalid": "{{field}} 的有效期信息无效或重复；采用保守的 0 秒过期策略，不回退到低优先级字段。",
+    "expires_ignored": "{{field}} 优先于 Expires；Expires 不参与本次有效期计算。",
+    "expires_received_date": "Expires 存在而 Date 缺失时，有效期按 Expires − 响应接收时刻计算；完整年龄仍保留缺项。",
+    "expires_invalid": "Expires 非法（包括 0）或重复，按已经过期处理，有效期取 0。",
+    "no_heuristic": "没有显式有效期。200 响应仍可能允许存储，但首版不根据 Last-Modified 或其他字段猜测有效期。",
+    "smaxage_private": "私有缓存忽略 s-maxage；优先使用 max-age，其次 Expires。",
+    "public_private": "public 与 private 同时出现；共享缓存遵守更严格的 private 限制。",
+    "store_conflict": "no-store 与其他可缓存标记同时出现；除已覆盖的 must-understand 例外外，禁止存储优先。",
+    "scope_supported": "当前为普通 GET／200，未提供 Range 或 Content-Range。",
+    "scope_boundary": "首版仅解释普通 GET／200；非 GET、其他状态或部分响应保留为范围外。",
+    "same_uri_complete": "假定新旧请求指向同一目标 URI，且 200 响应正文完整；本工具不读取正文，也不验证实际缓存键。",
+    "must_understand_override": "本工具理解 200 状态的缓存要求：响应 must-understand 允许忽略同一响应的 no-store；请求 no-store 仍有效。",
+    "no_store": "原请求或响应的 no-store 禁止新存储；它不同于允许存储但每次使用前验证的 no-cache。",
+    "private_shared": "响应 private 禁止共享缓存存储；私有缓存仍需遵守其他限制。",
+    "authorization_blocked": "原请求含 Authorization，响应未通过 public、must-revalidate 或有效 s-maxage 明确允许共享缓存。",
+    "authorization_allowed": "响应明确允许共享缓存处理认证请求，仍须遵守有效期、Vary 和验证限制。",
+    "storage_uncertain": "输入格式、字段级限制或覆盖范围不足，无法确认可否存储。",
+    "storage_allowed": "在本工具覆盖的规则内允许存储；允许不代表缓存一定会保存，也不等于可直接复用。",
+    "cookie_no_implicit_ban": "Cookie／Set-Cookie 本身不自动禁止 HTTP 缓存；仍以缓存指令、认证与 Vary 为准。",
+    "pragma_boundary": "检测到已弃用的 Pragma；首版不模拟 HTTP/1.0 兼容行为，不将它等同于响应 Cache-Control。",
+    "precondition_boundary": "新请求已经带条件头。首版仅生成验证示例，不执行客户端条件求值或决定返回 304。",
+    "connection_boundary": "存在 Connection 逐跳字段；首版不模拟连接字段剥离，复用结论保留为不确定。",
+    "same_request_assumed": "未单独提供新请求头，本次按与原请求头完全相同进行试算。",
+    "presented_no_store": "新请求 no-store 禁止为其新增存储，但不自动使已经存储的响应失效；本次仍检查候选复用。",
+    "is_fresh": "有效期严格大于当前年龄，响应处于新鲜状态；仍需检查其他复用条件。",
+    "is_stale": "有效期不大于当前年龄（或明确为 0），响应已过期；不模拟直接提供过期内容。",
+    "freshness_unknown": "有效期或必要时间不足，无法精确判定新鲜度与剩余时间。",
+    "no_cache": "响应或新请求包含 no-cache：使用该候选前需要成功验证，即使它仍然新鲜。请求指令在本工具中按客户端偏好执行。",
+    "request_max_age": "本工具遵守新请求 max-age={{seconds}} 偏好：要求当前年龄 ≤ {{seconds}} 秒，且仍符合响应新鲜度。",
+    "request_min_fresh": "本工具遵守新请求 min-fresh={{seconds}} 偏好：要求有效期 ≥ 当前年龄 + {{seconds}} 秒，且响应仍然新鲜。",
+    "stale_must_validate": "已过期响应受到 must-revalidate、共享 proxy-revalidate 或 s-maxage 限制，必须先成功验证。",
+    "presented_authorization": "新请求携带 Authorization，但响应没有明确的共享缓存许可；不判定为可直接复用。",
+    "only_if_cached_unsatisfied": "遵守 only-if-cached 时，此候选不足以直接满足请求；缓存应返回相应失败（通常 504），而不是假装命中。",
+    "no_validators": "未找到有效验证器，无法生成条件头；需要重新获取完整响应或由实际缓存采用其他策略。",
+    "validator_invalid": "{{field}} 无效或日期格式未覆盖，未用于生成条件请求头。",
+    "legacy_date": "{{field}} 使用双位年份的旧式日期，需要参考时刻来确定世纪。首版不猜测该窗口，请改用四位年份的标准 HTTP-date。"
+  },
+  "errors": {
+    "http-cache": {
+      "headers_size": "每组头部不能超过 32 KiB。",
+      "fields_limit": "每组最多 128 条非空头部行，未截断输入。",
+      "cases_limit": "一次支持 1–2 个案例。",
+      "scenario": "案例名称须为 1–80 字符，请求方法和三位响应状态须有效。",
+      "time": "时间 {{field}} 须为 1970–9999 年、带明确时区的完整秒时间，例如 2026-10-22T10:00:00Z。",
+      "directives_limit": "每组 Cache-Control 最多 256 条指令，分析已停止。",
+      "expired": "分析句柄已过期，请重新试算。",
+      "page": "无效的案例或分页参数。",
+      "format": "不支持的报告格式。",
+      "export_limit": "报告超过 2 MiB 导出上限。",
+      "copy_limit": "复制上限为 64 KiB，请改为保存报告文件。",
+      "path": "文件路径无效。"
+    }
+  },
+  "document": {
+    "title": "HTTP 缓存分析报告",
+    "boundary": "离线试算 · 普通 GET／200 · 同一目标 URI · 结果是复用候选解释，不代表实际命中",
+    "role": "缓存类型",
+    "storage": "存储",
+    "reuse": "复用",
+    "freshness": "新鲜度",
+    "lifetime": "有效期（秒）",
+    "age": "当前年龄（秒）",
+    "unknown": "未知",
+    "calculation": "年龄计算",
+    "conditions": "判定过程",
+    "diagnostics": "诊断",
+    "conditional": "条件请求示例",
+    "request": "原请求头（已遮罩）",
+    "response": "响应头（已遮罩）",
+    "presented": "新请求头（已遮罩）",
+    "vary": "Vary 对照"
+  },
+  "help": [
+    "首版只处理普通 GET 的完整 200 响应，假定目标 URI 相同。允许存储、新鲜和可直接复用是不同问题；本工具不发送请求，不证明实际命中，不处理启发式有效期、过期扩展、Range、非 GET、304 合并或厂商规则。",
+    "先配置基准，再复制到试验并修改缓存类型、头部或三项时间。开启对比同时分析两案；关闭则只分析当前编辑案。每案结果卡分别显示有效期和年龄。修改输入后旧报告仍保留并明确提示，需重新试算更新。",
+    "头部每行 Name: value，不包含起始行或正文。新请求未启用时按原请求相同头部试算；启用后即使清空，也代表明确的空请求头集合。Vary 字段名不区分大小写，值采用保守比较，不猜测任意字段的语义等价。",
+    "三项时间需带明确时区、精确到完整秒，缺项保留未知，不自动读取本机时钟。Age 缺失或非法时以 0 参与；列表 Age 使用第一成员。有效期优先级：共享 s-maxage、max-age、Expires。重复或非法有效期采用保守过期策略并给诊断。",
+    "请求指令在本工具中按客户端偏好执行。no-store 禁止新存储，no-cache 使用前先验证；must-revalidate 在过期后限制复用。认证共享限制、限定字段形式与未覆盖指令均给出解释。示例条件头中 If-None-Match 优先于 If-Modified-Since。",
+    "每次 1–2 案；每组头部最多 32 KiB、128 行、256 条 Cache-Control 指令。报告导出 2 MiB、复制 64 KiB。输入和报告只在当前页面及插件内存保留，不新建数据库；导出始终遮罩认证、Cookie、代理凭据和 API key 字段。",
+    "日期头支持四位年份的 IMF-fixdate 与 asctime，GMT 不受本地时区影响。RFC 850 双位年份需要参考时刻的世纪窗口，首版明确保留为未覆盖，不采用固定年份分界猜测。"
+  ],
+  "stages": {
+    "parse": "解析头部",
+    "directives": "分析缓存指令",
+    "age": "计算年龄",
+    "variants": "核对变体",
+    "query": "读取明细",
+    "export": "导出遮罩报告"
+  },
+  "source": {
+    "max-age": "max-age",
+    "s-maxage": "s-maxage",
+    "expires": "Expires",
+    "none": "无显式有效期",
+    "invalid": "无效信息的保守策略",
+    "unsupported": "未覆盖的格式"
+  }
+}

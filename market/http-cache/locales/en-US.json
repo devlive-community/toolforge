@@ -1,0 +1,273 @@
+{
+  "name": "HTTP Cache Inspector",
+  "description": "Explain storage, freshness, age, Vary and validation offline; compare private and shared caches.",
+  "locale": "en-US",
+  "boundary": "Offline simulation · ordinary GET/200 · same target URI · candidate assessment, not an observed cache hit",
+  "common": {
+    "cancel": "Cancel task",
+    "unknown": "Unknown",
+    "seconds": "{{n}} s"
+  },
+  "role": {
+    "private": "Private cache",
+    "shared": "Shared cache"
+  },
+  "storage": {
+    "allowed": "Storage permitted",
+    "blocked": "Storage prohibited",
+    "unknown": "Storage uncertain"
+  },
+  "reuse": {
+    "candidate": "Direct reuse candidate",
+    "validate": "Validate or fetch first",
+    "variant": "Variant differs; no direct reuse",
+    "blocked": "Reuse prohibited",
+    "unknown": "Reuse uncertain"
+  },
+  "freshness": {
+    "fresh": "Fresh",
+    "stale": "Stale",
+    "unknown": "Freshness unknown"
+  },
+  "conditionStatus": {
+    "pass": "Pass",
+    "fail": "Constrained",
+    "unknown": "Unknown",
+    "info": "Assumption"
+  },
+  "context": {
+    "request": "Original request",
+    "response": "Response",
+    "presented": "New request"
+  },
+  "headerLabel": {
+    "requestHeaders": "Original request headers",
+    "responseHeaders": "Response headers",
+    "newRequestHeaders": "New request headers"
+  },
+  "input": {
+    "title": "Configure experiment",
+    "case": "Input case",
+    "baseline": "Baseline",
+    "experiment": "Experiment",
+    "copy": "Copy baseline",
+    "name": "Case name",
+    "role": "Cache role",
+    "method": "Method",
+    "status": "Response status",
+    "timeTitle": "Timing (explicit offset, whole seconds)",
+    "timeHint": "Example: 2026-10-22T10:00:00Z. Blank stays unknown; no device-clock substitution.",
+    "requestTime": "Request start",
+    "responseTime": "Receipt time",
+    "now": "Simulated now",
+    "missingTime": "Not provided",
+    "headerTabs": "Header context",
+    "headerHint": "One Name: value per line, without start lines or body. Up to 32 KiB / 128 lines per block.",
+    "useNewRequest": "Provide separate new request headers",
+    "sameRequest": "Currently simulating the same headers as the original request. Enable the option above to compare a new request against Vary.",
+    "compare": "Compare both cases",
+    "run": "Analyze",
+    "transient": "Inputs stay in this page’s memory. No network access or response bodies."
+  },
+  "panes": {
+    "label": "Page section",
+    "input": "Input",
+    "result": "Results"
+  },
+  "result": {
+    "title": "Cache assessment",
+    "lifetime": "Lifetime",
+    "age": "Current age",
+    "source": "Lifetime source: {{source}}",
+    "conditional": "Conditional examples",
+    "copyConditional": "Copy conditional headers",
+    "conditionalHint": "ETag produces If-None-Match, Last-Modified produces If-Modified-Since. The former takes precedence. A 304 can refresh matching cached metadata for reuse; it is not a new body. Validation and metadata merging are not executed.",
+    "noValidators": "No usable validators. Fetch a new response.",
+    "remaining": "Remaining time (negative means stale)",
+    "rawAge": "Input Age (0 when absent / ignored)",
+    "ageHint": "Uses the conservative maximum for corrected initial age. Missing terms stay unknown; times use UTC seconds.",
+    "varyHint": "Compare the original and new request in the selected case. * never matches; absent differs from present-empty. Sensitive values are masked.",
+    "noVary": "No Vary fields are specified, adding no variant restriction.",
+    "noDiagnostics": "No additional diagnostics.",
+    "maskHint": "Authorization, Cookie, Set-Cookie, proxy credentials and X-API-Key are masked. Malformed lines are excluded.",
+    "dirty": "Inputs changed. Results below are from the last successful run; analyze again to compare.",
+    "sections": "Analysis details",
+    "empty": "Why did this response miss expectations?",
+    "emptyHint": "Enter headers and timing to compare storage, lifetime and validation constraints. All analysis runs locally.",
+    "working": "Analyzing / preparing report…"
+  },
+  "sections": {
+    "conditions": "Decision steps",
+    "timing": "Age calculation",
+    "vary": "Vary comparison",
+    "directives": "Cache directives",
+    "diagnostics": "Diagnostics & boundaries",
+    "headers": "Masked headers"
+  },
+  "vary": {
+    "match": "Match",
+    "different": "Different / wildcard",
+    "stored": "Stored request",
+    "presented": "New request",
+    "absent": "Absent",
+    "empty": "Present, empty value"
+  },
+  "directives": {
+    "supported": "Supported",
+    "boundary": "Outside scope",
+    "invalid": "Invalid"
+  },
+  "files": {
+    "copy": "Copy masked Markdown report",
+    "markdown": "Export masked Markdown",
+    "json": "Export masked JSON",
+    "copied": "Copied",
+    "saved": "Report saved"
+  },
+  "page": {
+    "prev": "Previous",
+    "next": "Next",
+    "number": "Page {{n}}",
+    "total": "{{n}} records"
+  },
+  "logs": {
+    "title": "Task log",
+    "empty": "No messages",
+    "latest": "Jump to latest",
+    "analysis_started": "Analyzing {{count}} cases",
+    "analysis_complete": "Completed {{count}} cases",
+    "export_started": "Exporting {{count}} redacted cases"
+  },
+  "functions": {
+    "examples": "Load examples",
+    "inspect": "Analyze caching",
+    "query": "Read analysis details",
+    "export": "Export masked report"
+  },
+  "timing": {
+    "apparentAge": "Apparent age",
+    "responseDelay": "Response delay",
+    "correctedAgeValue": "Corrected age value",
+    "correctedInitialAge": "Corrected initial age",
+    "residentTime": "Resident time",
+    "currentAge": "Current age"
+  },
+  "messages": {
+    "header_syntax": "Line {{line}} of {{context}} headers is invalid. Start lines, bodies and folded lines are not accepted; assessment stays uncertain.",
+    "singleton_duplicate": "Singleton {{field}} occurs more than once. The last occurrence is not silently selected.",
+    "control_syntax": "Cache-Control in {{context}} contains incomplete quoting or syntax.",
+    "delta_clamped": "{{field}} exceeds the seconds range. It saturates at {{limit}} and cannot establish direct reuse.",
+    "directive_invalid": "Directive {{field}} in {{context}} has an invalid argument.",
+    "directive_boundary": "Directive {{field}} in {{context}} is outside this version’s scope, including extensions and field-qualified restrictions.",
+    "directive_duplicate": "Directive {{field}} occurs repeatedly in {{context}}; no silent last-value policy is applied.",
+    "directives_limit": "Cache directive count exceeds the limit.",
+    "vary_invalid": "Vary is invalid; the response variant cannot be confirmed.",
+    "vary_conservative": "Vary uses absence and conservative textual comparison. It does not infer arbitrary reordering, case or semantic equivalence.",
+    "vary_match": "Fields nominated by Vary match the stored request. Without Vary this adds no restriction.",
+    "vary_different": "Vary fields differ or include *. This candidate cannot be reused directly.",
+    "time_missing": "{{field}} is missing. Dependent terms remain unknown; the device clock is not substituted.",
+    "date_missing": "Date is absent. Apparent age and complete current age cannot be calculated without guessing origin time.",
+    "date_invalid": "Date is invalid or repeated and cannot establish a complete age calculation.",
+    "age_first": "For listed or repeated Age, the first member is used as specified; later members are discarded.",
+    "age_invalid": "Invalid Age is ignored as specified; the unavailable Age contribution is 0.",
+    "age_absent": "Age is absent and contributes 0. This does not prove that the origin was contacted.",
+    "time_order": "Time order must be request start ≤ response receipt ≤ simulated now. Age and remaining time stay unknown.",
+    "date_future": "Date is later than receipt. Apparent age is clamped to 0 as specified; clock skew is possible.",
+    "freshness_invalid": "{{field}} freshness is invalid or repeated. A conservative zero-lifetime policy is used, without fallback to lower-priority fields.",
+    "expires_ignored": "{{field}} takes precedence over Expires, which does not participate in this lifetime calculation.",
+    "expires_received_date": "When Expires exists without Date, lifetime uses Expires minus receipt time. Full age still retains its missing term.",
+    "expires_invalid": "Invalid Expires, including 0, or a repeated Expires is treated as expired with lifetime 0.",
+    "no_heuristic": "No explicit lifetime is present. A 200 response may still be stored, but this version does not estimate heuristic freshness.",
+    "smaxage_private": "A private cache ignores s-maxage and uses max-age, then Expires.",
+    "public_private": "public and private occur together. A shared cache follows the more restrictive private constraint.",
+    "store_conflict": "no-store coexists with cacheable markers. Storage prohibition wins except for the supported must-understand exception.",
+    "scope_supported": "This is an ordinary GET/200 without Range or Content-Range.",
+    "scope_boundary": "This version covers ordinary GET/200 only. Other methods, statuses and partial responses are outside scope.",
+    "same_uri_complete": "Assumes the same target URI and a complete 200 response. Bodies and actual cache keys are not inspected.",
+    "must_understand_override": "The 200 caching requirements are understood: response must-understand overrides response no-store. Request no-store still applies.",
+    "no_store": "no-store on the original request or response prohibits new storage, unlike no-cache which permits storage subject to validation.",
+    "private_shared": "Response private prohibits shared storage; private caches remain subject to other constraints.",
+    "authorization_blocked": "The original request has Authorization without explicit shared-cache permission via public, must-revalidate or valid s-maxage.",
+    "authorization_allowed": "The response explicitly permits shared handling of authenticated requests, subject to freshness, Vary and validation.",
+    "storage_uncertain": "Malformed input, field-qualified restrictions or scope prevent a definite storage assessment.",
+    "storage_allowed": "Storage is permitted by the covered rules. Permission does not guarantee storage or direct reuse.",
+    "cookie_no_implicit_ban": "Cookie/Set-Cookie do not automatically prohibit HTTP caching; directives, authorization and Vary still apply.",
+    "pragma_boundary": "Deprecated Pragma is present. HTTP/1.0 compatibility behavior is not simulated or equated to response Cache-Control.",
+    "precondition_boundary": "The new request already has preconditions. This version generates examples but does not evaluate client conditions or decide a 304 response.",
+    "connection_boundary": "Connection hop-by-hop fields are present. Their removal is not simulated, so reuse remains uncertain.",
+    "same_request_assumed": "No separate new request headers were supplied; an identical request is simulated.",
+    "presented_no_store": "New-request no-store prevents new storage but does not invalidate an already stored response; candidate reuse is still assessed.",
+    "is_fresh": "Lifetime is strictly greater than current age, so the response is fresh, subject to other reuse constraints.",
+    "is_stale": "Lifetime does not exceed current age, or is explicitly zero. The response is stale; serving stale is not simulated.",
+    "freshness_unknown": "Lifetime or required timing is unavailable; precise freshness and remaining time cannot be established.",
+    "no_cache": "Response or new-request no-cache calls for successful validation even while fresh. Request directives are honored as client preferences in this simulator.",
+    "request_max_age": "This simulator honors request max-age={{seconds}}: age must be ≤ {{seconds}} seconds and response freshness still applies.",
+    "request_min_fresh": "This simulator honors request min-fresh={{seconds}}: lifetime must be ≥ age + {{seconds}} seconds while the response remains fresh.",
+    "stale_must_validate": "The stale response is constrained by must-revalidate, shared proxy-revalidate or s-maxage and requires successful validation.",
+    "presented_authorization": "The presented request has Authorization without explicit shared permission, so direct reuse is not established.",
+    "only_if_cached_unsatisfied": "When honoring only-if-cached this candidate cannot directly satisfy the request; an appropriate failure, typically 504, is expected.",
+    "no_validators": "No valid validators are available. A full response or another real-cache policy is needed.",
+    "validator_invalid": "Invalid or unsupported-date {{field}} is excluded from conditional examples.",
+    "legacy_date": "{{field}} uses an obsolete two-digit year, requiring a reference-dependent century window. This version does not guess it; use a four-digit HTTP-date."
+  },
+  "errors": {
+    "http-cache": {
+      "headers_size": "Each header block is limited to 32 KiB.",
+      "fields_limit": "Each block permits 128 nonempty header lines. Input was not truncated.",
+      "cases_limit": "Analyze 1–2 cases per run.",
+      "scenario": "Use a 1–80-character case name, a valid method token and a three-digit response status.",
+      "time": "{{field}} must be an offset timestamp from 1970–9999 with whole seconds, e.g. 2026-10-22T10:00:00Z.",
+      "directives_limit": "Each context permits at most 256 Cache-Control directives. Analysis stopped.",
+      "expired": "The analysis handle expired. Analyze again.",
+      "page": "Invalid case or pagination parameters.",
+      "format": "Unsupported report format.",
+      "export_limit": "Report exceeds the 2 MiB export limit.",
+      "copy_limit": "Copy is limited to 64 KiB. Save a report file instead.",
+      "path": "Invalid output path."
+    }
+  },
+  "document": {
+    "title": "HTTP cache analysis report",
+    "boundary": "Offline simulation · ordinary GET/200 · same target URI · candidate assessment, not an observed cache hit",
+    "role": "Cache role",
+    "storage": "Storage",
+    "reuse": "Reuse",
+    "freshness": "Freshness",
+    "lifetime": "Lifetime (seconds)",
+    "age": "Current age (seconds)",
+    "unknown": "Unknown",
+    "calculation": "Age calculation",
+    "conditions": "Decision steps",
+    "diagnostics": "Diagnostics",
+    "conditional": "Conditional examples",
+    "request": "Original request headers (masked)",
+    "response": "Response headers (masked)",
+    "presented": "New request headers (masked)",
+    "vary": "Vary comparison"
+  },
+  "help": [
+    "Covers complete ordinary GET/200 for the same target URI. Storage permission, freshness and direct reuse differ. No requests or observed cache hits, heuristics, stale extensions, ranges, non-GET methods, 304 merging or vendor rules.",
+    "Configure a baseline, copy it to the experiment and change role, headers or timing. Compare analyzes both cases; disabling it analyzes the currently edited case. Input edits leave an explicitly marked old report until analysis runs again.",
+    "Headers use one Name: value line without start lines or body. An unset new-request block assumes identical headers; enabled-but-empty means an explicitly empty header set. Vary names are case-insensitive, while values use conservative comparison.",
+    "Timing requires explicit offsets and whole seconds. Missing terms stay unknown without device-clock substitution. Missing/invalid Age contributes 0; listed Age uses its first member. Lifetime precedence is shared s-maxage, max-age, then Expires. Invalid/repeated freshness is treated conservatively with diagnostics.",
+    "Request directives are honored as client preferences. no-store prohibits new storage; no-cache validates before use; must-revalidate constrains stale reuse. Authorization, qualified forms and unsupported directives are explained. If-None-Match takes precedence over If-Modified-Since.",
+    "Analyze 1–2 cases; each header context permits 32 KiB, 128 lines and 256 Cache-Control directives. Export is limited to 2 MiB and copy to 64 KiB. Inputs/reports remain transient without a new database. Exports always mask credentials, cookies, proxy credentials and API-key fields.",
+    "Date headers support four-digit IMF-fixdate and asctime, independent of local zones. Obsolete RFC 850 two-digit years require a reference-dependent century window and are explicitly outside this version’s scope."
+  ],
+  "stages": {
+    "parse": "Parse headers",
+    "directives": "Analyze directives",
+    "age": "Calculate age",
+    "variants": "Compare variants",
+    "query": "Read details",
+    "export": "Export redacted report"
+  },
+  "source": {
+    "max-age": "max-age",
+    "s-maxage": "s-maxage",
+    "expires": "Expires",
+    "none": "No explicit lifetime",
+    "invalid": "Conservative invalid-data policy",
+    "unsupported": "Unsupported format"
+  }
+}
