@@ -2,18 +2,37 @@
 
 本文和目录内文件是部署模板；提交代码或运行本地检查不会自动初始化服务器、修改现有 Nginx 站点、读取服务器凭据或部署。首次上线由管理员核对后执行。
 
-## 快速开始（自动化部署，推荐个人部署）
+## 快速开始（推 dev 自动部署）
 
-一次初始化 + 三个 GitHub 值，之后推 `dev` 自动上线：
+服务器只需要 MySQL 和一个能用 sudo 的 SSH 账号（root 也行）；服务安装、迁移、重启全部由 workflow 远程完成。
 
-1. 服务器（root）执行：`sudo bash bootstrap-server.sh --deploy-key "$(cat stats-deploy.pub)"`
-   自动完成：建库建账号、三个 OS 用户与 `stats-deploy` 登录、`/etc/toolforge-plugin-stats` 配置（数据库密码与 HMAC 密钥自动生成并写入）、部署入口、systemd。
-2. GitHub Environment `plugin-stats-production`（分支策略仅 `dev`）填三项：
-   `STATS_DEPLOY_SSH_KEY`（对应私钥）、`STATS_DEPLOY_SSH_TARGET`（`stats-deploy@服务器IP`）、`PLUGIN_SSH_KNOWN_HOSTS`（脚本末尾打印的主机公钥）。
-3. 推送改动 `apps/server/**` 的提交到 `dev` —— 自动构建、迁移、重启、健康检查，失败自动回滚。
-4. 想更稳：给 Environment 开 "Required reviewers"，每次部署多一步点击审批。
+1. 服务器建库建账号（执行一次，密码建议只用字母数字，避免 `@` 和引号）：
 
-需要收紧安全（专用 SSH 登录的 forced command、独立数据库角色）时再按下文加固，两种模式共用同一个部署入口。
+```sql
+CREATE DATABASE toolforge_stats CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'toolforge_stats'@'localhost' IDENTIFIED BY '换成你自己的密码';
+GRANT ALL PRIVILEGES ON toolforge_stats.* TO 'toolforge_stats'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+2. 生成回报签名密钥：`openssl rand -base64 32`。
+3. 仓库 Settings → Secrets and variables → Actions 填写：
+
+| 类型 | 名称 | 值 |
+| --- | --- | --- |
+| secret | `SSH_HOST` | `43.162.108.186` |
+| secret | `SSH_USER` | 服务器 SSH 账号（root 或有 sudo 的账号） |
+| secret | `SSH_KEY` | 对应私钥全文 |
+| secret | `DB_HOST` | `127.0.0.1`（服务必须连本机回环） |
+| secret | `DB_PORT` | `3306` |
+| secret | `DB_USER` | `toolforge_stats` |
+| secret | `DB_PASSWORD` | 上面建账号时设置的密码 |
+| secret | `DB_NAME` | `toolforge_stats` |
+| secret | `RECEIPT_KEY` | 第 2 步生成的 base64 密钥 |
+
+4. 推送改动 `apps/server/**` 的提交到 `dev` → 自动测试、构建、上传、迁移、重启、健康检查，失败自动回滚旧版本；`workflow_dispatch` 可手动补部署。
+
+需要收紧安全（专用受限 SSH 登录、独立数据库角色）时再参考下文加固，不是必需步骤。
 
 ## 架构与顺序
 
@@ -115,24 +134,20 @@ sudoers 只允许各自入口，使用 `visudo -cf` 验证后安装（账号名�
 
 ## GitHub 配置
 
-部署是自动的：推送 `dev` 且改动 `apps/server/**`、`deploy/plugin-stats/**` 或本 workflow 时，先跑完整 Go 检查再自动部署；`workflow_dispatch` 保留为手动补部署入口。创建受保护 Environment：
-
-- `plugin-stats-production`：**分支策略设为仅 `dev`**（自动部署靠它兜底）；需要人工把关时再配置管理员审批，审批关闭即全自动。
-- `plugins-production`：仅受信 `dev`，保留插件与 App 独立发布。
+部署 workflow 直接读取仓库 Actions secrets（见快速开始表格）；数据库密码与回报 HMAC 密钥也由 secrets 注入并在每次部署时写入服务器 `/etc/toolforge-plugin-stats/runtime.env`（`root:toolforge-stats 0640`）。使用受保护 Environment 或仓库级 secret 均可，workflow 未绑定 Environment。
 
 | 类型 | 名称 | 用途 |
 | --- | --- | --- |
-| secret | `TOOLFORGE_PLUGIN_KEY` | 既有官方插件签名种子；只给独立签名步骤 |
-| secret | `COS_SECRET_ID` / `COS_SECRET_KEY` | 限制桶及必要对象前缀的上传身份，优先临时凭据 |
+| secret | `TOOLFORGE_PLUGIN_KEY` | 既有官方插件签名种子；只给独立签名步骤（Plugins 发布用） |
+| secret | `COS_SECRET_ID` / `COS_SECRET_KEY` | 腾讯云 COS 上传身份，限制桶及必要对象前缀，优先临时凭据（Plugins 发布用） |
 | secret | `COS_SESSION_TOKEN` | 使用临时凭据时配置，长期受限凭据可留空 |
 | secret | `PLUGIN_CATALOG_SSH_KEY` | 只给插件发布的受限导入 key |
-| secret | `STATS_DEPLOY_SSH_KEY` | 只给服务部署的受限部署 key |
-| secret | `PLUGIN_SSH_KNOWN_HOSTS` | 两个 Environment 中均保存经核对的主机公钥记录 |
 | variable | `COS_REGION` | 默认 `ap-singapore`，上线前核实 |
 | variable | `PLUGIN_CATALOG_SSH_TARGET` | `<catalog-login>@43.162.108.186` |
-| variable | `STATS_DEPLOY_SSH_TARGET` | `<deploy-login>@43.162.108.186` |
 
-MySQL 密码和回报 HMAC 密钥仅存在服务器（`/etc/toolforge-plugin-stats/*.env`，由服务器端部署入口读取），**不进入 GitHub**；CI 只需要部署 SSH 身份与已知主机记录。Secrets 未就绪时应失败，不能静默改为未签名包、空历史目录、HTTP 下载或直接 COS 降级。
+统计服务部署所需 secrets 见「快速开始」表格（`SSH_*`、`DB_*`、`RECEIPT_KEY`）。上表 COS 与目录导入凭据属于 Plugins 发布 workflow；若沿用旧的受限部署入口（`deploy.sh`），再补充 `STATS_DEPLOY_SSH_KEY`、`STATS_DEPLOY_SSH_TARGET`、`PLUGIN_SSH_KNOWN_HOSTS` 三项。
+
+数据库密码与回报 HMAC 密钥通过 secrets 注入并随每次部署写入服务器 `/etc/toolforge-plugin-stats/runtime.env`（`root:toolforge-stats 0640`）；`DB_PASSWORD` 建议只用字母数字（DSN 中不能安全携带 `@` 与引号）。Secrets 未就绪时应失败，不能静默改为未签名包、空历史目录、HTTP 下载或直接 COS 降级。
 
 ## 插件发布与历史搬迁
 

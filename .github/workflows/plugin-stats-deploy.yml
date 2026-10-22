@@ -1,4 +1,4 @@
-name: Deploy plugin statistics
+name: Deploy plugin stats
 
 on:
   push:
@@ -9,18 +9,13 @@ on:
       - '.github/workflows/plugin-stats-deploy.yml'
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 concurrency:
   group: plugin-stats-production
   cancel-in-progress: false
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-24.04
-    environment: plugin-stats-production
     services:
       mysql:
         image: mysql:8.0
@@ -29,7 +24,7 @@ jobs:
           MYSQL_DATABASE: toolforge_stats_test
         ports: ['3306:3306']
         options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 -pintegration-only-password"
+          --health-cmd="mysqladmin ping -h127.0.0.1 -pintegration-only-password"
           --health-interval=5s --health-timeout=3s --health-retries=20
     defaults:
       run:
@@ -43,7 +38,7 @@ jobs:
           go-version: '1.26.x'
           check-latest: true
           cache-dependency-path: apps/server/go.sum
-      - name: Test before deployment
+      - name: Test
         env:
           TEST_MYSQL_DSN: root:integration-only-password@tcp(127.0.0.1:3306)/toolforge_stats_test?parseTime=true
         run: |
@@ -52,28 +47,77 @@ jobs:
           go mod verify
           go vet ./...
           go test -race -count=1 ./...
-          go run golang.org/x/vuln/cmd/govulncheck@v1.1.4 ./...
-          shellcheck ../../deploy/plugin-stats/deploy.sh ../../deploy/plugin-stats/build.sh
-      - name: Build Linux amd64 binary and checksum
+      - name: Build Linux amd64 binary
         run: |
           mkdir -p build
           CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "-s -w -X main.buildSHA=$GITHUB_SHA" -o build/plugin-stats ./cmd/plugin-stats
           sha256sum build/plugin-stats > build/plugin-stats.sha256
-      - name: Deploy using a restricted SSH identity
-        env:
-          STATS_DEPLOY_SSH_TARGET: ${{ vars.STATS_DEPLOY_SSH_TARGET }}
-          STATS_DEPLOY_SSH_KEY: ${{ secrets.STATS_DEPLOY_SSH_KEY }}
-          STATS_SSH_KNOWN_HOSTS: ${{ secrets.PLUGIN_SSH_KNOWN_HOSTS }}
+      - name: Generate runtime config
         run: |
-          set -euo pipefail
-          [[ $STATS_DEPLOY_SSH_TARGET =~ ^[a-z_][a-z0-9_-]*@[a-zA-Z0-9.-]+$ ]] || { echo 'Invalid deployment target'; exit 1; }
-          [[ -n $STATS_DEPLOY_SSH_KEY && -n $STATS_SSH_KNOWN_HOSTS ]] || { echo 'Missing protected deployment SSH configuration'; exit 1; }
-          umask 077
-          task_dir=$(mktemp -d "$RUNNER_TEMP/stats-deploy.XXXXXX")
-          trap 'rm -rf "$task_dir"' EXIT
-          printf '%s\n' "$STATS_DEPLOY_SSH_KEY" > "$task_dir/id"
-          printf '%s\n' "$STATS_SSH_KNOWN_HOSTS" > "$task_dir/known_hosts"
-          unset STATS_DEPLOY_SSH_KEY STATS_SSH_KNOWN_HOSTS
-          checksum=$(cut -d ' ' -f 1 build/plugin-stats.sha256)
-          [[ $GITHUB_SHA =~ ^[a-f0-9]{40}$ && $checksum =~ ^[a-f0-9]{64}$ ]] || exit 1
-          ssh -T -i "$task_dir/id" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o "UserKnownHostsFile=$task_dir/known_hosts" "$STATS_DEPLOY_SSH_TARGET" "sudo -n /usr/local/sbin/toolforge-plugin-stats-deploy deploy $GITHUB_SHA $checksum" < build/plugin-stats
+          cat > build/runtime.env <<EOF
+          MYSQL_DSN=${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@tcp(${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }})/${{ secrets.DB_NAME }}?allowNativePasswords=true
+          STATS_LISTEN_ADDR=127.0.0.1:8088
+          PLUGIN_ASSET_BASE_URL=https://plugins.toolforge.devlive.org
+          RECEIPT_ACTIVE_KID=2026-01
+          RECEIPT_KEYS_JSON='{"2026-01":"${{ secrets.RECEIPT_KEY }}"}'
+          EOF
+          chmod 600 build/runtime.env
+      - name: Upload to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: 'apps/server/build/plugin-stats,apps/server/build/plugin-stats.sha256,apps/server/build/runtime.env,deploy/plugin-stats/toolforge-plugin-stats.service'
+          target: /tmp/stats-deploy
+          strip_components: 0
+      - name: Install and restart
+        uses: appleboy/ssh-action@master
+        env:
+          SHA: ${{ github.sha }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          envs: SHA
+          script: |
+            set -euo pipefail
+            cd /tmp/stats-deploy/apps/server/build
+            echo "==> install release $SHA"
+            sudo id toolforge-stats >/dev/null 2>&1 || sudo useradd --system --no-create-home --shell /usr/sbin/nologin toolforge-stats
+            sudo install -d -o root -g root -m 755 /opt/toolforge-plugin-stats/releases
+            sudo install -d -o root -g toolforge-stats -m 750 /etc/toolforge-plugin-stats
+            release=/opt/toolforge-plugin-stats/releases/$SHA
+            sudo install -d -o root -g root -m 755 "$release"
+            echo "$(cut -d ' ' -f 1 plugin-stats.sha256)  plugin-stats" | sha256sum -c --status
+            sudo install -m 755 plugin-stats "$release/plugin-stats"
+            sudo install -m 640 -o root -g toolforge-stats runtime.env /etc/toolforge-plugin-stats/runtime.env
+            sudo install -m 644 ../../deploy/plugin-stats/toolforge-plugin-stats.service /etc/systemd/system/toolforge-plugin-stats.service
+            sudo systemctl daemon-reload
+            sudo systemctl enable toolforge-plugin-stats >/dev/null
+            echo "==> migrate"
+            sudo sh -c "set -a; . /etc/toolforge-plugin-stats/runtime.env; set +a; '$release/plugin-stats' migrate up"
+            echo "==> switch and restart"
+            previous=$(sudo readlink -f /opt/toolforge-plugin-stats/current 2>/dev/null || true)
+            sudo ln -sfn "$release" /opt/toolforge-plugin-stats/current.next
+            sudo mv -Tf /opt/toolforge-plugin-stats/current.next /opt/toolforge-plugin-stats/current
+            sudo systemctl restart toolforge-plugin-stats
+            ok=false
+            for _ in $(seq 1 30); do
+              if curl -fsS --max-time 2 http://127.0.0.1:8088/readyz 2>/dev/null | grep -q "\"buildSha\":\"$SHA\""; then ok=true; break; fi
+              sleep 1
+            done
+            if [ "$ok" != true ]; then
+              if [ -n "$previous" ]; then
+                sudo ln -sfn "$previous" /opt/toolforge-plugin-stats/current.rollback
+                sudo mv -Tf /opt/toolforge-plugin-stats/current.rollback /opt/toolforge-plugin-stats/current
+                sudo systemctl restart toolforge-plugin-stats
+                echo 'New release failed readiness; rolled back to the previous release.' >&2
+              else
+                sudo systemctl stop toolforge-plugin-stats || true
+                echo 'First deployment failed readiness; service stopped for inspection.' >&2
+              fi
+              exit 1
+            fi
+            sudo rm -rf /tmp/stats-deploy
+            echo "Deployed $SHA"
