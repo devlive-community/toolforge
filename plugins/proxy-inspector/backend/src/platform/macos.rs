@@ -176,43 +176,5 @@ fn dict_to_json(dict: &CFDictionary<CFString, CFType>) -> serde_json::Value {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-    use core_foundation::base::TCFType;
-
-    fn test_dict() -> CFDictionary<CFString, CFType> {
-        CFDictionary::from_CFType_pairs(&[
-            (key("HTTPEnable"), CFNumber::from(1).into_CFType()),
-            (key("HTTPProxy"), CFString::new("127.0.0.1").into_CFType()),
-            (key("HTTPPort"), CFNumber::from(7890).into_CFType()),
-        ])
-    }
-
-    /// SystemConfiguration 的端口值是 CFNumber；按 CFString 包装并读取是
-    /// 未定义行为，曾让整个应用在打开插件时崩溃。此测试锁死该回归。
-    #[test]
-    fn reads_enabled_entry_with_number_port() {
-        let dict = test_dict();
-        let value = entry(&dict, "HTTPEnable", "HTTPProxy", "HTTPPort", "http")
-            .expect("enabled entry must exist");
-        assert_eq!(value.host, "127.0.0.1");
-        assert_eq!(value.port, 7890);
-        assert!(value.warnings.is_empty());
-    }
-
-    #[test]
-    fn missing_enable_flag_yields_no_entry() {
-        let dict = test_dict();
-        assert!(entry(&dict, "HTTPSEnable", "HTTPSProxy", "HTTPSPort", "https").is_none());
-    }
-
-    #[test]
-    fn disabled_flag_yields_no_entry() {
-        let dict = CFDictionary::from_CFType_pairs(&[
-            (key("HTTPEnable"), CFNumber::from(0).into_CFType()),
-            (key("HTTPProxy"), CFString::new("proxy.corp").into_CFType()),
-            (key("HTTPPort"), CFNumber::from(8080).into_CFType()),
-        ]);
-        assert!(entry(&dict, "HTTPEnable", "HTTPProxy", "HTTPPort", "http").is_none());
-    }
-}
+#[path = "macos_test.rs"]
+mod tests;
