@@ -8,7 +8,6 @@ coscli=${COSCLI_BIN:-coscli}
 : "${COS_CONFIG_PATH:?Set a temporary COSCLI YAML configuration path}"
 : "${PLUGIN_CATALOG_SSH_TARGET:?Set the restricted catalog SSH identity target}"
 : "${PLUGIN_SSH_KEY_PATH:?Set the catalog SSH private-key file path}"
-: "${PLUGIN_SSH_KNOWN_HOSTS_PATH:?Set verified SSH known_hosts path}"
 : "${GITHUB_REPOSITORY:?Set owner/repository}"
 bucket=${COS_BUCKET:-toolforge-1258585472}
 asset_base=${PLUGIN_ASSET_BASE_URL:-https://plugins.toolforge.devlive.org}
@@ -16,7 +15,7 @@ stats_base=${PLUGIN_STATS_BASE_URL:-https://stats.toolforge.devlive.org}
 [[ $bucket =~ ^[a-z0-9-]+-[0-9]+$ && $asset_base =~ ^https://[a-zA-Z0-9.-]+$ && $stats_base =~ ^https://[a-zA-Z0-9.-]+$ ]] || { echo 'Invalid publication configuration' >&2; exit 1; }
 [[ $PLUGIN_CATALOG_SSH_TARGET =~ ^[a-z_][a-z0-9_-]*@[a-zA-Z0-9.-]+$ ]] || { echo 'Invalid SSH target' >&2; exit 1; }
 [[ $GITHUB_REPOSITORY =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]] || exit 1
-[[ -x $xtask && -f $COS_CONFIG_PATH && -f $PLUGIN_SSH_KEY_PATH && -s $PLUGIN_SSH_KNOWN_HOSTS_PATH ]] || { echo 'Missing publishing prerequisites' >&2; exit 1; }
+[[ -x $xtask && -f $COS_CONFIG_PATH && -f $PLUGIN_SSH_KEY_PATH ]] || { echo 'Missing publishing prerequisites' >&2; exit 1; }
 "$xtask" plugin verify "$dir"
 jq -e --arg base "$stats_base" '.schemaVersion == 1 and (.generation > 0) and (.sourceCommit | test("^[a-f0-9]{40}$")) and (.plugins | type == "array")' "$dir/release-catalog.json" >/dev/null
 jq -e --arg base "$stats_base" 'all(.plugins[]; .url == ($base + "/v1/plugins/" + .id + "/versions/" + .version + "/download") and .signed == true)' "$dir/registry.json" >/dev/null
@@ -44,29 +43,24 @@ with target.open('w') as output, target.with_name('mirror.tsv').open('w') as mir
         mirror.write(f'{path}\t{item["id"]}-{item["version"]}.tfp\n')
 PY
 read_object() {
-  # Do not follow redirects or include credentials in public-domain reads.
-  curl --silent --show-error --proto '=https' --connect-timeout 10 --max-time 120 --output "$scratch/readback" --write-out '%{http_code}' "$asset_base/$1"
+  # The bucket is private: read through authenticated COSCLI, never anonymous HTTP.
+  rm -f "$scratch/readback"
+  "$coscli" cp "cos://$bucket/$1" "$scratch/readback" -c "$COS_CONFIG_PATH" --disable-log --fail-output=false --process-log=false >/dev/null 2>&1
 }
 check_readback() {
   [[ $(wc -c < "$scratch/readback" | tr -d ' ') == "$2" ]] && printf '%s  %s\n' "$1" "$scratch/readback" | sha256sum --check --status
 }
 put_immutable() {
-  local source=$1 key=$2 digest=$3 size=$4 status
-  status=$(read_object "$key")
-  if [[ $status == 200 ]]; then
-    check_readback "$digest" "$size" || { echo "Immutable object conflict: $key" >&2; exit 1; }
+  local source=$1 key=$2 digest=$3 size=$4
+  if read_object "$key" && check_readback "$key" "$digest" "$size"; then
     return
   fi
-  [[ $status == 404 ]] || { echo "Cannot verify COS object (HTTP $status); refusing overwrite" >&2; exit 1; }
   # COS also enforces non-overwrite, protecting against concurrent writers between GET and PUT.
   if ! "$coscli" cp "$source" "cos://$bucket/$key" -c "$COS_CONFIG_PATH" --disable-log --fail-output=false --process-log=false --forbid-overwrite --meta 'Cache-Control:public,max-age=31536000,immutable'; then
     echo 'Upload did not complete; checking whether an identical object already exists' >&2
   fi
-  status=$(read_object "$key")
-  if [[ $status != 200 ]] || ! check_readback "$digest" "$size"; then
-    echo "COS readback verification failed: $key" >&2
-    exit 1
-  fi
+  read_object "$key" || { echo "COS readback verification failed: $key" >&2; exit 1; }
+  check_readback "$key" "$digest" "$size" || { echo "COS readback verification failed: $key" >&2; exit 1; }
 }
 while IFS=$'\t' read -r source key digest size; do
   put_immutable "$source" "$key" "$digest" "$size"
@@ -78,9 +72,11 @@ for file in release-catalog registry; do
 done
 catalog_digest=$(sha256sum "$dir/release-catalog.json" | cut -d ' ' -f 1)
 ssh -T -i "$PLUGIN_SSH_KEY_PATH" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new "$PLUGIN_CATALOG_SSH_TARGET" "sudo -n /usr/local/sbin/toolforge-plugin-stats-deploy catalog $catalog_digest" < "$dir/release-catalog.json"
-# Import rejects stale generations. Mutable pointers are updated only after its success.
+# Import rejects stale generations. Mutable pointers are updated only after its
+# success. They stay publicly readable (object ACL) because installed apps fetch
+# them anonymously; the bucket itself remains private.
 for file in release-catalog registry; do
-  "$coscli" cp "$dir/$file.json" "cos://$bucket/$file.json" -c "$COS_CONFIG_PATH" --disable-log --fail-output=false --process-log=false --meta 'Content-Type:application/json#Cache-Control:public,max-age=60,must-revalidate'
+  "$coscli" cp "$dir/$file.json" "cos://$bucket/$file.json" -c "$COS_CONFIG_PATH" --disable-log --fail-output=false --process-log=false --acl public-read --meta 'Content-Type:application/json#Cache-Control:public,max-age=60,must-revalidate'
 done
 # Retain a GitHub mirror for installed older clients. Never clobber .tfp release assets.
 release_id=$(jq -r '.id // empty' "$dir/previous-release.json")

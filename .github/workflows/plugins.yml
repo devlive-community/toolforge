@@ -16,6 +16,7 @@ on:
       - 'Cargo.lock'
       - 'pnpm-lock.yaml'
       - 'scripts/publish-plugins.sh'
+      - 'scripts/cos-setup.sh'
       - 'scripts/migrate-plugin-assets.sh'
       - '.github/workflows/plugins.yml'
   workflow_dispatch:
@@ -62,23 +63,36 @@ jobs:
           rustup default 1.99.1
           cargo build --locked --release -p xtask
           pnpm install --frozen-lockfile
-          shellcheck scripts/publish-plugins.sh scripts/migrate-plugin-assets.sh
+          shellcheck scripts/cos-setup.sh scripts/publish-plugins.sh scripts/migrate-plugin-assets.sh
           cargo test --locked -p xtask
       - name: Read complete GitHub history without changing historical bytes
         env:
           GH_TOKEN: ${{ github.token }}
         run: scripts/migrate-plugin-assets.sh dist/plugins
+      - name: Install COSCLI and write its temporary credentials configuration
+        env:
+          COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
+          COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
+          COS_SESSION_TOKEN: ${{ secrets.COS_SESSION_TOKEN }}
+          COS_REGION: ${{ vars.COS_REGION || 'ap-singapore' }}
+          COS_BUCKET: toolforge-1258585472
+        run: scripts/cos-setup.sh
       - name: Read existing COS catalog and find unpublished versions
         env:
           BOOTSTRAP: ${{ inputs.bootstrap || false }}
+          COS_BUCKET: toolforge-1258585472
+          COSCLI_BIN: ${{ runner.temp }}/coscli
+          COS_CONFIG_PATH: ${{ runner.temp }}/cos.yaml
         run: |
           set -euo pipefail
-          status=$(curl --silent --show-error --proto '=https' --connect-timeout 10 --max-time 60 --header 'Cache-Control: no-cache' --output "$RUNNER_TEMP/prior-catalog.json" --write-out '%{http_code}' "$PLUGIN_ASSET_BASE_URL/release-catalog.json?run=$GITHUB_RUN_ID&attempt=$GITHUB_RUN_ATTEMPT")
-          case "$status" in
-            200) jq -e '.schemaVersion == 1 and (.sourceCommit | test("^[a-f0-9]{40}$"))' "$RUNNER_TEMP/prior-catalog.json" >/dev/null ;;
-            404) [[ $BOOTSTRAP == true ]] || { echo '::error::First COS catalog publication requires an explicit bootstrap run'; exit 1; }; rm "$RUNNER_TEMP/prior-catalog.json" ;;
-            *) echo "::error::Cannot read COS catalog (HTTP $status)"; exit 1 ;;
-          esac
+          # The bucket is private: read through authenticated COSCLI, never anonymous HTTP.
+          if "$COSCLI_BIN" cp "cos://$COS_BUCKET/release-catalog.json" "$RUNNER_TEMP/prior-catalog.json" -c "$COS_CONFIG_PATH" --disable-log --fail-output=false --process-log=false; then
+            jq -e '.schemaVersion == 1 and (.sourceCommit | test("^[a-f0-9]{40}$"))' "$RUNNER_TEMP/prior-catalog.json" >/dev/null
+          elif [[ $BOOTSTRAP == true ]]; then
+            rm -f "$RUNNER_TEMP/prior-catalog.json"
+          else
+            echo '::error::Cannot read COS catalog through COSCLI; first publication requires a bootstrap run'; exit 1
+          fi
           python3 - <<'PY'
           import hashlib, json, os, pathlib, re, subprocess, tomllib
           root = pathlib.Path('dist/plugins')
@@ -96,8 +110,10 @@ jobs:
                   if item['objectKey'] != key or not re.fullmatch(r'[a-z0-9][a-z0-9.+-]*\.tfp', name) or not re.fullmatch(r'[a-f0-9]{64}', item['sha256']):
                       raise SystemExit('Unsafe existing COS catalog metadata')
                   target = root / 'previous' / name
-                  result = subprocess.check_output(['curl', '--silent', '--show-error', '--proto', '=https', '--connect-timeout', '10', '--max-time', '120', '--max-filesize', '67108864', '--output', str(target), '--write-out', '%{http_code}', os.environ['PLUGIN_ASSET_BASE_URL'] + '/' + key], text=True)
-                  if result != '200' or target.stat().st_size != item['size'] or hashlib.sha256(target.read_bytes()).hexdigest() != item['sha256']:
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  target.unlink(missing_ok=True)
+                  subprocess.run([os.environ['COSCLI_BIN'], 'cp', f"cos://{os.environ['COS_BUCKET']}/{key}", str(target), '-c', os.environ['COS_CONFIG_PATH'], '--disable-log', '--fail-output=false', '--process-log=false'], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                  if target.stat().st_size != item['size'] or hashlib.sha256(target.read_bytes()).hexdigest() != item['sha256']:
                       raise SystemExit('Cannot recover verified historical COS bytes')
                   assets.add(name)
           # Compare only packages reachable from each WASM backend. Native App-only lock
@@ -177,25 +193,36 @@ jobs:
         run: |
           cargo build --locked --release -p xtask
           cargo test --locked -p xtask
-          shellcheck scripts/publish-plugins.sh scripts/migrate-plugin-assets.sh
+          shellcheck scripts/cos-setup.sh scripts/publish-plugins.sh scripts/migrate-plugin-assets.sh
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: plugin-candidates-${{ github.run_id }}
           path: dist
+      - name: Install COSCLI and write its temporary credentials configuration
+        env:
+          COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
+          COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
+          COS_SESSION_TOKEN: ${{ secrets.COS_SESSION_TOKEN }}
+          COS_REGION: ${{ vars.COS_REGION || 'ap-singapore' }}
+          COS_BUCKET: toolforge-1258585472
+        run: scripts/cos-setup.sh
       - name: Independently read current history with the publishing identity
         env:
           GH_TOKEN: ${{ github.token }}
           BOOTSTRAP: ${{ inputs.bootstrap || false }}
+          COS_BUCKET: toolforge-1258585472
         run: |
           scripts/migrate-plugin-assets.sh dist/verified-history
           cp dist/verified-history/previous-release.json dist/plugins/previous-release.json
           cp -a dist/verified-history/previous/. dist/plugins/previous/
-          status=$(curl --silent --show-error --proto '=https' --connect-timeout 10 --max-time 60 --header 'Cache-Control: no-cache' --output "$RUNNER_TEMP/prior-catalog.json" --write-out '%{http_code}' "$PLUGIN_ASSET_BASE_URL/release-catalog.json?run=$GITHUB_RUN_ID&attempt=$GITHUB_RUN_ATTEMPT&phase=publish")
-          case "$status" in
-            200) jq -e '.schemaVersion == 1 and (.sourceCommit | test("^[a-f0-9]{40}$"))' "$RUNNER_TEMP/prior-catalog.json" >/dev/null ;;
-            404) [[ $BOOTSTRAP == true ]] || { echo '::error::First COS catalog publication requires an explicit bootstrap run'; exit 1; }; rm "$RUNNER_TEMP/prior-catalog.json" ;;
-            *) echo "::error::Cannot read COS catalog (HTTP $status)"; exit 1 ;;
-          esac
+          # The bucket is private: read through authenticated COSCLI, never anonymous HTTP.
+          if "$RUNNER_TEMP/coscli" cp "cos://$COS_BUCKET/release-catalog.json" "$RUNNER_TEMP/prior-catalog.json" -c "$RUNNER_TEMP/cos.yaml" --disable-log --fail-output=false --process-log=false; then
+            jq -e '.schemaVersion == 1 and (.sourceCommit | test("^[a-f0-9]{40}$"))' "$RUNNER_TEMP/prior-catalog.json" >/dev/null
+          elif [[ $BOOTSTRAP == true ]]; then
+            rm -f "$RUNNER_TEMP/prior-catalog.json"
+          else
+            echo '::error::Cannot read COS catalog through COSCLI; first publication requires a bootstrap run'; exit 1
+          fi
       - name: Independently sign candidates using the precompiled tool
         env:
           TOOLFORGE_PLUGIN_KEY: ${{ secrets.TOOLFORGE_PLUGIN_KEY }}
@@ -213,18 +240,9 @@ jobs:
             previous=(--merge-catalog "$RUNNER_TEMP/prior-catalog.json")
           fi
           target/release/xtask plugin index dist/plugins "$PLUGIN_STATS_BASE_URL" --source-commit "$GITHUB_SHA" --generation "$GITHUB_RUN_NUMBER" "${previous[@]}"
-      - name: Install pinned COSCLI and verify its official release checksum
-        run: |
-          curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' --output "$RUNNER_TEMP/coscli" https://github.com/tencentyun/coscli/releases/download/v1.0.8/coscli-v1.0.8-linux-amd64
-          printf '%s  %s\n' '7165f2ae16c5f7ac495864c963ca574a76e04ec72680d7bc8a8eee3234d8cf91' "$RUNNER_TEMP/coscli" | sha256sum --check --status
-          chmod 700 "$RUNNER_TEMP/coscli"
       - name: Publish verified objects, import catalog, then publish registry
         env:
           GH_TOKEN: ${{ github.token }}
-          COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
-          COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
-          COS_SESSION_TOKEN: ${{ secrets.COS_SESSION_TOKEN }}
-          COS_REGION: ${{ vars.COS_REGION || 'ap-singapore' }}
           COS_BUCKET: toolforge-1258585472
           PLUGIN_CATALOG_SSH_TARGET: ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
           PLUGIN_CATALOG_SSH_KEY: ${{ secrets.SSH_KEY }}
@@ -233,20 +251,13 @@ jobs:
           umask 077
           task_dir=$(mktemp -d "$RUNNER_TEMP/plugin-publish.XXXXXX")
           trap 'rm -rf "$task_dir"' EXIT
-          export COS_CONFIG_PATH="$task_dir/cos.yaml" PLUGIN_SSH_KEY_PATH="$task_dir/id"
-          export COSCLI_BIN="$RUNNER_TEMP/coscli" XTASK_BIN=target/release/xtask
+          export COSCLI_BIN="$RUNNER_TEMP/coscli" COS_CONFIG_PATH="$RUNNER_TEMP/cos.yaml" XTASK_BIN=target/release/xtask
+          export PLUGIN_SSH_KEY_PATH="$task_dir/id"
           python3 - <<'PY'
-          import json, os, pathlib, re
-          for key in ('COS_SECRET_ID','COS_SECRET_KEY','PLUGIN_CATALOG_SSH_KEY'):
-              if not os.environ.get(key):
-                  raise SystemExit(f'Missing protected publishing configuration: {key}')
-          region = os.environ['COS_REGION']
-          if not re.fullmatch(r'[a-z]+-[a-z]+', region):
-              raise SystemExit('Invalid COS region')
-          config = {'cos': {'base': {'secretid': os.environ['COS_SECRET_ID'], 'secretkey': os.environ['COS_SECRET_KEY'], 'sessiontoken': os.environ.get('COS_SESSION_TOKEN', ''), 'protocol': 'https', 'disableencryption': 'true', 'disableautofetchbuckettype': 'true'}, 'buckets': [{'name': os.environ['COS_BUCKET'], 'alias': os.environ['COS_BUCKET'], 'region': region, 'endpoint': f'cos.{region}.myqcloud.com'}]}}
-          # JSON is also valid YAML. Never pass credentials as process arguments or print this file.
-          pathlib.Path(os.environ['COS_CONFIG_PATH']).write_text(json.dumps(config))
+          import os, pathlib
+          if not os.environ.get('PLUGIN_CATALOG_SSH_KEY'):
+              raise SystemExit('Missing protected publishing configuration: PLUGIN_CATALOG_SSH_KEY')
           pathlib.Path(os.environ['PLUGIN_SSH_KEY_PATH']).write_text(os.environ['PLUGIN_CATALOG_SSH_KEY'] + '\n')
           PY
-          unset COS_SECRET_ID COS_SECRET_KEY COS_SESSION_TOKEN PLUGIN_CATALOG_SSH_KEY
+          unset PLUGIN_CATALOG_SSH_KEY
           scripts/publish-plugins.sh dist/plugins
