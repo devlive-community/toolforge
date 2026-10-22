@@ -285,6 +285,9 @@ func (a *API) fail(w http.ResponseWriter, err error) {
 }
 func cacheJSON(w http.ResponseWriter, value any) {
 	w.Header().Set("Cache-Control", "public, max-age=30")
+	// These endpoints only expose aggregate download counts without credentials,
+	// so any origin (including the static docs site) may read them.
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	writeJSON(w, 200, value)
 }
 func writeError(w http.ResponseWriter, status int, code string) {

@@ -167,6 +167,9 @@ func TestStatsCountPrecisionReadinessAndSafeErrors(t *testing.T) {
 	if w.Header().Get("Cache-Control") != "public, max-age=30" {
 		t.Fatal("missing statistics cache")
 	}
+	if w.Header().Get("Access-Control-Allow-Origin") != "*" {
+		t.Fatal("missing cross-origin read permission")
+	}
 	repo.err = errors.New("password=must-not-leak")
 	for _, path := range []string{"/readyz", "/v1/stats/total"} {
 		w = httptest.NewRecorder()
