@@ -1,6 +1,12 @@
 name: Deploy plugin statistics
 
 on:
+  push:
+    branches: [dev]
+    paths:
+      - 'apps/server/**'
+      - 'deploy/plugin-stats/**'
+      - '.github/workflows/plugin-stats-deploy.yml'
   workflow_dispatch:
 
 permissions:
@@ -12,7 +18,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-24.04
     environment: plugin-stats-production
     services:

@@ -102,9 +102,9 @@ sudoers 只允许各自入口，使用 `visudo -cf` 验证后安装（账号名�
 
 ## GitHub 配置
 
-创建受保护 Environment：
+部署是自动的：推送 `dev` 且改动 `apps/server/**`、`deploy/plugin-stats/**` 或本 workflow 时，先跑完整 Go 检查再自动部署；`workflow_dispatch` 保留为手动补部署入口。创建受保护 Environment：
 
-- `plugin-stats-production`：仅 `main`，初期只 `workflow_dispatch`，有需要时配置管理员审批。
+- `plugin-stats-production`：**分支策略设为仅 `dev`**（自动部署靠它兜底）；需要人工把关时再配置管理员审批，审批关闭即全自动。
 - `plugins-production`：仅受信 `dev`，保留插件与 App 独立发布。
 
 | 类型 | 名称 | 用途 |
@@ -119,7 +119,7 @@ sudoers 只允许各自入口，使用 `visudo -cf` 验证后安装（账号名�
 | variable | `PLUGIN_CATALOG_SSH_TARGET` | `<catalog-login>@43.162.108.186` |
 | variable | `STATS_DEPLOY_SSH_TARGET` | `<deploy-login>@43.162.108.186` |
 
-MySQL 密码和回报 HMAC 密钥仅存在服务器，不进入 GitHub。Secrets 未就绪时应失败，不能静默改为未签名包、空历史目录、HTTP 下载或直接 COS 降级。
+MySQL 密码和回报 HMAC 密钥仅存在服务器（`/etc/toolforge-plugin-stats/*.env`，由服务器端部署入口读取），**不进入 GitHub**；CI 只需要部署 SSH 身份与已知主机记录。Secrets 未就绪时应失败，不能静默改为未签名包、空历史目录、HTTP 下载或直接 COS 降级。
 
 ## 插件发布与历史搬迁
 
@@ -141,7 +141,7 @@ Plugins workflow 固定 COSCLI **v1.0.8 Linux amd64**，固定官方 GitHub rele
 
 ## 部署和回滚
 
-服务 workflow 先 Go 格式、依赖、vet、race 单元/真实 MySQL 集成检查，再构建 `CGO_ENABLED=0` Linux amd64 二进制并带提交 SHA。通过固定 known_hosts 的受限 SSH 按字节流上传，服务器不安装 Go。
+推送 `dev` 且涉及服务端路径时自动执行：先 Go 格式、依赖、vet、race 单元/真实 MySQL 集成检查，再构建 `CGO_ENABLED=0` Linux amd64 二进制并带提交 SHA。通过固定 known_hosts 的受限 SSH 按字节流上传，服务器不安装 Go。并发由 `plugin-stats-production` 组串行化，不会交错部署。
 
 需要与 CI 相同产物的本地构建用 `deploy/plugin-stats/build.sh`（默认完整测试，`--skip-tests` 跳过；输出二进制与 `plugin-stats.sha256`，`-X main.buildSHA` 注入与 workflow 一致——缺失会导致 `/readyz` 校验失败并触发回滚）。
 
