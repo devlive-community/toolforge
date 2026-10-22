@@ -2,6 +2,19 @@
 
 本文和目录内文件是部署模板；提交代码或运行本地检查不会自动初始化服务器、修改现有 Nginx 站点、读取服务器凭据或部署。首次上线由管理员核对后执行。
 
+## 快速开始（自动化部署，推荐个人部署）
+
+一次初始化 + 三个 GitHub 值，之后推 `dev` 自动上线：
+
+1. 服务器（root）执行：`sudo bash bootstrap-server.sh --deploy-key "$(cat stats-deploy.pub)"`
+   自动完成：建库建账号、三个 OS 用户与 `stats-deploy` 登录、`/etc/toolforge-plugin-stats` 配置（数据库密码与 HMAC 密钥自动生成并写入）、部署入口、systemd。
+2. GitHub Environment `plugin-stats-production`（分支策略仅 `dev`）填三项：
+   `STATS_DEPLOY_SSH_KEY`（对应私钥）、`STATS_DEPLOY_SSH_TARGET`（`stats-deploy@服务器IP`）、`PLUGIN_SSH_KNOWN_HOSTS`（脚本末尾打印的主机公钥）。
+3. 推送改动 `apps/server/**` 的提交到 `dev` —— 自动构建、迁移、重启、健康检查，失败自动回滚。
+4. 想更稳：给 Environment 开 "Required reviewers"，每次部署多一步点击审批。
+
+需要收紧安全（专用 SSH 登录的 forced command、独立数据库角色）时再按下文加固，两种模式共用同一个部署入口。
+
 ## 架构与顺序
 
 - `plugins.toolforge.devlive.org` 保持腾讯云 COS 内容域名；桶为 `toolforge-1258585472`，地域先按 `ap-singapore` 配置，上线前确认。
