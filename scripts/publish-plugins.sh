@@ -48,7 +48,8 @@ read_object() {
   "$coscli" cp "cos://$bucket/$1" "$scratch/readback" -c "$COS_CONFIG_PATH" --disable-log --fail-output=false --process-log=false >/dev/null 2>&1
 }
 check_readback() {
-  [[ $(wc -c < "$scratch/readback" | tr -d ' ') == "$2" ]] && printf '%s  %s\n' "$1" "$scratch/readback" | sha256sum --check --status
+  # $1=key $2=digest $3=size
+  [[ $(wc -c < "$scratch/readback" | tr -d ' ') == "$3" ]] && printf '%s  %s\n' "$2" "$scratch/readback" | sha256sum --check --status
 }
 put_immutable() {
   local source=$1 key=$2 digest=$3 size=$4
