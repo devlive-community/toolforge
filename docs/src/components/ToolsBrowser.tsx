@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import {
   ArrowLeftRight, Calculator, ChevronLeft, ChevronRight, Code2, ImageIcon, Layers,
   LayoutGrid, Monitor, Search, SearchX, Shield, TextCursorInput, Wifi, X,
@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { ToolCard } from '@/components/ToolCard'
 import { toolChannel, toolName, toolStatus, type Lang, type ToolChannel, type ToolEntry, type ToolStatus } from '@/lib/catalog'
+import { fetchTotalDownloads, pluginStatsId } from '@/lib/stats'
 import styles from './ToolsBrowser.module.css'
 
 const PAGE_SIZE = 15
@@ -60,6 +61,21 @@ export function ToolsBrowser({ tools, lang }: { tools: ToolEntry[]; lang: Lang }
   const [status, setStatus] = useState<'all' | ToolStatus>('all')
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(1)
+
+  // 下载次数由浏览器端从统计服务批量拉取（静态站点无法构建时生成），
+  // 拉取失败或尚无记录的插件不展示计数。
+  const marketIds = useMemo(
+    () => tools.filter((tool) => toolChannel(tool) === 'market').map((tool) => pluginStatsId(tool.slug)),
+    [tools],
+  )
+  const [downloads, setDownloads] = useState<Record<string, number>>({})
+  useEffect(() => {
+    let active = true
+    fetchTotalDownloads(marketIds)
+      .then((totals) => { if (active) setDownloads(totals) })
+      .catch(() => {})
+    return () => { active = false }
+  }, [marketIds])
 
   const categories = useMemo(() => {
     const seen = new Map<string, ToolEntry['categoryLabel']>()
@@ -175,7 +191,7 @@ export function ToolsBrowser({ tools, lang }: { tools: ToolEntry[]; lang: Lang }
             </div>
           ) : (
             <>
-              <div className={styles.grid}>{visibleTools.map((tool) => <ToolCard key={tool.slug} tool={tool} lang={lang} />)}</div>
+              <div className={styles.grid}>{visibleTools.map((tool) => <ToolCard key={tool.slug} tool={tool} lang={lang} downloads={toolChannel(tool) === 'market' ? downloads[pluginStatsId(tool.slug)] : undefined} />)}</div>
               <div className={styles.paginationFooter}>
                 <p>{t.range.replace('{start}', String(start + 1)).replace('{end}', String(start + visibleTools.length)).replace('{total}', String(filtered.length))}</p>
                 <nav className={styles.pagination} aria-label={t.pagination}>

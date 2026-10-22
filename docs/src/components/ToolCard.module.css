@@ -63,3 +63,8 @@
 .marketDot {
   background: var(--accent);
 }
+
+.channelCount {
+  color: var(--fg-muted);
+  white-space: nowrap;
+}

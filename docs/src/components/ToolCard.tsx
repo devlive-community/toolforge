@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { toolChannel, toolDescription, toolName, toolStatus, type Lang, type ToolEntry, type ToolStatus } from '@/lib/catalog'
+import { formatDownloadCount } from '@/lib/stats'
 import { InstallButton } from './InstallButton'
 import styles from './ToolCard.module.css'
 
@@ -14,9 +15,15 @@ const channelLabels = {
   en: { builtin: 'Built-in', market: 'Online' },
 } satisfies Record<Lang, Record<'builtin' | 'market', string>>
 
+const countLabels = {
+  zh: '次下载',
+  en: 'downloads',
+} satisfies Record<Lang, string>
+
 // Shared by the catalog and related tools on detail pages.
 // 整卡通过拉伸链接进入详情；在线插件在右下角额外提供一键安装按钮（位于链接之上）。
-export function ToolCard({ tool, lang }: { tool: ToolEntry; lang: Lang }) {
+// downloads 缺省（内置工具、尚未拉到或没有统计记录）时不展示计数。
+export function ToolCard({ tool, lang, downloads }: { tool: ToolEntry; lang: Lang; downloads?: number }) {
   const status = toolStatus(tool)
   const channel = toolChannel(tool)
   return (
@@ -27,7 +34,7 @@ export function ToolCard({ tool, lang }: { tool: ToolEntry; lang: Lang }) {
         <span className={`${styles.badge} ${status === 'upcoming' ? styles.upcoming : status === 'released' ? styles.released : styles.fresh}`}><span aria-hidden="true" />{labels[lang][status]}</span>
       </div>
       <h3>{toolName(tool, lang)}</h3>
-      <p className={styles.channel}><span className={channel === 'market' ? styles.marketDot : styles.builtinDot} aria-hidden="true" />{channelLabels[lang][channel]}</p>
+      <p className={styles.channel}><span className={channel === 'market' ? styles.marketDot : styles.builtinDot} aria-hidden="true" />{channelLabels[lang][channel]}{downloads !== undefined && <span className={styles.channelCount}> · {formatDownloadCount(downloads, lang)} {countLabels[lang]}</span>}</p>
       <p className={styles.description}>{toolDescription(tool, lang)}</p>
       <div className={styles.bottom}>
         <span>{tool.categoryLabel[lang]}</span>
