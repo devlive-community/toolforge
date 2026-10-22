@@ -26,7 +26,7 @@ Commands:
   plugin pack <slug> [--out dir] [--key-id id] [--unsigned]
                           Build market/<slug> into a .tfp package (default out: dist/plugins);
                           signs with the base64 key in TOOLFORGE_PLUGIN_KEY unless --unsigned
-  plugin index <dir> <base-url> [--merge <registry.json>]
+  plugin sign <file> --out <dir> [--key-id id]\n                          Sign a prebuilt unsigned candidate without running child processes\n  plugin verify <dir>     Verify every .tfp has a trusted official signature\n  plugin index <dir> <stats-base-url> --source-commit <sha> --generation <n>\n                          [--merge <registry.json>] [--merge-catalog <catalog.json>]
                           Write <dir>/registry.json listing the .tfp packages in <dir>,
                           keeping other plugins from an existing index when --merge is given
   help                    Show this message
@@ -73,10 +73,35 @@ fn main() -> ExitCode {
             };
             match (args.get(1).map(String::as_str), args.get(2)) {
                 (Some("keygen"), Some(out)) => plugin::keygen(std::path::Path::new(out)),
+                (Some("sign"), Some(input)) => {
+                    let out = flag("--out").ok_or_else(|| "missing --out directory".to_owned());
+                    out.and_then(|out| {
+                        plugin::sign(
+                            std::path::Path::new(input),
+                            std::path::Path::new(&out),
+                            &flag("--key-id").unwrap_or_else(|| plugin::DEFAULT_KEY_ID.into()),
+                        )
+                        .map(|_| ())
+                    })
+                }
+                (Some("verify"), Some(dir)) => plugin::verify(std::path::Path::new(dir)),
                 (Some("index"), Some(dir)) => match args.get(3) {
                     Some(base) => {
                         let merge = flag("--merge").map(std::path::PathBuf::from);
-                        plugin::index(std::path::Path::new(dir), base, merge.as_deref()).map(|_| ())
+                        let previous = flag("--merge-catalog").map(std::path::PathBuf::from);
+                        let source = flag("--source-commit").unwrap_or_default();
+                        let generation = flag("--generation")
+                            .and_then(|v| v.parse().ok())
+                            .unwrap_or(0);
+                        plugin::index(
+                            std::path::Path::new(dir),
+                            base,
+                            merge.as_deref(),
+                            previous.as_deref(),
+                            &source,
+                            generation,
+                        )
+                        .map(|_| ())
                     }
                     None => Err(format!("missing base url\n\n{HELP}")),
                 },

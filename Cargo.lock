@@ -10151,8 +10151,11 @@ checksum = "7d56353a2a665ad0f41a421187180aab746c8c325620617ad883a99a1cbe66d2"
 name = "toolforge"
 version = "0.2.1"
 dependencies = [
+ "httpdate",
  "log",
  "objc2-app-kit",
+ "reqwest",
+ "rustls",
  "serde",
  "serde_json",
  "sha2 0.11.0",
@@ -10228,6 +10231,7 @@ dependencies = [
  "tfp-websocket",
  "tfp-xlsx-viewer",
  "url",
+ "uuid",
  "zip 4.6.1",
 ]
 

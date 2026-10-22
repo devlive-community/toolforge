@@ -9,6 +9,7 @@ import { usePluginText } from '../plugins/usePluginText'
 import { ToolTile, accentTiles } from '../plugins/ToolIcon'
 import { pluginById, useApp } from '../stores/app'
 import { PluginDetail, type PluginDetailInfo, type PluginDetailRow } from './PluginDetail'
+import { formatDownloadCount, loadDownloadStats, type PluginDownloadStats } from '../lib/pluginStats'
 
 interface IndexEntry {
   id: string
@@ -66,6 +67,7 @@ export function MarketOnline() {
   const appVersion = useApp((s) => s.info?.version ?? '0.0.0')
   const [index, setIndex] = useState<IndexEntry[] | null>(null)
   const [indexError, setIndexError] = useState<AppError | null>(null)
+  const [downloadStats, setDownloadStats] = useState<Map<string, PluginDownloadStats> | null>(null)
   const [installed, setInstalled] = useState<InstallInfo[]>([])
   const [busy, setBusy] = useState<string | null>(null)
   const [confirm, setConfirm] = useState<{ pending: Pending; error: AppError } | null>(null)
@@ -96,6 +98,7 @@ export function MarketOnline() {
         setInstalled(list)
         setIndex(result.plugins)
         setIndexError(result.error)
+        setDownloadStats(null)
       }),
     [],
   )
@@ -103,6 +106,17 @@ export function MarketOnline() {
   useEffect(() => {
     load()
   }, [load])
+
+  useEffect(() => {
+    if (!index) return
+    let active = true
+    void loadDownloadStats(index.map((entry) => entry.id)).then((stats) => {
+      if (active) setDownloadStats(stats)
+    })
+    return () => { active = false }
+  }, [index])
+
+  const downloadCount = (value: string | undefined) => formatDownloadCount(value, i18n.language) ?? t(downloadStats === null ? 'market.online.statsLoading' : 'market.online.statsUnavailable')
 
   const refresh = () => {
     setIndex(null)
@@ -115,7 +129,7 @@ export function MarketOnline() {
     try {
       const info =
         pending.kind === 'url'
-          ? await invoke<InstallInfo>('plugin_install_url', { url: pending.entry.url, sha256: pending.entry.sha256, allowUnsigned })
+          ? await invoke<InstallInfo>('plugin_install_url', { url: pending.entry.url, sha256: pending.entry.sha256, pluginId: pending.entry.id, version: pending.entry.version, size: pending.entry.size, allowUnsigned })
           : await invoke<InstallInfo>('plugin_install_file', { path: pending.path, allowUnsigned })
       toast.success(t('market.online.installed', { name: displayName(info.names, info.id), id: info.id, version: info.version }))
       setInstalled(await invoke<InstallInfo[]>('plugin_installed'))
@@ -192,6 +206,10 @@ export function MarketOnline() {
   const detailRows: PluginDetailRow[] = []
   if (detail?.kind === 'online') {
     const entry = detail.entry
+    const stats = downloadStats?.get(entry.id)
+    detailRows.push({ label: t('market.online.versionDownloads'), value: downloadCount(stats?.versions.find((item) => item.version === entry.version)?.downloads) })
+    detailRows.push({ label: t('market.online.totalDownloadsLabel'), value: downloadCount(stats?.totalDownloads) })
+    detailRows.push({ label: t('market.online.statsBasis'), value: t('market.online.statsHint') })
     detailRows.push({ label: t('market.online.packageSize'), value: t('market.online.size', { kb: Math.max(1, Math.round(entry.size / 1024)) }) })
     if (entry.minAppVersion) {
       detailRows.push({ label: t('market.online.minApp'), value: t('market.online.needsApp', { version: entry.minAppVersion }) })
@@ -256,6 +274,9 @@ export function MarketOnline() {
                     <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-fg-muted">{localized(entry.descriptions)}</p>
                   </button>
                 </div>
+                <p className="text-[11px] text-fg-subtle" title={t('market.online.statsHint')}>
+                  {t('market.online.totalDownloads', { value: downloadCount(downloadStats?.get(entry.id)?.totalDownloads) })}
+                </p>
                 <div className="mt-auto flex items-center gap-2 text-[11px] text-fg-subtle">
                   <span>{t('market.version', { version: entry.version })}</span>
                   <span>·</span>

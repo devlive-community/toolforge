@@ -27,7 +27,7 @@ jobs:
       - name: Scan conventions
         run: cargo xtask check rules
       - name: Lint shell scripts
-        run: shellcheck scripts/*.sh
+        run: shellcheck scripts/*.sh deploy/plugin-stats/*.sh
 
   rust:
     name: Rust (${{ matrix.os }})
@@ -70,6 +70,39 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Typecheck and build
         run: cargo xtask check web
+
+  plugin-stats:
+    name: Plugin statistics service
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: integration-only
+          MYSQL_DATABASE: toolforge_stats_test
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pintegration-only"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    defaults:
+      run:
+        working-directory: apps/server
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version: '1.26.x'
+          cache-dependency-path: apps/server/go.sum
+      - name: Format, vet and test against MySQL
+        env:
+          TEST_MYSQL_DSN: root:integration-only@tcp(127.0.0.1:3306)/toolforge_stats_test?parseTime=true
+        run: |
+          test -z "$(gofmt -l .)"
+          go vet ./...
+          go test -race ./...
+          go build ./cmd/plugin-stats
+      - name: Check dependency vulnerabilities
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.1.4 ./...
 
   bundle:
     name: Bundle (${{ matrix.os }})

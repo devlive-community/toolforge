@@ -57,7 +57,34 @@ const MIGRATIONS: &[&str] = &[
     ALTER TABLE tasks ADD COLUMN args TEXT;
 "#,
     "ALTER TABLE tasks ADD COLUMN error_params TEXT;",
+    r#"
+    CREATE TABLE plugin_download_outbox (
+        attempt_id TEXT PRIMARY KEY,
+        receipt TEXT NOT NULL,
+        sha256 TEXT NOT NULL,
+        size_bytes INTEGER NOT NULL CHECK(size_bytes > 0),
+        expires_at INTEGER NOT NULL,
+        created_at INTEGER NOT NULL,
+        next_attempt_at INTEGER NOT NULL,
+        attempts INTEGER NOT NULL DEFAULT 0
+    );
+    CREATE INDEX plugin_download_outbox_due ON plugin_download_outbox(next_attempt_at);
+"#,
 ];
+
+/// 下载成功回报凭据只保存在本地 SQLite，不通过前端暴露，也不实现 Debug。
+#[derive(Clone, PartialEq)]
+pub struct DownloadReport {
+    pub attempt_id: String,
+    pub receipt: String,
+    pub sha256: String,
+    pub size_bytes: u64,
+    /// 以下时间均为 UTC Unix 毫秒。
+    pub expires_at: i64,
+    pub created_at: i64,
+    pub next_attempt_at: i64,
+    pub attempts: u32,
+}
 
 pub struct Store {
     conn: Mutex<Connection>,
@@ -132,6 +159,65 @@ impl Store {
     fn conn(&self) -> std::sync::MutexGuard<'_, Connection> {
         // 持锁期间不会 panic，出现中毒时直接复用内部连接
         self.conn.lock().unwrap_or_else(|e| e.into_inner())
+    }
+
+    /// 同一个凭据只入队一次；已有记录保留原始有效期与重试状态。
+    pub fn download_report_enqueue(&self, report: &DownloadReport) -> AppResult<()> {
+        let size = i64::try_from(report.size_bytes).map_err(|_| {
+            AppError::new("store.failed").with("detail", "download size out of range")
+        })?;
+        self.conn().execute(
+            "INSERT INTO plugin_download_outbox
+             (attempt_id, receipt, sha256, size_bytes, expires_at, created_at, next_attempt_at, attempts)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, 0) ON CONFLICT(attempt_id) DO NOTHING",
+            params![report.attempt_id, report.receipt, report.sha256, size,
+                report.expires_at, report.created_at, report.next_attempt_at],
+        )?;
+        Ok(())
+    }
+
+    /// 批量清除到期凭据，并取出本轮到期的回报；断网后重启仍可继续。
+    pub fn download_reports_due(&self, now: i64, limit: usize) -> AppResult<Vec<DownloadReport>> {
+        let conn = self.conn();
+        conn.execute(
+            "DELETE FROM plugin_download_outbox WHERE expires_at <= ?1 OR created_at <= ?2",
+            params![now, now.saturating_sub(5 * 24 * 60 * 60 * 1000)],
+        )?;
+        let mut statement = conn.prepare(
+            "SELECT attempt_id, receipt, sha256, size_bytes, expires_at, created_at,
+                    next_attempt_at, attempts FROM plugin_download_outbox
+             WHERE next_attempt_at <= ?1 ORDER BY next_attempt_at LIMIT ?2",
+        )?;
+        let rows = statement.query_map(params![now, limit.min(100) as i64], |row| {
+            Ok(DownloadReport {
+                attempt_id: row.get(0)?,
+                receipt: row.get(1)?,
+                sha256: row.get(2)?,
+                size_bytes: row.get::<_, i64>(3)? as u64,
+                expires_at: row.get(4)?,
+                created_at: row.get(5)?,
+                next_attempt_at: row.get(6)?,
+                attempts: row.get(7)?,
+            })
+        })?;
+        Ok(rows.collect::<Result<_, _>>()?)
+    }
+
+    pub fn download_report_remove(&self, attempt_id: &str) -> AppResult<()> {
+        self.conn().execute(
+            "DELETE FROM plugin_download_outbox WHERE attempt_id = ?1",
+            [attempt_id],
+        )?;
+        Ok(())
+    }
+
+    pub fn download_report_retry(&self, attempt_id: &str, next_attempt_at: i64) -> AppResult<()> {
+        self.conn().execute(
+            "UPDATE plugin_download_outbox SET attempts = attempts + 1, next_attempt_at = ?2
+             WHERE attempt_id = ?1",
+            params![attempt_id, next_attempt_at],
+        )?;
+        Ok(())
     }
 
     pub fn kv_get(&self, key: &str) -> AppResult<Option<Value>> {

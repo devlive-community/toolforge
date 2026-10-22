@@ -25,3 +25,12 @@ docs/.next/
 docs/out/
 docs/src/data/*.json
 .web_builder/
+
+# Local service credentials and Go build output
+apps/server/.env
+apps/server/.env.*
+!apps/server/.env.example
+apps/server/bin/
+apps/server/coverage.out
+apps/server/plugin-stats
+apps/server/build/

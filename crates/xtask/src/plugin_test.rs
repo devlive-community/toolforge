@@ -65,7 +65,7 @@ fn index_keeps_only_the_highest_version_per_plugin() {
     )
     .unwrap();
 
-    let out = index(&root, "https://example.com/download", None).unwrap();
+    let out = index(&root, "https://example.com", None, None, &"a".repeat(40), 1).unwrap();
     let data: serde_json::Value = serde_json::from_slice(&std::fs::read(&out).unwrap()).unwrap();
     let plugins = data["plugins"].as_array().unwrap();
     assert_eq!(plugins.len(), 2);
@@ -79,7 +79,7 @@ fn index_keeps_only_the_highest_version_per_plugin() {
     assert_eq!(a["names"]["en-US"], "org.toolforge.test.a 0.1.10");
     assert_eq!(
         a["url"],
-        "https://example.com/download/org.toolforge.test.a-0.1.10.tfp"
+        "https://example.com/v1/plugins/org.toolforge.test.a/versions/0.1.10/download"
     );
     let b = plugins
         .iter()
@@ -87,5 +87,130 @@ fn index_keeps_only_the_highest_version_per_plugin() {
         .unwrap();
     assert_eq!(b["version"], "0.1.0");
 
+    let catalog: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(root.join("release-catalog.json")).unwrap()).unwrap();
+    assert_eq!(catalog["plugins"].as_array().unwrap().len(), 4);
+    assert_eq!(catalog["generation"], 1);
+    for item in catalog["plugins"].as_array().unwrap() {
+        assert_eq!(
+            item["objectKey"],
+            format!(
+                "packages/{}/{}/{}.tfp",
+                item["id"].as_str().unwrap(),
+                item["version"].as_str().unwrap(),
+                item["sha256"].as_str().unwrap()
+            )
+        );
+    }
     std::fs::remove_dir_all(&root).ok();
+}
+
+#[test]
+fn index_rejects_same_version_with_different_bytes() {
+    let root = std::env::temp_dir().join(format!("xtask-plugin-conflict-{}", std::process::id()));
+    std::fs::create_dir_all(root.join("previous")).unwrap();
+    std::fs::write(
+        root.join("a.tfp"),
+        pack_bytes("org.toolforge.test.a", "1.0.0", "red"),
+    )
+    .unwrap();
+    std::fs::write(
+        root.join("previous/a.tfp"),
+        pack_bytes("org.toolforge.test.a", "1.0.0", "blue"),
+    )
+    .unwrap();
+    assert!(
+        index(&root, "https://example.com", None, None, &"a".repeat(40), 1)
+            .unwrap_err()
+            .contains("conflicting")
+    );
+    std::fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
+fn index_preserves_revocation_and_requires_complete_inventory() {
+    let root = std::env::temp_dir().join(format!("xtask-plugin-catalog-{}", std::process::id()));
+    std::fs::create_dir_all(&root).unwrap();
+    let package = root.join("a.tfp");
+    std::fs::write(&package, pack_bytes("org.toolforge.test.a", "1.0.0", "red")).unwrap();
+    index(&root, "https://example.com", None, None, &"a".repeat(40), 1).unwrap();
+    let previous = root.join("old-catalog.json");
+    let mut catalog: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(root.join("release-catalog.json")).unwrap()).unwrap();
+    catalog["plugins"][0]["status"] = "revoked".into();
+    std::fs::write(&previous, serde_json::to_vec(&catalog).unwrap()).unwrap();
+    let registry = index(
+        &root,
+        "https://example.com",
+        None,
+        Some(&previous),
+        &"b".repeat(40),
+        2,
+    )
+    .unwrap();
+    let registry: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(registry).unwrap()).unwrap();
+    assert!(registry["plugins"].as_array().unwrap().is_empty());
+    std::fs::remove_file(package).unwrap();
+    assert!(
+        index(
+            &root,
+            "https://example.com",
+            None,
+            Some(&previous),
+            &"c".repeat(40),
+            3
+        )
+        .unwrap_err()
+        .contains("missing")
+    );
+    std::fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
+fn index_allows_only_identical_same_generation_retry() {
+    let root = std::env::temp_dir().join(format!("xtask-plugin-retry-{}", std::process::id()));
+    std::fs::create_dir_all(&root).unwrap();
+    std::fs::write(
+        root.join("a.tfp"),
+        pack_bytes("org.toolforge.test.a", "1.0.0", "red"),
+    )
+    .unwrap();
+    index(&root, "https://example.com", None, None, &"a".repeat(40), 7).unwrap();
+    let previous = root.join("old-catalog.json");
+    std::fs::copy(root.join("release-catalog.json"), &previous).unwrap();
+    index(
+        &root,
+        "https://example.com",
+        None,
+        Some(&previous),
+        &"a".repeat(40),
+        7,
+    )
+    .unwrap();
+    assert!(
+        index(
+            &root,
+            "https://example.com",
+            None,
+            Some(&previous),
+            &"b".repeat(40),
+            7
+        )
+        .unwrap_err()
+        .contains("different content")
+    );
+    assert!(
+        index(
+            &root,
+            "https://example.com",
+            None,
+            Some(&previous),
+            &"a".repeat(40),
+            6
+        )
+        .unwrap_err()
+        .contains("backwards")
+    );
+    std::fs::remove_dir_all(root).unwrap();
 }

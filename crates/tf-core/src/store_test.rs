@@ -268,3 +268,93 @@ fn task_args_enable_rerun() {
     store.task_finish("t1", "succeeded", 5, None).unwrap();
     assert_eq!(store.tasks_clear_finished().unwrap(), vec!["t1"]);
 }
+
+fn download_report(id: &str, now: i64) -> DownloadReport {
+    DownloadReport {
+        attempt_id: id.into(),
+        receipt: "test-only-receipt".into(),
+        sha256: "a".repeat(64),
+        size_bytes: 42,
+        expires_at: now + 7 * 24 * 60 * 60 * 1000,
+        created_at: now,
+        next_attempt_at: now,
+        attempts: 0,
+    }
+}
+
+#[test]
+fn download_outbox_is_idempotent_and_preserves_retry_state() {
+    let store = Store::open_in_memory().unwrap();
+    let now = 1_000_000_000;
+    let report = download_report("attempt", now);
+    store.download_report_enqueue(&report).unwrap();
+    store
+        .download_report_retry("attempt", now + 60_000)
+        .unwrap();
+    store.download_report_enqueue(&report).unwrap();
+    assert!(store.download_reports_due(now, 10).unwrap().is_empty());
+    let reports = store.download_reports_due(now + 60_000, 10).unwrap();
+    assert_eq!(reports.len(), 1);
+    assert_eq!(reports[0].attempts, 1);
+    assert_eq!(reports[0].receipt, "test-only-receipt");
+    store.download_report_remove("attempt").unwrap();
+    assert!(
+        store
+            .download_reports_due(now + 60_000, 10)
+            .unwrap()
+            .is_empty()
+    );
+}
+
+#[test]
+fn download_outbox_survives_reopen_and_expires_before_receipt() {
+    let dir = std::env::temp_dir().join(format!(
+        "tf-outbox-{}-{:?}",
+        now_millis(),
+        std::thread::current().id()
+    ));
+    let path = dir.join("state.db");
+    let now = 1_000_000_000;
+    {
+        let store = Store::open(&path).unwrap();
+        store
+            .download_report_enqueue(&download_report("durable", now))
+            .unwrap();
+        let mut expired = download_report("expired", now);
+        expired.expires_at = now + 1000;
+        store.download_report_enqueue(&expired).unwrap();
+    }
+    {
+        let store = Store::open(&path).unwrap();
+        let reports = store.download_reports_due(now + 1001, 10).unwrap();
+        assert_eq!(reports.len(), 1);
+        assert_eq!(reports[0].attempt_id, "durable");
+        assert!(
+            store
+                .download_reports_due(now + 5 * 24 * 60 * 60 * 1000, 10)
+                .unwrap()
+                .is_empty()
+        );
+    }
+    std::fs::remove_dir_all(dir).unwrap();
+}
+
+#[test]
+fn download_outbox_migration_preserves_version_four_state() {
+    let conn = Connection::open_in_memory().unwrap();
+    for sql in &MIGRATIONS[..4] {
+        conn.execute_batch(sql).unwrap();
+    }
+    conn.pragma_update(None, "user_version", 4).unwrap();
+    conn.execute("INSERT INTO kv VALUES ('prefs', '42', 1)", [])
+        .unwrap();
+    let store = Store::init(conn).unwrap();
+    assert_eq!(store.kv_get("prefs").unwrap(), Some(json!(42)));
+    store
+        .download_report_enqueue(&download_report("migrated", 1_000_000_000))
+        .unwrap();
+    assert_eq!(
+        store.download_reports_due(1_000_000_000, 1).unwrap().len(),
+        1
+    );
+}

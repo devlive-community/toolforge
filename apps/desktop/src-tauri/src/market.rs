@@ -13,10 +13,9 @@ use crate::installed::{Assets, InstallInfo, Installed};
 
 /// 插件列表变化（安装、卸载、启动时加载完成），前端据此刷新
 pub const PLUGINS_CHANGED: &str = "plugins://changed";
-/// 官方插件索引：插件独立于应用版本发布到固定的 plugins 发布（plugins.yml），修复无需等应用发版；
+/// 官方插件索引由 plugins.yml 发布到 COS，插件发布独立于应用版本；
 /// 可用 TOOLFORGE_PLUGIN_INDEX 覆盖（调试用）
-const INDEX_URL: &str =
-    "https://github.com/devlive-community/toolforge/releases/download/plugins/registry.json";
+const INDEX_URL: &str = "https://plugins.toolforge.devlive.org/registry.json";
 const MAX_INDEX: u64 = 2 * 1024 * 1024;
 const MAX_PACKAGE: u64 = tf_package::MAX_PACKAGE as u64;
 
@@ -102,18 +101,6 @@ fn install(
     )
 }
 
-/// 下载插件包并核对 SHA-256
-pub(crate) fn fetch_package(url: &str, sha256: &str) -> AppResult<Vec<u8>> {
-    let bytes = resources::fetch_bytes(url, MAX_PACKAGE)?;
-    let actual = resources::to_hex(&sha2_digest(&bytes));
-    if !actual.eq_ignore_ascii_case(sha256.trim()) {
-        return Err(AppError::new("package.checksum_mismatch")
-            .with("expected", sha256)
-            .with("actual", actual));
-    }
-    Ok(bytes)
-}
-
 #[tauri::command]
 pub fn plugin_installed(state: State<'_, AppState>) -> Vec<InstallInfo> {
     state.installed.list()
@@ -142,10 +129,25 @@ pub async fn plugin_install_url(
     app: AppHandle,
     url: String,
     sha256: String,
+    plugin_id: String,
+    version: String,
+    size: u64,
     allow_unsigned: bool,
 ) -> AppResult<InstallInfo> {
     tauri::async_runtime::spawn_blocking(move || {
-        let bytes = fetch_package(&url, &sha256)?;
+        let state = app.state::<AppState>();
+        let expected = crate::plugin_download::Expected {
+            id: &plugin_id,
+            version: &version,
+            sha256: &sha256,
+            size,
+        };
+        let parsed = url::Url::parse(&url).map_err(|_| AppError::new("market.invalid_download"))?;
+        let bytes = if crate::plugin_download::is_stats_url(&parsed) {
+            crate::plugin_download::fetch_official(&url, &expected, &state.store)?
+        } else {
+            crate::plugin_download::fetch_third_party(&url, &expected)?
+        };
         install(
             &app,
             &app.state::<AppState>(),
@@ -156,11 +158,6 @@ pub async fn plugin_install_url(
     })
     .await
     .map_err(|e| AppError::new("plugin.crashed").with("detail", e.to_string()))?
-}
-
-fn sha2_digest(bytes: &[u8]) -> Vec<u8> {
-    use sha2::Digest;
-    sha2::Sha256::digest(bytes).to_vec()
 }
 
 #[tauri::command]

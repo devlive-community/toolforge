@@ -165,7 +165,17 @@ fn install_from_index(app: &AppHandle, id: &str) -> AppResult<ExternalInstall> {
         .get("sha256")
         .and_then(Value::as_str)
         .ok_or_else(|| AppError::new("market.invalid_index"))?;
-    let bytes = market::fetch_package(url, sha256)?;
+    let size = entry
+        .get("size")
+        .and_then(Value::as_u64)
+        .ok_or_else(|| AppError::new("market.invalid_index"))?;
+    let expected = crate::plugin_download::Expected {
+        id,
+        version: &version,
+        sha256,
+        size,
+    };
+    let bytes = crate::plugin_download::fetch_official(url, &expected, &state.store)?;
     let outcome = if current.is_some() {
         "updated"
     } else {

@@ -285,7 +285,14 @@
         "minApp": "应用要求",
         "installedAt": "安装时间",
         "uptodate": "已安装 {{name}}，已是最新版本",
-        "builtinTool": "{{name}} 已内置在 ToolForge 中，无需安装"
+        "builtinTool": "{{name}} 已内置在 ToolForge 中，无需安装",
+        "versionDownloads": "此版本下载量",
+        "totalDownloadsLabel": "累计下载量",
+        "totalDownloads": "累计下载：{{value}}",
+        "statsBasis": "统计口径",
+        "statsHint": "客户端完整下载并通过校验后确认的成功次数；从统计服务上线起累计。",
+        "statsLoading": "加载中…",
+        "statsUnavailable": "暂不可用"
       }
     }
   },
@@ -361,7 +368,10 @@
       "plugin.timeout": "插件处理超时",
       "plugin.permission_denied": "插件没有 {{detail}} 权限",
       "resource.insecure_url": "只允许 HTTPS 地址",
-      "resource.too_large": "下载内容过大"
+      "resource.too_large": "下载内容过大",
+      "market.invalid_download": "官方插件下载地址无效，请刷新插件市场后重试",
+      "market.download_metadata_mismatch": "下载包与插件索引不一致，请刷新后重试",
+      "market.stats_unavailable": "插件下载服务暂不可用，请稍后重试"
     },
     "logs": {
       "task": {

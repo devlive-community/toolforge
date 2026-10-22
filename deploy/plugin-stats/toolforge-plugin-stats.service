@@ -1,0 +1,37 @@
+[Unit]
+Description=ToolForge official plugin download statistics
+After=network.target mysql.service
+Wants=mysql.service
+
+[Service]
+Type=simple
+User=toolforge-stats
+Group=toolforge-stats
+WorkingDirectory=/opt/toolforge-plugin-stats/current
+EnvironmentFile=/etc/toolforge-plugin-stats/runtime.env
+ExecStart=/opt/toolforge-plugin-stats/current/plugin-stats serve
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+AmbientCapabilities=
+UMask=0077
+MemoryMax=256M
+TasksMax=64
+LimitNOFILE=4096
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

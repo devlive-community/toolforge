@@ -1,0 +1,73 @@
+name: Deploy plugin statistics
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plugin-stats-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    environment: plugin-stats-production
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: integration-only-password
+          MYSQL_DATABASE: toolforge_stats_test
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pintegration-only-password"
+          --health-interval=5s --health-timeout=3s --health-retries=20
+    defaults:
+      run:
+        working-directory: apps/server
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
+        with:
+          go-version: '1.26.x'
+          check-latest: true
+          cache-dependency-path: apps/server/go.sum
+      - name: Test before deployment
+        env:
+          TEST_MYSQL_DSN: root:integration-only-password@tcp(127.0.0.1:3306)/toolforge_stats_test?parseTime=true
+        run: |
+          test -z "$(gofmt -l .)"
+          go mod download
+          go mod verify
+          go vet ./...
+          go test -race -count=1 ./...
+          go run golang.org/x/vuln/cmd/govulncheck@v1.1.4 ./...
+          shellcheck ../../deploy/plugin-stats/deploy.sh
+      - name: Build Linux amd64 binary and checksum
+        run: |
+          mkdir -p build
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "-s -w -X main.buildSHA=$GITHUB_SHA" -o build/plugin-stats ./cmd/plugin-stats
+          sha256sum build/plugin-stats > build/plugin-stats.sha256
+      - name: Deploy using a restricted SSH identity
+        env:
+          STATS_DEPLOY_SSH_TARGET: ${{ vars.STATS_DEPLOY_SSH_TARGET }}
+          STATS_DEPLOY_SSH_KEY: ${{ secrets.STATS_DEPLOY_SSH_KEY }}
+          STATS_SSH_KNOWN_HOSTS: ${{ secrets.PLUGIN_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          [[ $STATS_DEPLOY_SSH_TARGET =~ ^[a-z_][a-z0-9_-]*@[a-zA-Z0-9.-]+$ ]] || { echo 'Invalid deployment target'; exit 1; }
+          [[ -n $STATS_DEPLOY_SSH_KEY && -n $STATS_SSH_KNOWN_HOSTS ]] || { echo 'Missing protected deployment SSH configuration'; exit 1; }
+          umask 077
+          task_dir=$(mktemp -d "$RUNNER_TEMP/stats-deploy.XXXXXX")
+          trap 'rm -rf "$task_dir"' EXIT
+          printf '%s\n' "$STATS_DEPLOY_SSH_KEY" > "$task_dir/id"
+          printf '%s\n' "$STATS_SSH_KNOWN_HOSTS" > "$task_dir/known_hosts"
+          unset STATS_DEPLOY_SSH_KEY STATS_SSH_KNOWN_HOSTS
+          checksum=$(cut -d ' ' -f 1 build/plugin-stats.sha256)
+          [[ $GITHUB_SHA =~ ^[a-f0-9]{40}$ && $checksum =~ ^[a-f0-9]{64}$ ]] || exit 1
+          ssh -T -i "$task_dir/id" -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o "UserKnownHostsFile=$task_dir/known_hosts" "$STATS_DEPLOY_SSH_TARGET" "deploy $GITHUB_SHA $checksum" < build/plugin-stats

@@ -287,7 +287,14 @@
         "minApp": "App requirement",
         "installedAt": "Installed at",
         "uptodate": "{{name}} is already installed and up to date",
-        "builtinTool": "{{name}} is already built into ToolForge"
+        "builtinTool": "{{name}} is already built into ToolForge",
+        "versionDownloads": "Version downloads",
+        "totalDownloadsLabel": "Total downloads",
+        "totalDownloads": "Downloads: {{value}}",
+        "statsBasis": "Counting method",
+        "statsHint": "Successful downloads confirmed by clients after integrity checks, counted from the statistics launch.",
+        "statsLoading": "Loading…",
+        "statsUnavailable": "Unavailable"
       }
     }
   },
@@ -363,7 +370,10 @@
       "plugin.timeout": "The plugin timed out",
       "plugin.permission_denied": "The plugin lacks the {{detail}} permission",
       "resource.insecure_url": "Only HTTPS addresses are allowed",
-      "resource.too_large": "The download is too large"
+      "resource.too_large": "The download is too large",
+      "market.invalid_download": "The official plugin download address is invalid. Refresh the market and try again.",
+      "market.download_metadata_mismatch": "The package does not match the plugin index. Refresh and try again.",
+      "market.stats_unavailable": "The plugin download service is unavailable. Try again later."
     },
     "logs": {
       "task": {

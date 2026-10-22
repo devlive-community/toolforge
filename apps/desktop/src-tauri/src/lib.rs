@@ -7,6 +7,8 @@ mod launcher;
 mod lifecycle;
 mod market;
 mod menu;
+mod plugin_download;
+mod plugin_stats;
 mod plugins;
 mod resources;
 mod tasks;
@@ -103,6 +105,7 @@ pub fn run() {
                 plugins.clone(),
                 builtin.clone(),
             );
+            plugin_stats::init(store.clone());
             app.manage(AppState {
                 store,
                 plugins,
@@ -167,6 +170,7 @@ pub fn run() {
             market::plugin_uninstall,
             market::plugin_assets,
             market::market_index,
+            plugin_stats::plugin_download_stats,
             resources::resource_list,
             resources::resource_download,
             resources::resource_delete,

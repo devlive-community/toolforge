@@ -1,95 +1,250 @@
 name: Plugins
 
-# 在线插件独立于应用版本发布：market/*/manifest.json 的 version 递增并推送到 dev 后，
-# 只打包签名「plugins」发布中还没有的版本，上传 .tfp 并全量重建 registry.json。
-# 应用从 releases/download/plugins/registry.json 读取插件索引，用户在工具市场中即可更新。
-# 版本号不变的改动不会发布；签名私钥来自仓库机密 TOOLFORGE_PLUGIN_KEY。
+# Official bytes live in COS. Every app download goes through the statistics API.
 on:
   push:
     branches: [dev]
     paths:
-      - "market/*/manifest.json"
-      # 发布逻辑变化时补发尚未发布的版本（已发布的版本会被跳过）
-      - ".github/workflows/plugins.yml"
+      - 'market/**'
+      - 'packages/plugin-ui-sdk/**'
+      - 'packages/plugin-build/**'
+      - 'crates/tf-plugin-api/**'
+      - 'crates/tf-plugin-guest/**'
+      - 'crates/tf-package/**'
+      - 'crates/xtask/**'
+      - 'wit/**'
+      - 'Cargo.lock'
+      - 'pnpm-lock.yaml'
+      - 'scripts/publish-plugins.sh'
+      - 'scripts/migrate-plugin-assets.sh'
+      - '.github/workflows/plugins.yml'
   workflow_dispatch:
+    inputs:
+      bootstrap:
+        description: 'Allow first COS catalog initialization after checking existing assets'
+        type: boolean
+        default: false
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: plugins
+  group: plugins-production
   cancel-in-progress: false
 
 env:
   CARGO_TERM_COLOR: always
   RELEASE_TAG: plugins
-  BASE_URL: https://github.com/${{ github.repository }}/releases/download/plugins
+  PLUGIN_ASSET_BASE_URL: https://plugins.toolforge.devlive.org
+  PLUGIN_STATS_BASE_URL: https://stats.toolforge.devlive.org
 
 jobs:
-  publish:
-    name: Publish changed plugins
-    runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ github.token }}
+  build:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v7
-      - name: Find versions not published yet
-        id: pending
-        run: |
-          assets="$(gh release view "$RELEASE_TAG" --json assets --jq '.assets[].name' 2>/dev/null || true)"
-          slugs=""
-          for manifest in market/*/manifest.json; do
-            [ -e "$manifest" ] || continue
-            slug="$(basename "$(dirname "$manifest")")"
-            file="$(jq -r '.id + "-" + .version + ".tfp"' "$manifest")"
-            if grep -qxF "$file" <<<"$assets"; then
-              echo "$file is already published"
-            else
-              echo "$file will be published"
-              slugs="$slugs $slug"
-            fi
-          done
-          echo "slugs=${slugs# }" >> "$GITHUB_OUTPUT"
-
-      - uses: pnpm/action-setup@v6
-        if: steps.pending.outputs.slugs != ''
-      - uses: actions/setup-node@v7
-        if: steps.pending.outputs.slugs != ''
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
-          cache: pnpm
-      - uses: dtolnay/rust-toolchain@stable
-        if: steps.pending.outputs.slugs != ''
+      - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+      - name: Install WASM target and build trusted tools without signing secrets
+        run: |
+          rustup target add wasm32-wasip2
+          cargo build --locked --release -p xtask
+          pnpm install --frozen-lockfile
+          shellcheck scripts/publish-plugins.sh scripts/migrate-plugin-assets.sh
+          cargo test --locked -p xtask
+      - name: Read complete GitHub history without changing historical bytes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/migrate-plugin-assets.sh dist/plugins
+      - name: Read existing COS catalog and find unpublished versions
+        env:
+          BOOTSTRAP: ${{ inputs.bootstrap || false }}
+        run: |
+          set -euo pipefail
+          status=$(curl --silent --show-error --proto '=https' --connect-timeout 10 --max-time 60 --header 'Cache-Control: no-cache' --output "$RUNNER_TEMP/prior-catalog.json" --write-out '%{http_code}' "$PLUGIN_ASSET_BASE_URL/release-catalog.json?run=$GITHUB_RUN_ID&attempt=$GITHUB_RUN_ATTEMPT")
+          case "$status" in
+            200) jq -e '.schemaVersion == 1 and (.sourceCommit | test("^[a-f0-9]{40}$"))' "$RUNNER_TEMP/prior-catalog.json" >/dev/null ;;
+            404) [[ $BOOTSTRAP == true ]] || { echo '::error::First COS catalog publication requires an explicit bootstrap run'; exit 1; }; rm "$RUNNER_TEMP/prior-catalog.json" ;;
+            *) echo "::error::Cannot read COS catalog (HTTP $status)"; exit 1 ;;
+          esac
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, re, subprocess, tomllib
+          root = pathlib.Path('dist/plugins')
+          assets = {a['name'] for a in json.loads((root / 'previous-release.json').read_text())['assets']}
+          prior_path = pathlib.Path(os.environ['RUNNER_TEMP']) / 'prior-catalog.json'
+          prior = json.loads(prior_path.read_text()) if prior_path.exists() else None
+          # A previous run may have published COS but only partially mirrored GitHub.
+          # Recover its exact signed bytes rather than rebuilding an existing version.
+          if prior:
+              for item in prior['plugins']:
+                  name = f"{item['id']}-{item['version']}.tfp"
+                  if name in assets:
+                      continue
+                  key = f"packages/{item['id']}/{item['version']}/{item['sha256']}.tfp"
+                  if item['objectKey'] != key or not re.fullmatch(r'[a-z0-9][a-z0-9.+-]*\.tfp', name) or not re.fullmatch(r'[a-f0-9]{64}', item['sha256']):
+                      raise SystemExit('Unsafe existing COS catalog metadata')
+                  target = root / 'previous' / name
+                  result = subprocess.check_output(['curl', '--silent', '--show-error', '--proto', '=https', '--connect-timeout', '10', '--max-time', '120', '--max-filesize', '67108864', '--output', str(target), '--write-out', '%{http_code}', os.environ['PLUGIN_ASSET_BASE_URL'] + '/' + key], text=True)
+                  if result != '200' or target.stat().st_size != item['size'] or hashlib.sha256(target.read_bytes()).hexdigest() != item['sha256']:
+                      raise SystemExit('Cannot recover verified historical COS bytes')
+                  assets.add(name)
+          # Compare only packages reachable from each WASM backend. Native App-only lock
+          # updates must not force every online plugin to publish a new version.
+          cargo_changed = set()
+          manifests = {}
+          if prior:
+              changed = subprocess.check_output(['git', 'diff', '--name-only', prior['sourceCommit'], 'HEAD', '--', 'Cargo.lock'], text=True)
+              if changed.strip():
+                  old_lock = tomllib.loads(subprocess.check_output(['git', 'show', prior['sourceCommit'] + ':Cargo.lock'], text=True))
+                  new_lock = tomllib.loads(pathlib.Path('Cargo.lock').read_text())
+                  key = lambda p: (p['name'], p['version'], p.get('source'))
+                  old_packages = {key(p): p for p in old_lock['package']}
+                  new_packages = {key(p): p for p in new_lock['package']}
+                  metadata = json.loads(subprocess.check_output(['cargo', 'metadata', '--locked', '--format-version', '1', '--filter-platform', 'wasm32-wasip2'], text=True))
+                  packages = {p['id']: p for p in metadata['packages']}
+                  nodes = {n['id']: n for n in metadata['resolve']['nodes']}
+                  manifests = {str(pathlib.Path(p['manifest_path']).resolve()): p['id'] for p in metadata['packages']}
+                  for ident, package in packages.items():
+                      if old_packages.get(key(package)) != new_packages.get(key(package)):
+                          cargo_changed.add(ident)
+          pending = []
+          for path in sorted(pathlib.Path('market').glob('*/manifest.json')):
+              manifest = json.loads(path.read_text())
+              slug = path.parent.name
+              if not slug.replace('-', '').isalnum():
+                  raise SystemExit('Unsafe plugin slug')
+              name = f"{manifest['id']}-{manifest['version']}.tfp"
+              if name not in assets:
+                  pending.append(slug)
+              elif prior:
+                  changed = subprocess.check_output(['git', 'diff', '--name-only', prior['sourceCommit'], 'HEAD', '--', str(path.parent), 'packages/plugin-ui-sdk', 'packages/plugin-build', 'crates/tf-plugin-api', 'crates/tf-plugin-guest', 'wit', 'pnpm-lock.yaml'], text=True)
+                  dependency_changed = False
+                  if cargo_changed:
+                      manifest_path = str((path.parent / 'backend' / 'Cargo.toml').resolve())
+                      frontier = [manifests[manifest_path]]
+                      seen = set()
+                      while frontier:
+                          ident = frontier.pop()
+                          if ident in seen:
+                              continue
+                          seen.add(ident)
+                          frontier.extend(dep['pkg'] for dep in nodes[ident]['deps'])
+                      dependency_changed = bool(seen & cargo_changed)
+                  if changed.strip() or dependency_changed:
+                      raise SystemExit(f'{slug}: published plugin inputs changed without a version bump')
+          (root / 'pending.txt').write_text(''.join(slug + '\n' for slug in pending))
+          PY
+      - name: Build unsigned candidates without signing credentials
+        run: |
+          mkdir -p dist/unsigned
+          while IFS= read -r slug; do
+            target/release/xtask plugin pack "$slug" --unsigned --out dist/unsigned
+          done < dist/plugins/pending.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          targets: wasm32-wasip2
-      - uses: Swatinem/rust-cache@v2
-        if: steps.pending.outputs.slugs != ''
-        with:
-          key: plugins
-      - name: Install dependencies
-        if: steps.pending.outputs.slugs != ''
-        run: pnpm install --frozen-lockfile
+          name: plugin-candidates-${{ github.run_id }}
+          path: |
+            dist/unsigned/
+            dist/plugins/
+          if-no-files-found: error
+          retention-days: 7
+          overwrite: true
 
-      - name: Pack, sign and publish
-        if: steps.pending.outputs.slugs != ''
+  publish:
+    needs: build
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-24.04
+    environment: plugins-production
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Build the trusted signing tool on a clean runner
+        run: |
+          cargo build --locked --release -p xtask
+          cargo test --locked -p xtask
+          shellcheck scripts/publish-plugins.sh scripts/migrate-plugin-assets.sh
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: plugin-candidates-${{ github.run_id }}
+          path: dist
+      - name: Independently read current history with the publishing identity
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BOOTSTRAP: ${{ inputs.bootstrap || false }}
+        run: |
+          scripts/migrate-plugin-assets.sh dist/verified-history
+          cp dist/verified-history/previous-release.json dist/plugins/previous-release.json
+          cp -a dist/verified-history/previous/. dist/plugins/previous/
+          status=$(curl --silent --show-error --proto '=https' --connect-timeout 10 --max-time 60 --header 'Cache-Control: no-cache' --output "$RUNNER_TEMP/prior-catalog.json" --write-out '%{http_code}' "$PLUGIN_ASSET_BASE_URL/release-catalog.json?run=$GITHUB_RUN_ID&attempt=$GITHUB_RUN_ATTEMPT&phase=publish")
+          case "$status" in
+            200) jq -e '.schemaVersion == 1 and (.sourceCommit | test("^[a-f0-9]{40}$"))' "$RUNNER_TEMP/prior-catalog.json" >/dev/null ;;
+            404) [[ $BOOTSTRAP == true ]] || { echo '::error::First COS catalog publication requires an explicit bootstrap run'; exit 1; }; rm "$RUNNER_TEMP/prior-catalog.json" ;;
+            *) echo "::error::Cannot read COS catalog (HTTP $status)"; exit 1 ;;
+          esac
+      - name: Independently sign candidates using the precompiled tool
         env:
           TOOLFORGE_PLUGIN_KEY: ${{ secrets.TOOLFORGE_PLUGIN_KEY }}
-          SLUGS: ${{ steps.pending.outputs.slugs }}
         run: |
-          if [ -z "$TOOLFORGE_PLUGIN_KEY" ]; then
-            echo "::error::TOOLFORGE_PLUGIN_KEY is not set; refusing to publish unsigned plugins"
-            exit 1
-          fi
-          for slug in $SLUGS; do
-            cargo xtask plugin pack "$slug"
+          set -euo pipefail
+          shopt -s nullglob
+          for package in dist/unsigned/*.tfp; do
+            target/release/xtask plugin sign "$package" --out dist/plugins
           done
-          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            gh release create "$RELEASE_TAG" --prerelease --title "Plugins" \
-              --notes "Installable ToolForge plugins, published independently of app releases. The app reads registry.json from here."
+      - name: Validate complete inventory and generate registry and catalog
+        run: |
+          target/release/xtask plugin verify dist/plugins
+          previous=()
+          if [[ -f "$RUNNER_TEMP/prior-catalog.json" ]]; then
+            previous=(--merge-catalog "$RUNNER_TEMP/prior-catalog.json")
           fi
-          # 历史版本下载到子目录：只用于全量重建索引（旧条目也能补上 manifest 新增字段），
-          # 不会重新上传；--clobber 只覆盖本次新打包的 .tfp 与 registry.json
-          mkdir -p dist/plugins/previous
-          gh release download "$RELEASE_TAG" --pattern '*.tfp' --dir dist/plugins/previous 2>/dev/null || true
-          cargo xtask plugin index dist/plugins "$BASE_URL"
-          gh release upload "$RELEASE_TAG" dist/plugins/*.tfp dist/plugins/registry.json --clobber
+          target/release/xtask plugin index dist/plugins "$PLUGIN_STATS_BASE_URL" --source-commit "$GITHUB_SHA" --generation "$GITHUB_RUN_NUMBER" "${previous[@]}"
+      - name: Install pinned COSCLI and verify its official release checksum
+        run: |
+          curl --fail --silent --show-error --location --proto '=https' --proto-redir '=https' --output "$RUNNER_TEMP/coscli" https://github.com/tencentyun/coscli/releases/download/v1.0.8/coscli-v1.0.8-linux-amd64
+          printf '%s  %s\n' '7165f2ae16c5f7ac495864c963ca574a76e04ec72680d7bc8a8eee3234d8cf91' "$RUNNER_TEMP/coscli" | sha256sum --check --status
+          chmod 700 "$RUNNER_TEMP/coscli"
+      - name: Publish verified objects, import catalog, then publish registry
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COS_SECRET_ID: ${{ secrets.COS_SECRET_ID }}
+          COS_SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
+          COS_SESSION_TOKEN: ${{ secrets.COS_SESSION_TOKEN }}
+          COS_REGION: ${{ vars.COS_REGION || 'ap-singapore' }}
+          COS_BUCKET: toolforge-1258585472
+          PLUGIN_CATALOG_SSH_TARGET: ${{ vars.PLUGIN_CATALOG_SSH_TARGET }}
+          PLUGIN_CATALOG_SSH_KEY: ${{ secrets.PLUGIN_CATALOG_SSH_KEY }}
+          PLUGIN_SSH_KNOWN_HOSTS: ${{ secrets.PLUGIN_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          umask 077
+          task_dir=$(mktemp -d "$RUNNER_TEMP/plugin-publish.XXXXXX")
+          trap 'rm -rf "$task_dir"' EXIT
+          export COS_CONFIG_PATH="$task_dir/cos.yaml" PLUGIN_SSH_KEY_PATH="$task_dir/id" PLUGIN_SSH_KNOWN_HOSTS_PATH="$task_dir/known_hosts"
+          export COSCLI_BIN="$RUNNER_TEMP/coscli" XTASK_BIN=target/release/xtask
+          python3 - <<'PY'
+          import json, os, pathlib, re
+          for key in ('COS_SECRET_ID','COS_SECRET_KEY','PLUGIN_CATALOG_SSH_KEY','PLUGIN_SSH_KNOWN_HOSTS'):
+              if not os.environ.get(key):
+                  raise SystemExit(f'Missing protected publishing configuration: {key}')
+          region = os.environ['COS_REGION']
+          if not re.fullmatch(r'[a-z]+-[a-z]+', region):
+              raise SystemExit('Invalid COS region')
+          config = {'cos': {'base': {'secretid': os.environ['COS_SECRET_ID'], 'secretkey': os.environ['COS_SECRET_KEY'], 'sessiontoken': os.environ.get('COS_SESSION_TOKEN', ''), 'protocol': 'https', 'disableencryption': 'true', 'disableautofetchbuckettype': 'true'}, 'buckets': [{'name': os.environ['COS_BUCKET'], 'alias': os.environ['COS_BUCKET'], 'region': region, 'endpoint': f'cos.{region}.myqcloud.com'}]}}
+          # JSON is also valid YAML. Never pass credentials as process arguments or print this file.
+          pathlib.Path(os.environ['COS_CONFIG_PATH']).write_text(json.dumps(config))
+          pathlib.Path(os.environ['PLUGIN_SSH_KEY_PATH']).write_text(os.environ['PLUGIN_CATALOG_SSH_KEY'] + '\n')
+          pathlib.Path(os.environ['PLUGIN_SSH_KNOWN_HOSTS_PATH']).write_text(os.environ['PLUGIN_SSH_KNOWN_HOSTS'] + '\n')
+          PY
+          unset COS_SECRET_ID COS_SECRET_KEY COS_SESSION_TOKEN PLUGIN_CATALOG_SSH_KEY PLUGIN_SSH_KNOWN_HOSTS
+          scripts/publish-plugins.sh dist/plugins

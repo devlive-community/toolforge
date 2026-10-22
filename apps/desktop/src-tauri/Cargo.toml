@@ -29,6 +29,10 @@ serde_json.workspace = true
 tf-core.workspace = true
 tf-package.workspace = true
 sha2 = "0.11"
+reqwest = { version = "0.13", default-features = false, features = ["blocking", "http2", "rustls-no-provider", "system-proxy", "json"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+uuid = { version = "1", features = ["v4"] }
+httpdate = "1"
 tf-wasm.workspace = true
 tf-plugin-api.workspace = true
 tfp-archive.workspace = true
