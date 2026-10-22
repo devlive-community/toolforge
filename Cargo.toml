@@ -15,7 +15,7 @@ members = [
 exclude = ["crates/tf-wasm/fixture", "market/xml-formatter/backend/vendor/sxd-xpath"]
 
 [workspace.package]
-version = "0.2.1"
+version = "0.2.2"
 edition = "2024"
 license = "MIT"
 authors = ["qianmoQ"]
