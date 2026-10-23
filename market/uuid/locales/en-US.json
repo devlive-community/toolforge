@@ -116,5 +116,24 @@
       "worker": "Worker {{value}}",
       "sequence": "Seq {{value}}"
     }
+  },
+  "api": {
+    "generate": {
+      "summary": "Generate UUIDs (v1, v3, v4, v5, v7), ULIDs, Nano IDs or Snowflake IDs",
+      "kind": "Kind of identifier",
+      "count": "How many identifiers",
+      "uppercase": "Use uppercase letters",
+      "hyphens": "Keep the hyphens of UUIDs",
+      "braces": "Wrap UUIDs in braces",
+      "namespace": "Namespace for v3 and v5",
+      "customNamespace": "Custom namespace UUID when namespace is custom",
+      "name": "Name hashed into v3 and v5 UUIDs",
+      "nanoidSize": "Length of Nano IDs",
+      "nanoidAlphabet": "Alphabet of Nano IDs"
+    },
+    "inspect": {
+      "summary": "Identify a UUID, ULID or Snowflake ID and decode its version and timestamp",
+      "input": "Identifier to inspect"
+    }
   }
 }

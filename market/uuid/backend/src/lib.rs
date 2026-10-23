@@ -40,6 +40,8 @@ impl ToolPlugin for UuidTool {
     }
 }
 
+tf_plugin_guest::export_plugin!(UuidTool);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

@@ -15,9 +15,9 @@ fn lists_declared_interfaces_with_their_channels() {
         .unwrap();
     assert_eq!(create.effect, "write");
 
-    let uuid = registry.get("org.devlive.toolforge.uuid").unwrap();
+    let regex = registry.get("org.devlive.toolforge.regex").unwrap();
     assert!(
-        interfaces(uuid.manifest()).is_empty(),
+        interfaces(regex.manifest()).is_empty(),
         "undeclared plugins expose nothing"
     );
 }
@@ -27,6 +27,6 @@ fn channels_reflect_declarations() {
     let registry = crate::plugins::builtin();
     let hash = registry.get("org.devlive.toolforge.hash").unwrap();
     assert_eq!(channels(hash.manifest()), ["cli", "agent"]);
-    let uuid = registry.get("org.devlive.toolforge.uuid").unwrap();
-    assert!(channels(uuid.manifest()).is_empty());
+    let regex = registry.get("org.devlive.toolforge.regex").unwrap();
+    assert!(channels(regex.manifest()).is_empty());
 }

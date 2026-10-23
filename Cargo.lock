@@ -9346,6 +9346,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-uuid"
+version = "0.1.0"
+dependencies = [
+ "jiff",
+ "nanoid",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+ "ulid",
+ "uuid",
+]
+
+[[package]]
 name = "tfm-wasm-inspector"
 version = "0.1.0"
 dependencies = [
@@ -9880,19 +9894,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-uuid"
-version = "0.1.0"
-dependencies = [
- "jiff",
- "nanoid",
- "serde",
- "serde_json",
- "tf-plugin-api",
- "ulid",
- "uuid",
-]
-
-[[package]]
 name = "tfp-websocket"
 version = "0.1.0"
 dependencies = [
@@ -10300,7 +10301,6 @@ dependencies = [
  "tfp-svg-converter",
  "tfp-system-monitor",
  "tfp-text-encoding",
- "tfp-uuid",
  "tfp-websocket",
  "tfp-xlsx-viewer",
  "url",

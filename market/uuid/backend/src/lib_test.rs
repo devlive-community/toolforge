@@ -16,3 +16,10 @@ fn dispatches_declared_functions() {
         assert!(tool.manifest().functions.contains_key(function));
     }
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&UuidTool::default()).unwrap();
+    assert_eq!(checked, 2);
+}

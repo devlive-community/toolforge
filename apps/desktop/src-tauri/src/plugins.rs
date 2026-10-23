@@ -15,7 +15,6 @@ pub fn builtin() -> PluginRegistry {
 pub fn builtin_for(os: &str) -> PluginRegistry {
     let registry = PluginRegistry::new();
     registry.register_for(Arc::new(tfp_hash::Hash::default()), os);
-    registry.register_for(Arc::new(tfp_uuid::UuidTool::default()), os);
     registry.register_for(Arc::new(tfp_regex::Regex::default()), os);
     registry.register_for(Arc::new(tfp_encoder::Encoder::default()), os);
     registry.register_for(Arc::new(tfp_image_converter::ImageConverter::default()), os);

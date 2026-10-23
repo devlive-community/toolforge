@@ -6,7 +6,7 @@ fn lists_only_plugins_with_a_cli_interface() {
     let plugins = cli_plugins(&registry, None);
     assert!(plugins.contains(&"hash".to_owned()));
     assert!(
-        !plugins.contains(&"uuid".to_owned()),
+        !plugins.contains(&"regex".to_owned()),
         "plugins without declarations get no command"
     );
 }

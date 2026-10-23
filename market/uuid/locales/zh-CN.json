@@ -116,5 +116,24 @@
       "worker": "机器 {{value}}",
       "sequence": "序列 {{value}}"
     }
+  },
+  "api": {
+    "generate": {
+      "summary": "生成 UUID（v1、v3、v4、v5、v7）、ULID、Nano ID 或雪花 ID",
+      "kind": "标识符类型",
+      "count": "生成的个数",
+      "uppercase": "使用大写字母",
+      "hyphens": "保留 UUID 中的连字符",
+      "braces": "用花括号包裹 UUID",
+      "namespace": "v3 与 v5 使用的命名空间",
+      "customNamespace": "命名空间为 custom 时使用的 UUID",
+      "name": "参与 v3 与 v5 计算的名称",
+      "nanoidSize": "Nano ID 的长度",
+      "nanoidAlphabet": "Nano ID 使用的字符表"
+    },
+    "inspect": {
+      "summary": "识别 UUID、ULID 或雪花 ID，解析版本与时间戳",
+      "input": "要识别的标识符"
+    }
   }
 }

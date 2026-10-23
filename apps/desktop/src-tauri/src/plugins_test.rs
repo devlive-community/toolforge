@@ -93,7 +93,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
             "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQ\n-----END OPENSSH PRIVATE KEY-----",
             "ssh-key",
         ),
-        ("550e8400-e29b-41d4-a716-446655440000", "uuid"),
         ("q%3Dhello%20world", "encoder"),
         ("VG9vbEZvcmdlIOW3peWFt+eusQ==", "encoder"),
         (
@@ -120,6 +119,7 @@ fn clipboard_samples_suggest_the_right_tool_first() {
     }
     for text in [
         "<a><b>1</b></a>",
+        "550e8400-e29b-41d4-a716-446655440000",
         "invoice\u{202e}fdp.exe",
         "{\"name\": \"Ada\", \"tags\": [1, 2]}",
         r#"{"type":"object","properties":{}}"#,

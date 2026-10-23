@@ -1,0 +1,56 @@
+{
+  "id": "org.devlive.toolforge.uuid",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["uuid", "guid", "ulid", "nanoid", "v4", "v7", "id", "唯一标识", "生成", "snowflake", "雪花"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "generate": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.generate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "kind": { "type": "string", "description": "i18n:api.generate.kind", "enum": ["v4", "v7", "v1", "v3", "v5", "ulid", "nanoid", "snowflake"], "default": "v4" },
+            "count": { "type": "integer", "description": "i18n:api.generate.count", "minimum": 1, "maximum": 1000, "default": 1 },
+            "uppercase": { "type": "boolean", "description": "i18n:api.generate.uppercase", "default": false },
+            "hyphens": { "type": "boolean", "description": "i18n:api.generate.hyphens", "default": true },
+            "braces": { "type": "boolean", "description": "i18n:api.generate.braces", "default": false },
+            "namespace": { "type": "string", "description": "i18n:api.generate.namespace", "enum": ["dns", "url", "oid", "x500", "custom"], "default": "dns" },
+            "customNamespace": { "type": "string", "description": "i18n:api.generate.customNamespace" },
+            "name": { "type": "string", "description": "i18n:api.generate.name" },
+            "nanoidSize": { "type": "integer", "description": "i18n:api.generate.nanoidSize", "minimum": 1 },
+            "nanoidAlphabet": { "type": "string", "description": "i18n:api.generate.nanoidAlphabet" }
+          }
+        },
+        "output": { "text": "/ids" },
+        "examples": ["tfp-uuid generate --kind v7 --count 3"]
+      }
+    },
+    "inspect": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.inspect.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.inspect.input", "x-positional": 0, "x-stdin": true }
+          }
+        },
+        "examples": ["tfp-uuid inspect 0190b3a2-6c1e-7cc1-8f58-6a5d3c2a1b00"]
+      }
+    }
+  },
+  "sensitive": false
+}
