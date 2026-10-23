@@ -77,7 +77,6 @@ fn every_plugin_uses_a_known_category() {
 fn clipboard_samples_suggest_the_right_tool_first() {
     let registry = builtin();
     let cases = [
-        ("{\"name\": \"Ada\", \"tags\": [1, 2]}", "json-to-code"),
         (
             r#"{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object"}"#,
             "json-schema",
@@ -86,7 +85,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
             r#"{"$schema":"http://json-schema.org/draft-07/schema#","type":"object"}"#,
             "json-schema",
         ),
-        (r#"{"type":"object","properties":{}}"#, "json-to-code"),
         ("invoice\u{202e}fdp.exe", "unicode"),
         (
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGl0yLqB5b3i2VtQ8aTuq8b2cX7k5K1eYz7Vf3c6M2y8 me@laptop",
@@ -123,6 +121,8 @@ fn clipboard_samples_suggest_the_right_tool_first() {
     }
     for text in [
         "<a><b>1</b></a>",
+        "{\"name\": \"Ada\", \"tags\": [1, 2]}",
+        r#"{"type":"object","properties":{}}"#,
         "192.168.1.0/24",
         "10.0.0.1",
         "[1, 2, 3]",

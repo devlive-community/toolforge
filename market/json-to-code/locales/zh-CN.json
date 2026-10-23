@@ -30,5 +30,16 @@
     "code.empty": "请粘贴 JSON 样例",
     "code.too_large": "JSON 超过 {{limit}}",
     "code.invalid_json": "JSON 在第 {{line}} 行第 {{column}} 列有误"
+  },
+  "api": {
+    "generate": {
+      "summary": "根据 JSON 样例生成类型定义",
+      "input": "JSON 样例",
+      "language": "目标语言",
+      "root": "根类型的名称"
+    },
+    "languages": {
+      "summary": "列出支持的目标语言"
+    }
   }
 }

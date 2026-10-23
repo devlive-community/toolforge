@@ -1,0 +1,47 @@
+{
+  "id": "org.devlive.toolforge.json-to-code",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "convert",
+  "keywords": ["json", "typescript", "interface", "rust", "struct", "go", "java", "kotlin", "python", "pydantic", "csharp", "types", "model", "类型", "实体类", "生成代码"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:write", "fs:user-selected"],
+  "functions": {
+    "generate": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.generate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input", "language"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.generate.input", "x-positional": 0, "x-stdin": true },
+            "language": { "type": "string", "description": "i18n:api.generate.language", "enum": ["typescript", "rust", "go", "java", "kotlin", "python", "csharp"] },
+            "root": { "type": "string", "description": "i18n:api.generate.root", "default": "Root" }
+          }
+        },
+        "output": { "text": "/code" },
+        "examples": ["cat user.json | tfp-json-to-code generate --language rust --root User"]
+      }
+    },
+    "languages": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.languages.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [],
+          "properties": {}
+        },
+        "examples": ["tfp-json-to-code languages"]
+      }
+    }
+  },
+  "sensitive": false
+}

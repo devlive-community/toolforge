@@ -91,6 +91,8 @@ impl ToolPlugin for JsonToCode {
     }
 }
 
+tf_plugin_guest::export_plugin!(JsonToCode);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

@@ -30,5 +30,16 @@
     "code.empty": "Paste a JSON sample",
     "code.too_large": "The JSON is larger than {{limit}}",
     "code.invalid_json": "Invalid JSON at line {{line}}, column {{column}}"
+  },
+  "api": {
+    "generate": {
+      "summary": "Generate type definitions from a JSON sample",
+      "input": "JSON sample",
+      "language": "Target language",
+      "root": "Name of the root type"
+    },
+    "languages": {
+      "summary": "List the supported target languages"
+    }
   }
 }

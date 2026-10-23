@@ -30,3 +30,10 @@ fn generates_and_reports_errors() {
     );
     assert_eq!(tool.call("languages", json!({})).unwrap()[6], "csharp");
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&JsonToCode::default()).unwrap();
+    assert_eq!(checked, 2);
+}

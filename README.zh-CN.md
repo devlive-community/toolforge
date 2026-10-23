@@ -83,7 +83,6 @@
 | **图片拼接** | 按添加顺序把多张图片拼成一行、一列或网格，可设间距与背景（透明、纯色或自定义颜色）；PNG 与 WebP 保留透明，JPEG 自动合成白底；以任务运行并输出实时日志，不覆盖已有文件 |
 | **应用图标生成** | 由一张图片或 SVG 生成整套图标：Web（favicon.ico、PNG、webmanifest 与 HTML 片段）、iOS（Xcode AppIcon.appiconset）、Android（mipmap 与圆形图标）、macOS（.icns）、Windows（多尺寸 .ico），可设置留白、背景色与圆角；也可以把图片放进文件夹、磁盘、文档、光盘盒、相片、卡带等 37 种模板，导出 PNG / ICNS / ICO，或直接设为文件夹图标（macOS 上还可设到磁盘与任意文件），并可一键恢复默认图标 |
 | **PDF 工具** | 在缩略图网格中合并 PDF，并对页面重排、旋转、复制或删除；按页码范围、每 N 页或逐页拆分；图片合成 PDF（JPEG 原样嵌入不再压缩）；可打开受密码保护的文件 |
-| **JSON 转代码** | 从 JSON 样例生成 TypeScript、Rust（serde）、Go、Java record、Kotlin、Python（pydantic）与 C# 模型，自动合并数组并识别可选与可空字段 |
 | **cURL 转代码** | 把 curl 命令（含浏览器「复制为 cURL」的 bash / cmd 格式）转换为 JavaScript fetch、Python requests、Go、Rust reqwest、Java HttpClient、PHP 与 C# 代码，无法转换的选项会逐条列出 |
 | **模拟数据** | 生成最多 10 万行逼真的中文或英文测试数据（姓名与邮箱一致、校验码正确的身份证号、真实城市等 35 种类型），输出为 JSON、CSV 或 SQL INSERT，可用种子复现 |
 | **CSV 查看器** | 打开最大 1 GB 的 CSV / TSV 文件（百万行不到一秒），自动识别编码、分隔符与表头；支持排序、搜索、筛选、列统计，并可导出为 CSV / TSV / JSON / Markdown |
