@@ -1,0 +1,33 @@
+{
+  "id": "org.devlive.toolforge.curl-converter",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["curl", "http", "request", "fetch", "requests", "python", "go", "rust", "reqwest", "java", "php", "csharp", "convert", "代码生成", "请求", "转换"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:read", "clipboard:write"],
+  "functions": {
+    "convert": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.convert.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["command", "language"],
+          "properties": {
+            "command": { "type": "string", "description": "i18n:api.convert.command", "x-positional": 0, "x-stdin": true },
+            "language": { "type": "string", "description": "i18n:api.convert.language", "enum": ["javascript", "python", "go", "rust", "java", "php", "csharp"] }
+          }
+        },
+        "output": { "text": "/code" },
+        "examples": ["tfp-curl-converter convert 'curl -X POST https://api.example.com -d a=1' --language python"]
+      }
+    }
+  },
+  "sensitive": false
+}

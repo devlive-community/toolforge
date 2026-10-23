@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use tf_plugin_api::{PluginError, PluginResult};
-use tfp_curl_converter::{Body as CurlBody, Warning, parse_command_with_options};
+use tfm_curl_converter::{Body as CurlBody, Warning, parse_command_with_options};
 
 use crate::http::{Body, BodyKind, Pair, Request};
 use crate::workspace::validate_request;

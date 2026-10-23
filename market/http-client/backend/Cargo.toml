@@ -15,7 +15,7 @@ serde.workspace = true
 serde_json.workspace = true
 tf-plugin-api.workspace = true
 tf-plugin-guest = { path = "../../../crates/tf-plugin-guest" }
-tfp-curl-converter.workspace = true
+tfm-curl-converter = { path = "../../curl-converter/backend", default-features = false }
 url = "2"
 data-encoding = "2"
 getrandom = "0.3"

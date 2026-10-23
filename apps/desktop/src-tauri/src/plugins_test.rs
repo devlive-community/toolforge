@@ -95,10 +95,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
         ),
         ("q%3Dhello%20world", "encoder"),
         ("VG9vbEZvcmdlIOW3peWFt+eusQ==", "encoder"),
-        (
-            "curl -X POST https://api.example.com -d a=1",
-            "curl-converter",
-        ),
         ("github.com", "dns-lookup"),
         ("name\tage\nAda\t36\n", "csv-viewer"),
         ("localhost:3000", "port-manager"),
@@ -119,6 +115,7 @@ fn clipboard_samples_suggest_the_right_tool_first() {
     }
     for text in [
         "<a><b>1</b></a>",
+        "curl -X POST https://api.example.com -d a=1",
         "550e8400-e29b-41d4-a716-446655440000",
         "invoice\u{202e}fdp.exe",
         "{\"name\": \"Ada\", \"tags\": [1, 2]}",

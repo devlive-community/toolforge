@@ -60,5 +60,12 @@
     "curl.missing_value": "{{option}} 缺少参数值",
     "curl.unknown_language": "不支持的语言：{{language}}",
     "curl.too_large": "命令超过 {{limit}}"
+  },
+  "api": {
+    "convert": {
+      "summary": "把 curl 命令转换为 JavaScript、Python、Go、Rust、Java、PHP 或 C# 的请求代码",
+      "command": "bash 或 cmd 写法的 curl 命令",
+      "language": "目标语言"
+    }
   }
 }

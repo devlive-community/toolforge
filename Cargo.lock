@@ -8751,6 +8751,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-curl-converter"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-date-calculator"
 version = "0.1.0"
 dependencies = [
@@ -8906,7 +8917,7 @@ dependencies = [
  "sha2 0.11.0",
  "tf-plugin-api",
  "tf-plugin-guest",
- "tfp-curl-converter",
+ "tfm-curl-converter",
  "tiny_http",
  "url",
  "zeroize",
@@ -9488,16 +9499,6 @@ version = "0.1.0"
 dependencies = [
  "csv",
  "encoding_rs",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
-name = "tfp-curl-converter"
-version = "0.1.0"
-dependencies = [
- "data-encoding",
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -10270,7 +10271,6 @@ dependencies = [
  "tfp-certificate",
  "tfp-context-menu",
  "tfp-csv-viewer",
- "tfp-curl-converter",
  "tfp-disk-usage",
  "tfp-dns-lookup",
  "tfp-doc-converter",

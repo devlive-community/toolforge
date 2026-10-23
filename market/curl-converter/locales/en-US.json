@@ -60,5 +60,12 @@
     "curl.missing_value": "{{option}} needs a value",
     "curl.unknown_language": "Unsupported language: {{language}}",
     "curl.too_large": "The command is larger than {{limit}}"
+  },
+  "api": {
+    "convert": {
+      "summary": "Convert a curl command into request code for JavaScript, Python, Go, Rust, Java, PHP or C#",
+      "command": "curl command in bash or cmd syntax",
+      "language": "Target language"
+    }
   }
 }

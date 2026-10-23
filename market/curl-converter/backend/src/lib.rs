@@ -103,6 +103,9 @@ impl ToolPlugin for CurlConverter {
     }
 }
 
+#[cfg(feature = "plugin")]
+tf_plugin_guest::export_plugin!(CurlConverter);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;
