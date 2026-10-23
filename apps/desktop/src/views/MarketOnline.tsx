@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { invoke } from '@tauri-apps/api/core'
-import { Badge, Button, Empty, Modal, Spinner, cn, toast } from '@toolforge/ui'
+import { Badge, Button, Empty, Modal, Spinner, Tooltip, cn, toast } from '@toolforge/ui'
 import type { Manifest } from '@toolforge/plugin-ui-sdk'
 import { host, useErrorMessage, type AppError } from '@toolforge/plugin-ui-sdk'
 import { CloudDownload, FileUp, PackageCheck, RefreshCw, ShieldAlert, ShieldCheck, SquareArrowOutUpRight, Trash2 } from 'lucide-react'
@@ -326,9 +326,11 @@ export function MarketOnline() {
                       </Button>
                     )}
                     {current && (
-                      <Button size="icon-sm" variant="ghost" aria-label={t('market.online.uninstall')} disabled={busy !== null} onClick={() => void uninstall(entry.id)}>
-                        <Trash2 />
-                      </Button>
+                      <Tooltip content={t('market.online.uninstall')}>
+                        <Button size="icon-sm" variant="ghost" aria-label={t('market.online.uninstall')} disabled={busy !== null} onClick={() => void uninstall(entry.id)}>
+                          <Trash2 />
+                        </Button>
+                      </Tooltip>
                     )}
                     {required && <UpdateAppButton size="sm" version={required} />}
                     {(!current || update) && !required && (
@@ -371,9 +373,11 @@ export function MarketOnline() {
                       {t('market.open')}
                     </Button>
                   )}
-                  <Button size="icon-sm" variant="ghost" aria-label={t('market.online.uninstall')} disabled={busy !== null} onClick={() => void uninstall(info.id)}>
-                    <Trash2 />
-                  </Button>
+                  <Tooltip content={t('market.online.uninstall')}>
+                    <Button size="icon-sm" variant="ghost" aria-label={t('market.online.uninstall')} disabled={busy !== null} onClick={() => void uninstall(info.id)}>
+                      <Trash2 />
+                    </Button>
+                  </Tooltip>
                 </li>
               )
             })}

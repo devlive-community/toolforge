@@ -1,9 +1,8 @@
 import { Fragment, useEffect, useState, type ReactNode } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { Badge, Button, Drawer } from '@toolforge/ui'
-import { ChevronRight } from 'lucide-react'
+import { Settings2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useApp } from '../stores/app'
 
 interface InterfaceInfo {
   function: string
@@ -13,9 +12,8 @@ interface InterfaceInfo {
 }
 
 /** 插件开放给命令行与 AI Agent 的函数；声明由 Rust 解析，未安装的在线插件没有 */
-function InterfacesSection({ pluginId, onNavigate }: { pluginId: string; onNavigate: () => void }) {
+function InterfacesSection({ pluginId, onConfigure }: { pluginId: string; onConfigure?: () => void }) {
   const { t } = useTranslation()
-  const navigate = useApp((s) => s.navigate)
   const [items, setItems] = useState<InterfaceInfo[]>([])
 
   useEffect(() => {
@@ -37,21 +35,14 @@ function InterfacesSection({ pluginId, onNavigate }: { pluginId: string; onNavig
                 {t(`market.interfaces.${channel}`)}
               </Badge>
             ))}
-            <Badge>{t(`settings.agent.effect.${item.effect}`)}</Badge>
+            <Badge>{t(`market.config.effect.${item.effect}`)}</Badge>
           </li>
         ))}
       </ul>
-      {items.some((item) => item.channels.includes('agent')) && (
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => {
-            onNavigate()
-            navigate({ view: 'settings' })
-          }}
-        >
+      {onConfigure && (
+        <Button size="sm" variant="outline" onClick={onConfigure}>
+          <Settings2 />
           {t('market.interfaces.manage')}
-          <ChevronRight />
         </Button>
       )}
     </section>
@@ -89,11 +80,13 @@ interface PluginDetailProps {
   actions?: ReactNode
   /** 详细信息表的附加行（包大小、应用要求、安装时间…） */
   extraRows?: PluginDetailRow[]
+  /** 打开工具配置弹窗（命令行与 AI Agent）；没有时不显示入口 */
+  onConfigure?: () => void
   onClose: () => void
 }
 
 /** 插件详情抽屉：“全部工具”与“在线插件”共用，保证两个列表的详情体验一致 */
-export function PluginDetail({ info, icon, originBadge, actions, extraRows, onClose }: PluginDetailProps) {
+export function PluginDetail({ info, icon, originBadge, actions, extraRows, onConfigure, onClose }: PluginDetailProps) {
   const { t } = useTranslation()
   return (
     <Drawer open={info !== null} onOpenChange={(open) => !open && onClose()} title={info?.name ?? ''} closeLabel={t('common:close')}>
@@ -122,7 +115,7 @@ export function PluginDetail({ info, icon, originBadge, actions, extraRows, onCl
               </ul>
             </section>
           )}
-          <InterfacesSection pluginId={info.id} onNavigate={onClose} />
+          <InterfacesSection pluginId={info.id} onConfigure={onConfigure} />
           <section className="space-y-2 text-xs">
             <h3 className="font-semibold text-fg-muted">{t('market.details')}</h3>
             <dl className="grid grid-cols-[96px_minmax(0,1fr)] gap-x-3 gap-y-1.5">

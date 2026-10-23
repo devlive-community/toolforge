@@ -132,7 +132,7 @@
       "agent": {
         "title": "AI Agent",
         "enabled": "允许 AI Agent 调用插件",
-        "enabledHint": "开启后，通过 MCP 连接的 AI Agent（如 Claude Code）可以调用下面授权的插件函数；默认关闭",
+        "enabledHint": "开启后，通过 MCP 连接的 AI Agent（如 Claude Code）可以调用各工具开放的函数；默认关闭",
         "connect": "连接方式",
         "connectHint": "把下面的配置加入 MCP 客户端，客户端会启动 tfp mcp 与 ToolForge 通信，不监听任何端口",
         "unavailable": "当前安装包不含命令行工具 tfp；开发时请先编译 toolforge-cli",
@@ -144,29 +144,8 @@
         "read": "只读",
         "write": "可写",
         "remove": "移除",
-        "plugins": "插件",
-        "pluginsHint": "只列出声明了 AI Agent 接口的插件。开启插件后：只读函数默认允许，写入和对外操作默认每次确认，可以逐个函数调整",
-        "noPlugins": "暂无声明了 AI Agent 接口的插件",
-        "native": "原生",
-        "nativeHint": "原生内置插件不在沙箱中运行，用到文件的函数每次都需要确认",
-        "expand": "展开函数",
-        "collapse": "收起函数",
-        "mode": {
-          "default": "默认（{{mode}}）",
-          "off": "关闭",
-          "ask": "每次确认",
-          "allow": "始终允许"
-        },
-        "effect": {
-          "read": "只读",
-          "write": "写入",
-          "external": "对外操作"
-        },
-        "capped": "始终需要确认",
-        "sensitiveTitle": "开放敏感插件",
-        "sensitiveBody": "{{name}} 会处理密钥、令牌等敏感数据。开放后 AI Agent 可以把这些数据交给插件并读取结果，确定要开放吗？",
-        "sensitiveConfirm": "仍要开放",
-        "copy": "复制"
+        "copy": "复制",
+        "perTool": "每个工具的命令行与 AI Agent 开关在「工具市场 → 全部工具」中点击工具的设置图标调整，默认全部开启。"
       }
     },
     "tool": {
@@ -353,7 +332,54 @@
         "title": "命令行与 AI Agent",
         "cli": "命令行",
         "agent": "AI Agent",
-        "manage": "管理 AI Agent 授权"
+        "manage": "配置命令行与 AI Agent"
+      },
+      "actions": {
+        "configure": "配置 {{name}} 的命令行与 AI Agent",
+        "configureUnsupported": "该工具尚未支持命令行或 AI Agent 调用",
+        "hide": "隐藏 {{name}}",
+        "show": "显示 {{name}}",
+        "uninstall": "卸载 {{name}}",
+        "uninstallBuiltin": "内置工具不能卸载"
+      },
+      "config": {
+        "title": "配置 {{name}}",
+        "cli": "命令行",
+        "agent": "AI Agent",
+        "unsupported": {
+          "cli": "该工具没有开放命令行调用",
+          "agent": "该工具没有开放给 AI Agent 的函数"
+        },
+        "unsupportedHint": "工具在后续版本中声明接口后即可在这里配置",
+        "notReady": {
+          "cli": "尚未生成 tfp 命令，在设置中生成后才能在终端调用",
+          "agent": "AI Agent 总开关未开启，在设置中开启后这里的设置才会生效"
+        },
+        "openSettings": "前往设置",
+        "enable": {
+          "cli": "允许从命令行调用此工具",
+          "agent": "允许 AI Agent 调用此工具"
+        },
+        "enableHint": {
+          "cli": "关闭后不再生成 tfp 命令，直接调用也会被拒绝",
+          "agent": "关闭后 AI Agent 看不到也调用不了此工具的函数"
+        },
+        "nativeHint": "内置工具不在沙箱中运行，用到文件的函数每次都需要确认",
+        "mode": {
+          "default": "默认（{{mode}}）",
+          "off": "关闭",
+          "ask": "每次确认",
+          "allow": "始终允许"
+        },
+        "effect": {
+          "read": "只读",
+          "write": "写入",
+          "external": "对外操作"
+        },
+        "capped": "始终需要确认",
+        "sensitiveTitle": "开放敏感工具",
+        "sensitiveBody": "{{name}} 会处理密钥、令牌等敏感数据。开放后 AI Agent 可以把这些数据交给它并读取结果，确定要开放吗？",
+        "sensitiveConfirm": "仍要开放"
       }
     }
   },
@@ -435,7 +461,8 @@
       "market.stats_unavailable": "插件下载服务暂不可用，请稍后重试",
       "cli.unavailable": "命令行工具不可用：安装包中找不到 tfp",
       "agent.invalid_mode": "无效的授权方式",
-      "fs.not_a_directory": "不是文件夹：{{path}}"
+      "fs.not_a_directory": "不是文件夹：{{path}}",
+      "agent.invalid_channel": "无效的调用通道：{{channel}}"
     },
     "logs": {
       "task": {

@@ -21,3 +21,12 @@ fn lists_declared_interfaces_with_their_channels() {
         "undeclared plugins expose nothing"
     );
 }
+
+#[test]
+fn channels_reflect_declarations() {
+    let registry = crate::plugins::builtin();
+    let hash = registry.get("org.devlive.toolforge.hash").unwrap();
+    assert_eq!(channels(hash.manifest()), ["cli", "agent"]);
+    let uuid = registry.get("org.devlive.toolforge.uuid").unwrap();
+    assert!(channels(uuid.manifest()).is_empty());
+}

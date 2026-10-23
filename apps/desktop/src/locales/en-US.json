@@ -134,7 +134,7 @@
       "agent": {
         "title": "AI Agent",
         "enabled": "Let AI agents call plugins",
-        "enabledHint": "When on, AI agents connected over MCP (such as Claude Code) can call the plugin functions granted below. Off by default",
+        "enabledHint": "When on, AI agents connected over MCP (such as Claude Code) can call the functions tools expose. Off by default",
         "connect": "Connect",
         "connectHint": "Add this to your MCP client; it starts tfp mcp to talk to ToolForge without listening on any port",
         "unavailable": "This build does not include the tfp command line tool; build toolforge-cli first during development",
@@ -146,29 +146,8 @@
         "read": "Read-only",
         "write": "Writable",
         "remove": "Remove",
-        "plugins": "Plugins",
-        "pluginsHint": "Only plugins that declare an AI agent interface are listed. Once a plugin is on, read-only functions are allowed and writes or external effects ask each time by default; adjust each function as needed",
-        "noPlugins": "No plugin declares an AI agent interface yet",
-        "native": "Native",
-        "nativeHint": "Native built-in plugins are not sandboxed, so their functions that use files always ask",
-        "expand": "Show functions",
-        "collapse": "Hide functions",
-        "mode": {
-          "default": "Default ({{mode}})",
-          "off": "Off",
-          "ask": "Ask each time",
-          "allow": "Always allow"
-        },
-        "effect": {
-          "read": "Read-only",
-          "write": "Writes",
-          "external": "External"
-        },
-        "capped": "Always asks",
-        "sensitiveTitle": "Open a sensitive plugin",
-        "sensitiveBody": "{{name}} handles secrets such as keys and tokens. Once opened, AI agents can pass such data to it and read the results. Open it anyway?",
-        "sensitiveConfirm": "Open anyway",
-        "copy": "Copy"
+        "copy": "Copy",
+        "perTool": "Turn the command line and AI agent access on or off for each tool from its settings icon under Market → All tools. Everything is on by default."
       }
     },
     "tool": {
@@ -355,7 +334,54 @@
         "title": "Command line & AI Agent",
         "cli": "CLI",
         "agent": "AI Agent",
-        "manage": "Manage AI agent access"
+        "manage": "Configure command line and AI agent"
+      },
+      "actions": {
+        "configure": "Configure command line and AI agent access for {{name}}",
+        "configureUnsupported": "This tool does not support the command line or AI agents yet",
+        "hide": "Hide {{name}}",
+        "show": "Show {{name}}",
+        "uninstall": "Uninstall {{name}}",
+        "uninstallBuiltin": "Built-in tools cannot be uninstalled"
+      },
+      "config": {
+        "title": "Configure {{name}}",
+        "cli": "Command line",
+        "agent": "AI Agent",
+        "unsupported": {
+          "cli": "This tool is not available from the command line",
+          "agent": "This tool exposes no functions to AI agents"
+        },
+        "unsupportedHint": "You can configure it here once a later version declares an interface",
+        "notReady": {
+          "cli": "The tfp commands have not been created; create them in Settings to use the terminal",
+          "agent": "AI agent access is off; turn it on in Settings for these settings to apply"
+        },
+        "openSettings": "Open Settings",
+        "enable": {
+          "cli": "Allow the command line to run this tool",
+          "agent": "Allow AI agents to call this tool"
+        },
+        "enableHint": {
+          "cli": "When off, no tfp command is created and direct calls are refused",
+          "agent": "When off, AI agents can neither see nor call its functions"
+        },
+        "nativeHint": "Built-in tools are not sandboxed, so their functions that use files always ask",
+        "mode": {
+          "default": "Default ({{mode}})",
+          "off": "Off",
+          "ask": "Ask each time",
+          "allow": "Always allow"
+        },
+        "effect": {
+          "read": "Read-only",
+          "write": "Writes",
+          "external": "External"
+        },
+        "capped": "Always asks",
+        "sensitiveTitle": "Open a sensitive tool",
+        "sensitiveBody": "{{name}} handles secrets such as keys and tokens. Once opened, AI agents can pass such data to it and read the results. Open it anyway?",
+        "sensitiveConfirm": "Open anyway"
       }
     }
   },
@@ -437,7 +463,8 @@
       "market.stats_unavailable": "The plugin download service is unavailable. Try again later.",
       "cli.unavailable": "The command line tool is unavailable: tfp is missing from this build",
       "agent.invalid_mode": "Invalid access mode",
-      "fs.not_a_directory": "Not a folder: {{path}}"
+      "fs.not_a_directory": "Not a folder: {{path}}",
+      "agent.invalid_channel": "Unknown channel: {{channel}}"
     },
     "logs": {
       "task": {
