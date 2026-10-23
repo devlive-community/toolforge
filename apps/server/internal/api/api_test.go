@@ -248,6 +248,7 @@ func TestDashboardPageAndAssets(t *testing.T) {
 		{"/", "text/html", "no-cache"},
 		{"/assets/dashboard.js", "text/javascript", "max-age=300"},
 		{"/assets/dashboard.css", "text/css", "max-age=300"},
+		{"/assets/logo.png", "image/png", "max-age=300"},
 	} {
 		w := httptest.NewRecorder()
 		h.ServeHTTP(w, httptest.NewRequest("GET", tc.path, nil))
