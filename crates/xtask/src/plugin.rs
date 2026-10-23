@@ -50,6 +50,19 @@ pub fn keygen(out: &Path) -> Result<(), String> {
     Ok(())
 }
 
+/// 与 xtask 同一工具链的 cargo。显式指定同目录的 rustc：cargo 默认经 PATH 中的 rustup 代理
+/// 调用 rustc，代理会读取依赖包自带的 rust-toolchain.toml（如 pic-scale 指定 nightly），
+/// 在没有设置 RUSTUP_TOOLCHAIN 的环境（CI）里换成别的工具链
+fn cargo() -> Command {
+    let cargo = Path::new(env!("CARGO"));
+    let mut command = Command::new(cargo);
+    let rustc = cargo.with_file_name(if cfg!(windows) { "rustc.exe" } else { "rustc" });
+    if rustc.is_file() {
+        command.env("RUSTC", rustc);
+    }
+    command
+}
+
 fn run(command: &mut Command) -> Result<(), String> {
     let status = command.status().map_err(|e| format!("{command:?}: {e}"))?;
     if status.success() {
@@ -115,17 +128,14 @@ pub fn pack(root: &Path, options: &PackOptions) -> Result<PathBuf, String> {
     let dir = root.join("market").join(&options.slug);
     let backend = dir.join("backend");
     let name = crate_name(&backend)?;
-    run(Command::new(env!("CARGO"))
-        .env_remove(KEY_ENV)
-        .current_dir(root)
-        .args([
-            "build",
-            "--release",
-            "--target",
-            "wasm32-wasip2",
-            "-p",
-            &name,
-        ]))?;
+    run(cargo().env_remove(KEY_ENV).current_dir(root).args([
+        "build",
+        "--release",
+        "--target",
+        "wasm32-wasip2",
+        "-p",
+        &name,
+    ]))?;
     let wasm_path = root
         .join("target/wasm32-wasip2/release")
         .join(format!("{}.wasm", name.replace('-', "_")));

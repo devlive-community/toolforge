@@ -228,3 +228,15 @@ fn channels_merge_function_interfaces() {
     assert_eq!(channels(&manifest), ["agent", "cli"]);
     assert!(channels(&serde_json::json!({})).is_empty());
 }
+
+#[test]
+fn cargo_pins_rustc_from_the_same_toolchain() {
+    let command = cargo();
+    let rustc = command
+        .get_envs()
+        .find(|(key, _)| *key == "RUSTC")
+        .and_then(|(_, value)| value);
+    if let Some(rustc) = rustc {
+        assert_eq!(Path::new(rustc).parent(), Path::new(env!("CARGO")).parent());
+    }
+}
