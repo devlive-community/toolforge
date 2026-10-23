@@ -1,0 +1,13 @@
+# 只影响宿主、不改变已发布插件行为的插件 SDK 改动（crates/tf-plugin-api、crates/tf-plugin-guest、
+# packages/plugin-ui-sdk、packages/plugin-build、wit）。
+#
+# plugins.yml 比较已发布插件的输入时，若上次发布以来改动 SDK 路径的提交全部列在这里，
+# 就不把这些 SDK 改动算作插件输入的变化，已发布插件不必为此递增版本。
+# 只要有一个改动 SDK 的提交不在这里，检查仍按原规则要求递增。
+#
+# 列入的前提：宿主加载在线插件时读取包内 manifest.json，插件 WASM 里的 Manifest 只给插件自己用；
+# 新增的字段或类型插件不会读取，已发布的旧包在新宿主上行为不变。
+# 每行：完整提交 SHA，空格，说明
+88581a396841bfc98893458603be0f61d53a1994 Manifest.minAppVersion is read only by the host from the package manifest
+a8c6206be3e56e692e709c36f92c4245e5b632a8 function interface declarations are parsed only by the host, CLI and xtask
+1ecbfc9bbb489b5d7b289a39ea85e1e6c56d3cd1 check_declared_interfaces is a test helper for plugin tests

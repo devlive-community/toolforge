@@ -145,6 +145,26 @@ jobs:
                           new = {field: value for field, value in new.items() if field not in drop}
                       if old != new:
                           cargo_changed.add(ident)
+          # SDK changes listed in .github/plugin-sdk-host-only.txt only affect the host;
+          # when every commit touching the SDK since the last publication is listed,
+          # those paths do not count as inputs of already published plugins.
+          sdk_paths = ['packages/plugin-ui-sdk', 'packages/plugin-build', 'crates/tf-plugin-api', 'crates/tf-plugin-guest', 'wit']
+          host_only = set()
+          ack = pathlib.Path('.github/plugin-sdk-host-only.txt')
+          for line in ack.read_text().splitlines() if ack.exists() else []:
+              line = line.strip()
+              if not line or line.startswith('#'):
+                  continue
+              sha = line.split()[0]
+              if not re.fullmatch(r'[a-f0-9]{40}', sha):
+                  raise SystemExit(f'Invalid commit in {ack}: {sha}')
+              host_only.add(sha)
+          sdk_host_only = False
+          if prior:
+              sdk_commits = subprocess.check_output(['git', 'log', '--format=%H', f"{prior['sourceCommit']}..HEAD", '--', *sdk_paths], text=True).split()
+              sdk_host_only = bool(sdk_commits) and set(sdk_commits) <= host_only
+              if sdk_host_only:
+                  print(f'SDK changes since the last publication are host-only: {len(sdk_commits)} commit(s)')
           pending = []
           for path in sorted(pathlib.Path('market').glob('*/manifest.json')):
               manifest = json.loads(path.read_text())
@@ -155,7 +175,8 @@ jobs:
               if name not in assets:
                   pending.append(slug)
               elif prior:
-                  changed = subprocess.check_output(['git', 'diff', '--name-only', prior['sourceCommit'], 'HEAD', '--', str(path.parent), 'packages/plugin-ui-sdk', 'packages/plugin-build', 'crates/tf-plugin-api', 'crates/tf-plugin-guest', 'wit'], text=True)
+                  watched = [str(path.parent)] + ([] if sdk_host_only else sdk_paths)
+                  changed = subprocess.check_output(['git', 'diff', '--name-only', prior['sourceCommit'], 'HEAD', '--', *watched], text=True)
                   # pnpm-lock.yaml is deliberately absent: shared UI dependencies
                   # load from the host bundle (window.__TF_SHARED__) and never
                   # enter plugin bytes, so one plugin's dependency additions must
