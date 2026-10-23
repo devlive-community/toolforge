@@ -87,6 +87,9 @@ jobs:
           key: release-${{ matrix.target }}
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      # 命令行工具 tfp 作为 sidecar 打进安装包（tauri.release.conf.json 的 externalBin）
+      - name: Build CLI sidecar
+        run: cargo xtask cli-sidecar --target ${{ matrix.target }}
       - name: Build and upload
         uses: tauri-apps/tauri-action@v1
         env:
@@ -106,7 +109,7 @@ jobs:
           releaseDraft: true
           prerelease: ${{ contains(github.ref_name, '-') }}
           includeUpdaterJson: true
-          args: --target ${{ matrix.target }}
+          args: --target ${{ matrix.target }} --config src-tauri/tauri.release.conf.json
 
   publish:
     name: Publish release

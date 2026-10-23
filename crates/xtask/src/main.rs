@@ -8,6 +8,7 @@ mod manifests;
 mod notes;
 mod plugin;
 mod rules;
+mod sidecar;
 mod version;
 
 use std::process::ExitCode;
@@ -20,6 +21,9 @@ Commands:
                           --fast skips the web build
   rules                   Scan the repository for convention violations only
   version                 Print the current app version
+  cli-sidecar [--target <triple>]
+                          Build tfp in release mode and copy it to
+                          apps/desktop/src-tauri/binaries/tfp-<triple> for tauri.release.conf.json
   bump <version>          Set the app version in package.json files and Cargo.toml
                           (releases are published with scripts/release.sh)
   notes [ref] [tag]       Print release notes (commit history since the previous v* tag) for ref
@@ -53,6 +57,14 @@ fn main() -> ExitCode {
             }
         }
         Some("rules") => rules::run(&check::workspace_root()),
+        Some("cli-sidecar") => {
+            let target = args
+                .iter()
+                .position(|a| a == "--target")
+                .and_then(|i| args.get(i + 1))
+                .map(String::as_str);
+            sidecar::build(&check::workspace_root(), target).map(|_| ())
+        }
         Some("version") => {
             version::current_version(&check::workspace_root()).map(|v| println!("{v}"))
         }

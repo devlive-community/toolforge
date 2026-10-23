@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "pnpm --filter @toolforge/desktop tauri dev",
-    "build": "pnpm --filter @toolforge/desktop tauri build",
+    "build": "cargo xtask cli-sidecar && pnpm --filter @toolforge/desktop tauri build --config src-tauri/tauri.release.conf.json",
     "web:dev": "pnpm --filter @toolforge/desktop dev",
     "web:build": "pnpm --filter @toolforge/desktop build",
     "typecheck": "pnpm -r --workspace-concurrency=4 typecheck",
