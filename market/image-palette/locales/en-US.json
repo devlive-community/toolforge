@@ -60,5 +60,25 @@
     "palette.out_of_bounds": "That point is outside the image",
     "palette.invalid_count": "Choose between 2 and 24 colors",
     "palette.invalid_color": "“{{color}}” is not a HEX color"
+  },
+  "api": {
+    "palette": {
+      "summary": "Extract the dominant colors of an image with their shares and formats",
+      "path": "Image file",
+      "count": "Number of colors"
+    },
+    "pick": {
+      "summary": "Read the color at a pixel, optionally averaged over a radius",
+      "path": "Image file",
+      "x": "Pixel column",
+      "y": "Pixel row",
+      "radius": "Average over this many pixels around the point"
+    },
+    "export": {
+      "summary": "Export colors as CSS, SCSS, Tailwind, JSON, a GIMP palette or plain hex",
+      "colors": "Colors as #rrggbb",
+      "format": "Export format",
+      "name": "Palette name used for variables"
+    }
   }
 }

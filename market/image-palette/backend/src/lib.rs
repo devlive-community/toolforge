@@ -6,10 +6,10 @@ mod export;
 mod palette;
 mod pick;
 
+use std::hash::{DefaultHasher, Hash, Hasher};
 use std::io::Cursor;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
-use std::time::SystemTime;
 
 use data_encoding::BASE64;
 use image::imageops::FilterType;
@@ -19,6 +19,7 @@ use serde_json::{Value, json};
 use tf_plugin_api::{
     Manifest, PluginError, PluginResult, ToolPlugin, parse_args, to_value, unknown_function,
 };
+use tf_plugin_guest::net;
 
 const MANIFEST: &str = include_str!("../../manifest.json");
 /// 预览图的最长边
@@ -59,7 +60,8 @@ struct ExportArgs {
     name: Option<String>,
 }
 
-type Key = (String, Option<SystemTime>);
+/// 路径与文件内容的哈希：内容变化时重新解码
+type Key = (String, u64);
 
 pub struct ImagePalette {
     manifest: Manifest,
@@ -110,20 +112,27 @@ fn slug(name: &str) -> String {
 
 impl ImagePalette {
     fn image(&self, path: &str) -> PluginResult<Arc<RgbaImage>> {
-        let meta = std::fs::metadata(path)
-            .map_err(|_| PluginError::new("fs.not_found").with("path", path))?;
-        if meta.len() > MAX_FILE {
-            return Err(PluginError::new("palette.too_large").with("size", meta.len()));
+        let size = net::file_size(path)?;
+        if size > MAX_FILE {
+            return Err(PluginError::new("palette.too_large").with("size", size));
         }
-        let key = (path.to_owned(), meta.modified().ok());
+        let bytes = net::read_to_end(path, MAX_FILE).map_err(|error| {
+            let detail = error
+                .params
+                .get("detail")
+                .and_then(Value::as_str)
+                .unwrap_or(&error.code);
+            PluginError::new("palette.read_failed").with("detail", detail)
+        })?;
+        let mut hasher = DefaultHasher::new();
+        bytes.hash(&mut hasher);
+        let key = (path.to_owned(), hasher.finish());
         let mut last = self.last.lock().unwrap();
         if let Some((cached, image)) = last.as_ref()
             && *cached == key
         {
             return Ok(image.clone());
         }
-        let bytes = std::fs::read(path)
-            .map_err(|e| PluginError::new("palette.read_failed").with("detail", e.to_string()))?;
         let image = image::load_from_memory(&bytes)
             .map_err(|e| PluginError::new("palette.unsupported").with("detail", e.to_string()))?
             .into_rgba8();
@@ -199,6 +208,8 @@ impl ToolPlugin for ImagePalette {
         }
     }
 }
+
+tf_plugin_guest::export_plugin!(ImagePalette);
 
 #[cfg(test)]
 #[path = "lib_test.rs"]

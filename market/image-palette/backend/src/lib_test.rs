@@ -75,3 +75,10 @@ fn exports_and_validates_colors() {
         "fs.not_found"
     );
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&ImagePalette::default()).unwrap();
+    assert_eq!(checked, 1);
+}

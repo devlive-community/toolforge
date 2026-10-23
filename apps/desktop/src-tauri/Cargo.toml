@@ -56,7 +56,6 @@ tfp-text-encoding.workspace = true
 tfp-icon-generator.workspace = true
 tfp-folder-compare.workspace = true
 tfp-json-query.workspace = true
-tfp-image-palette.workspace = true
 tfp-doc-converter.workspace = true
 tfp-context-menu.workspace = true
 tfp-port-manager.workspace = true

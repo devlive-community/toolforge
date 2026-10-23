@@ -60,5 +60,25 @@
     "palette.out_of_bounds": "该位置超出图片范围",
     "palette.invalid_count": "颜色数量须在 2 到 24 之间",
     "palette.invalid_color": "“{{color}}”不是 HEX 颜色"
+  },
+  "api": {
+    "palette": {
+      "summary": "提取图片的主色，给出占比与各种颜色格式",
+      "path": "图片文件",
+      "count": "颜色数量"
+    },
+    "pick": {
+      "summary": "读取某个像素的颜色，可按半径取平均色",
+      "path": "图片文件",
+      "x": "像素列",
+      "y": "像素行",
+      "radius": "取周围这么多像素的平均色"
+    },
+    "export": {
+      "summary": "把颜色导出为 CSS、SCSS、Tailwind、JSON、GIMP 调色板或十六进制列表",
+      "colors": "#rrggbb 形式的颜色",
+      "format": "导出格式",
+      "name": "用于变量名的调色板名称"
+    }
   }
 }

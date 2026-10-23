@@ -1,0 +1,70 @@
+{
+  "id": "org.devlive.toolforge.image-palette",
+  "version": "0.1.1",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": ["color picker", "eyedropper", "palette", "dominant colors", "extract colors", "swatches", "hex", "取色", "取色器", "吸管", "调色板", "主色", "配色"],
+  "accent": "pink",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "functions": {
+    "open": { "interface": false },
+    "palette": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.palette.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.palette.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "count": { "type": "integer", "description": "i18n:api.palette.count", "minimum": 2, "maximum": 24, "default": 8 }
+          }
+        },
+        "examples": ["tfp-image-palette palette poster.png --count 6"]
+      }
+    },
+    "pick": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.pick.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path", "x", "y"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.pick.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "x": { "type": "integer", "description": "i18n:api.pick.x", "minimum": 0 },
+            "y": { "type": "integer", "description": "i18n:api.pick.y", "minimum": 0 },
+            "radius": { "type": "integer", "description": "i18n:api.pick.radius", "minimum": 0, "default": 0 }
+          }
+        },
+        "examples": ["tfp-image-palette pick poster.png --x 120 --y 48 --radius 2"]
+      }
+    },
+    "export": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.export.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["colors", "format"],
+          "properties": {
+            "colors": { "type": "array", "description": "i18n:api.export.colors", "items": { "type": "string" }, "x-positional": 0 },
+            "format": { "type": "string", "description": "i18n:api.export.format", "enum": ["css", "scss", "tailwind", "json", "gpl", "hex"] },
+            "name": { "type": "string", "description": "i18n:api.export.name", "default": "palette" }
+          }
+        },
+        "output": { "text": "/text" },
+        "examples": ["tfp-image-palette export '#3b82f6' '#f59e0b' --format css --name brand"]
+      }
+    }
+  },
+  "sensitive": false
+}
