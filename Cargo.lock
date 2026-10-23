@@ -8795,6 +8795,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-encoder"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "flate2",
+ "form_urlencoded",
+ "html-escape",
+ "percent-encoding",
+ "ruzstd",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-expense-splitter"
 version = "0.1.0"
 dependencies = [
@@ -9578,21 +9594,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-encoder"
-version = "0.1.0"
-dependencies = [
- "data-encoding",
- "flate2",
- "form_urlencoded",
- "html-escape",
- "percent-encoding",
- "ruzstd",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-env-editor"
 version = "0.1.0"
 dependencies = [
@@ -10277,7 +10278,6 @@ dependencies = [
  "tfp-dns-lookup",
  "tfp-doc-converter",
  "tfp-duplicate-finder",
- "tfp-encoder",
  "tfp-env-editor",
  "tfp-folder-compare",
  "tfp-hash",

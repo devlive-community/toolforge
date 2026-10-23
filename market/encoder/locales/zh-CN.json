@@ -178,5 +178,13 @@
       "base64Inflate": "Base64 解码 → zlib 解压",
       "urlBase64": "URL 解码 → Base64 解码"
     }
+  },
+  "api": {
+    "transform": {
+      "summary": "用 Base64、Base32、十六进制、URL、HTML、Unicode 转义、摩尔斯电码或压缩算法编码或解码文本",
+      "input": "要编码的文本，或要解码的编码文本",
+      "codec": "编码方式",
+      "direction": "编码或解码"
+    }
   }
 }

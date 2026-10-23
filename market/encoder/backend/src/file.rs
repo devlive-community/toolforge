@@ -111,11 +111,7 @@ impl Results {
 
     pub fn save(&self, args: SaveArgs) -> PluginResult<()> {
         self.with(args.id, |output| {
-            std::fs::write(&args.path, output).map_err(|e| {
-                PluginError::new("fs.io")
-                    .with("path", args.path.as_str())
-                    .with("detail", e.to_string())
-            })
+            tf_plugin_guest::net::write_file(&args.path, output.as_bytes())
         })
     }
 }

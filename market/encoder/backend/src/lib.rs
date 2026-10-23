@@ -59,6 +59,8 @@ impl ToolPlugin for Encoder {
     }
 }
 
+tf_plugin_guest::export_plugin!(Encoder);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

@@ -17,3 +17,9 @@ fn transform_is_callable_and_file_encoding_is_a_task() {
         "encode.result_expired"
     );
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked = tf_plugin_api::interface::check_declared_interfaces(&Encoder::default()).unwrap();
+    assert_eq!(checked, 1);
+}

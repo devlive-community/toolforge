@@ -85,8 +85,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
             "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQ\n-----END OPENSSH PRIVATE KEY-----",
             "ssh-key",
         ),
-        ("q%3Dhello%20world", "encoder"),
-        ("VG9vbEZvcmdlIOW3peWFt+eusQ==", "encoder"),
         ("github.com", "dns-lookup"),
         ("name\tage\nAda\t36\n", "csv-viewer"),
         ("localhost:3000", "port-manager"),
@@ -107,6 +105,8 @@ fn clipboard_samples_suggest_the_right_tool_first() {
     }
     for text in [
         "<a><b>1</b></a>",
+        "q%3Dhello%20world",
+        "VG9vbEZvcmdlIOW3peWFt+eusQ==",
         r#"{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object"}"#,
         r#"{"$schema":"http://json-schema.org/draft-07/schema#","type":"object"}"#,
         "curl -X POST https://api.example.com -d a=1",

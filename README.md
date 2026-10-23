@@ -42,7 +42,6 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Regex Tester** | Live match and group highlighting with replacement preview; lookaround, backreferences and named groups; common pattern presets |
 | **Hex Viewer** | Open files of any size byte by byte with file-type detection, go to offset, hex or text search, a data inspector (integers, floats, UTF-8, Unix times in either byte order) and copying selections as hex, Base64, a C array or Python bytes |
 | **Hash** | MD5, SHA-1, SHA-2, SHA3, SM3 and CRC32; live text hashing and HMAC with verification; drop files to hash them in a background task with live logs |
-| **Encoder** | Base64 / Base64URL / Base32 / Hex, URL (component, full, form), HTML entities and Unicode escapes in both directions; files to Base64 or Data URIs |
 | **JWT Decoder** | Decode headers and payloads, check expiry, verify HS / RS / PS / ES / EdDSA signatures and sign new tokens |
 | **Certificate Viewer** | Inspect PEM / DER certificates and chains (names, SANs, validity, key, usages, fingerprints), or fetch the chain a server presents and verify it with the system trust store, showing the TLS version and cipher |
 | **Encoding Converter** | Detect the encoding of many files at once (BOM, UTF-16, UTF-8, GBK, Big5, Shift_JIS, …) and their line endings; preview a file in any encoding to fix wrong guesses; convert to UTF-8 or another encoding and LF / CRLF in place with backups or into a folder |

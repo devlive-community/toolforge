@@ -178,5 +178,13 @@
       "base64Inflate": "Base64 decode → zlib decompress",
       "urlBase64": "URL decode → Base64 decode"
     }
+  },
+  "api": {
+    "transform": {
+      "summary": "Encode or decode text with Base64, Base32, hex, URL, HTML, Unicode escapes, Morse or compression codecs",
+      "input": "Text to encode, or encoded text to decode",
+      "codec": "Codec",
+      "direction": "Encode or decode"
+    }
   }
 }

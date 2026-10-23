@@ -16,7 +16,6 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
     let registry = PluginRegistry::new();
     registry.register_for(Arc::new(tfp_hash::Hash::default()), os);
     registry.register_for(Arc::new(tfp_regex::Regex::default()), os);
-    registry.register_for(Arc::new(tfp_encoder::Encoder::default()), os);
     registry.register_for(Arc::new(tfp_image_converter::ImageConverter::default()), os);
     registry.register_for(Arc::new(tfp_qrcode::QrCodeTool::default()), os);
     registry.register_for(Arc::new(tfp_barcode::BarcodeTool::default()), os);

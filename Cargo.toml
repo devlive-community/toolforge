@@ -41,7 +41,6 @@ tfp-csv-viewer = { path = "plugins/csv-viewer/backend" }
 tfp-dns-lookup = { path = "plugins/dns-lookup/backend" }
 tfp-disk-usage = { path = "plugins/disk-usage/backend" }
 tfp-duplicate-finder = { path = "plugins/duplicate-finder/backend" }
-tfp-encoder = { path = "plugins/encoder/backend" }
 tfp-hash = { path = "plugins/hash/backend" }
 tfp-image-converter = { path = "plugins/image-converter/backend" }
 tfp-image-compressor = { path = "plugins/image-compressor/backend" }

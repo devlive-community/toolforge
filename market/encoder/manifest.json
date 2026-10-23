@@ -1,0 +1,38 @@
+{
+  "id": "org.devlive.toolforge.encoder",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "encode",
+  "keywords": ["base64", "base32", "hex", "url", "urlencode", "html", "entity", "unicode", "escape", "data uri", "base58", "base85", "ascii85", "morse", "gzip", "zstd", "pipeline", "摩斯", "编码", "解码", "转义"],
+  "accent": "green",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],
+  "functions": {
+    "transform": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.transform.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input", "codec", "direction"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.transform.input", "x-positional": 0, "x-stdin": true },
+            "codec": { "type": "string", "description": "i18n:api.transform.codec", "enum": ["base64", "base64url", "base32", "hex", "urlComponent", "url", "form", "html", "unicode", "base58", "base85", "ascii85", "morse", "gzip", "deflate", "zlib", "zstd"] },
+            "direction": { "type": "string", "description": "i18n:api.transform.direction", "enum": ["encode", "decode"] }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["echo hello | tfp-encoder transform --codec base64 --direction encode", "tfp-encoder transform 'a%20b' --codec urlComponent --direction decode"]
+      }
+    },
+    "pipeline": { "history": true, "interface": false },
+    "encode_file": { "task": true, "interface": false },
+    "file_output": { "interface": false },
+    "save_output": { "interface": false }
+  },
+  "sensitive": false
+}
