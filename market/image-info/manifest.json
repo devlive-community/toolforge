@@ -1,16 +1,50 @@
 {
   "id": "org.devlive.toolforge.image-info",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "image",
   "keywords": ["image", "exif", "metadata", "gps", "palette", "color", "camera", "privacy", "图片信息", "元数据", "拍摄参数", "主色", "去除元数据"],
   "accent": "orange",
   "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
   "permissions": ["fs:user-selected", "clipboard:write"],
   "functions": {
-    "inspect": {},
-    "strip_metadata": {}
+    "inspect": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.inspect.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.inspect.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "preview": { "type": "boolean", "description": "i18n:api.inspect.preview", "default": false }
+          }
+        },
+        "examples": ["tfp-image-info inspect photo.jpg"]
+      }
+    },
+    "strip_metadata": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.strip_metadata.summary",
+        "effect": "write",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.strip_metadata.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "output": { "type": "string", "description": "i18n:api.strip_metadata.output", "format": "path", "x-access": "write" }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["tfp-image-info strip_metadata photo.jpg --output photo-public.jpg"]
+      }
+    }
   },
   "sensitive": false
 }

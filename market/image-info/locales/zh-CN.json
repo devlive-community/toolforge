@@ -100,5 +100,17 @@
     "info.unsupported": "不支持的图片格式",
     "info.corrupt": "文件结构已损坏",
     "info.strip_unsupported": "仅支持移除 JPEG 与 PNG 文件的元数据"
+  },
+  "api": {
+    "inspect": {
+      "summary": "显示图片的格式、尺寸、颜色与 EXIF 元数据（含 GPS）",
+      "path": "图片文件",
+      "preview": "包含 Base64 预览图"
+    },
+    "strip_metadata": {
+      "summary": "移除图片中的 EXIF 等元数据并另存一份干净的副本",
+      "path": "图片文件",
+      "output": "输出文件，默认在源文件旁生成 名称-clean"
+    }
   }
 }

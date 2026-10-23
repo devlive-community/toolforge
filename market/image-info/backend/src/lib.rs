@@ -37,6 +37,8 @@ impl ToolPlugin for ImageInfo {
     }
 }
 
+tf_plugin_guest::export_plugin!(ImageInfo);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

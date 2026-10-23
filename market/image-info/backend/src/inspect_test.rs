@@ -12,7 +12,11 @@ fn temp(name: &str, data: &[u8]) -> String {
 #[test]
 fn reports_file_and_exif() {
     let path = temp("photo.jpg", &jpeg_with_exif());
-    let report = inspect(Args { path }).unwrap();
+    let report = inspect(Args {
+        path,
+        preview: true,
+    })
+    .unwrap();
     assert_eq!(report.format.as_deref(), Some("JPEG"));
     assert_eq!(
         (report.width, report.height, report.aspect),
@@ -43,6 +47,7 @@ fn reports_file_and_exif() {
 fn png_without_exif_container_still_works() {
     let report = inspect(Args {
         path: temp("text.png", &png_with_text()),
+        preview: true,
     })
     .unwrap();
     assert_eq!(report.format.as_deref(), Some("PNG"));
@@ -72,6 +77,7 @@ fn strips_to_a_new_file() {
     assert!(report.saved_bytes > 0);
     let cleaned = inspect(Args {
         path: report.output.clone(),
+        preview: true,
     })
     .unwrap();
     assert!(cleaned.summary.is_none() && cleaned.exif.is_empty());
@@ -84,7 +90,8 @@ fn strips_to_a_new_file() {
 fn reports_errors() {
     assert_eq!(
         inspect(Args {
-            path: "/nope.png".into()
+            path: "/nope.png".into(),
+            preview: true,
         })
         .unwrap_err()
         .code,
@@ -92,10 +99,21 @@ fn reports_errors() {
     );
     assert_eq!(
         inspect(Args {
-            path: temp("bad.png", b"hello")
+            path: temp("bad.png", b"hello"),
+            preview: true,
         })
         .unwrap_err()
         .code,
         "info.unsupported"
     );
+}
+
+#[test]
+fn skips_the_preview_when_asked() {
+    let report = inspect(Args {
+        path: temp("no-preview.png", &png_with_text()),
+        preview: false,
+    })
+    .unwrap();
+    assert!(report.preview.is_none() && report.width > 0);
 }

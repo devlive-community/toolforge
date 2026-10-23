@@ -71,7 +71,6 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **CSV Viewer** | Open CSV / TSV files up to 1 GB (a million rows in under a second) with automatic encoding, delimiter and header detection; sort, search, filter, column statistics and export to CSV / TSV / JSON / Markdown |
 | **Spreadsheet Viewer** | Open xlsx / xlsm / xlsb / xls / ods workbooks up to 512 MB with sheet tabs, sorting, search, filters and column statistics; dates and formula results become readable text, and the current view exports to CSV / TSV / JSON / Markdown |
 | **Log Viewer** | Open gigabyte log files instantly, filter by level, text or regex with highlighted matches, follow new lines like `tail -f`, and inspect JSON inside lines; GB18030 and ANSI colors handled |
-| **Image Info** | Format, dimensions, color type, EXIF camera settings and GPS location with a map link, dominant colors; strip EXIF / XMP / IPTC from JPEG and PNG losslessly |
 
 More tools are on the way.
 

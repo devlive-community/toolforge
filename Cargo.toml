@@ -43,7 +43,6 @@ tfp-disk-usage = { path = "plugins/disk-usage/backend" }
 tfp-duplicate-finder = { path = "plugins/duplicate-finder/backend" }
 tfp-hash = { path = "plugins/hash/backend" }
 tfp-image-compressor = { path = "plugins/image-compressor/backend" }
-tfp-image-info = { path = "plugins/image-info/backend" }
 tfp-input-stats = { path = "plugins/input-stats/backend" }
 tfp-local-server = { path = "plugins/local-server/backend" }
 tfp-log-viewer = { path = "plugins/log-viewer/backend" }

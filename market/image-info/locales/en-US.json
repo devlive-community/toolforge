@@ -100,5 +100,17 @@
     "info.unsupported": "Not a supported image format",
     "info.corrupt": "The file structure is damaged",
     "info.strip_unsupported": "Metadata can only be removed from JPEG and PNG files"
+  },
+  "api": {
+    "inspect": {
+      "summary": "Show an image's format, dimensions, colors and EXIF metadata including GPS",
+      "path": "Image file",
+      "preview": "Include a Base64 preview image"
+    },
+    "strip_metadata": {
+      "summary": "Remove EXIF and other metadata from an image and save a clean copy",
+      "path": "Image file",
+      "output": "Output file; defaults to name-clean next to the source"
+    }
   }
 }

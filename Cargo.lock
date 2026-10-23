@@ -8987,6 +8987,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-image-info"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "image",
+ "kamadak-exif",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-image-stitcher"
 version = "0.2.0"
 dependencies = [
@@ -9697,18 +9710,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-image-info"
-version = "0.1.0"
-dependencies = [
- "data-encoding",
- "image",
- "kamadak-exif",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-image-palette"
 version = "0.1.0"
 dependencies = [
@@ -10285,7 +10286,6 @@ dependencies = [
  "tfp-hash",
  "tfp-icon-generator",
  "tfp-image-compressor",
- "tfp-image-info",
  "tfp-image-palette",
  "tfp-input-stats",
  "tfp-json-query",

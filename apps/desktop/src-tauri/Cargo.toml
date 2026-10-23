@@ -47,7 +47,6 @@ tfp-disk-usage.workspace = true
 tfp-duplicate-finder.workspace = true
 tfp-hash.workspace = true
 tfp-image-compressor.workspace = true
-tfp-image-info.workspace = true
 tfp-input-stats.workspace = true
 tfp-local-server.workspace = true
 tfp-log-viewer.workspace = true

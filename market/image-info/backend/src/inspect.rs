@@ -6,6 +6,7 @@ use image::imageops::FilterType;
 use image::{DynamicImage, ImageDecoder, ImageFormat, ImageReader};
 use serde::{Deserialize, Serialize};
 use tf_plugin_api::{PluginError, PluginResult};
+use tf_plugin_guest::net;
 
 use crate::palette::{Swatch, extract};
 use crate::strip::strip;
@@ -16,6 +17,13 @@ const PREVIEW: u32 = 640;
 #[derive(Deserialize)]
 pub struct Args {
     path: String,
+    /// 是否生成预览图；命令行与 Agent 默认不要，避免输出大段 base64
+    #[serde(default = "yes")]
+    preview: bool,
+}
+
+fn yes() -> bool {
+    true
 }
 
 #[derive(Debug, Serialize, Default, PartialEq)]
@@ -93,23 +101,14 @@ pub struct StripReport {
     pub orientation_lost: bool,
 }
 
-fn io(err: std::io::Error, path: &str) -> PluginError {
-    let code = if err.kind() == std::io::ErrorKind::NotFound {
-        "fs.not_found"
-    } else {
-        "fs.io"
-    };
-    PluginError::new(code)
-        .with("path", path)
-        .with("detail", err.to_string())
-}
-
 fn read(path: &str) -> PluginResult<Vec<u8>> {
-    let size = std::fs::metadata(path).map_err(|e| io(e, path))?.len();
-    if size > MAX_FILE {
-        return Err(PluginError::new("info.too_large").with("limit", "200 MB"));
-    }
-    std::fs::read(path).map_err(|e| io(e, path))
+    net::read_to_end(path, MAX_FILE).map_err(|error| {
+        if error.code == "fs.too_large" {
+            PluginError::new("info.too_large").with("limit", "200 MB")
+        } else {
+            error
+        }
+    })
 }
 
 fn gcd(a: u32, b: u32) -> u32 {
@@ -246,7 +245,7 @@ pub fn inspect(args: Args) -> PluginResult<Report> {
         color_type: format!("{color:?}"),
         has_alpha: color.has_alpha(),
         bits_per_pixel: color.bits_per_pixel(),
-        preview: preview(&image),
+        preview: if args.preview { preview(&image) } else { None },
         palette,
         average,
         summary: exif.as_ref().map(summarize),
@@ -279,7 +278,7 @@ pub fn clean_path(source: &Path) -> PathBuf {
     let dir = source.parent().map(Path::to_path_buf).unwrap_or_default();
     let mut candidate = dir.join(format!("{stem}-clean.{ext}"));
     let mut index = 1;
-    while candidate.exists() {
+    while net::file_size(&candidate.to_string_lossy()).is_ok() {
         candidate = dir.join(format!("{stem}-clean ({index}).{ext}"));
         index += 1;
     }
@@ -297,7 +296,7 @@ pub fn strip_metadata(args: StripArgs) -> PluginResult<StripReport> {
         Some(path) => PathBuf::from(path),
         None => clean_path(Path::new(&args.path)),
     };
-    std::fs::write(&output, &result.bytes).map_err(|e| io(e, &output.to_string_lossy()))?;
+    net::write_file(&output.to_string_lossy(), &result.bytes)?;
     Ok(StripReport {
         output: output.to_string_lossy().into_owned(),
         saved_bytes: (data.len() - result.bytes.len()) as u64,
