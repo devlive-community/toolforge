@@ -1939,6 +1939,8 @@ body {
   white-space: nowrap;
 }
 .site .site-footer-links a {
+  display: inline-flex;
+  align-items: center;
   gap: 4px;
 }
 .site .site-footer-links a svg.lucide {
