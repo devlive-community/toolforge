@@ -5,6 +5,7 @@
 //   src/data/catalog.json   工具目录（双语）
 //   src/data/release.json   最新版本与各平台安装包链接（可为 null）
 //   src/data/releases.json  最近若干条发布记录
+//   src/data/plugin-history.json 每个插件的版本历史（git 历史不完整时为空）
 //   public/icons/<slug>.svg 插件图标
 //   public/icon.png         站点 favicon
 
@@ -16,6 +17,7 @@ import { collectToolReleaseStatus, toolReleaseStatus } from './tool-status.mjs'
 import { buildToolDocs } from './tool-docs.mjs'
 import { loadPluginIndex, marketReleaseStatus } from './plugin-releases.mjs'
 import { summarizeRelease } from './release-summary.mjs'
+import { collectPluginHistory } from './plugin-history.mjs'
 
 const root = resolve(import.meta.dirname, '..', '..')
 const pluginsDir = join(root, 'plugins')
@@ -183,6 +185,37 @@ console.log(`[generate-data] status: ${counts.released} released, ${counts.new} 
 writeFileSync(join(outDataDir, 'catalog.json'), JSON.stringify(tools, null, 2))
 writeFileSync(join(outDataDir, 'release.json'), JSON.stringify(release, null, 2))
 writeFileSync(join(outDataDir, 'tool-docs.json'), JSON.stringify(toolDocs, null, 2))
+
+// 版本历史需要完整的 git 历史；浅克隆时宁可不显示，也不显示残缺的历史
+const pluginHistory = {}
+let shallow = true
+try {
+  shallow = gitOutput(['rev-parse', '--is-shallow-repository']) === 'true'
+} catch {
+  /* git 不可用 */
+}
+if (shallow) {
+  console.warn('[generate-data] shallow or missing git history, skipping plugin version history')
+} else {
+  for (const tool of tools) {
+    // 已发布的基准取较高者：在线插件索引中的版本，以及最新应用版本中内置的版本（迁出前随应用发布过）
+    let builtin = null
+    if (sets) {
+      try {
+        builtin = JSON.parse(gitOutput(['show', `${sets.latestTag}:plugins/${tool.slug}/manifest.json`])).version ?? null
+      } catch {
+        /* 最新应用版本中没有这个内置工具 */
+      }
+    }
+    const candidates = [tool.publishedVersion, builtin].filter(Boolean)
+    let released = candidates.sort((a, b) => compareVersions(b, a))[0] ?? null
+    // 从未发布过：全部标记为待发布；取不到发布信息（无 tag、索引不可用）时不标记
+    if (!released && (tool.status === 'upcoming' || (sets && tool.channel === 'builtin'))) released = '0.0.0'
+    pluginHistory[tool.slug] = collectPluginHistory(tool.slug, { git: gitOutput, released })
+  }
+  console.log(`[generate-data] version history for ${Object.keys(pluginHistory).length} tools`)
+}
+writeFileSync(join(outDataDir, 'plugin-history.json'), JSON.stringify(pluginHistory, null, 2))
 let agentReleased = false
 if (!release.fallback && release.version) {
   try {

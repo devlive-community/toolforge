@@ -35,6 +35,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # 插件详情页的版本历史来自 git 提交记录
+          fetch-depth: 0
       - uses: pnpm/action-setup@v6
         with:
           # docs 是独立 workspace（自带 pnpm-workspace.yaml 与锁文件），

@@ -6,6 +6,8 @@ import { InstallButton } from '@/components/InstallButton'
 import { DetailTabs } from '@/components/DetailTabs'
 import { ToolCard, ToolIcon } from '@/components/ToolCard'
 import { ToolPermissions } from '@/components/ToolPermissions'
+import { PluginHistory } from '@/components/PluginHistory'
+import { getPluginHistory } from '@/lib/plugin-history'
 import { StatusBadge } from '@/components/StatusBadge'
 import { canInstall, catalog, getTool, toolChannel, toolDescription, toolName, toolStatus, type Lang, type ToolEntry } from '@/lib/catalog'
 import { getToolDocumentation } from '@/lib/tool-docs'
@@ -218,6 +220,7 @@ export default async function ToolDetailPage({ params }: { params: Promise<{ lan
               { id: 'overview', title: zh ? '工具概览' : 'Overview', content: overview },
               { id: 'usage', title: zh ? '使用方法' : 'Usage', content: usage },
               { id: 'permissions', title: zh ? '权限与 Agent' : 'Permissions & Agent', content: <ToolPermissions data={data} lang={lang} /> },
+              { id: 'versions', title: zh ? '版本历史' : 'Versions', content: <PluginHistory versions={getPluginHistory(tool.slug)} lang={lang} /> },
             ]}
           />
         </div>
