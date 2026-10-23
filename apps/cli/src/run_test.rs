@@ -138,7 +138,11 @@ fn respects_command_line_settings_and_records_history() {
     );
     assert_eq!(run(&["hmac_text", "x", "--key", "k"]), EXIT_OK);
     let listed = cli_manifests(&catalog, Some(&store), "en-US");
-    assert!(!listed[0].0.functions.contains_key("hash_text"));
+    let hash = listed
+        .iter()
+        .find(|(m, _)| m.id == "org.devlive.toolforge.hash")
+        .unwrap();
+    assert!(!hash.0.functions.contains_key("hash_text"));
 
     store.interface_grant_set(&off(PLUGIN_SCOPE)).unwrap();
     assert_eq!(
@@ -146,5 +150,9 @@ fn respects_command_line_settings_and_records_history() {
         EXIT_USAGE,
         "disabled plugins are refused"
     );
-    assert!(cli_manifests(&catalog, Some(&store), "en-US").is_empty());
+    assert!(
+        cli_manifests(&catalog, Some(&store), "en-US")
+            .iter()
+            .all(|(m, _)| m.id != "org.devlive.toolforge.hash")
+    );
 }

@@ -19,7 +19,9 @@ tf-host.workspace = true
 tf-plugin-api.workspace = true
 tf-wasm.workspace = true
 # 声明了 CLI 接口的内置插件；见 builtin.rs 与其测试
+tfp-barcode.workspace = true
 tfp-hash.workspace = true
+tfp-qrcode.workspace = true
 
 [dev-dependencies]
 tf-package.workspace = true

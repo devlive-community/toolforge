@@ -57,9 +57,9 @@ fn lists_installed_plugins_and_reports_their_load_errors() {
     let catalog = Catalog::new(builtin::all(), Some(installed));
     let listed = catalog.manifests("en-US", tf_plugin_api::interface::Channel::Cli);
     let names: Vec<&str> = listed.iter().map(|(m, _)| slug(&m.id)).collect();
-    assert_eq!(names, ["demo", "hash"]);
+    assert_eq!(names, ["barcode", "demo", "hash", "qrcode"]);
     assert_eq!(
-        listed[0].1["name"], "Demo",
+        listed[1].1["name"], "Demo",
         "installed locales are read without loading"
     );
     let err = catalog.load("demo", "en-US").err().unwrap();

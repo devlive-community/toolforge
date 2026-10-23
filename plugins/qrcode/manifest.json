@@ -1,17 +1,56 @@
 {
   "id": "org.devlive.toolforge.qrcode",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "encode",
   "keywords": ["qr", "qrcode", "qr code", "barcode", "scan", "decode", "二维码", "扫码", "识别"],
   "accent": "blue",
   "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.2",
   "permissions": ["clipboard:write", "fs:user-selected"],
   "functions": {
-    "generate": { "history": true },
-    "save": {},
-    "decode": {}
+    "generate": { "history": true, "interface": false },
+    "save": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.save.summary",
+        "effect": "write",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["text", "format", "path"],
+          "properties": {
+            "text": { "type": "string", "description": "i18n:api.save.text", "x-positional": 0, "x-stdin": true },
+            "ecc": { "type": "string", "description": "i18n:api.save.ecc", "enum": ["L", "M", "Q", "H"], "default": "M" },
+            "scale": { "type": "integer", "description": "i18n:api.save.scale", "minimum": 1, "default": 8 },
+            "margin": { "type": "integer", "description": "i18n:api.save.margin", "minimum": 0, "default": 4 },
+            "dark": { "type": "string", "description": "i18n:api.save.dark", "default": "#000000" },
+            "light": { "type": "string", "description": "i18n:api.save.light", "default": "#ffffff" },
+            "format": { "type": "string", "description": "i18n:api.save.format", "enum": ["png", "svg"] },
+            "path": { "type": "string", "description": "i18n:api.save.path", "format": "path", "x-access": "write" }
+          }
+        },
+        "examples": ["tfp-qrcode save https://toolforge.devlive.org --format png --path qr.png"]
+      }
+    },
+    "decode": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.decode.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.decode.path", "format": "path", "x-access": "read", "x-positional": 0 }
+          }
+        },
+        "output": { "table": "", "columns": [{ "key": "text", "label": "i18n:api.columns.text" }, { "key": "version", "label": "i18n:api.columns.version" }, { "key": "ecc", "label": "i18n:api.columns.ecc" }] },
+        "examples": ["tfp-qrcode decode screenshot.png"]
+      }
+    }
   },
   "sensitive": false
 }

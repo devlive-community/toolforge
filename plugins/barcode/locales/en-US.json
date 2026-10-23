@@ -104,5 +104,39 @@
     "barcode.decode_failed": "Cannot read the image: {{detail}}",
     "barcode.clipboard_empty": "There is no image on the clipboard",
     "barcode.file_too_large": "Image too large, at most {{limit}}"
+  },
+  "api": {
+    "generate": {
+      "summary": "Generate a barcode as SVG, adding check digits where the format needs them",
+      "text": "Content to encode",
+      "format": "Barcode format",
+      "height": "Bar height in pixels for linear codes",
+      "scale": "Pixels per module",
+      "margin": "Quiet zone in modules; format default when omitted",
+      "showText": "Print the human-readable text under linear codes",
+      "dark": "Foreground color",
+      "light": "Background color"
+    },
+    "save": {
+      "summary": "Generate a barcode and save it as PNG or SVG",
+      "text": "Content to encode",
+      "format": "Barcode format",
+      "height": "Bar height in pixels for linear codes",
+      "scale": "Pixels per module",
+      "margin": "Quiet zone in modules; format default when omitted",
+      "showText": "Print the human-readable text under linear codes",
+      "dark": "Foreground color",
+      "light": "Background color",
+      "saveAs": "File format",
+      "path": "File to write"
+    },
+    "decode": {
+      "summary": "Read every barcode and 2D code in an image",
+      "path": "Image file to scan"
+    },
+    "columns": {
+      "format": "Format",
+      "text": "Text"
+    }
   }
 }

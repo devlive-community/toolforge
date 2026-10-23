@@ -12,19 +12,47 @@ pub struct Builtin {
 }
 
 pub fn all() -> Vec<Builtin> {
-    vec![Builtin {
-        create: || Arc::new(tfp_hash::Hash::default()),
-        locales: &[
-            (
-                "en-US",
-                include_str!("../../../plugins/hash/locales/en-US.json"),
-            ),
-            (
-                "zh-CN",
-                include_str!("../../../plugins/hash/locales/zh-CN.json"),
-            ),
-        ],
-    }]
+    vec![
+        Builtin {
+            create: || Arc::new(tfp_hash::Hash::default()),
+            locales: &[
+                (
+                    "en-US",
+                    include_str!("../../../plugins/hash/locales/en-US.json"),
+                ),
+                (
+                    "zh-CN",
+                    include_str!("../../../plugins/hash/locales/zh-CN.json"),
+                ),
+            ],
+        },
+        Builtin {
+            create: || Arc::new(tfp_qrcode::QrCodeTool::default()),
+            locales: &[
+                (
+                    "en-US",
+                    include_str!("../../../plugins/qrcode/locales/en-US.json"),
+                ),
+                (
+                    "zh-CN",
+                    include_str!("../../../plugins/qrcode/locales/zh-CN.json"),
+                ),
+            ],
+        },
+        Builtin {
+            create: || Arc::new(tfp_barcode::BarcodeTool::default()),
+            locales: &[
+                (
+                    "en-US",
+                    include_str!("../../../plugins/barcode/locales/en-US.json"),
+                ),
+                (
+                    "zh-CN",
+                    include_str!("../../../plugins/barcode/locales/zh-CN.json"),
+                ),
+            ],
+        },
+    ]
 }
 
 #[cfg(test)]

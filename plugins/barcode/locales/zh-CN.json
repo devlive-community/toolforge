@@ -104,5 +104,39 @@
     "barcode.decode_failed": "无法读取图片：{{detail}}",
     "barcode.clipboard_empty": "剪贴板中没有图片",
     "barcode.file_too_large": "图片太大，最大 {{limit}}"
+  },
+  "api": {
+    "generate": {
+      "summary": "生成 SVG 条码，按格式自动补校验位",
+      "text": "要编码的内容",
+      "format": "条码格式",
+      "height": "一维码条高（像素）",
+      "scale": "每个模块的像素数",
+      "margin": "留白宽度（模块数），省略时按格式默认",
+      "showText": "在一维码下方显示文字",
+      "dark": "前景色",
+      "light": "背景色"
+    },
+    "save": {
+      "summary": "生成条码并保存为 PNG 或 SVG",
+      "text": "要编码的内容",
+      "format": "条码格式",
+      "height": "一维码条高（像素）",
+      "scale": "每个模块的像素数",
+      "margin": "留白宽度（模块数），省略时按格式默认",
+      "showText": "在一维码下方显示文字",
+      "dark": "前景色",
+      "light": "背景色",
+      "saveAs": "文件格式",
+      "path": "要写入的文件"
+    },
+    "decode": {
+      "summary": "识别图片中的全部条码与二维码",
+      "path": "要识别的图片文件"
+    },
+    "columns": {
+      "format": "格式",
+      "text": "内容"
+    }
   }
 }

@@ -55,7 +55,12 @@ fn global_help_and_list_use_plugin_names() {
     let zh = Messages::new("zh-CN");
     let plugins = catalog.manifests("zh-CN", tf_plugin_api::interface::Channel::Cli);
     let listed = list(&plugins, &zh);
-    assert!(listed.contains("  hash  哈希计算"), "{listed}");
+    assert!(
+        listed
+            .lines()
+            .any(|line| line.split_whitespace().eq(["hash", "哈希计算"])),
+        "{listed}"
+    );
     let global_text = global(&plugins, &zh);
     assert!(
         global_text.contains("tfp <插件> <函数> [选项]"),

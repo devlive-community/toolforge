@@ -71,5 +71,27 @@
     "qr.not_found": "图片中没有找到二维码",
     "qr.file_too_large": "图片超过 {{limit}}",
     "qr.clipboard_empty": "剪贴板中没有图片"
+  },
+  "api": {
+    "save": {
+      "summary": "生成二维码并保存为 PNG 或 SVG",
+      "text": "要编码的文本或网址",
+      "ecc": "纠错等级",
+      "scale": "每个模块的像素数",
+      "margin": "留白宽度（模块数）",
+      "dark": "前景色",
+      "light": "背景色",
+      "format": "文件格式",
+      "path": "要写入的文件"
+    },
+    "decode": {
+      "summary": "识别图片中的全部二维码",
+      "path": "要识别的图片文件"
+    },
+    "columns": {
+      "text": "内容",
+      "version": "版本",
+      "ecc": "纠错"
+    }
   }
 }

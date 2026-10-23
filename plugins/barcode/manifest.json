@@ -1,17 +1,81 @@
 {
   "id": "org.devlive.toolforge.barcode",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "encode",
   "keywords": ["barcode", "bar code", "ean", "ean-13", "ean-8", "upc", "code 128", "code 39", "code 93", "itf", "itf-14", "codabar", "gs1", "data matrix", "pdf417", "aztec", "check digit", "scan", "条形码", "条码", "商品码", "校验位", "识别", "扫码"],
   "accent": "green",
   "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.2",
   "permissions": ["clipboard:write", "clipboard:read", "fs:user-selected"],
   "functions": {
-    "generate": { "history": true },
-    "save": {},
-    "decode": {}
+    "generate": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.generate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["text"],
+          "properties": {
+            "text": { "type": "string", "description": "i18n:api.generate.text", "x-positional": 0, "x-stdin": true },
+            "format": { "type": "string", "description": "i18n:api.generate.format", "enum": ["ean13", "ean8", "upcA", "code128", "code39", "code93", "itf", "codabar", "dataMatrix", "pdf417", "aztec"], "default": "code128" },
+            "height": { "type": "integer", "description": "i18n:api.generate.height", "minimum": 1, "default": 60 },
+            "scale": { "type": "integer", "description": "i18n:api.generate.scale", "minimum": 1, "default": 3 },
+            "margin": { "type": "integer", "description": "i18n:api.generate.margin", "minimum": 0 },
+            "showText": { "type": "boolean", "description": "i18n:api.generate.showText", "default": true },
+            "dark": { "type": "string", "description": "i18n:api.generate.dark", "default": "#000000" },
+            "light": { "type": "string", "description": "i18n:api.generate.light", "default": "#ffffff" }
+          }
+        },
+        "output": { "text": "/svg" },
+        "examples": ["tfp-barcode generate 690123456789 --format ean13 > code.svg"]
+      }
+    },
+    "save": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.save.summary",
+        "effect": "write",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["text", "saveAs", "path"],
+          "properties": {
+            "text": { "type": "string", "description": "i18n:api.save.text", "x-positional": 0, "x-stdin": true },
+            "format": { "type": "string", "description": "i18n:api.save.format", "enum": ["ean13", "ean8", "upcA", "code128", "code39", "code93", "itf", "codabar", "dataMatrix", "pdf417", "aztec"], "default": "code128" },
+            "height": { "type": "integer", "description": "i18n:api.save.height", "minimum": 1, "default": 60 },
+            "scale": { "type": "integer", "description": "i18n:api.save.scale", "minimum": 1, "default": 3 },
+            "margin": { "type": "integer", "description": "i18n:api.save.margin", "minimum": 0 },
+            "showText": { "type": "boolean", "description": "i18n:api.save.showText", "default": true },
+            "dark": { "type": "string", "description": "i18n:api.save.dark", "default": "#000000" },
+            "light": { "type": "string", "description": "i18n:api.save.light", "default": "#ffffff" },
+            "saveAs": { "type": "string", "description": "i18n:api.save.saveAs", "enum": ["png", "svg"] },
+            "path": { "type": "string", "description": "i18n:api.save.path", "format": "path", "x-access": "write" }
+          }
+        },
+        "examples": ["tfp-barcode save ABC-123 --format code128 --save-as png --path label.png"]
+      }
+    },
+    "decode": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.decode.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.decode.path", "format": "path", "x-access": "read", "x-positional": 0 }
+          }
+        },
+        "output": { "table": "", "columns": [{ "key": "format", "label": "i18n:api.columns.format" }, { "key": "text", "label": "i18n:api.columns.text" }] },
+        "examples": ["tfp-barcode decode label.jpg"]
+      }
+    }
   },
   "sensitive": false
 }

@@ -71,5 +71,27 @@
     "qr.not_found": "No QR code was found in the image",
     "qr.file_too_large": "The image is larger than {{limit}}",
     "qr.clipboard_empty": "There is no image on the clipboard"
+  },
+  "api": {
+    "save": {
+      "summary": "Generate a QR code and save it as PNG or SVG",
+      "text": "Text or URL to encode",
+      "ecc": "Error correction level",
+      "scale": "Pixels per module",
+      "margin": "Quiet zone in modules",
+      "dark": "Foreground color",
+      "light": "Background color",
+      "format": "File format",
+      "path": "File to write"
+    },
+    "decode": {
+      "summary": "Read every QR code in an image",
+      "path": "Image file to scan"
+    },
+    "columns": {
+      "text": "Text",
+      "version": "Version",
+      "ecc": "ECC"
+    }
   }
 }

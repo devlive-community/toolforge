@@ -10319,7 +10319,9 @@ dependencies = [
  "tf-package",
  "tf-plugin-api",
  "tf-wasm",
+ "tfp-barcode",
  "tfp-hash",
+ "tfp-qrcode",
 ]
 
 [[package]]

@@ -46,3 +46,10 @@ fn detects_retail_numbers_with_valid_check_digits() {
     assert!(tool.detect_image(300, 120).is_some());
     assert!(tool.detect_image(300, 10).is_none());
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&BarcodeTool::default()).unwrap();
+    assert_eq!(checked, 1);
+}

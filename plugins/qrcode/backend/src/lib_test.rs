@@ -16,3 +16,10 @@ fn offers_to_read_clipboard_images() {
     assert_eq!(tool.detect_image(400, 300).unwrap().label, "image");
     assert!(tool.detect_image(10, 300).is_none());
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&QrCodeTool::default()).unwrap();
+    assert_eq!(checked, 0);
+}
