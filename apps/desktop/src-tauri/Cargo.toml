@@ -52,7 +52,6 @@ tfp-image-converter.workspace = true
 tfp-image-compressor.workspace = true
 tfp-image-info.workspace = true
 tfp-input-stats.workspace = true
-tfp-ip-calculator.workspace = true
 tfp-json-to-code.workspace = true
 tfp-local-server.workspace = true
 tfp-log-viewer.workspace = true

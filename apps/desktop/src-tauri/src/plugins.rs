@@ -28,7 +28,6 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
         Arc::new(tfp_background_remover::BackgroundRemover::default()),
         os,
     );
-    registry.register_for(Arc::new(tfp_ip_calculator::IpCalculator::default()), os);
     registry.register_for(Arc::new(tfp_dns_lookup::DnsLookup::default()), os);
     registry.register_for(Arc::new(tfp_system_monitor::SystemMonitor::default()), os);
     registry.register_for(Arc::new(tfp_unit_converter::UnitConverter::default()), os);

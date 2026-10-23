@@ -38,6 +38,8 @@ impl ToolPlugin for IpCalculator {
     }
 }
 
+tf_plugin_guest::export_plugin!(IpCalculator);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

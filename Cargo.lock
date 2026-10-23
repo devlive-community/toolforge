@@ -8938,6 +8938,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-ip-calculator"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-jigsaw"
 version = "0.1.0"
 dependencies = [
@@ -9550,15 +9560,6 @@ dependencies = [
  "tf-plugin-api",
  "windows-sys 0.61.2",
  "x11rb",
-]
-
-[[package]]
-name = "tfp-ip-calculator"
-version = "0.1.0"
-dependencies = [
- "serde",
- "serde_json",
- "tf-plugin-api",
 ]
 
 [[package]]
@@ -10273,7 +10274,6 @@ dependencies = [
  "tfp-image-info",
  "tfp-image-palette",
  "tfp-input-stats",
- "tfp-ip-calculator",
  "tfp-json-query",
  "tfp-json-schema",
  "tfp-json-to-code",

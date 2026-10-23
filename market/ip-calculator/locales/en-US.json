@@ -87,5 +87,18 @@
     "ip.version_mismatch": "Both addresses must be IPv4 or both IPv6",
     "ip.range_reversed": "The first address must not be greater than the last",
     "ip.too_many_cidrs": "The range needs more than {{limit}} CIDR blocks"
+  },
+  "api": {
+    "calculate": {
+      "summary": "Calculate network, broadcast, host range and masks of an IPv4 or IPv6 address or CIDR",
+      "input": "Address or CIDR, such as 192.168.1.0/24",
+      "split": "Split into subnets with this prefix length",
+      "contains": "Check whether this address is inside the network"
+    },
+    "range_to_cidrs": {
+      "summary": "Cover an address range with the fewest CIDR blocks",
+      "start": "First address of the range",
+      "end": "Last address of the range"
+    }
   }
 }

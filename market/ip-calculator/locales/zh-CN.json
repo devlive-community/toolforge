@@ -87,5 +87,18 @@
     "ip.version_mismatch": "两个地址必须同为 IPv4 或同为 IPv6",
     "ip.range_reversed": "起始地址不能大于结束地址",
     "ip.too_many_cidrs": "该地址段需要超过 {{limit}} 个 CIDR 块"
+  },
+  "api": {
+    "calculate": {
+      "summary": "计算 IPv4 / IPv6 地址或网段的网络地址、广播地址、主机范围与掩码",
+      "input": "地址或网段，如 192.168.1.0/24",
+      "split": "按该前缀长度拆分子网",
+      "contains": "检查该地址是否属于这个网段"
+    },
+    "range_to_cidrs": {
+      "summary": "用最少的 CIDR 网段覆盖一个地址范围",
+      "start": "范围的起始地址",
+      "end": "范围的结束地址"
+    }
   }
 }

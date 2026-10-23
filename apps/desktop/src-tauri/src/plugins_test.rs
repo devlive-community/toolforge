@@ -103,8 +103,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
             "curl -X POST https://api.example.com -d a=1",
             "curl-converter",
         ),
-        ("192.168.1.0/24", "ip-calculator"),
-        ("10.0.0.1", "ip-calculator"),
         ("github.com", "dns-lookup"),
         ("name\tage\nAda\t36\n", "csv-viewer"),
         ("localhost:3000", "port-manager"),
@@ -125,6 +123,8 @@ fn clipboard_samples_suggest_the_right_tool_first() {
     }
     for text in [
         "<a><b>1</b></a>",
+        "192.168.1.0/24",
+        "10.0.0.1",
         "[1, 2, 3]",
         "name: app\nversion: 1\n",
         "[server]\nport = 80\n",

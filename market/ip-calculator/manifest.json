@@ -1,0 +1,49 @@
+{
+  "id": "org.devlive.toolforge.ip-calculator",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "network",
+  "keywords": ["ip", "ipv4", "ipv6", "cidr", "subnet", "netmask", "mask", "network", "broadcast", "range", "子网", "掩码", "网段", "网络"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "calculate": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.calculate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.calculate.input", "x-positional": 0 },
+            "split": { "type": "integer", "description": "i18n:api.calculate.split", "minimum": 0, "maximum": 128 },
+            "contains": { "type": "string", "description": "i18n:api.calculate.contains" }
+          }
+        },
+        "examples": ["tfp-ip-calculator calculate 192.168.1.0/24 --split 26"]
+      }
+    },
+    "range_to_cidrs": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.range_to_cidrs.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["start", "end"],
+          "properties": {
+            "start": { "type": "string", "description": "i18n:api.range_to_cidrs.start", "x-positional": 0 },
+            "end": { "type": "string", "description": "i18n:api.range_to_cidrs.end", "x-positional": 1 }
+          }
+        },
+        "examples": ["tfp-ip-calculator range_to_cidrs 10.0.0.5 10.0.0.20"]
+      }
+    }
+  },
+  "sensitive": false
+}
