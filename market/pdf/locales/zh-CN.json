@@ -118,15 +118,44 @@
     "pdf.password_required": "该 PDF 受密码保护",
     "pdf.wrong_password": "密码不正确",
     "pdf.invalid": "无法读取该 PDF：{{detail}}",
+    "pdf.too_large": "{{path}} 超过 {{limit}}",
     "pdf.no_pages": "PDF 中没有页面",
     "pdf.no_pages_selected": "请至少选择一页",
     "pdf.page_out_of_range": "第 {{page}} 页不存在（文件共 {{count}} 页）",
     "pdf.invalid_source": "未知的文件",
     "pdf.invalid_rotation": "只能按 90 度旋转页面",
     "pdf.invalid_range": "页码范围“{{range}}”无效",
-    "pdf.output_dir_missing": "文件夹 {{path}} 不存在",
     "pdf.write_failed": "无法保存 PDF：{{detail}}",
     "pdf.no_images": "请先添加图片",
     "pdf.image_unsupported": "无法读取图片 {{path}}"
+  },
+  "api": {
+    "inspect": {
+      "summary": "显示 PDF 的版本、加密状态、元数据与各页尺寸",
+      "path": "PDF 文件",
+      "password": "加密 PDF 的密码"
+    },
+    "compose": {
+      "summary": "按顺序合并多个 PDF 的全部页面为一个文件",
+      "paths": "按顺序合并的 PDF 文件",
+      "output": "输出的 PDF 文件",
+      "compress": "压缩输出的数据流"
+    },
+    "split": {
+      "summary": "按页码范围、每 N 页或逐页拆分 PDF",
+      "path": "PDF 文件",
+      "password": "加密 PDF 的密码",
+      "mode": "拆分方式",
+      "ranges": "ranges 模式的页码范围，如 1-3, 5, 8-",
+      "size": "every 模式下每个文件的页数",
+      "outputDir": "拆分结果的目录，默认与源文件同目录"
+    },
+    "images": {
+      "summary": "把多张图片合成 PDF，每页一张",
+      "paths": "按页序排列的图片",
+      "output": "输出的 PDF 文件",
+      "pageSize": "页面尺寸；fit 表示与图片一致",
+      "margin": "A4 与 Letter 的页边距（点）"
+    }
   }
 }

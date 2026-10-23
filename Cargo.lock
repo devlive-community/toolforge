@@ -9234,6 +9234,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-pdf"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "hayro",
+ "image",
+ "lopdf",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-pg-plan-analyzer"
 version = "0.1.0"
 dependencies = [
@@ -9796,19 +9810,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-pdf"
-version = "0.1.0"
-dependencies = [
- "data-encoding",
- "hayro",
- "image",
- "lopdf",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-port-manager"
 version = "0.1.0"
 dependencies = [
@@ -10292,7 +10293,6 @@ dependencies = [
  "tfp-local-server",
  "tfp-log-viewer",
  "tfp-ocr",
- "tfp-pdf",
  "tfp-port-manager",
  "tfp-proxy-inspector",
  "tfp-qrcode",

@@ -47,7 +47,6 @@ tfp-input-stats = { path = "plugins/input-stats/backend" }
 tfp-local-server = { path = "plugins/local-server/backend" }
 tfp-log-viewer = { path = "plugins/log-viewer/backend" }
 tfp-ocr = { path = "plugins/ocr/backend" }
-tfp-pdf = { path = "plugins/pdf/backend" }
 tfp-text-encoding = { path = "plugins/text-encoding/backend" }
 tfp-icon-generator = { path = "plugins/icon-generator/backend" }
 tfp-folder-compare = { path = "plugins/folder-compare/backend" }

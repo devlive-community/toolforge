@@ -19,8 +19,7 @@ pub struct Thumbnail {
 }
 
 pub fn thumbnails(source: &Source, pages: &[u32], width: u32) -> PluginResult<Vec<Thumbnail>> {
-    let data = std::fs::read(&source.path)
-        .map_err(|_| PluginError::new("fs.not_found").with("path", source.path.as_str()))?;
+    let data = crate::source::read(&source.path)?;
     let password = source.password.as_deref().unwrap_or("");
     let pdf = Pdf::new_with_password(data, password).map_err(|_| {
         if password.is_empty() {

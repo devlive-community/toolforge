@@ -44,7 +44,6 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
     registry.register_for(Arc::new(tfp_archive::Archive::default()), os);
     registry.register_for(Arc::new(tfp_websocket::WebSocketClient::default()), os);
     registry.register_for(Arc::new(tfp_ssh_key::SshKey::default()), os);
-    registry.register_for(Arc::new(tfp_pdf::PdfTools::default()), os);
     registry.register_for(Arc::new(tfp_text_encoding::TextEncoding::default()), os);
     registry.register_for(Arc::new(tfp_icon_generator::IconGenerator::default()), os);
     registry.register_for(Arc::new(tfp_folder_compare::FolderCompare::default()), os);

@@ -11,8 +11,8 @@ use std::path::{Path, PathBuf};
 use serde::Deserialize;
 use serde_json::{Value, json};
 use tf_plugin_api::{
-    LogLevel, Manifest, PluginError, PluginResult, TaskContext, ToolPlugin, cancelled, parse_args,
-    to_value, unknown_function,
+    LogLevel, Manifest, PluginResult, TaskContext, ToolPlugin, cancelled, parse_args, to_value,
+    unknown_function,
 };
 
 use source::Source;
@@ -35,8 +35,13 @@ fn default_width() -> u32 {
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct ComposeArgs {
+    #[serde(default)]
     sources: Vec<Source>,
+    #[serde(default)]
     pages: Vec<compose::PageRef>,
+    /// 命令行与 Agent 的扁平写法：按顺序合并这些文件的全部页面
+    #[serde(default)]
+    paths: Vec<String>,
     output: String,
     #[serde(flatten)]
     options: compose::Options,
@@ -56,14 +61,6 @@ struct SplitArgs {
     output_dir: Option<String>,
 }
 
-fn check_output(output: &str) -> PluginResult<PathBuf> {
-    let path = PathBuf::from(output);
-    match path.parent() {
-        Some(parent) if parent.as_os_str().is_empty() || parent.is_dir() => Ok(path),
-        _ => Err(PluginError::new("pdf.output_dir_missing").with("path", output)),
-    }
-}
-
 pub struct PdfTools {
     manifest: Manifest,
 }
@@ -77,8 +74,23 @@ impl Default for PdfTools {
 }
 
 impl PdfTools {
-    fn compose(&self, args: ComposeArgs, ctx: &dyn TaskContext) -> PluginResult<Value> {
-        let output = check_output(&args.output)?;
+    fn compose(&self, mut args: ComposeArgs, ctx: &dyn TaskContext) -> PluginResult<Value> {
+        // 沙箱内无法预先检查目录，目录不存在时由写入报错
+        let output = PathBuf::from(&args.output);
+        for path in std::mem::take(&mut args.paths) {
+            let source = Source {
+                path,
+                password: None,
+            };
+            let index = args.sources.len();
+            let count = source::info(&source)?.pages.len() as u32;
+            args.pages.extend((1..=count).map(|page| compose::PageRef {
+                source: index,
+                page,
+                rotate: 0,
+            }));
+            args.sources.push(source);
+        }
         ctx.stage("pdf.compose");
         let doc = compose::compose(&args.sources, &args.pages, &args.options)?;
         if ctx.is_cancelled() {
@@ -105,10 +117,6 @@ impl PdfTools {
                 .map(Path::to_path_buf)
                 .unwrap_or_default(),
         };
-        if !dir.is_dir() {
-            return Err(PluginError::new("pdf.output_dir_missing")
-                .with("path", dir.to_string_lossy().as_ref()));
-        }
         let stem = source_path
             .file_stem()
             .map(|s| s.to_string_lossy().into_owned())
@@ -138,7 +146,7 @@ impl PdfTools {
     }
 
     fn images(&self, args: images::Args, ctx: &dyn TaskContext) -> PluginResult<Value> {
-        let output = check_output(&args.output)?;
+        let output = PathBuf::from(&args.output);
         ctx.stage("pdf.images");
         let total = args.paths.len() as u64;
         let doc = images::images_to_pdf(
@@ -184,6 +192,8 @@ impl ToolPlugin for PdfTools {
 
 #[cfg(test)]
 mod test_support;
+tf_plugin_guest::export_plugin!(PdfTools);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

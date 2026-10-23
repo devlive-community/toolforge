@@ -51,7 +51,6 @@ tfp-input-stats.workspace = true
 tfp-local-server.workspace = true
 tfp-log-viewer.workspace = true
 tfp-ocr.workspace = true
-tfp-pdf.workspace = true
 tfp-text-encoding.workspace = true
 tfp-icon-generator.workspace = true
 tfp-folder-compare.workspace = true

@@ -107,9 +107,37 @@ fn runs_compose_split_and_images_tasks() {
         json!({ "path": a, "mode": "ranges", "ranges": "2-3", "outputDir": dir.join("missing") }),
         &ctx,
     );
-    assert_eq!(ranges.unwrap_err().code, "pdf.output_dir_missing");
+    assert_eq!(ranges.unwrap_err().code, "fs.io");
 
     let missing_dir = plugin.run_task("compose", json!({ "sources": [{ "path": a }], "pages": [{ "source": 0, "page": 1 }], "output": "/no/such/dir/x.pdf" }), &ctx);
-    assert_eq!(missing_dir.unwrap_err().code, "pdf.output_dir_missing");
+    assert_eq!(missing_dir.unwrap_err().code, "fs.io");
     assert!(ctx.0.lock().unwrap().iter().any(|c| c == "pdf.part_saved"));
+}
+
+#[test]
+fn compose_merges_flat_paths_in_order() {
+    let dir = workspace("flat");
+    let a = sample(&dir, "a.pdf", 2);
+    let b = sample(&dir, "b.pdf", 3);
+    let out = dir.join("merged.pdf");
+    let result = PdfTools::default()
+        .run_task(
+            "compose",
+            json!({ "paths": [a, b], "output": out }),
+            &Ctx::default(),
+        )
+        .unwrap();
+    assert_eq!(result["pages"], 5);
+    assert_eq!(
+        lopdf::Document::load(&out).unwrap().get_pages().len(),
+        5,
+        "every page of both files"
+    );
+}
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&PdfTools::default()).unwrap();
+    assert_eq!(checked, 0);
 }

@@ -2,9 +2,10 @@
 
 use std::path::Path;
 
-use lopdf::{Dictionary, Document, Object, ObjectId};
+use lopdf::{Dictionary, Document, LoadOptions, Object, ObjectId};
 use serde::{Deserialize, Serialize};
 use tf_plugin_api::{PluginError, PluginResult};
+use tf_plugin_guest::net;
 
 /// 页面可以从上级页面树节点继承的属性
 pub const INHERITABLE: [&[u8]; 4] = [b"Resources", b"MediaBox", b"CropBox", b"Rotate"];
@@ -72,15 +73,30 @@ fn map_error(err: lopdf::Error, password: Option<&str>) -> PluginError {
     }
 }
 
+/// 单个文件的大小上限：沙箱内存有限，过大的文件无法完整载入
+pub const MAX_FILE: u64 = 256 * 1024 * 1024;
+
+/// 读取用户选择的整个文件
+pub fn read(path: &str) -> PluginResult<Vec<u8>> {
+    net::read_to_end(path, MAX_FILE).map_err(|error| match error.code.as_str() {
+        "fs.too_large" => PluginError::new("pdf.too_large")
+            .with("path", path)
+            .with("limit", "256 MB"),
+        "fs.not_found" | "fs.not_a_file" => PluginError::new("fs.not_found").with("path", path),
+        _ => error,
+    })
+}
+
 /// 加载并在需要时解密；只有所有者密码（可直接打开）的文件不需要提供密码
 pub fn load(source: &Source) -> PluginResult<Document> {
+    load_bytes(source, &read(&source.path)?)
+}
+
+fn load_bytes(source: &Source, bytes: &[u8]) -> PluginResult<Document> {
     let password = source.password.as_deref().filter(|p| !p.is_empty());
-    let path = Path::new(&source.path);
-    if !path.is_file() {
-        return Err(PluginError::new("fs.not_found").with("path", source.path.as_str()));
-    }
-    let mut doc = Document::load_with_password(path, password.unwrap_or(""))
-        .map_err(|e| map_error(e, password).with("path", source.path.as_str()))?;
+    let mut doc =
+        Document::load_mem_with_options(bytes, LoadOptions::with_password(password.unwrap_or("")))
+            .map_err(|e| map_error(e, password).with("path", source.path.as_str()))?;
     if doc.is_encrypted() {
         doc.decrypt(password.unwrap_or(""))
             .map_err(|e| map_error(e, password).with("path", source.path.as_str()))?;
@@ -176,8 +192,9 @@ pub fn metadata(doc: &Document) -> Metadata {
 }
 
 pub fn info(source: &Source) -> PluginResult<Info> {
-    let doc = load(source)?;
-    let encrypted = Document::load(&source.path)
+    let bytes = read(&source.path)?;
+    let doc = load_bytes(source, &bytes)?;
+    let encrypted = Document::load_mem(&bytes)
         .map(|d| d.is_encrypted())
         .unwrap_or(true);
     let pages = doc
@@ -200,7 +217,7 @@ pub fn info(source: &Source) -> PluginResult<Info> {
             .file_name()
             .map(|n| n.to_string_lossy().into_owned())
             .unwrap_or_default(),
-        size: std::fs::metadata(path).map(|m| m.len()).unwrap_or(0),
+        size: bytes.len() as u64,
         version: doc.version.clone(),
         encrypted,
         metadata: metadata(&doc),

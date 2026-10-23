@@ -1,0 +1,94 @@
+{
+  "id": "org.devlive.toolforge.pdf",
+  "version": "0.1.1",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "convert",
+  "keywords": ["pdf", "merge", "split", "combine", "extract pages", "rotate", "reorder", "delete pages", "images to pdf", "jpg to pdf", "metadata", "合并", "拆分", "提取页面", "旋转", "删除页面", "图片转 PDF"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "inspect": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.inspect.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.inspect.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "password": { "type": "string", "description": "i18n:api.inspect.password", "x-sensitive": true }
+          }
+        },
+        "examples": ["tfp-pdf inspect report.pdf"]
+      }
+    },
+    "thumbnails": { "interface": false },
+    "compose": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.compose.summary",
+        "effect": "write",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["paths", "output"],
+          "properties": {
+            "paths": { "type": "array", "description": "i18n:api.compose.paths", "items": { "type": "string", "format": "path", "x-access": "read" }, "x-positional": 0 },
+            "output": { "type": "string", "description": "i18n:api.compose.output", "format": "path", "x-access": "write" },
+            "compress": { "type": "boolean", "description": "i18n:api.compose.compress", "default": true }
+          }
+        },
+        "examples": ["tfp-pdf compose a.pdf b.pdf --output merged.pdf"]
+      }
+    },
+    "split": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.split.summary",
+        "effect": "write",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path", "mode"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.split.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "password": { "type": "string", "description": "i18n:api.split.password", "x-sensitive": true },
+            "mode": { "type": "string", "description": "i18n:api.split.mode", "enum": ["ranges", "every", "single"] },
+            "ranges": { "type": "string", "description": "i18n:api.split.ranges" },
+            "size": { "type": "integer", "description": "i18n:api.split.size", "minimum": 1 },
+            "outputDir": { "type": "string", "description": "i18n:api.split.outputDir", "format": "path", "x-access": "write" }
+          }
+        },
+        "examples": ["tfp-pdf split report.pdf --mode every --size 2", "tfp-pdf split report.pdf --mode ranges --ranges '1-3, 8-'"]
+      }
+    },
+    "images": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.images.summary",
+        "effect": "write",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["paths", "output"],
+          "properties": {
+            "paths": { "type": "array", "description": "i18n:api.images.paths", "items": { "type": "string", "format": "path", "x-access": "read" }, "x-positional": 0 },
+            "output": { "type": "string", "description": "i18n:api.images.output", "format": "path", "x-access": "write" },
+            "pageSize": { "type": "string", "description": "i18n:api.images.pageSize", "enum": ["fit", "a4", "letter"], "default": "fit" },
+            "margin": { "type": "number", "description": "i18n:api.images.margin", "minimum": 0, "default": 0 }
+          }
+        },
+        "examples": ["tfp-pdf images scan-1.jpg scan-2.jpg --output scans.pdf --page-size a4 --margin 24"]
+      }
+    }
+  },
+  "sensitive": false
+}

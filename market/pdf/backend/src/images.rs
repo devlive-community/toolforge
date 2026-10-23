@@ -38,7 +38,7 @@ fn decode_failed(path: &Path, err: impl ToString) -> PluginError {
 
 /// 图片 XObject 与其像素尺寸
 fn image_object(doc: &mut Document, path: &Path) -> PluginResult<(Object, u32, u32)> {
-    let bytes = std::fs::read(path).map_err(|e| decode_failed(path, e))?;
+    let bytes = crate::source::read(&path.to_string_lossy())?;
     let reader = ImageReader::new(Cursor::new(&bytes))
         .with_guessed_format()
         .map_err(|e| decode_failed(path, e))?;

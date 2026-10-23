@@ -118,15 +118,44 @@
     "pdf.password_required": "This PDF is protected with a password",
     "pdf.wrong_password": "The password is incorrect",
     "pdf.invalid": "This file is not a readable PDF: {{detail}}",
+    "pdf.too_large": "{{path}} is larger than {{limit}}",
     "pdf.no_pages": "The PDF has no pages",
     "pdf.no_pages_selected": "Choose at least one page",
     "pdf.page_out_of_range": "Page {{page}} does not exist (the file has {{count}} pages)",
     "pdf.invalid_source": "Unknown file",
     "pdf.invalid_rotation": "Pages can only be rotated in steps of 90 degrees",
     "pdf.invalid_range": "Invalid page range “{{range}}”",
-    "pdf.output_dir_missing": "The folder {{path}} does not exist",
     "pdf.write_failed": "Could not save the PDF: {{detail}}",
     "pdf.no_images": "Add some images first",
     "pdf.image_unsupported": "Could not read the image {{path}}"
+  },
+  "api": {
+    "inspect": {
+      "summary": "Show a PDF's version, encryption, metadata and page sizes",
+      "path": "PDF file",
+      "password": "Password of an encrypted PDF"
+    },
+    "compose": {
+      "summary": "Merge PDF files into one, keeping every page in order",
+      "paths": "PDF files to merge, in order",
+      "output": "Output PDF file",
+      "compress": "Compress the output streams"
+    },
+    "split": {
+      "summary": "Split a PDF by page ranges, every N pages, or into single pages",
+      "path": "PDF file",
+      "password": "Password of an encrypted PDF",
+      "mode": "How to split",
+      "ranges": "Page ranges for ranges mode, such as 1-3, 5, 8-",
+      "size": "Pages per file for every mode",
+      "outputDir": "Directory for the parts; defaults to the source directory"
+    },
+    "images": {
+      "summary": "Combine images into a PDF with one image per page",
+      "paths": "Images in page order",
+      "output": "Output PDF file",
+      "pageSize": "Page size; fit matches each image",
+      "margin": "Margin in points for A4 and Letter"
+    }
   }
 }

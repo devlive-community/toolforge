@@ -185,26 +185,13 @@ pub fn compose(sources: &[Source], pages: &[PageRef], options: &Options) -> Plug
     Ok(out)
 }
 
-/// 写入临时文件后改名，失败时不留下半个文件
+/// 先在内存中生成整份文件再一次写出，生成失败时不会留下半个文件
 pub fn save(mut doc: Document, output: &Path) -> PluginResult<u64> {
-    let temp = output.with_file_name(format!(
-        ".{}.part",
-        output
-            .file_name()
-            .map(|n| n.to_string_lossy().into_owned())
-            .unwrap_or_default()
-    ));
-    let result = doc
-        .save(&temp)
-        .map(|_| ())
-        .map_err(|e| PluginError::new("pdf.write_failed").with("detail", e.to_string()));
-    if let Err(err) = result {
-        let _ = std::fs::remove_file(&temp);
-        return Err(err);
-    }
-    std::fs::rename(&temp, output)
-        .map_err(|e| PluginError::new("fs.io").with("detail", e.to_string()))?;
-    Ok(std::fs::metadata(output).map(|m| m.len()).unwrap_or(0))
+    let mut bytes = Vec::new();
+    doc.save_to(&mut bytes)
+        .map_err(|e| PluginError::new("pdf.write_failed").with("detail", e.to_string()))?;
+    tf_plugin_guest::net::write_file(&output.to_string_lossy(), &bytes)?;
+    Ok(bytes.len() as u64)
 }
 
 /// 解析页码范围：`1-3, 5, 8-`（8- 表示到最后一页）
@@ -283,7 +270,7 @@ pub fn part_path(dir: &Path, stem: &str, (start, end): (u32, u32)) -> PathBuf {
     };
     let mut candidate = dir.join(format!("{stem}_{label}.pdf"));
     let mut n = 1;
-    while candidate.exists() {
+    while tf_plugin_guest::net::file_size(&candidate.to_string_lossy()).is_ok() {
         candidate = dir.join(format!("{stem}_{label} ({n}).pdf"));
         n += 1;
     }
