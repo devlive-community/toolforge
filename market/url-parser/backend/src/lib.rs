@@ -78,6 +78,8 @@ impl ToolPlugin for UrlParser {
     }
 }
 
+tf_plugin_guest::export_plugin!(UrlParser);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

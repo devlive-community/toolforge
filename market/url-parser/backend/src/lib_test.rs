@@ -37,3 +37,10 @@ fn detects_links_on_the_clipboard() {
     assert!(tool.detect("just some text").is_none());
     assert!(tool.detect("https://example.com and more").is_none());
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&UrlParser::default()).unwrap();
+    assert_eq!(checked, 2);
+}

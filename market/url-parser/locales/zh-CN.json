@@ -69,5 +69,15 @@
   "errors": {
     "url.empty": "请输入 URL",
     "url.invalid": "不是有效的 URL：{{detail}}"
+  },
+  "api": {
+    "parse": {
+      "summary": "把 URL 拆成协议、主机、端口、路径、查询参数与片段",
+      "input": "要解析的 URL"
+    },
+    "strip_tracking": {
+      "summary": "删除 URL 中 utm_* 等跟踪参数",
+      "input": "要清理的 URL"
+    }
   }
 }

@@ -69,5 +69,15 @@
   "errors": {
     "url.empty": "Enter a URL",
     "url.invalid": "This is not a valid URL: {{detail}}"
+  },
+  "api": {
+    "parse": {
+      "summary": "Split a URL into scheme, host, port, path, query parameters and fragment",
+      "input": "URL to parse"
+    },
+    "strip_tracking": {
+      "summary": "Remove tracking parameters such as utm_* from a URL",
+      "input": "URL to clean"
+    }
   }
 }

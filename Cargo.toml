@@ -57,7 +57,6 @@ tfp-text-encoding = { path = "plugins/text-encoding/backend" }
 tfp-icon-generator = { path = "plugins/icon-generator/backend" }
 tfp-hex-viewer = { path = "plugins/hex-viewer/backend" }
 tfp-folder-compare = { path = "plugins/folder-compare/backend" }
-tfp-url-parser = { path = "plugins/url-parser/backend" }
 tfp-json-query = { path = "plugins/json-query/backend" }
 tfp-json-schema = { path = "plugins/json-schema/backend" }
 tfp-image-palette = { path = "plugins/image-palette/backend" }
