@@ -14,3 +14,10 @@ fn dispatches_functions() {
         .unwrap();
     assert_eq!(out["input"], "1.5");
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&UnitConverter::default()).unwrap();
+    assert_eq!(checked, 2);
+}

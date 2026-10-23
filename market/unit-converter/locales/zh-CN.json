@@ -172,5 +172,22 @@
     "unit.unknown_category": "未知类别 {{category}}",
     "unit.unknown_unit": "未知单位 {{unit}}",
     "unit.below_absolute_zero": "温度低于绝对零度"
+  },
+  "api": {
+    "catalog": {
+      "summary": "列出单位类别及其单位"
+    },
+    "convert": {
+      "summary": "把数值换算成同类别的所有单位",
+      "value": "要换算的数值",
+      "category": "单位类别，如 length、temperature，见 catalog",
+      "from": "数值的单位，如 km、c，见 catalog",
+      "precision": "结果的有效数字位数"
+    },
+    "columns": {
+      "unit": "单位",
+      "symbol": "符号",
+      "value": "数值"
+    }
   }
 }

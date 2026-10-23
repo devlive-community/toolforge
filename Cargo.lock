@@ -9300,6 +9300,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-unit-converter"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-uscc"
 version = "0.1.0"
 dependencies = [
@@ -9857,15 +9867,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-unit-converter"
-version = "0.1.0"
-dependencies = [
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-url-parser"
 version = "0.1.0"
 dependencies = [
@@ -10298,7 +10299,6 @@ dependencies = [
  "tfp-svg-converter",
  "tfp-system-monitor",
  "tfp-text-encoding",
- "tfp-unit-converter",
  "tfp-url-parser",
  "tfp-uuid",
  "tfp-websocket",

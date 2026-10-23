@@ -1,0 +1,47 @@
+{
+  "id": "org.devlive.toolforge.unit-converter",
+  "version": "0.1.1",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "calc",
+  "keywords": ["unit", "convert", "length", "weight", "mass", "temperature", "area", "volume", "speed", "data", "byte", "pressure", "energy", "单位", "换算", "长度", "重量", "温度", "面积", "体积"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "catalog": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.catalog.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [],
+          "properties": {}
+        },
+        "examples": ["tfp-unit-converter catalog --json"]
+      }
+    },
+    "convert": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.convert.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["category", "from", "value"],
+          "properties": {
+            "value": { "type": "string", "description": "i18n:api.convert.value", "x-positional": 0 },
+            "category": { "type": "string", "description": "i18n:api.convert.category" },
+            "from": { "type": "string", "description": "i18n:api.convert.from" },
+            "precision": { "type": "integer", "description": "i18n:api.convert.precision", "minimum": 0, "maximum": 30, "default": 10 }
+          }
+        },
+        "output": { "table": "/results", "columns": [{ "key": "unit", "label": "i18n:api.columns.unit" }, { "key": "symbol", "label": "i18n:api.columns.symbol" }, { "key": "value", "label": "i18n:api.columns.value" }] },
+        "examples": ["tfp-unit-converter convert 100 --category temperature --from c"]
+      }
+    }
+  },
+  "sensitive": false
+}

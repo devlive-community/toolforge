@@ -27,7 +27,6 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
     );
     registry.register_for(Arc::new(tfp_dns_lookup::DnsLookup::default()), os);
     registry.register_for(Arc::new(tfp_system_monitor::SystemMonitor::default()), os);
-    registry.register_for(Arc::new(tfp_unit_converter::UnitConverter::default()), os);
     registry.register_for(Arc::new(tfp_image_info::ImageInfo::default()), os);
     registry.register_for(Arc::new(tfp_curl_converter::CurlConverter::default()), os);
     registry.register_for(Arc::new(tfp_csv_viewer::CsvViewer::default()), os);

@@ -172,5 +172,22 @@
     "unit.unknown_category": "Unknown category {{category}}",
     "unit.unknown_unit": "Unknown unit {{unit}}",
     "unit.below_absolute_zero": "The temperature is below absolute zero"
+  },
+  "api": {
+    "catalog": {
+      "summary": "List unit categories and their units"
+    },
+    "convert": {
+      "summary": "Convert a value to every unit in its category",
+      "value": "Value to convert",
+      "category": "Unit category, such as length or temperature; see catalog",
+      "from": "Unit of the value, such as km or c; see catalog",
+      "precision": "Significant digits in the result"
+    },
+    "columns": {
+      "unit": "Unit",
+      "symbol": "Symbol",
+      "value": "Value"
+    }
   }
 }
