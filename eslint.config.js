@@ -17,6 +17,11 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   reactHooks.configs.flat['recommended-latest'],
   {
+    // 看板静态脚本是独立浏览器脚本（内嵌于统计服务二进制），不走应用打包
+    files: ['apps/server/internal/dashboard/static/**/*.js'],
+    languageOptions: { globals: globals.browser },
+  },
+  {
     files: ['**/*.{ts,tsx}'],
     languageOptions: { globals: globals.browser },
     rules: {
