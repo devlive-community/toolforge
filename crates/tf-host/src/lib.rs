@@ -2,6 +2,7 @@
 
 pub mod agent;
 pub mod cli_links;
+pub mod history;
 pub mod installed;
 pub mod version;
 

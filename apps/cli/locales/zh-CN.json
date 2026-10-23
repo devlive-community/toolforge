@@ -28,7 +28,8 @@
     "list": "列出可以从命令行运行的插件",
     "help": "显示帮助",
     "run": "运行插件的某个函数",
-    "version": "显示版本"
+    "version": "显示版本",
+    "mcp": "通过 MCP（stdio）把插件提供给 AI Agent"
   },
   "errors": {
     "cli.unknown_plugin": "没有可以从命令行运行的插件 {{name}}",
@@ -43,7 +44,15 @@
     "cli.args_json": "--args 必须是 JSON 对象",
     "cli.args_file": "无法读取 {{path}}：{{detail}}",
     "cli.stdin": "无法读取标准输入：{{detail}}",
-    "cli.data_dir": "找不到 ToolForge 数据目录"
+    "cli.data_dir": "找不到 ToolForge 数据目录",
+    "agent.disabled": "ToolForge 设置中已关闭 AI Agent 访问",
+    "agent.plugin_off": "该插件未在 ToolForge 设置中开放给 AI Agent",
+    "agent.function_off": "该函数已在 ToolForge 设置中对 AI Agent 关闭",
+    "agent.path_denied": "{{path}} 不在授权给 AI Agent 的目录内（{{access}}）",
+    "agent.relative_path": "{{name}} 必须是绝对路径：{{path}}",
+    "agent.needs_confirmation": "该调用需要用户确认，但客户端无法发起确认；如信任该函数，可在 ToolForge 设置中改为始终允许",
+    "agent.declined": "用户拒绝了这次调用",
+    "plugin.path_denied": "插件无权访问 {{detail}}"
   },
   "heading": "{{title}}：",
   "withNotes": "{{text}}（{{notes}}）",
@@ -54,5 +63,15 @@
     "plugin": "插件",
     "function": "函数",
     "options": "选项"
+  },
+  "mcp": {
+    "instructions": "这些工具来自用户在 ToolForge「设置 → AI Agent」中开启的插件。文件路径必须是绝对路径，并位于那里授权的目录内。部分工具运行前会请用户确认。",
+    "absolutePath": "ToolForge 授权目录内的绝对路径",
+    "confirm": "{{plugin}} 请求运行「{{function}}」，参数：{{args}}。是否允许？",
+    "effect": {
+      "read": "只读。",
+      "write": "会写入文件或数据，可能需要用户确认。",
+      "external": "会对 ToolForge 之外产生影响（如网络请求、剪贴板），可能需要用户确认。"
+    }
   }
 }

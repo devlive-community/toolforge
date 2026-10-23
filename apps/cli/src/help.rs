@@ -114,6 +114,7 @@ pub fn global(plugins: &[(Manifest, Value)], messages: &Messages) -> String {
         ("list", "command.list"),
         ("help [plugin]", "command.help"),
         ("version", "command.version"),
+        ("mcp", "command.mcp"),
     ]
     .iter()
     .map(|(name, key)| ((*name).to_owned(), messages.text(key)))

@@ -3,23 +3,14 @@
 use serde::Serialize;
 use serde_json::{Value, json};
 use tauri::State;
-use tf_core::{AppResult, HistoryEntry, PluginRegistry, Store, history, store::now_millis};
+use tf_core::{AppResult, HistoryEntry, PluginRegistry, Store};
+use tf_host::history::{ENABLED_KEY, enabled};
 
 use crate::AppState;
 
-const ENABLED_KEY: &str = "history.enabled";
 const MAX_PAGE: usize = 200;
 
-pub fn enabled(store: &Store) -> bool {
-    store
-        .kv_get(ENABLED_KEY)
-        .ok()
-        .flatten()
-        .and_then(|v| v.as_bool())
-        .unwrap_or(true)
-}
-
-/// 插件调用成功后按需记入历史；失败只写日志，不影响调用结果
+/// 插件调用成功后按需记入历史；规则与命令行、AI Agent 相同（见 tf_host::history）
 pub fn record(
     store: &Store,
     registry: &PluginRegistry,
@@ -28,17 +19,8 @@ pub fn record(
     args: &Value,
     result: &Value,
 ) {
-    if !registry.records_history(plugin_id, function) || !enabled(store) {
-        return;
-    }
-    let Some(input) = history::primary_text(args) else {
-        return;
-    };
-    let output = history::output_preview(result);
-    let outcome =
-        store.history_record(plugin_id, function, &input, output.as_deref(), now_millis());
-    if let Err(err) = outcome {
-        log::warn!("history record failed: {}", err.code);
+    if let Ok(plugin) = registry.get(plugin_id) {
+        tf_host::history::record(store, "app", plugin.manifest(), function, args, result);
     }
 }
 

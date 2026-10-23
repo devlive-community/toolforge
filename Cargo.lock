@@ -8553,6 +8553,7 @@ name = "tf-host"
 version = "0.2.2"
 dependencies = [
  "dirs",
+ "log",
  "serde",
  "serde_json",
  "tf-core",
@@ -10317,6 +10318,7 @@ dependencies = [
  "tf-host",
  "tf-package",
  "tf-plugin-api",
+ "tf-wasm",
  "tfp-hash",
 ]
 

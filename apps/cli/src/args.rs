@@ -259,6 +259,17 @@ pub fn parse(
         args.insert((*name).clone(), Value::String(text));
     }
 
+    complete(params, args, Some(cwd))
+}
+
+/// 补全并校验入参：填默认值、检查必填与可选值、把路径参数转为绝对路径。
+/// cwd 为 None 时（AI Agent 调用）路径必须是绝对路径
+pub fn complete(
+    params: &Value,
+    mut args: Map<String, Value>,
+    cwd: Option<&Path>,
+) -> AppResult<Parsed> {
+    let props = properties(params);
     for (name, schema) in &props {
         if !args.contains_key(*name)
             && let Some(default) = schema.get("default")
@@ -302,20 +313,30 @@ pub fn parse(
         }
         if item["format"] == "path" {
             let write = item["x-access"] == "write";
-            let mut absolutize = |v: &mut Value| {
-                if let Some(raw) = v.as_str() {
-                    let path = cwd.join(raw);
-                    *v = Value::String(path.to_string_lossy().into_owned());
-                    paths.push(PathUse {
-                        param: (*name).clone(),
-                        path,
-                        write,
-                    });
-                }
+            let mut absolutize = |v: &mut Value| -> AppResult<()> {
+                let Some(raw) = v.as_str() else {
+                    return Ok(());
+                };
+                let path = match cwd {
+                    Some(cwd) => cwd.join(raw),
+                    None if Path::new(raw).is_absolute() => PathBuf::from(raw),
+                    None => {
+                        return Err(AppError::new("agent.relative_path")
+                            .with("name", (*name).as_str())
+                            .with("path", raw));
+                    }
+                };
+                *v = Value::String(path.to_string_lossy().into_owned());
+                paths.push(PathUse {
+                    param: (*name).clone(),
+                    path,
+                    write,
+                });
+                Ok(())
             };
             match value {
-                Value::Array(list) => list.iter_mut().for_each(&mut absolutize),
-                other => absolutize(other),
+                Value::Array(list) => list.iter_mut().try_for_each(&mut absolutize)?,
+                other => absolutize(other)?,
             }
         }
     }

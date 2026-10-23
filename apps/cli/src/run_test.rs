@@ -9,7 +9,7 @@ fn argv(items: &[&str]) -> Vec<String> {
 
 fn hash_command(items: &[&str]) -> i32 {
     let catalog = Catalog::new(builtin::all(), None);
-    plugin_command(&catalog, "tfp-hash", "hash", &argv(items))
+    plugin_command(&catalog, false, "tfp-hash", "hash", &argv(items))
 }
 
 #[test]
@@ -77,7 +77,7 @@ fn task_functions_run_and_return_plugin_errors() {
 fn unknown_plugins_are_usage_errors() {
     let catalog = Catalog::new(builtin::all(), None);
     assert_eq!(
-        plugin_command(&catalog, "tfp-nope", "nope", &[]),
+        plugin_command(&catalog, false, "tfp-nope", "nope", &[]),
         EXIT_USAGE
     );
 }

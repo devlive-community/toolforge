@@ -53,7 +53,7 @@ fn function_help_describes_arguments_and_options() {
 fn global_help_and_list_use_plugin_names() {
     let catalog = Catalog::new(builtin::all(), None);
     let zh = Messages::new("zh-CN");
-    let plugins = catalog.manifests("zh-CN");
+    let plugins = catalog.manifests("zh-CN", tf_plugin_api::interface::Channel::Cli);
     let listed = list(&plugins, &zh);
     assert!(listed.contains("  hash  哈希计算"), "{listed}");
     let global_text = global(&plugins, &zh);

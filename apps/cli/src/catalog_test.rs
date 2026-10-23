@@ -55,7 +55,7 @@ fn lists_installed_plugins_and_reports_their_load_errors() {
         .install(&package("org.example.demo", "0.1.0"), None, true, |_| false)
         .unwrap();
     let catalog = Catalog::new(builtin::all(), Some(installed));
-    let listed = catalog.manifests("en-US");
+    let listed = catalog.manifests("en-US", tf_plugin_api::interface::Channel::Cli);
     let names: Vec<&str> = listed.iter().map(|(m, _)| slug(&m.id)).collect();
     assert_eq!(names, ["demo", "hash"]);
     assert_eq!(

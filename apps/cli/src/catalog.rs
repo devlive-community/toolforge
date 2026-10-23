@@ -8,6 +8,7 @@ use tf_core::{AppError, AppResult};
 use tf_host::installed::Installed;
 use tf_plugin_api::interface::{Channel, Interface};
 use tf_plugin_api::{FunctionSpec, Manifest, ToolPlugin};
+use tf_wasm::WasmPlugin;
 
 use crate::builtin::{self, Builtin};
 
@@ -16,17 +17,25 @@ pub fn slug(id: &str) -> &str {
     id.rsplit('.').next().unwrap_or(id)
 }
 
-/// 对命令行开放的函数
-pub fn cli_functions(manifest: &Manifest) -> Vec<(&String, &FunctionSpec, Interface)> {
+/// 对某个通道开放的函数
+pub fn functions_for(
+    manifest: &Manifest,
+    channel: Channel,
+) -> Vec<(&String, &FunctionSpec, Interface)> {
     manifest
         .functions
         .iter()
         .filter_map(|(name, spec)| {
             let declaration = spec.declaration();
-            let interface = declaration.exposed(Channel::Cli)?.clone();
+            let interface = declaration.exposed(channel)?.clone();
             Some((name, spec, interface))
         })
         .collect()
+}
+
+/// 对命令行开放的函数
+pub fn cli_functions(manifest: &Manifest) -> Vec<(&String, &FunctionSpec, Interface)> {
+    functions_for(manifest, Channel::Cli)
 }
 
 /// 选语言包：当前语言 → en-US → 第一个
@@ -47,6 +56,8 @@ pub struct Catalog {
 
 pub struct Loaded {
     pub plugin: Arc<dyn ToolPlugin>,
+    /// 在线插件的 WASM 实例，用于限制文件访问范围；内置插件为 None
+    pub wasm: Option<Arc<WasmPlugin>>,
     /// 当前语言的语言包
     pub locale: Value,
 }
@@ -97,8 +108,13 @@ impl Catalog {
         )
     }
 
-    /// 所有带命令行函数的插件 manifest 与当前语言的语言包，按名字排序；不编译 WASM
-    pub fn manifests(&self, lang: &str) -> Vec<(Manifest, Value)> {
+    /// 是否为编进 tfp 的内置插件（原生代码，不在 WASM 沙箱中）
+    pub fn is_builtin(&self, name: &str) -> bool {
+        self.builtin(name).is_some()
+    }
+
+    /// 对某个通道开放了函数的插件 manifest 与当前语言的语言包，按名字排序；不编译 WASM
+    pub fn manifests(&self, lang: &str, channel: Channel) -> Vec<(Manifest, Value)> {
         let mut out: Vec<(Manifest, Value)> = self
             .builtins
             .iter()
@@ -119,7 +135,7 @@ impl Catalog {
                 }
             }
         }
-        out.retain(|(m, _)| !cli_functions(m).is_empty());
+        out.retain(|(m, _)| !functions_for(m, channel).is_empty());
         out.sort_by(|(a, _), (b, _)| slug(&a.id).cmp(slug(&b.id)));
         out
     }
@@ -129,6 +145,7 @@ impl Catalog {
         if let Some((builtin, plugin)) = self.builtin(name) {
             return Ok(Loaded {
                 plugin,
+                wasm: None,
                 locale: Self::builtin_locale(builtin, lang),
             });
         }
@@ -139,9 +156,10 @@ impl Catalog {
             .into_iter()
             .find(|info| slug(&info.id) == name)
             .ok_or_else(unknown)?;
-        let plugin = installed.load(&info.id)?;
+        let wasm = installed.load(&info.id)?;
         Ok(Loaded {
-            plugin,
+            plugin: wasm.clone(),
+            wasm: Some(wasm),
             locale: Self::installed_locale(installed, &info.id, lang),
         })
     }

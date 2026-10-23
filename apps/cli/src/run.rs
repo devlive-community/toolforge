@@ -15,6 +15,7 @@ use crate::context::CliContext;
 use crate::help;
 use crate::i18n::{Messages, detect_lang};
 use crate::render::render;
+use tf_plugin_api::interface::Channel;
 
 pub const EXIT_OK: i32 = 0;
 pub const EXIT_FAILED: i32 = 1;
@@ -68,7 +69,7 @@ pub fn main(argv: &[String]) -> i32 {
     let rest = argv.get(1..).unwrap_or_default();
     let catalog = Catalog::open();
     if let Some(plugin) = program.strip_prefix("tfp-") {
-        return plugin_command(&catalog, &program, plugin, rest);
+        return plugin_command(&catalog, true, &program, plugin, rest);
     }
 
     let (global, positional) = match args::split_global(rest) {
@@ -80,7 +81,7 @@ pub fn main(argv: &[String]) -> i32 {
         None => {
             println!(
                 "{}",
-                help::global(&catalog.manifests(messages.lang()), &messages)
+                help::global(&catalog.manifests(messages.lang(), Channel::Cli), &messages)
             );
             EXIT_OK
         }
@@ -92,22 +93,23 @@ pub fn main(argv: &[String]) -> i32 {
                 .cloned()
                 .collect();
             forwarded.push("--help".to_owned());
-            plugin_command(&catalog, &format!("tfp {plugin}"), plugin, &forwarded)
+            plugin_command(&catalog, true, &format!("tfp {plugin}"), plugin, &forwarded)
         }
         Some("help") => {
             println!(
                 "{}",
-                help::global(&catalog.manifests(messages.lang()), &messages)
+                help::global(&catalog.manifests(messages.lang(), Channel::Cli), &messages)
             );
             EXIT_OK
         }
         Some("list") => {
             println!(
                 "{}",
-                help::list(&catalog.manifests(messages.lang()), &messages)
+                help::list(&catalog.manifests(messages.lang(), Channel::Cli), &messages)
             );
             EXIT_OK
         }
+        Some("mcp") => crate::mcp::serve(messages.lang()),
         Some("version") => {
             println!("tfp {}", env!("CARGO_PKG_VERSION"));
             EXIT_OK
@@ -117,12 +119,19 @@ pub fn main(argv: &[String]) -> i32 {
             let index = rest.iter().position(|a| a == plugin).unwrap_or(0);
             let mut forwarded = rest.to_vec();
             forwarded.remove(index);
-            plugin_command(&catalog, &format!("tfp {plugin}"), plugin, &forwarded)
+            plugin_command(&catalog, true, &format!("tfp {plugin}"), plugin, &forwarded)
         }
     }
 }
 
-fn plugin_command(catalog: &Catalog, command: &str, plugin: &str, argv: &[String]) -> i32 {
+/// history 为 true 时把成功的调用记入应用的历史记录（来源 cli）；测试中关闭
+fn plugin_command(
+    catalog: &Catalog,
+    history: bool,
+    command: &str,
+    plugin: &str,
+    argv: &[String],
+) -> i32 {
     let (global, rest) = match args::split_global(argv) {
         Ok(split) => split,
         Err(err) => return fail(&err, &Messages::new(detect_lang(None))),
@@ -172,26 +181,32 @@ fn plugin_command(catalog: &Catalog, command: &str, plugin: &str, argv: &[String
         );
         return EXIT_OK;
     }
-    run_function(
-        &loaded.plugin,
-        &function,
-        spec.task,
+    let call = Call {
+        plugin: &loaded.plugin,
+        function: &function,
+        task: spec.task,
         interface,
-        &global,
-        args_rest,
-        &messages,
-    )
+        history,
+    };
+    run_function(&call, &global, args_rest, &messages)
 }
 
-fn run_function(
-    plugin: &std::sync::Arc<dyn tf_plugin_api::ToolPlugin>,
-    function: &str,
+struct Call<'a> {
+    plugin: &'a std::sync::Arc<dyn tf_plugin_api::ToolPlugin>,
+    function: &'a str,
     task: bool,
-    interface: &tf_plugin_api::interface::Interface,
-    global: &Global,
-    argv: &[String],
-    messages: &Messages,
-) -> i32 {
+    interface: &'a tf_plugin_api::interface::Interface,
+    history: bool,
+}
+
+fn run_function(call: &Call<'_>, global: &Global, argv: &[String], messages: &Messages) -> i32 {
+    let Call {
+        plugin,
+        function,
+        task,
+        interface,
+        ..
+    } = *call;
     let cwd = std::env::current_dir().unwrap_or_default();
     let parsed = match args::parse(
         &interface.params,
@@ -213,15 +228,29 @@ fn run_function(
                 std::process::exit(EXIT_CANCELLED);
             }
         });
-        let result = plugin.run_task(function, parsed.args, &context);
+        let result = plugin.run_task(function, parsed.args.clone(), &context);
         context.clear();
         result
     } else {
-        plugin.call(function, parsed.args)
+        plugin.call(function, parsed.args.clone())
     };
 
     match result {
         Ok(value) => {
+            if call.history
+                && let Some(store) = tf_host::app_data_dir()
+                    .and_then(|dir| tf_core::Store::open(&dir.join("toolforge.db")).ok())
+            {
+                let masked = tf_host::agent::mask_sensitive(&interface.params, &parsed.args);
+                tf_host::history::record(
+                    &store,
+                    "cli",
+                    plugin.manifest(),
+                    function,
+                    &masked,
+                    &value,
+                );
+            }
             let text = output_text(&value, interface, global.json, messages);
             if !text.is_empty() {
                 println!("{text}");

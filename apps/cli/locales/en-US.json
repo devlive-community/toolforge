@@ -28,7 +28,8 @@
     "list": "List plugins that can be run from the command line",
     "help": "Show help",
     "run": "Run a function of a plugin",
-    "version": "Show the version"
+    "version": "Show the version",
+    "mcp": "Serve plugins to AI agents over MCP (stdio)"
   },
   "errors": {
     "cli.unknown_plugin": "No plugin named {{name}} can be run from the command line",
@@ -43,7 +44,15 @@
     "cli.args_json": "--args must be a JSON object",
     "cli.args_file": "Cannot read {{path}}: {{detail}}",
     "cli.stdin": "Cannot read standard input: {{detail}}",
-    "cli.data_dir": "Cannot locate the ToolForge data folder"
+    "cli.data_dir": "Cannot locate the ToolForge data folder",
+    "agent.disabled": "AI agent access is turned off in ToolForge settings",
+    "agent.plugin_off": "This plugin is not enabled for AI agents in ToolForge settings",
+    "agent.function_off": "This function is turned off for AI agents in ToolForge settings",
+    "agent.path_denied": "{{path}} is outside the folders granted to AI agents ({{access}})",
+    "agent.relative_path": "{{name}} must be an absolute path: {{path}}",
+    "agent.needs_confirmation": "This call needs the user's confirmation, but the client cannot ask; set the function to Always allow in ToolForge settings if you trust it",
+    "agent.declined": "The user declined this call",
+    "plugin.path_denied": "The plugin may not access {{detail}}"
   },
   "heading": "{{title}}:",
   "withNotes": "{{text}} ({{notes}})",
@@ -54,5 +63,15 @@
     "plugin": "plugin",
     "function": "function",
     "options": "options"
+  },
+  "mcp": {
+    "instructions": "Tools come from ToolForge plugins the user enabled under Settings → AI Agent. File paths must be absolute and inside the folders granted there. Some tools ask the user to confirm before running.",
+    "absolutePath": "absolute path inside a folder granted in ToolForge",
+    "confirm": "{{plugin}} wants to run \"{{function}}\" with {{args}}. Allow it?",
+    "effect": {
+      "read": "Read-only.",
+      "write": "Writes files or data; the user may be asked to confirm.",
+      "external": "Has effects outside ToolForge, such as network requests or the clipboard; the user may be asked to confirm."
+    }
   }
 }

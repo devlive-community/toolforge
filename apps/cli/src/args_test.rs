@@ -201,3 +201,20 @@ fn kebab_converts_camel_case() {
     assert_eq!(kebab("keyEncoding"), "key-encoding");
     assert_eq!(kebab("input"), "input");
 }
+
+#[test]
+fn complete_requires_absolute_paths_without_a_working_directory() {
+    let params = json!({
+        "type": "object",
+        "properties": {
+            "path": { "type": "string", "format": "path", "x-access": "read" },
+            "mode": { "type": "string", "enum": ["a", "b"], "default": "a" }
+        }
+    });
+    let args = |path: &str| json!({ "path": path }).as_object().unwrap().clone();
+    let done = complete(&params, args("/abs/file"), None).unwrap();
+    assert_eq!(done.args["mode"], "a");
+    assert_eq!(done.paths[0].path, Path::new("/abs/file"));
+    let err = complete(&params, args("relative/file"), None).unwrap_err();
+    assert_eq!(err.code, "agent.relative_path");
+}
