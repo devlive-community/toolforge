@@ -392,7 +392,10 @@ fn interface_grants_are_kept_per_channel() {
         grants[1].uses.as_deref(),
         Some(&["fs:user-selected".to_owned()][..])
     );
-    assert_eq!(store.interface_grants("cli").unwrap(), std::slice::from_ref(&cli));
+    assert_eq!(
+        store.interface_grants("cli").unwrap(),
+        std::slice::from_ref(&cli)
+    );
 
     let bad = InterfaceGrant {
         mode: "always".into(),
