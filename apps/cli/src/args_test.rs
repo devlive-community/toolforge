@@ -21,6 +21,15 @@ fn hmac_params() -> Value {
     })
 }
 
+/// 当前平台上的一个绝对路径
+fn absolute(name: &str) -> String {
+    std::env::temp_dir()
+        .join("tfp-args")
+        .join(name)
+        .to_string_lossy()
+        .into_owned()
+}
+
 fn parse_args(params: &Value, items: &[&str]) -> AppResult<Parsed> {
     parse(params, &argv(items), None, Path::new("/work"), || None)
 }
@@ -189,9 +198,17 @@ fn path_params_become_absolute_and_are_recorded() {
             "output": { "type": "string", "format": "path", "x-access": "write" }
         }
     });
-    let parsed = parse_args(&params, &["a.txt", "/abs/b.txt", "--output", "out/sums"]).unwrap();
-    assert_eq!(parsed.args["paths"], json!(["/work/a.txt", "/abs/b.txt"]));
-    assert_eq!(parsed.args["output"], "/work/out/sums");
+    // 按平台构造路径：Windows 上的分隔符与绝对路径形式都不同
+    let absolute = absolute("b.txt");
+    let parsed = parse_args(&params, &["a.txt", &absolute, "--output", "out/sums"]).unwrap();
+    let joined = |relative: &str| {
+        Path::new("/work")
+            .join(relative)
+            .to_string_lossy()
+            .into_owned()
+    };
+    assert_eq!(parsed.args["paths"], json!([joined("a.txt"), absolute]));
+    assert_eq!(parsed.args["output"], joined("out/sums"));
     assert_eq!(parsed.paths.len(), 3);
     assert!(parsed.paths.iter().any(|p| p.write && p.param == "output"));
 }
@@ -212,9 +229,10 @@ fn complete_requires_absolute_paths_without_a_working_directory() {
         }
     });
     let args = |path: &str| json!({ "path": path }).as_object().unwrap().clone();
-    let done = complete(&params, args("/abs/file"), None).unwrap();
+    let file = absolute("file");
+    let done = complete(&params, args(&file), None).unwrap();
     assert_eq!(done.args["mode"], "a");
-    assert_eq!(done.paths[0].path, Path::new("/abs/file"));
+    assert_eq!(done.paths[0].path, Path::new(&file));
     let err = complete(&params, args("relative/file"), None).unwrap_err();
     assert_eq!(err.code, "agent.relative_path");
 }
