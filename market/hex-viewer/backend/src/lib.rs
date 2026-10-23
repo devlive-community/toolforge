@@ -230,6 +230,8 @@ impl ToolPlugin for HexViewer {
     }
 }
 
+tf_plugin_guest::export_plugin!(HexViewer);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

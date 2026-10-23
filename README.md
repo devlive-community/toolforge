@@ -40,7 +40,6 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 |------|-------------|
 | **JSON Query** | Query and reshape JSON or JSON Lines with jq (jaq engine; output matches jq) or JSONPath with normalized match paths; raw, compact and sorted output, examples, files up to 100 MB and a 10-second time limit |
 | **Regex Tester** | Live match and group highlighting with replacement preview; lookaround, backreferences and named groups; common pattern presets |
-| **Hex Viewer** | Open files of any size byte by byte with file-type detection, go to offset, hex or text search, a data inspector (integers, floats, UTF-8, Unix times in either byte order) and copying selections as hex, Base64, a C array or Python bytes |
 | **Hash** | MD5, SHA-1, SHA-2, SHA3, SM3 and CRC32; live text hashing and HMAC with verification; drop files to hash them in a background task with live logs |
 | **JWT Decoder** | Decode headers and payloads, check expiry, verify HS / RS / PS / ES / EdDSA signatures and sign new tokens |
 | **Certificate Viewer** | Inspect PEM / DER certificates and chains (names, SANs, validity, key, usages, fingerprints), or fetch the chain a server presents and verify it with the system trust store, showing the TLS version and cipher |

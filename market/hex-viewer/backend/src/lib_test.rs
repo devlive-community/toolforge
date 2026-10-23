@@ -111,3 +111,10 @@ fn copies_selections_in_several_formats() {
     );
     std::fs::remove_file(path).unwrap();
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&HexViewer::default()).unwrap();
+    assert_eq!(checked, 0);
+}

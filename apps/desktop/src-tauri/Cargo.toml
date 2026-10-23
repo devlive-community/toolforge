@@ -55,7 +55,6 @@ tfp-ocr.workspace = true
 tfp-pdf.workspace = true
 tfp-text-encoding.workspace = true
 tfp-icon-generator.workspace = true
-tfp-hex-viewer.workspace = true
 tfp-folder-compare.workspace = true
 tfp-json-query.workspace = true
 tfp-image-palette.workspace = true

@@ -143,5 +143,51 @@
       "entropy_start": "开始熵分析：块大小 {{block}} 字节，共 {{points}} 块",
       "entropy_done": "完成：整体熵 {{overall}}，{{regions}} 个高熵区段"
     }
+  },
+  "api": {
+    "open": {
+      "summary": "显示文件大小与识别出的类型",
+      "path": "要读取的文件"
+    },
+    "read": {
+      "summary": "以带偏移量与可打印字符的十六进制行显示字节",
+      "path": "要读取的文件",
+      "offset": "起始偏移（字节）",
+      "length": "读取的字节数，最多 1 MB"
+    },
+    "columns": {
+      "label": "偏移",
+      "hex": "十六进制",
+      "ascii": "文本",
+      "kind": "类型",
+      "value": "值"
+    },
+    "inspect": {
+      "summary": "把指定偏移处的字节解读为整数、浮点数、时间戳与文本",
+      "path": "要读取的文件",
+      "offset": "起始偏移（字节）",
+      "littleEndian": "多字节数值按小端序读取"
+    },
+    "find": {
+      "summary": "查找十六进制字节或文本的下一处或上一处出现位置",
+      "path": "要读取的文件",
+      "query": "十六进制字节（如 7F 45 4C 46）或文本",
+      "mode": "按十六进制字节还是文本查找",
+      "ignoreCase": "文本模式下忽略大小写",
+      "from": "开始查找的偏移",
+      "backward": "向前查找"
+    },
+    "copy": {
+      "summary": "把一段字节导出为十六进制、Base64、C 数组、Python 字节字面量或文本",
+      "path": "要读取的文件",
+      "offset": "起始偏移（字节）",
+      "length": "字节数，最多 1 MB",
+      "format": "输出格式"
+    },
+    "entropy": {
+      "summary": "按块计算熵，找出压缩或加密的区域",
+      "path": "要读取的文件",
+      "block": "块大小（字节），向上取到 2 的幂"
+    }
   }
 }

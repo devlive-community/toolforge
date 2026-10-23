@@ -1,0 +1,129 @@
+{
+  "id": "org.devlive.toolforge.hex-viewer",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["hex", "hexdump", "hex viewer", "hex editor", "binary", "bytes", "magic", "file signature", "xxd", "uuid", "varint", "entropy", "十六进制", "二进制", "字节", "文件头"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "functions": {
+    "open": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.open.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.open.path", "format": "path", "x-access": "read", "x-positional": 0 }
+          }
+        },
+        "examples": ["tfp-hex-viewer open app.bin"]
+      }
+    },
+    "read": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.read.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.read.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "offset": { "type": "integer", "description": "i18n:api.read.offset", "minimum": 0, "default": 0 },
+            "length": { "type": "integer", "description": "i18n:api.read.length", "minimum": 1, "maximum": 1048576, "default": 256 }
+          }
+        },
+        "output": { "table": "", "columns": [{ "key": "label", "label": "i18n:api.columns.label" }, { "key": "hex", "label": "i18n:api.columns.hex" }, { "key": "ascii", "label": "i18n:api.columns.ascii" }] },
+        "examples": ["tfp-hex-viewer read app.bin --offset 0x100 --length 64"]
+      }
+    },
+    "inspect": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.inspect.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.inspect.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "offset": { "type": "integer", "description": "i18n:api.inspect.offset", "minimum": 0, "default": 0 },
+            "littleEndian": { "type": "boolean", "description": "i18n:api.inspect.littleEndian", "default": true }
+          }
+        },
+        "output": { "table": "", "columns": [{ "key": "kind", "label": "i18n:api.columns.kind" }, { "key": "value", "label": "i18n:api.columns.value" }] },
+        "examples": ["tfp-hex-viewer inspect app.bin --offset 16"]
+      }
+    },
+    "find": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.find.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path", "query"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.find.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "query": { "type": "string", "description": "i18n:api.find.query", "x-positional": 1 },
+            "mode": { "type": "string", "description": "i18n:api.find.mode", "enum": ["hex", "text"], "default": "hex" },
+            "ignoreCase": { "type": "boolean", "description": "i18n:api.find.ignoreCase", "default": false },
+            "from": { "type": "integer", "description": "i18n:api.find.from", "minimum": 0, "default": 0 },
+            "backward": { "type": "boolean", "description": "i18n:api.find.backward", "default": false }
+          }
+        },
+        "examples": ["tfp-hex-viewer find app.bin '7F 45 4C 46'", "tfp-hex-viewer find app.bin PNG --mode text"]
+      }
+    },
+    "goto": { "interface": false },
+    "copy": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.copy.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path", "length", "format"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.copy.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "offset": { "type": "integer", "description": "i18n:api.copy.offset", "minimum": 0, "default": 0 },
+            "length": { "type": "integer", "description": "i18n:api.copy.length", "minimum": 1, "maximum": 1048576 },
+            "format": { "type": "string", "description": "i18n:api.copy.format", "enum": ["hex", "hexCompact", "base64", "c", "python", "text"], "default": "hex" }
+          }
+        },
+        "output": { "text": "/text" },
+        "examples": ["tfp-hex-viewer copy app.bin --offset 0 --length 16 --format c"]
+      }
+    },
+    "entropy": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.entropy.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.entropy.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "block": { "type": "integer", "description": "i18n:api.entropy.block", "minimum": 1, "default": 4096 }
+          }
+        },
+        "examples": ["tfp-hex-viewer entropy firmware.bin --block 65536"]
+      }
+    }
+  },
+  "sensitive": false
+}

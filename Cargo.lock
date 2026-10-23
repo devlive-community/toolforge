@@ -8921,6 +8921,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-hex-viewer"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "jiff",
+ "memchr",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+ "uuid",
+]
+
+[[package]]
 name = "tfm-http-cache"
 version = "0.1.0"
 dependencies = [
@@ -9651,19 +9665,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-hex-viewer"
-version = "0.1.0"
-dependencies = [
- "data-encoding",
- "jiff",
- "memchr",
- "serde",
- "serde_json",
- "tf-plugin-api",
- "uuid",
-]
-
-[[package]]
 name = "tfp-icon-generator"
 version = "0.1.0"
 dependencies = [
@@ -10282,7 +10283,6 @@ dependencies = [
  "tfp-duplicate-finder",
  "tfp-folder-compare",
  "tfp-hash",
- "tfp-hex-viewer",
  "tfp-icon-generator",
  "tfp-image-compressor",
  "tfp-image-info",

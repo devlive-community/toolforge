@@ -143,5 +143,51 @@
       "entropy_start": "Entropy analysis: {{block}}-byte blocks, {{points}} blocks",
       "entropy_done": "Done: overall entropy {{overall}}, {{regions}} high-entropy regions"
     }
+  },
+  "api": {
+    "open": {
+      "summary": "Show a file's size and detected type",
+      "path": "File to read"
+    },
+    "read": {
+      "summary": "Dump bytes as hex rows with offsets and printable characters",
+      "path": "File to read",
+      "offset": "Start offset in bytes",
+      "length": "Number of bytes, at most 1 MB"
+    },
+    "columns": {
+      "label": "Offset",
+      "hex": "Hex",
+      "ascii": "Text",
+      "kind": "Type",
+      "value": "Value"
+    },
+    "inspect": {
+      "summary": "Decode the bytes at an offset as integers, floats, timestamps and text",
+      "path": "File to read",
+      "offset": "Start offset in bytes",
+      "littleEndian": "Read multi-byte values as little-endian"
+    },
+    "find": {
+      "summary": "Find the next or previous occurrence of hex bytes or text",
+      "path": "File to read",
+      "query": "Hex bytes such as 7F 45 4C 46, or text",
+      "mode": "Treat the query as hex bytes or text",
+      "ignoreCase": "Ignore case in text mode",
+      "from": "Offset to search from",
+      "backward": "Search backward"
+    },
+    "copy": {
+      "summary": "Export a byte range as hex, Base64, a C array, a Python bytes literal or text",
+      "path": "File to read",
+      "offset": "Start offset in bytes",
+      "length": "Number of bytes, at most 1 MB",
+      "format": "Output format"
+    },
+    "entropy": {
+      "summary": "Measure entropy per block to spot compressed or encrypted regions",
+      "path": "File to read",
+      "block": "Block size in bytes, rounded up to a power of two"
+    }
   }
 }
