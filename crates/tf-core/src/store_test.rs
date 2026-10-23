@@ -358,3 +358,82 @@ fn download_outbox_migration_preserves_version_four_state() {
         1
     );
 }
+
+#[test]
+fn agent_grants_are_upserted_and_removed() {
+    let store = Store::open_in_memory().unwrap();
+    assert!(store.agent_grants().unwrap().is_empty());
+    let mut grant = AgentGrant {
+        plugin_id: "org.devlive.toolforge.hash".into(),
+        function: AGENT_PLUGIN_SCOPE.into(),
+        mode: "allow".into(),
+        uses: None,
+    };
+    store.agent_grant_set(&grant).unwrap();
+    grant.function = "hash_files".into();
+    grant.mode = "ask".into();
+    grant.uses = Some(vec!["fs:user-selected".into()]);
+    store.agent_grant_set(&grant).unwrap();
+    grant.mode = "off".into();
+    store.agent_grant_set(&grant).unwrap();
+
+    let grants = store.agent_grants().unwrap();
+    assert_eq!(grants.len(), 2);
+    assert_eq!(grants[0].function, AGENT_PLUGIN_SCOPE);
+    assert_eq!(grants[1].mode, "off");
+    assert_eq!(
+        grants[1].uses.as_deref(),
+        Some(&["fs:user-selected".to_owned()][..])
+    );
+
+    let bad = AgentGrant {
+        mode: "always".into(),
+        ..grant.clone()
+    };
+    assert!(
+        store.agent_grant_set(&bad).is_err(),
+        "unknown modes are rejected by the schema"
+    );
+
+    store
+        .agent_grant_remove(&grant.plugin_id, "hash_files")
+        .unwrap();
+    assert_eq!(store.agent_grants().unwrap().len(), 1);
+}
+
+#[test]
+fn agent_paths_are_upserted_and_removed() {
+    let store = Store::open_in_memory().unwrap();
+    let path = AgentPath {
+        path: "/work".into(),
+        access: "read".into(),
+    };
+    store.agent_path_set(&path).unwrap();
+    store
+        .agent_path_set(&AgentPath {
+            access: "write".into(),
+            ..path.clone()
+        })
+        .unwrap();
+    assert_eq!(
+        store.agent_paths().unwrap(),
+        [AgentPath {
+            path: "/work".into(),
+            access: "write".into()
+        }]
+    );
+    store.agent_path_remove("/work").unwrap();
+    assert!(store.agent_paths().unwrap().is_empty());
+}
+
+#[test]
+fn history_keeps_the_call_source() {
+    let store = Store::open_in_memory().unwrap();
+    store.history_record("p", "f", "from app", None, 1).unwrap();
+    store
+        .history_record_from("agent", "p", "f", "from agent", None, 2)
+        .unwrap();
+    let entries = store.history_list("", 10, 0).unwrap();
+    assert_eq!(entries[0].source, "agent");
+    assert_eq!(entries[1].source, "app");
+}

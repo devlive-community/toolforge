@@ -70,7 +70,47 @@ const MIGRATIONS: &[&str] = &[
     );
     CREATE INDEX plugin_download_outbox_due ON plugin_download_outbox(next_attempt_at);
 "#,
+    r#"
+    CREATE TABLE agent_grants (
+        plugin_id  TEXT NOT NULL,
+        function   TEXT NOT NULL,
+        mode       TEXT NOT NULL CHECK(mode IN ('off', 'ask', 'allow')),
+        uses       TEXT,
+        updated_at INTEGER NOT NULL,
+        PRIMARY KEY (plugin_id, function)
+    );
+    CREATE TABLE agent_paths (
+        path       TEXT PRIMARY KEY,
+        access     TEXT NOT NULL CHECK(access IN ('read', 'write')),
+        created_at INTEGER NOT NULL
+    );
+    ALTER TABLE history ADD COLUMN source TEXT NOT NULL DEFAULT 'app';
+"#,
 ];
+
+/// 插件级授权使用的函数名
+pub const AGENT_PLUGIN_SCOPE: &str = "*";
+
+/// AI Agent 授权：function 为 [`AGENT_PLUGIN_SCOPE`] 时是插件级开关
+#[derive(Debug, Clone, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct AgentGrant {
+    pub plugin_id: String,
+    pub function: String,
+    /// off / ask / allow
+    pub mode: String,
+    /// 授权时函数声明用到的权限；之后声明的权限变多时需要重新授权
+    pub uses: Option<Vec<String>>,
+}
+
+/// AI Agent 可以访问的目录
+#[derive(Debug, Clone, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct AgentPath {
+    pub path: String,
+    /// read / write（write 包含读取）
+    pub access: String,
+}
 
 /// 下载成功回报凭据只保存在本地 SQLite，不通过前端暴露，也不实现 Debug。
 #[derive(Clone, PartialEq)]
@@ -120,6 +160,8 @@ pub struct HistoryEntry {
     pub output: Option<String>,
     pub created_at: i64,
     pub updated_at: i64,
+    /// 调用来源：app / cli / agent
+    pub source: String,
 }
 
 pub fn now_millis() -> i64 {
@@ -142,6 +184,8 @@ impl Store {
     }
 
     fn init(mut conn: Connection) -> AppResult<Self> {
+        // 桌面端与命令行（tfp、MCP 服务）可能同时写入，遇到锁时等待而不是立即失败
+        conn.busy_timeout(std::time::Duration::from_secs(5))?;
         conn.pragma_update(None, "journal_mode", "WAL")?;
         conn.pragma_update(None, "foreign_keys", "ON")?;
         let version: i64 = conn.pragma_query_value(None, "user_version", |row| row.get(0))?;
@@ -420,13 +464,99 @@ impl Store {
         output: Option<&str>,
         now: i64,
     ) -> AppResult<i64> {
+        self.history_record_from("app", plugin_id, function, input, output, now)
+    }
+
+    /// 记录一次调用并标明来源（app / cli / agent）
+    pub fn history_record_from(
+        &self,
+        source: &str,
+        plugin_id: &str,
+        function: &str,
+        input: &str,
+        output: Option<&str>,
+        now: i64,
+    ) -> AppResult<i64> {
         let conn = self.conn();
         conn.execute(
-            "INSERT INTO history (plugin_id, function, input, output, created_at, updated_at)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?5)",
-            params![plugin_id, function, input, output, now],
+            "INSERT INTO history (plugin_id, function, input, output, created_at, updated_at, source)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?5, ?6)",
+            params![plugin_id, function, input, output, now, source],
         )?;
         Ok(conn.last_insert_rowid())
+    }
+
+    pub fn agent_grants(&self) -> AppResult<Vec<AgentGrant>> {
+        let conn = self.conn();
+        let mut stmt = conn.prepare(
+            "SELECT plugin_id, function, mode, uses FROM agent_grants ORDER BY plugin_id, function",
+        )?;
+        let rows = stmt.query_map([], |row| {
+            let uses: Option<String> = row.get(3)?;
+            Ok(AgentGrant {
+                plugin_id: row.get(0)?,
+                function: row.get(1)?,
+                mode: row.get(2)?,
+                uses: uses.and_then(|u| serde_json::from_str(&u).ok()),
+            })
+        })?;
+        Ok(rows.collect::<Result<_, _>>()?)
+    }
+
+    pub fn agent_grant_set(&self, grant: &AgentGrant) -> AppResult<()> {
+        let uses = grant
+            .uses
+            .as_ref()
+            .map(|u| serde_json::to_string(u).unwrap_or_default());
+        self.conn().execute(
+            "INSERT INTO agent_grants (plugin_id, function, mode, uses, updated_at)
+             VALUES (?1, ?2, ?3, ?4, ?5)
+             ON CONFLICT(plugin_id, function) DO UPDATE
+             SET mode = excluded.mode, uses = excluded.uses, updated_at = excluded.updated_at",
+            params![
+                grant.plugin_id,
+                grant.function,
+                grant.mode,
+                uses,
+                now_millis()
+            ],
+        )?;
+        Ok(())
+    }
+
+    pub fn agent_grant_remove(&self, plugin_id: &str, function: &str) -> AppResult<()> {
+        self.conn().execute(
+            "DELETE FROM agent_grants WHERE plugin_id = ?1 AND function = ?2",
+            params![plugin_id, function],
+        )?;
+        Ok(())
+    }
+
+    pub fn agent_paths(&self) -> AppResult<Vec<AgentPath>> {
+        let conn = self.conn();
+        let mut stmt = conn.prepare("SELECT path, access FROM agent_paths ORDER BY path")?;
+        let rows = stmt.query_map([], |row| {
+            Ok(AgentPath {
+                path: row.get(0)?,
+                access: row.get(1)?,
+            })
+        })?;
+        Ok(rows.collect::<Result<_, _>>()?)
+    }
+
+    pub fn agent_path_set(&self, path: &AgentPath) -> AppResult<()> {
+        self.conn().execute(
+            "INSERT INTO agent_paths (path, access, created_at) VALUES (?1, ?2, ?3)
+             ON CONFLICT(path) DO UPDATE SET access = excluded.access",
+            params![path.path, path.access, now_millis()],
+        )?;
+        Ok(())
+    }
+
+    pub fn agent_path_remove(&self, path: &str) -> AppResult<()> {
+        self.conn()
+            .execute("DELETE FROM agent_paths WHERE path = ?1", [path])?;
+        Ok(())
     }
 
     /// 按更新时间倒序列出记录；query 匹配输入、输出或插件 id
@@ -445,7 +575,7 @@ impl Store {
                 .replace('_', "\\_")
         );
         let mut stmt = conn.prepare(
-            "SELECT id, plugin_id, function, input, output, created_at, updated_at FROM history
+            "SELECT id, plugin_id, function, input, output, created_at, updated_at, source FROM history
              WHERE ?1 = '' OR input LIKE ?2 ESCAPE '\\' OR output LIKE ?2 ESCAPE '\\' OR plugin_id LIKE ?2 ESCAPE '\\'
              ORDER BY updated_at DESC, id DESC LIMIT ?3 OFFSET ?4",
         )?;
@@ -460,6 +590,7 @@ impl Store {
                     output: row.get(4)?,
                     created_at: row.get(5)?,
                     updated_at: row.get(6)?,
+                    source: row.get(7)?,
                 })
             },
         )?;
