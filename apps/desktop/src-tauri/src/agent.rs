@@ -4,8 +4,8 @@
 use serde::Serialize;
 use serde_json::{Value, json};
 use tauri::State;
-use tf_core::store::AGENT_PLUGIN_SCOPE;
-use tf_core::{AgentGrant, AgentPath, AppError, AppResult};
+use tf_core::store::PLUGIN_SCOPE;
+use tf_core::{AgentPath, AppError, AppResult, InterfaceGrant};
 use tf_host::agent::{ENABLED_KEY, Mode, Policy};
 use tf_host::cli_links;
 use tf_plugin_api::Manifest;
@@ -109,7 +109,7 @@ fn agent_interface(manifest: &Manifest, function: &str) -> Option<Interface> {
 
 pub fn overview(state: &AppState) -> AppResult<AgentOverview> {
     let policy = Policy::load(&state.store)?;
-    let grants = state.store.agent_grants()?;
+    let grants = state.store.interface_grants(tf_host::agent::CHANNEL)?;
     let mut plugins: Vec<AgentPlugin> = Vec::new();
     for manifest in state.plugins.manifests() {
         let native = state.builtin.contains(&manifest.id);
@@ -198,17 +198,19 @@ pub fn agent_set_plugin(
     enabled: bool,
 ) -> AppResult<AgentOverview> {
     state.plugins.get(&plugin_id)?;
+    // 插件默认开启：开启即删除关闭记录
     if enabled {
-        state.store.agent_grant_set(&AgentGrant {
-            plugin_id,
-            function: AGENT_PLUGIN_SCOPE.to_owned(),
-            mode: Mode::Allow.as_str().to_owned(),
-            uses: None,
-        })?;
-    } else {
         state
             .store
-            .agent_grant_remove(&plugin_id, AGENT_PLUGIN_SCOPE)?;
+            .interface_grant_remove(tf_host::agent::CHANNEL, &plugin_id, PLUGIN_SCOPE)?;
+    } else {
+        state.store.interface_grant_set(&InterfaceGrant {
+            channel: tf_host::agent::CHANNEL.to_owned(),
+            plugin_id,
+            function: PLUGIN_SCOPE.to_owned(),
+            mode: Mode::Off.as_str().to_owned(),
+            uses: None,
+        })?;
     }
     overview(&state)
 }
@@ -226,10 +228,15 @@ pub fn agent_set_function(
         AppError::new("plugin.function_not_found").with("function", function.as_str())
     })?;
     match mode {
-        None => state.store.agent_grant_remove(&plugin_id, &function)?,
+        None => {
+            state
+                .store
+                .interface_grant_remove(tf_host::agent::CHANNEL, &plugin_id, &function)?
+        }
         Some(mode) => {
             let mode = Mode::parse(&mode).ok_or_else(|| AppError::new("agent.invalid_mode"))?;
-            state.store.agent_grant_set(&AgentGrant {
+            state.store.interface_grant_set(&InterfaceGrant {
+                channel: tf_host::agent::CHANNEL.to_owned(),
                 plugin_id,
                 function,
                 mode: mode.as_str().to_owned(),

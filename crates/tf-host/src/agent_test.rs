@@ -16,8 +16,9 @@ fn interface(effect: &str, uses: &[&str], confirm: bool) -> Interface {
     .unwrap()
 }
 
-fn grant(function: &str, mode: &str, uses: Option<&[&str]>) -> AgentGrant {
-    AgentGrant {
+fn grant(function: &str, mode: &str, uses: Option<&[&str]>) -> InterfaceGrant {
+    InterfaceGrant {
+        channel: CHANNEL.into(),
         plugin_id: PLUGIN.into(),
         function: function.into(),
         mode: mode.into(),
@@ -25,21 +26,24 @@ fn grant(function: &str, mode: &str, uses: Option<&[&str]>) -> AgentGrant {
     }
 }
 
-fn policy(grants: Vec<AgentGrant>, paths: &[AgentPath]) -> Policy {
-    let mut all = vec![grant(AGENT_PLUGIN_SCOPE, "allow", None)];
-    all.extend(grants);
-    Policy::new(true, all, paths)
+fn policy(grants: Vec<InterfaceGrant>, paths: &[AgentPath]) -> Policy {
+    Policy::new(true, grants, paths)
 }
 
 #[test]
 fn global_switch_and_plugin_switch_come_first() {
     let read = interface("read", &[], false);
-    let off = Policy::new(false, vec![grant(AGENT_PLUGIN_SCOPE, "allow", None)], &[]);
+    let off = Policy::new(false, vec![grant(PLUGIN_SCOPE, "allow", None)], &[]);
     assert_eq!(
         off.decide(PLUGIN, "f", &read, false, &[]),
         Decision::Deny(AppError::new("agent.disabled"))
     );
-    let no_plugin = Policy::new(true, Vec::new(), &[]);
+    let on_by_default = Policy::new(true, Vec::new(), &[]);
+    assert!(
+        on_by_default.plugin_enabled(PLUGIN),
+        "plugins are enabled until the user turns them off"
+    );
+    let no_plugin = Policy::new(true, vec![grant(PLUGIN_SCOPE, "off", None)], &[]);
     assert!(
         matches!(no_plugin.decide(PLUGIN, "f", &read, false, &[]), Decision::Deny(e) if e.code == "agent.plugin_off")
     );
@@ -192,10 +196,10 @@ fn loads_from_the_store() {
     );
     store.kv_set(ENABLED_KEY, &json!(true)).unwrap();
     store
-        .agent_grant_set(&grant(AGENT_PLUGIN_SCOPE, "allow", None))
+        .interface_grant_set(&grant(PLUGIN_SCOPE, "off", None))
         .unwrap();
     let policy = Policy::load(&store).unwrap();
-    assert!(policy.enabled() && policy.plugin_enabled(PLUGIN));
+    assert!(policy.enabled() && !policy.plugin_enabled(PLUGIN));
 }
 
 #[test]

@@ -1,6 +1,7 @@
 //! 桌面端与命令行共用的宿主能力：已安装插件的读取、加载与版本校验，命令行入口链接。
 
 pub mod agent;
+pub mod cli_access;
 pub mod cli_links;
 pub mod history;
 pub mod installed;

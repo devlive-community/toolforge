@@ -13,5 +13,5 @@ pub use applog::AppLog;
 pub use error::{AppError, AppResult};
 pub use registry::{PluginRegistry, Suggestion, preview};
 pub use resources::{ResourceStatus, Resources};
-pub use store::{AgentGrant, AgentPath, HistoryEntry, Store, TaskRecord};
+pub use store::{AgentPath, HistoryEntry, InterfaceGrant, Store, TaskRecord};
 pub use task::{EventSink, LogLine, TaskEvent, TaskManager, TaskRunner, TaskStatus};

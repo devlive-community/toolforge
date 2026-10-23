@@ -1,8 +1,8 @@
 use std::io::Cursor;
 use std::time::Duration;
 
-use tf_core::store::AGENT_PLUGIN_SCOPE;
-use tf_core::{AgentGrant, AgentPath};
+use tf_core::store::PLUGIN_SCOPE;
+use tf_core::{AgentPath, InterfaceGrant};
 
 use super::*;
 use crate::builtin;
@@ -53,15 +53,17 @@ fn store(enabled: bool, paths: &[AgentPath]) -> Store {
         .kv_set(tf_host::agent::ENABLED_KEY, &json!(enabled))
         .unwrap();
     store
-        .agent_grant_set(&AgentGrant {
+        .interface_grant_set(&InterfaceGrant {
+            channel: "agent".into(),
             plugin_id: HASH.into(),
-            function: AGENT_PLUGIN_SCOPE.into(),
+            function: PLUGIN_SCOPE.into(),
             mode: "allow".into(),
             uses: None,
         })
         .unwrap();
     store
-        .agent_grant_set(&AgentGrant {
+        .interface_grant_set(&InterfaceGrant {
+            channel: "agent".into(),
             plugin_id: HASH.into(),
             function: "manifest_create".into(),
             mode: "off".into(),

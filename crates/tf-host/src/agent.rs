@@ -1,7 +1,7 @@
 //! AI Agent 授权判断。插件作者在 manifest 的接口声明里给出上限（开放给 agent 的函数、副作用、
 //! 用到的权限、是否每次确认），用户在 ToolForge 设置里授权，结果不会超出声明。
 //!
-//! - 总开关关闭、插件未开启、函数被关闭 → 拒绝
+//! - 总开关关闭（默认）、插件或函数被用户关闭 → 拒绝；插件默认开启
 //! - 函数没有单独设置时：只读函数允许，写入与对外操作每次确认
 //! - 声明了 confirm、声明的权限比授权时多、或原生内置插件用到文件权限（不在沙箱里，
 //!   无法限制它直接读写的路径）→ 最多到每次确认
@@ -11,12 +11,14 @@ use std::path::{Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use tf_core::store::AGENT_PLUGIN_SCOPE;
-use tf_core::{AgentGrant, AgentPath, AppError, AppResult, Store};
+use tf_core::store::PLUGIN_SCOPE;
+use tf_core::{AgentPath, AppError, AppResult, InterfaceGrant, Store};
 use tf_plugin_api::interface::{Effect, Interface};
 
 /// 总开关在 kv 中的键
 pub const ENABLED_KEY: &str = "agent.enabled";
+/// 授权表中的通道名
+pub const CHANNEL: &str = "agent";
 const FS_PERMISSION: &str = "fs:user-selected";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -63,14 +65,14 @@ pub struct Root {
 
 pub struct Policy {
     enabled: bool,
-    grants: Vec<AgentGrant>,
+    grants: Vec<InterfaceGrant>,
     roots: Vec<Root>,
 }
 
 pub use tf_wasm::normalize_path as normalize;
 
 impl Policy {
-    pub fn new(enabled: bool, grants: Vec<AgentGrant>, paths: &[AgentPath]) -> Self {
+    pub fn new(enabled: bool, grants: Vec<InterfaceGrant>, paths: &[AgentPath]) -> Self {
         let roots = paths
             .iter()
             .filter_map(|p| {
@@ -94,7 +96,7 @@ impl Policy {
             .unwrap_or(false);
         Ok(Self::new(
             enabled,
-            store.agent_grants()?,
+            store.interface_grants(CHANNEL)?,
             &store.agent_paths()?,
         ))
     }
@@ -103,15 +105,16 @@ impl Policy {
         self.enabled
     }
 
-    fn grant(&self, plugin_id: &str, function: &str) -> Option<&AgentGrant> {
+    fn grant(&self, plugin_id: &str, function: &str) -> Option<&InterfaceGrant> {
         self.grants
             .iter()
             .find(|g| g.plugin_id == plugin_id && g.function == function)
     }
 
+    /// 插件默认开启，用户关闭后为 false
     pub fn plugin_enabled(&self, plugin_id: &str) -> bool {
-        self.grant(plugin_id, AGENT_PLUGIN_SCOPE)
-            .is_some_and(|g| Mode::parse(&g.mode) == Some(Mode::Allow))
+        self.grant(plugin_id, PLUGIN_SCOPE)
+            .is_none_or(|g| Mode::parse(&g.mode) != Some(Mode::Off))
     }
 
     /// 函数的有效模式；native 表示原生内置插件（不在 WASM 沙箱中）

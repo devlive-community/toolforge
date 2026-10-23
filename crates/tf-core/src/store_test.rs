@@ -360,45 +360,92 @@ fn download_outbox_migration_preserves_version_four_state() {
 }
 
 #[test]
-fn agent_grants_are_upserted_and_removed() {
+fn interface_grants_are_kept_per_channel() {
     let store = Store::open_in_memory().unwrap();
-    assert!(store.agent_grants().unwrap().is_empty());
-    let mut grant = AgentGrant {
+    assert!(store.interface_grants("agent").unwrap().is_empty());
+    let mut grant = InterfaceGrant {
+        channel: "agent".into(),
         plugin_id: "org.devlive.toolforge.hash".into(),
-        function: AGENT_PLUGIN_SCOPE.into(),
-        mode: "allow".into(),
+        function: PLUGIN_SCOPE.into(),
+        mode: "off".into(),
         uses: None,
     };
-    store.agent_grant_set(&grant).unwrap();
+    store.interface_grant_set(&grant).unwrap();
     grant.function = "hash_files".into();
     grant.mode = "ask".into();
     grant.uses = Some(vec!["fs:user-selected".into()]);
-    store.agent_grant_set(&grant).unwrap();
-    grant.mode = "off".into();
-    store.agent_grant_set(&grant).unwrap();
+    store.interface_grant_set(&grant).unwrap();
+    grant.mode = "allow".into();
+    store.interface_grant_set(&grant).unwrap();
+    let cli = InterfaceGrant {
+        channel: "cli".into(),
+        mode: "off".into(),
+        ..grant.clone()
+    };
+    store.interface_grant_set(&cli).unwrap();
 
-    let grants = store.agent_grants().unwrap();
+    let grants = store.interface_grants("agent").unwrap();
     assert_eq!(grants.len(), 2);
-    assert_eq!(grants[0].function, AGENT_PLUGIN_SCOPE);
-    assert_eq!(grants[1].mode, "off");
+    assert_eq!(grants[0].function, PLUGIN_SCOPE);
+    assert_eq!(grants[1].mode, "allow");
     assert_eq!(
         grants[1].uses.as_deref(),
         Some(&["fs:user-selected".to_owned()][..])
     );
+    assert_eq!(store.interface_grants("cli").unwrap(), std::slice::from_ref(&cli));
 
-    let bad = AgentGrant {
+    let bad = InterfaceGrant {
         mode: "always".into(),
         ..grant.clone()
     };
     assert!(
-        store.agent_grant_set(&bad).is_err(),
+        store.interface_grant_set(&bad).is_err(),
         "unknown modes are rejected by the schema"
+    );
+    let bad = InterfaceGrant {
+        channel: "web".into(),
+        ..grant.clone()
+    };
+    assert!(
+        store.interface_grant_set(&bad).is_err(),
+        "unknown channels are rejected by the schema"
     );
 
     store
-        .agent_grant_remove(&grant.plugin_id, "hash_files")
+        .interface_grant_remove("agent", &grant.plugin_id, "hash_files")
         .unwrap();
-    assert_eq!(store.agent_grants().unwrap().len(), 1);
+    assert_eq!(store.interface_grants("agent").unwrap().len(), 1);
+    assert_eq!(store.interface_grants("cli").unwrap().len(), 1);
+}
+
+/// 第 6 步建的 agent_grants 在第 7 步迁移为 agent 通道的设置
+#[test]
+fn migrates_agent_grants_into_interface_grants() {
+    let path = std::env::temp_dir().join(format!("tf-store-grants-{}.db", std::process::id()));
+    let _ = std::fs::remove_file(&path);
+    {
+        let mut conn = Connection::open(&path).unwrap();
+        let tx = conn.transaction().unwrap();
+        for sql in &MIGRATIONS[..6] {
+            tx.execute_batch(sql).unwrap();
+        }
+        tx.pragma_update(None, "user_version", 6).unwrap();
+        tx.execute(
+            "INSERT INTO agent_grants VALUES ('p', '*', 'allow', NULL, 1)",
+            [],
+        )
+        .unwrap();
+        tx.commit().unwrap();
+    }
+    let store = Store::open(&path).unwrap();
+    let grants = store.interface_grants("agent").unwrap();
+    assert_eq!(grants.len(), 1);
+    assert_eq!(
+        (grants[0].plugin_id.as_str(), grants[0].mode.as_str()),
+        ("p", "allow")
+    );
+    drop(store);
+    let _ = std::fs::remove_file(&path);
 }
 
 #[test]

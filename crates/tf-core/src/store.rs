@@ -86,15 +86,32 @@ const MIGRATIONS: &[&str] = &[
     );
     ALTER TABLE history ADD COLUMN source TEXT NOT NULL DEFAULT 'app';
 "#,
+    // 授权按通道（命令行 / AI Agent）区分；没有记录时插件与函数默认开启
+    r#"
+    CREATE TABLE interface_grants (
+        channel    TEXT NOT NULL CHECK(channel IN ('cli', 'agent')),
+        plugin_id  TEXT NOT NULL,
+        function   TEXT NOT NULL,
+        mode       TEXT NOT NULL CHECK(mode IN ('off', 'ask', 'allow')),
+        uses       TEXT,
+        updated_at INTEGER NOT NULL,
+        PRIMARY KEY (channel, plugin_id, function)
+    );
+    INSERT INTO interface_grants (channel, plugin_id, function, mode, uses, updated_at)
+        SELECT 'agent', plugin_id, function, mode, uses, updated_at FROM agent_grants;
+    DROP TABLE agent_grants;
+"#,
 ];
 
-/// 插件级授权使用的函数名
-pub const AGENT_PLUGIN_SCOPE: &str = "*";
+/// 插件级设置使用的函数名
+pub const PLUGIN_SCOPE: &str = "*";
 
-/// AI Agent 授权：function 为 [`AGENT_PLUGIN_SCOPE`] 时是插件级开关
+/// 插件接口的调用设置：channel 为 cli / agent；function 为 [`PLUGIN_SCOPE`] 时是插件级开关。
+/// 没有记录时插件与函数默认开启
 #[derive(Debug, Clone, Serialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
-pub struct AgentGrant {
+pub struct InterfaceGrant {
+    pub channel: String,
     pub plugin_id: String,
     pub function: String,
     /// off / ask / allow
@@ -486,34 +503,38 @@ impl Store {
         Ok(conn.last_insert_rowid())
     }
 
-    pub fn agent_grants(&self) -> AppResult<Vec<AgentGrant>> {
+    /// 某个通道（cli / agent）的全部设置
+    pub fn interface_grants(&self, channel: &str) -> AppResult<Vec<InterfaceGrant>> {
         let conn = self.conn();
         let mut stmt = conn.prepare(
-            "SELECT plugin_id, function, mode, uses FROM agent_grants ORDER BY plugin_id, function",
+            "SELECT channel, plugin_id, function, mode, uses FROM interface_grants
+             WHERE channel = ?1 ORDER BY plugin_id, function",
         )?;
-        let rows = stmt.query_map([], |row| {
-            let uses: Option<String> = row.get(3)?;
-            Ok(AgentGrant {
-                plugin_id: row.get(0)?,
-                function: row.get(1)?,
-                mode: row.get(2)?,
+        let rows = stmt.query_map([channel], |row| {
+            let uses: Option<String> = row.get(4)?;
+            Ok(InterfaceGrant {
+                channel: row.get(0)?,
+                plugin_id: row.get(1)?,
+                function: row.get(2)?,
+                mode: row.get(3)?,
                 uses: uses.and_then(|u| serde_json::from_str(&u).ok()),
             })
         })?;
         Ok(rows.collect::<Result<_, _>>()?)
     }
 
-    pub fn agent_grant_set(&self, grant: &AgentGrant) -> AppResult<()> {
+    pub fn interface_grant_set(&self, grant: &InterfaceGrant) -> AppResult<()> {
         let uses = grant
             .uses
             .as_ref()
             .map(|u| serde_json::to_string(u).unwrap_or_default());
         self.conn().execute(
-            "INSERT INTO agent_grants (plugin_id, function, mode, uses, updated_at)
-             VALUES (?1, ?2, ?3, ?4, ?5)
-             ON CONFLICT(plugin_id, function) DO UPDATE
+            "INSERT INTO interface_grants (channel, plugin_id, function, mode, uses, updated_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+             ON CONFLICT(channel, plugin_id, function) DO UPDATE
              SET mode = excluded.mode, uses = excluded.uses, updated_at = excluded.updated_at",
             params![
+                grant.channel,
                 grant.plugin_id,
                 grant.function,
                 grant.mode,
@@ -524,10 +545,15 @@ impl Store {
         Ok(())
     }
 
-    pub fn agent_grant_remove(&self, plugin_id: &str, function: &str) -> AppResult<()> {
+    pub fn interface_grant_remove(
+        &self,
+        channel: &str,
+        plugin_id: &str,
+        function: &str,
+    ) -> AppResult<()> {
         self.conn().execute(
-            "DELETE FROM agent_grants WHERE plugin_id = ?1 AND function = ?2",
-            params![plugin_id, function],
+            "DELETE FROM interface_grants WHERE channel = ?1 AND plugin_id = ?2 AND function = ?3",
+            params![channel, plugin_id, function],
         )?;
         Ok(())
     }
