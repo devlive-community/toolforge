@@ -20,6 +20,7 @@ var contentTypes = map[string]string{
 	".html": "text/html; charset=utf-8",
 	".css":  "text/css; charset=utf-8",
 	".js":   "text/javascript; charset=utf-8",
+	".png":  "image/png",
 }
 
 func serve(w http.ResponseWriter, name, cache string) {
@@ -40,10 +41,10 @@ func Index(w http.ResponseWriter, _ *http.Request) {
 	serve(w, "index.html", "no-cache")
 }
 
-// Asset serves the dashboard script and stylesheet.
+// Asset serves the dashboard script, stylesheet and logo.
 func Asset(w http.ResponseWriter, r *http.Request) {
 	name := r.PathValue("file")
-	if name != "dashboard.js" && name != "dashboard.css" {
+	if name != "dashboard.js" && name != "dashboard.css" && name != "logo.png" {
 		http.NotFound(w, r)
 		return
 	}
