@@ -36,6 +36,8 @@ impl ToolPlugin for Password {
     }
 }
 
+tf_plugin_guest::export_plugin!(Password);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

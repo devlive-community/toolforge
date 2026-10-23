@@ -18,3 +18,10 @@ fn dispatches_functions() {
     assert_eq!(report["score"], 0);
     assert!(tool.manifest().sensitive);
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&Password::default()).unwrap();
+    assert_eq!(checked, 3);
+}

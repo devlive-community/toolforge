@@ -114,5 +114,32 @@
       "random": "Random per word"
     },
     "appendDigit": "Append a digit"
+  },
+  "api": {
+    "generate": {
+      "summary": "Generate random passwords from the chosen character classes",
+      "length": "Password length",
+      "count": "How many passwords",
+      "upper": "Include uppercase letters",
+      "lower": "Include lowercase letters",
+      "digits": "Include digits",
+      "symbols": "Include symbols",
+      "excludeAmbiguous": "Leave out look-alike characters such as 0/O and 1/l",
+      "exclude": "Characters to leave out",
+      "requireEach": "Use every selected class at least once"
+    },
+    "passphrase": {
+      "summary": "Generate passphrases from a word list",
+      "words": "Words per passphrase",
+      "count": "How many passphrases",
+      "wordlist": "Word list: English or Chinese pinyin",
+      "separator": "Separator between words",
+      "case": "Letter case of the words",
+      "appendDigit": "Append a random digit"
+    },
+    "analyze": {
+      "summary": "Estimate the strength of a password",
+      "password": "Password to check"
+    }
   }
 }

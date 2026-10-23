@@ -114,5 +114,32 @@
       "random": "每个词随机大小写"
     },
     "appendDigit": "追加一位数字"
+  },
+  "api": {
+    "generate": {
+      "summary": "按选定的字符类别生成随机密码",
+      "length": "密码长度",
+      "count": "生成的个数",
+      "upper": "包含大写字母",
+      "lower": "包含小写字母",
+      "digits": "包含数字",
+      "symbols": "包含符号",
+      "excludeAmbiguous": "排除易混淆字符，如 0/O、1/l",
+      "exclude": "要排除的字符",
+      "requireEach": "每种选中的字符类别至少出现一次"
+    },
+    "passphrase": {
+      "summary": "从词表生成口令短语",
+      "words": "每个短语的单词数",
+      "count": "生成的个数",
+      "wordlist": "词表：英文或中文拼音",
+      "separator": "单词之间的分隔符",
+      "case": "单词的大小写",
+      "appendDigit": "末尾追加一位随机数字"
+    },
+    "analyze": {
+      "summary": "评估密码强度",
+      "password": "要检查的密码"
+    }
   }
 }

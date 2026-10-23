@@ -1,0 +1,75 @@
+{
+  "id": "org.devlive.toolforge.password",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "encode",
+  "keywords": ["password", "generator", "random", "strength", "entropy", "passphrase", "diceware", "密码短语", "密码", "随机", "强度", "生成"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "generate": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.generate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "length": { "type": "integer", "description": "i18n:api.generate.length", "minimum": 1, "maximum": 256, "default": 16 },
+            "count": { "type": "integer", "description": "i18n:api.generate.count", "minimum": 1, "maximum": 500, "default": 1 },
+            "upper": { "type": "boolean", "description": "i18n:api.generate.upper", "default": true },
+            "lower": { "type": "boolean", "description": "i18n:api.generate.lower", "default": true },
+            "digits": { "type": "boolean", "description": "i18n:api.generate.digits", "default": true },
+            "symbols": { "type": "boolean", "description": "i18n:api.generate.symbols", "default": false },
+            "excludeAmbiguous": { "type": "boolean", "description": "i18n:api.generate.excludeAmbiguous", "default": false },
+            "exclude": { "type": "string", "description": "i18n:api.generate.exclude" },
+            "requireEach": { "type": "boolean", "description": "i18n:api.generate.requireEach", "default": true }
+          }
+        },
+        "output": { "text": "/passwords" },
+        "examples": ["tfp-password generate --length 24 --symbols --count 3"]
+      }
+    },
+    "passphrase": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.passphrase.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "words": { "type": "integer", "description": "i18n:api.passphrase.words", "minimum": 3, "maximum": 20, "default": 6 },
+            "count": { "type": "integer", "description": "i18n:api.passphrase.count", "minimum": 1, "maximum": 500, "default": 1 },
+            "wordlist": { "type": "string", "description": "i18n:api.passphrase.wordlist", "enum": ["en", "zh"], "default": "en" },
+            "separator": { "type": "string", "description": "i18n:api.passphrase.separator", "default": "-" },
+            "case": { "type": "string", "description": "i18n:api.passphrase.case", "enum": ["lower", "upper", "title", "random"], "default": "lower" },
+            "appendDigit": { "type": "boolean", "description": "i18n:api.passphrase.appendDigit", "default": false }
+          }
+        },
+        "output": { "text": "/passwords" },
+        "examples": ["tfp-password passphrase --words 5 --case title"]
+      }
+    },
+    "analyze": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.analyze.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["password"],
+          "properties": {
+            "password": { "type": "string", "description": "i18n:api.analyze.password", "x-positional": 0, "x-stdin": true, "x-sensitive": true }
+          }
+        },
+        "examples": ["printf %s 'correct horse' | tfp-password analyze"]
+      }
+    }
+  },
+  "sensitive": true
+}

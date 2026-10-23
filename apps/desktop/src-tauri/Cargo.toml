@@ -56,7 +56,6 @@ tfp-local-server.workspace = true
 tfp-log-viewer.workspace = true
 tfp-mock-data.workspace = true
 tfp-ocr.workspace = true
-tfp-password.workspace = true
 tfp-pdf.workspace = true
 tfp-text-encoding.workspace = true
 tfp-icon-generator.workspace = true

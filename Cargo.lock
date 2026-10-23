@@ -9111,6 +9111,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-password"
+version = "0.1.0"
+dependencies = [
+ "rand 0.10.3",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-pg-plan-analyzer"
 version = "0.1.0"
 dependencies = [
@@ -9670,16 +9681,6 @@ dependencies = [
  "serde_json",
  "tf-plugin-api",
  "tract-onnx",
-]
-
-[[package]]
-name = "tfp-password"
-version = "0.1.0"
-dependencies = [
- "rand 0.10.3",
- "serde",
- "serde_json",
- "tf-plugin-api",
 ]
 
 [[package]]
@@ -10283,7 +10284,6 @@ dependencies = [
  "tfp-log-viewer",
  "tfp-mock-data",
  "tfp-ocr",
- "tfp-password",
  "tfp-pdf",
  "tfp-port-manager",
  "tfp-proxy-inspector",
