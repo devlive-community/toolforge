@@ -1,0 +1,216 @@
+{
+  "name": "Plant Care Journal",
+  "description": "Record actual care and growth photos for each pot, with schedules you set yourself.",
+  "locale": "en-US",
+  "overview": "{{today}} · {{overdue}} overdue · {{due}} today",
+  "storage": "Local SQLite · {{photos}}/40 photos · {{records}}/5000 records · {{bytes}} B / 2 MiB",
+  "common": {
+    "arrow": "→",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back to gallery"
+  },
+  "panes": {
+    "label": "Page section",
+    "plants": "Plants",
+    "journal": "Journal"
+  },
+  "plants": {
+    "title": "My plants",
+    "search": "Name, variety or location",
+    "find": "Find",
+    "filter": "Plant filter",
+    "unnamedLocation": "Location not set",
+    "empty": "No matching plants",
+    "add": "Add plant",
+    "edit": "Edit plant profile",
+    "archive": "Archive plant",
+    "unarchive": "Unarchive plant",
+    "delete": "Delete plant and records"
+  },
+  "filter": {
+    "active": "Active",
+    "archived": "Archived",
+    "all": "All"
+  },
+  "journal": {
+    "title": "Start with one plant",
+    "todayTitle": "Which plants need a check?"
+  },
+  "form": {
+    "plant": "Create a plant profile",
+    "editPlant": "Edit plant profile",
+    "plan": "Add a personal care plan",
+    "editPlan": "Adjust a plan and preview the next date",
+    "complete": "Record actual care",
+    "postpone": "Postpone this occurrence",
+    "photo": "Add a growth photo",
+    "preview": "Preview next date",
+    "confirmSave": "Confirm and save plan",
+    "previewResult": "Previous due date → next date after this edit"
+  },
+  "hint": {
+    "plant": "Plants of the same variety or name keep separate records.",
+    "editPlant": "Rename or relocate this pot without transferring records to another plant.",
+    "plan": "You choose the task and interval. This is a personal check schedule, not care advice. The first date is used until care is recorded.",
+    "editPlan": "Next date uses the latest valid actual date plus the new interval, or the first date if there are no records. Changing either schedule field clears postponement. Preview before saving.",
+    "complete": "Confirm the actual date and note. Backdated entries do not replace newer actual care. Check what is needed; an overdue item does not imply repeated actions.",
+    "postpone": "Postponing is not completion and creates no care record. Choose today or later, after the base due date. Actual completion starts the next interval.",
+    "photo": "Choose the photo’s actual date and your note. Future dates are not accepted as past growth records."
+  },
+  "fields": {
+    "name": "Nickname / task name (required)",
+    "variety": "Variety notes",
+    "location": "Location",
+    "note": "Note (up to 1000 characters)",
+    "date": "Actual / occurrence date",
+    "first": "First planned date",
+    "interval": "Interval in days (1–3650)"
+  },
+  "status": {
+    "overdue": "Overdue",
+    "today": "Check today",
+    "upcoming": "Upcoming",
+    "paused": "Paused / archived"
+  },
+  "care": {
+    "due": "Due: {{date}}",
+    "interval": "Every {{n}} days",
+    "last": "Latest actual care: {{date}}",
+    "never": "No records yet",
+    "original": "Base date: {{date}}",
+    "complete": "Complete / backfill",
+    "postpone": "Postpone",
+    "clearPostpone": "Clear postponement",
+    "edit": "Edit and preview plan",
+    "pause": "Pause plan",
+    "resume": "Resume plan",
+    "add": "Add care task",
+    "empty": "No care items to show",
+    "emptyHint": "Today shows due items for active plants and plans. Add your own intervals in a plant’s care plans."
+  },
+  "tabs": {
+    "label": "Journal view",
+    "today": "Today",
+    "plans": "Care plans",
+    "timeline": "Timeline",
+    "gallery": "Gallery"
+  },
+  "timeline": {
+    "photo": "Growth photo",
+    "voided": "Voided, excluded from schedule",
+    "completed": "Actual care",
+    "restore": "Reinstate",
+    "undo": "Void entry",
+    "empty": "Actual care and photos will appear here by date."
+  },
+  "photos": {
+    "files": "Your photos (PNG/JPEG/WebP)",
+    "alt": "Growth photo from {{date}}",
+    "policy": "Saves an independent compressed JPEG copy: up to 960 pixels per edge and 48 KiB per photo. Transparency becomes white; original resolution and EXIF are not retained. The original file can move. Photos and records share 2 MiB.",
+    "normalized": "These are the compressed copies saved at import, independent of the original paths.",
+    "selectHint": "Select one to view, or two to compare by date.",
+    "compare": "View / compare ({{n}})",
+    "add": "Add photo",
+    "select": "Select photo from {{date}}",
+    "cover": "Set as plant cover",
+    "delete": "Delete photo",
+    "comparison": "Growth comparison",
+    "empty": "No growth photos yet"
+  },
+  "files": {
+    "json": "Export JSON backup with photos",
+    "markdown": "Export Markdown journal",
+    "restore": "Restore the garden from JSON",
+    "saved": "File saved"
+  },
+  "confirm": {
+    "deletePlant": "Delete this plant and all its data?",
+    "deletePlantHint": "Plans, actual care and photos will be deleted without undo. Export JSON first. Archive instead to remove the plant only from due views.",
+    "removePhoto": "Delete this growth photo?",
+    "removePhotoHint": "Deletes the stored copy without modifying the original file. Its cover reference is also cleared. Consider backing up first.",
+    "void": "Void / reinstate this actual record?",
+    "voidHint": "Voiding preserves the record but excludes it; reinstating includes it again. The latest valid actual date determines the next due date. A changed base clears postponement.",
+    "archive": "Archive / unarchive this plant?",
+    "archiveHint": "Archiving removes it from due views while retaining history and photos. Unarchiving resumes the original schedule without inventing completion.",
+    "restore": "Replace the entire garden with this backup?",
+    "restoreHint": "Replaces plants, plans, records and photos. Export your current JSON first. The file is validated in Rust; a failed save keeps existing data."
+  },
+  "actions": {
+    "refresh": "Refresh local calendar day"
+  },
+  "save": {
+    "loading": "Loading garden…",
+    "previewing": "Previewing next date…",
+    "saving": "Saving to ToolForge database…",
+    "saved": "Saved locally, ready to resume",
+    "ready": "Due view while open; no wake-up reminders when closed",
+    "error": "Operation not completed",
+    "failed": "Save failed. Previously saved data remains intact.",
+    "retry": "Retry save / load"
+  },
+  "page": {
+    "prev": "Previous",
+    "next": "Next",
+    "number": "Page {{n}}",
+    "total": "{{n}} records"
+  },
+  "logs": {
+    "title": "Task log",
+    "empty": "No task messages",
+    "latest": "Jump to latest",
+    "validate": "Validating the local garden"
+  },
+  "errors": {
+    "plant-care": {
+      "text": "Text is empty, too long or contains invalid control characters.",
+      "date": "Enter a valid YYYY-MM-DD calendar date from 1900–9999.",
+      "interval": "Interval must be a positive integer from 1–3650 days.",
+      "state": "Invalid garden data. The existing garden was not overwritten.",
+      "limits": "A count or date limit was reached: 100 plants, 12 plans per plant, 5000 records, 40 photos. History is never automatically removed.",
+      "storage": "Data exceeds the host’s 2 MiB budget or the backup exceeds 8 MiB. Back up and explicitly remove unneeded photos or records.",
+      "missing": "Related plant, plan or record not found.",
+      "postpone": "Postpone to today or later, strictly after the base due date.",
+      "future": "Future dates cannot be recorded as completed care or past photos.",
+      "duplicate": "This operation ID was reused with different content. Start a new operation.",
+      "inactive": "Unarchive the plant and resume the plan before recording actual care.",
+      "confirm": "Confirm the operation first.",
+      "photo": "Photo is damaged, unsupported or an invalid stored copy.",
+      "photo_size": "Source files are limited to 16 MiB and compressed copies to 48 KiB.",
+      "pixels": "Source images permit up to 24 megapixels and 8000 pixels per edge.",
+      "query": "Invalid filter or pagination parameters.",
+      "file": "File could not be read or exported.",
+      "copy": "Copy is limited to 64 KiB. Save a file instead.",
+      "stale": "Garden state changed. Reload before continuing."
+    }
+  },
+  "functions": {
+    "bootstrap": "Read local date and session",
+    "today": "Read local calendar day",
+    "inspect": "Inspect garden",
+    "apply": "Update garden",
+    "preview": "Preview interval changes",
+    "photos": "View stored photos",
+    "export": "Export garden",
+    "restore": "Restore garden"
+  },
+  "stages": {
+    "validate": "Validate garden",
+    "update": "Update records",
+    "view": "Recalculate due items",
+    "readPhoto": "Read photo",
+    "compressPhoto": "Compress stored copy",
+    "export": "Export garden",
+    "restore": "Validate backup"
+  },
+  "help": [
+    "Create each pot with a name, variety note and location. Stable IDs separate duplicate names. Set the first date and interval yourself; this is your schedule, not care advice.",
+    "The first date applies until actual care is recorded. Next due uses the latest valid actual date plus the interval. Missed days create one due item, not repeated actions. Older backfills do not replace newer care.",
+    "Postponement is separate from completion and applies to one base due date. A changed base after completion or void/reinstate clears it; an older backfill does not. Preview and confirm schedule changes.",
+    "Pause a plan or archive a plant to hide due items while preserving dates, history and photos. Resuming can reveal overdue items and never invents completion. Reminders are an open-tool view, without wake-ups after closing.",
+    "Rust imports selected files, applies orientation, composites transparency on white and re-encodes JPEG without EXIF. Stored photos permit up to 48 KiB and 960px per edge; thumbnails up to 96px. These are compressed copies, independent of original files.",
+    "Plants, plans, records, compressed photos and thumbnails share the existing ToolForge SQLite plugin state. No separate database is created. Results become visible only after acknowledged writes; failed saves retry the same candidate.",
+    "Limits: 100 plants, 12 plans each, 5000 actual entries and 40 photos garden-wide, also constrained by a shared 2 MiB budget. Storage can fill before count limits. History is never silently trimmed. JSON includes photos and can restore the garden; Markdown is readable text only. Back up before irreversible deletion."
+  ]
+}

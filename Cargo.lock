@@ -8971,6 +8971,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-plant-care"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "image",
+ "jiff",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-protobuf-diff"
 version = "0.1.0"
 dependencies = [

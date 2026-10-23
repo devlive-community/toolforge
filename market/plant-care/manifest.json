@@ -1,0 +1,51 @@
+{
+  "id": "org.devlive.toolforge.plant-care",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "other",
+  "keywords": [
+    "plant",
+    "care",
+    "watering",
+    "journal",
+    "growth",
+    "植物",
+    "浇水",
+    "养护",
+    "成长"
+  ],
+  "accent": "green",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [
+    "fs:user-selected",
+    "clipboard:write"
+  ],
+  "functions": {
+    "bootstrap": {},
+    "today": {},
+    "inspect": {
+      "task": true
+    },
+    "apply": {
+      "task": true
+    },
+    "preview": {
+      "task": true
+    },
+    "photos": {
+      "task": true
+    },
+    "export": {
+      "task": true
+    },
+    "restore": {
+      "task": true
+    }
+  },
+  "sensitive": true
+}
