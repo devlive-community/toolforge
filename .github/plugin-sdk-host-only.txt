@@ -11,3 +11,4 @@
 88581a396841bfc98893458603be0f61d53a1994 Manifest.minAppVersion is read only by the host from the package manifest
 a8c6206be3e56e692e709c36f92c4245e5b632a8 function interface declarations are parsed only by the host, CLI and xtask
 1ecbfc9bbb489b5d7b289a39ea85e1e6c56d3cd1 check_declared_interfaces is a test helper for plugin tests
+2c172d8a6871ca3ca3d56847a97652ed1f618501 read_to_end is an additive helper that no published plugin calls, so their builds behave the same
