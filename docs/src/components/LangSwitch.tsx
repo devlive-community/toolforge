@@ -12,10 +12,7 @@ export function LangSwitch({ lang }: { lang: Lang }) {
   const href = segments.join('/') || `/${other}/`
 
   return (
-    <a
-      href={href}
-      className="inline-flex h-9 items-center rounded-md border border-line px-3 font-display text-xs uppercase tracking-wider text-fg-muted transition-colors hover:border-line-strong hover:text-fg focus-visible:outline-2 focus-visible:outline-accent"
-    >
+    <a href={href} className="site-icon-btn" aria-label={other === 'zh' ? '切换到中文' : 'Switch to English'}>
       {other === 'zh' ? '中文' : 'EN'}
     </a>
   )

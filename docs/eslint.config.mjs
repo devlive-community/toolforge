@@ -10,7 +10,7 @@ const compat = new FlatCompat({ baseDirectory })
 
 const eslintConfig = [
   {
-    ignores: ['.next/**', 'out/**', 'node_modules/**', 'src/data/**', 'scripts/**'],
+    ignores: ['.next/**', 'out/**', 'node_modules/**', 'src/data/**', 'scripts/**', 'next-env.d.ts'],
   },
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {

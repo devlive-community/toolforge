@@ -1,45 +1,43 @@
 import Link from 'next/link'
-import { ArrowUpRight } from 'lucide-react'
-import { toolChannel, toolDescription, toolName, toolStatus, type Lang, type ToolEntry, type ToolStatus } from '@/lib/catalog'
+import { ArrowUpRight, Puzzle } from 'lucide-react'
+import { canInstall, toolChannel, toolDescription, toolName, type Lang, type ToolEntry } from '@/lib/catalog'
 import { formatDownloadCount } from '@/lib/stats'
+import { StatusBadge } from './StatusBadge'
 import { InstallButton } from './InstallButton'
-import styles from './ToolCard.module.css'
 
-const labels = {
-  zh: { released: '已发布', new: '新发布', updated: '已更新', upcoming: '待发布' },
-  en: { released: 'Released', new: 'New', updated: 'Updated', upcoming: 'Upcoming' },
-} satisfies Record<Lang, Record<ToolStatus, string>>
-
-const channelLabels = {
-  zh: { builtin: '内置', market: '在线安装' },
-  en: { builtin: 'Built-in', market: 'Online' },
-} satisfies Record<Lang, Record<'builtin' | 'market', string>>
-
-const countLabels = {
-  zh: '次下载',
-  en: 'downloads',
-} satisfies Record<Lang, string>
-
-// Shared by the catalog and related tools on detail pages.
-// 整卡通过拉伸链接进入详情；在线插件在右下角额外提供一键安装按钮（位于链接之上）。
-// downloads 缺省（内置工具、尚未拉到或没有统计记录）时不展示计数。
-export function ToolCard({ tool, lang, downloads }: { tool: ToolEntry; lang: Lang; downloads?: number }) {
-  const status = toolStatus(tool)
-  const channel = toolChannel(tool)
+export function ToolIcon({ slug, hasIcon = true }: { slug: string; hasIcon?: boolean }) {
   return (
-    <div className={styles.card}>
-      <Link href={`/${lang}/tools/${tool.slug}/`} className={styles.cardLink} aria-label={toolName(tool, lang)} />
-      <div className={styles.top}>
-        <span className={styles.iconBox}><span className={styles.icon} aria-hidden="true" style={{ maskImage: `url(/icons/${tool.slug}.svg)`, WebkitMaskImage: `url(/icons/${tool.slug}.svg)` }} /></span>
-        <span className={`${styles.badge} ${status === 'upcoming' ? styles.upcoming : status === 'released' ? styles.released : styles.fresh}`}><span aria-hidden="true" />{labels[lang][status]}</span>
+    <span className="site-tool-icon">
+      {hasIcon ? (
+        <span className="site-tool-glyph" aria-hidden="true" style={{ maskImage: `url(/icons/${slug}.svg)`, WebkitMaskImage: `url(/icons/${slug}.svg)` }} />
+      ) : (
+        <Puzzle aria-hidden="true" />
+      )}
+    </span>
+  )
+}
+
+export function ToolCard({ tool, lang, downloads }: { tool: ToolEntry; lang: Lang; downloads?: number }) {
+  const market = toolChannel(tool) === 'market'
+  return (
+    <article className="site-tool">
+      <Link href={`/${lang}/tools/${tool.slug}/`} className="site-tool-link" aria-label={toolName(tool, lang)} />
+      <div className="site-tool-top">
+        <ToolIcon slug={tool.slug} hasIcon={tool.hasIcon} />
+        <span className="site-tag">{market ? (lang === 'zh' ? '在线插件' : 'Online plugin') : lang === 'zh' ? '应用内置' : 'Built-in'}</span>
       </div>
-      <h3>{toolName(tool, lang)}</h3>
-      <p className={styles.channel}><span className={channel === 'market' ? styles.marketDot : styles.builtinDot} aria-hidden="true" />{channelLabels[lang][channel]}{downloads !== undefined && <span className={styles.channelCount}> · {formatDownloadCount(downloads, lang)} {countLabels[lang]}</span>}</p>
-      <p className={styles.description}>{toolDescription(tool, lang)}</p>
-      <div className={styles.bottom}>
+      <h3 className="site-tool-title">{toolName(tool, lang)}</h3>
+      <p>{toolDescription(tool, lang)}</p>
+      <div className="site-tool-bottom">
         <span>{tool.categoryLabel[lang]}</span>
-        {channel === 'market' ? <InstallButton slug={tool.slug} lang={lang} variant="card" /> : <ArrowUpRight size={16} aria-hidden="true" />}
+        <StatusBadge tool={tool} lang={lang} />
+        {canInstall(tool) ? <InstallButton slug={tool.slug} lang={lang} variant="card" /> : <ArrowUpRight aria-hidden="true" />}
       </div>
-    </div>
+      {downloads !== undefined && (
+        <span className="site-tool-downloads">
+          {formatDownloadCount(downloads, lang)} {lang === 'zh' ? '次下载' : 'downloads'}
+        </span>
+      )}
+    </article>
   )
 }

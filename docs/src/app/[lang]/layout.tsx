@@ -1,33 +1,21 @@
 import type { Metadata, Viewport } from 'next'
-import { IBM_Plex_Mono } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { LANGS, type Lang } from '@/lib/catalog'
+import { siteCopy } from '@/lib/site-copy'
 import '../../styles/globals.css'
 
-const plex = IBM_Plex_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-plex',
-  display: 'swap',
-})
-
-// 与桌面端一致：默认暗色，偏好亮色的用户可通过右上角切换（存 localStorage）
-const themeScript = `(function(){try{var t=localStorage.getItem('tf-theme');var d=t?t==='dark':true;document.documentElement.classList.toggle('dark',d)}catch(e){document.documentElement.classList.add('dark')}})()`
+const themeScript = `(function(){try{var t=localStorage.getItem('tf-theme');var d=t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d)}catch(e){document.documentElement.classList.toggle('dark',matchMedia('(prefers-color-scheme: dark)').matches)}})()`
 
 export function generateStaticParams() {
   return LANGS.map((lang) => ({ lang }))
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ lang: string }>
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params
   const zh = lang !== 'en'
-  const title = 'ToolForge — ' + (zh ? '桌面工具箱，全部本地运行' : 'The desktop toolbox that stays local')
+  const title = 'ToolForge — ' + (zh ? '本地优先的桌面工具箱' : 'Your local-first desktop toolkit')
   const description = zh
     ? '面向开发与日常效率的桌面工具箱：识别、转换、编码、网络与系统工具，本地处理，插件架构。'
     : 'A desktop toolbox for development and everyday productivity: OCR, converters, encoding, network and system tools, with local processing and independent plugins.'
@@ -58,28 +46,25 @@ export async function generateMetadata({
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#0b0d0e' },
-    { media: '(prefers-color-scheme: light)', color: '#fafaf9' },
+    { media: '(prefers-color-scheme: dark)', color: '#0c110f' },
+    { media: '(prefers-color-scheme: light)', color: '#f7f9f7' },
   ],
 }
 
-export default async function RootLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode
-  params: Promise<{ lang: string }>
-}) {
+export default async function RootLayout({ children, params }: { children: React.ReactNode; params: Promise<{ lang: string }> }) {
   const { lang } = await params
   if (!LANGS.includes(lang as Lang)) notFound()
   return (
-    <html lang={lang} className={`${plex.variable} dark`} suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="min-h-dvh">
+      <body className="site min-h-dvh">
+        <a className="site-skip" href="#main-content">
+          {siteCopy[lang as Lang].skip}
+        </a>
         <Header lang={lang as Lang} />
-        <main>{children}</main>
+        <main id="main-content">{children}</main>
         <Footer lang={lang as Lang} />
       </body>
     </html>

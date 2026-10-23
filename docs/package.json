@@ -8,7 +8,7 @@
     "prebuild": "node scripts/generate-data.mjs",
     "build": "next build",
     "start": "next start",
-    "test": "node --test scripts/release-data.test.mjs scripts/tool-status.test.mjs"
+    "test": "node --test scripts/*.test.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.545.0",

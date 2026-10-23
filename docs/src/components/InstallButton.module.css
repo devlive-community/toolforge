@@ -4,69 +4,52 @@
   display: block;
   min-width: 0;
 }
-
-/* 详情页主按钮：与详情页 .primary 同款 */
 .primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  gap: 9px;
-  padding: 14px 17px;
-  border: none;
-  border-radius: 7px;
+  gap: 8px;
+  min-height: 41px;
+  padding: 9px 17px;
+  border: 0;
+  border-radius: 9px;
   cursor: pointer;
-  background: var(--detail-accent, var(--accent-strong));
-  color: var(--panel);
-  font-size: 12px;
+  background: var(--site-action);
+  color: var(--site-onbrand);
+  font-size: 13px;
+  font-weight: 550;
   line-height: 1.5;
-  font-weight: 600;
-  transition: transform .16s, filter .16s;
 }
-:global(.dark) .primary { color: #0c2515; }
-.primary:hover { transform: translateY(-2px); filter: brightness(1.05); }
-.primary:focus-visible { outline: 2px solid var(--detail-accent, var(--accent-strong)); outline-offset: 3px; }
-
-/* 工具卡片里的小按钮：沿用卡片的强调色变量 */
+.primary:hover {
+  filter: brightness(0.96);
+}
+.primary:focus-visible,
+.card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
 .card {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 4px 9px;
-  border: 1px solid color-mix(in srgb, var(--card-accent, var(--accent-strong)) 32%, transparent);
-  border-radius: 5px;
+  padding: 5px 9px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 11px;
   cursor: pointer;
-  background: color-mix(in srgb, var(--card-accent, var(--accent-strong)) 10%, transparent);
-  color: var(--card-accent, var(--accent-strong));
-  font-size: 10px;
-  line-height: 1.4;
-  font-weight: 600;
-  white-space: nowrap;
-  transition: background .16s, border-color .16s;
 }
-.card:hover {
-  border-color: color-mix(in srgb, var(--card-accent, var(--accent-strong)) 55%, transparent);
-  background: color-mix(in srgb, var(--card-accent, var(--accent-strong)) 18%, transparent);
-}
-.card:focus-visible {
-  outline: 2px solid var(--card-accent, var(--accent-strong));
-  outline-offset: 2px;
-}
-
 .fallback {
   display: block;
   margin-top: 9px;
-  font-size: 10px;
-  line-height: 1.7;
-  color: var(--fg-subtle);
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--fg-muted);
 }
 .fallback a {
-  color: var(--detail-accent, var(--accent-strong));
+  color: var(--accent-strong);
   text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .primary { transition: none; }
-  .primary:hover { transform: none; }
+  text-underline-offset: 3px;
 }

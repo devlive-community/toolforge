@@ -1,371 +1,265 @@
-import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ArrowDownToLine, ArrowLeft, ArrowRight, ChevronRight, Clock3, Layers3, Search, ShieldCheck, Sparkles } from 'lucide-react'
-import {
-  catalog,
-  getTool,
-  toolChannel,
-  toolDescription,
-  toolName,
-  toolStatus,
-  type Lang,
-} from '@/lib/catalog'
-import { HomeProductPreview } from '@/components/HomeProductPreview'
-import { ToolCard } from '@/components/ToolCard'
+import { ArrowRight, CheckCircle2, ChevronRight, Clock3 } from 'lucide-react'
+import { DownloadDialog } from '@/components/DownloadDialog'
 import { InstallButton } from '@/components/InstallButton'
-import styles from './detail.module.css'
+import { DetailTabs } from '@/components/DetailTabs'
+import { ToolCard, ToolIcon } from '@/components/ToolCard'
+import { ToolPermissions } from '@/components/ToolPermissions'
+import { StatusBadge } from '@/components/StatusBadge'
+import { canInstall, catalog, getTool, toolChannel, toolDescription, toolName, toolStatus, type Lang, type ToolEntry } from '@/lib/catalog'
+import { getToolDocumentation } from '@/lib/tool-docs'
+import { pageMetadata } from '@/lib/metadata'
+import { siteCopy } from '@/lib/site-copy'
 
-const copy = {
-  zh: {
-    home: '首页',
-    tools: '全部工具',
-    back: '返回全部工具',
-    category: '所属分类',
-    overview: '工具概览',
-    overviewLabel: '为桌面工作流而生',
-    info: '工具信息',
-    keywords: '搜索关键词',
-    status: '发布状态',
-    included: '使用方式',
-    includedValue: 'ToolForge 桌面应用',
-    channelMarket: '在线插件',
-    marketIncluded: '应用内工具市场',
-    version: '当前版本',
-    marketTitle: '在线插件,独立更新',
-    marketNote: '这个工具通过应用内工具市场分发:安装一次,更新即时推送,不随应用版本重新下载。',
-    marketStepsTitle: '一键安装,马上使用',
-    marketOne: '点击「一键安装」',
-    marketOneBody: '在工具列表或本页点击按钮,浏览器会请求打开 ToolForge。',
-    marketTwo: '自动下载并安装',
-    marketTwoBody: 'ToolForge 从官方插件索引取包、校验签名后自动启用。',
-    installNote: '点击「一键安装」,浏览器会唤起本地 ToolForge 自动完成安装。',
-    marketThree: '打开并开始使用',
-    marketThreeBody: '安装后工具会出现在侧边栏,更新时自动提示。',
-    desktopNote: '在 ToolForge 桌面应用中使用',
-    download: '下载 ToolForge',
-    downloadStable: '下载稳定版',
-    changelog: '查看发布日志',
-    available: '已发布',
-    new: '新发布',
-    updated: '已更新',
-    upcoming: '待发布',
-    pendingUpdate: '有待发布更新',
-    upcomingTitle: '尚未随稳定版发布',
-    upcomingNote: '这个工具已收录在目录中，将在未来版本提供。请以正式发布日志为准。',
-    updatingTitle: '包含尚未发布的更新',
-    updatingNote: '稳定版已包含此工具的基础功能，最新改动将在后续版本提供。',
-    upcomingActionNote: '正式发布后即可在应用中使用',
-    updatingActionNote: '稳定版可使用已发布的基础功能',
-    visualCaption: '工具信息示意，非应用截图',
-    related: '继续探索，同样顺手',
-    relatedLabel: '相关工具',
-    viewAll: '浏览全部工具',
-    stepsTitle: '三步，开始使用',
-    futureStepsTitle: '正式发布后，开始使用',
-    stepOne: '安装 ToolForge',
-    stepOneBody: '选择适合你系统的安装包，下载并打开应用。',
-    stepTwo: '找到这个工具',
-    stepTwoBody: '在应用内搜索工具名称，或按分类浏览。',
-    stepThree: '打开并开始使用',
-    stepThreeBody: '按照工具界面提供的操作，完成你的任务。',
-    futureOne: '关注正式发布',
-    futureOneBody: '查看发布日志，确认该工具已经随稳定版提供。',
-    futureTwo: '安装对应版本',
-    futureTwoBody: '正式发布后，下载包含此工具的稳定版本。',
-    futureThree: '在应用中查找',
-    futureThreeBody: '按工具名称或关键词搜索，打开工具开始使用。',
-    searchHint: '在应用中搜索',
-    noKeywords: '使用工具名称搜索即可。',
-  },
-  en: {
-    home: 'Home',
-    tools: 'All tools',
-    back: 'Back to all tools',
-    category: 'Category',
-    overview: 'Tool overview',
-    overviewLabel: 'Made for your desktop workflow',
-    info: 'Tool information',
-    keywords: 'Search keywords',
-    status: 'Release status',
-    included: 'Available through',
-    includedValue: 'ToolForge desktop app',
-    channelMarket: 'Online plugin',
-    marketIncluded: 'In-app plugin market',
-    version: 'Current version',
-    marketTitle: 'Online plugin, independent updates',
-    marketNote: 'This tool ships through the in-app plugin market: install once, get updates pushed instantly, no app re-download required.',
-    marketStepsTitle: 'One click, ready to use',
-    marketOne: 'Click “One-click install”',
-    marketOneBody: 'Use the button on the tool list or this page; your browser asks to open ToolForge.',
-    marketTwo: 'It downloads and installs itself',
-    marketTwoBody: 'ToolForge fetches the package from the official plugin index, verifies the signature and enables it.',
-    installNote: 'Click one-click install and your browser launches the local ToolForge to finish installing.',
-    marketThree: 'Open it and get to work',
-    marketThreeBody: 'Installed tools appear in the sidebar; updates are offered automatically.',
-    desktopNote: 'Use it in the ToolForge desktop app',
-    download: 'Download ToolForge',
-    downloadStable: 'Download stable release',
-    changelog: 'View changelog',
-    available: 'Released',
-    new: 'New release',
-    updated: 'Updated',
-    upcoming: 'Upcoming',
-    pendingUpdate: 'Unreleased updates',
-    upcomingTitle: 'Not in a stable release yet',
-    upcomingNote: 'This tool is listed in the catalog and is planned for a future release. Check the published changelog for availability.',
-    updatingTitle: 'Includes unreleased updates',
-    updatingNote: 'The stable app includes the existing functionality. The latest changes will arrive in a future release.',
-    upcomingActionNote: 'Available in the app after its official release',
-    updatingActionNote: 'Existing functionality is available in the stable app',
-    visualCaption: 'Tool information illustration, not an app screenshot',
-    related: 'More tools, just as handy',
-    relatedLabel: 'Related tools',
-    viewAll: 'Browse all tools',
-    stepsTitle: 'Get started in three steps',
-    futureStepsTitle: 'Get started after release',
-    stepOne: 'Install ToolForge',
-    stepOneBody: 'Choose the installer for your operating system, then open the app.',
-    stepTwo: 'Find this tool',
-    stepTwoBody: 'Search for the tool by name or browse its category in the app.',
-    stepThree: 'Open it and get to work',
-    stepThreeBody: 'Follow the operations provided by the tool to complete your task.',
-    futureOne: 'Watch for the release',
-    futureOneBody: 'Check the changelog to confirm that the tool has shipped in a stable release.',
-    futureTwo: 'Install that version',
-    futureTwoBody: 'After release, download a stable app version that includes this tool.',
-    futureThree: 'Find it in the app',
-    futureThreeBody: 'Search by name or keyword, then open the tool to get started.',
-    searchHint: 'Search in the app',
-    noKeywords: 'Search by the tool name.',
-  },
-} satisfies Record<Lang, Record<string, string>>
-
-// Keep every catalog entry available in both languages in the static export.
 export function generateStaticParams() {
   return catalog.flatMap((tool) => [
     { lang: 'zh', id: tool.slug },
     { lang: 'en', id: tool.slug },
   ])
 }
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ lang: string; id: string }>
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ lang: Lang; id: string }> }) {
   const { lang, id } = await params
   const tool = getTool(id)
-  if (!tool) return { title: 'ToolForge' }
-  const langTag = lang as Lang
-  const name = toolName(tool, langTag)
-  const title = `${name} · ToolForge`
-  const description = toolDescription(tool, langTag)
-  const path = `/${langTag}/tools/${tool.slug}/`
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: path,
-      languages: { zh: `/zh/tools/${tool.slug}/`, en: `/en/tools/${tool.slug}/` },
-    },
-    openGraph: {
-      title,
-      description,
-      type: 'website',
-      siteName: 'ToolForge',
-      url: `https://toolforge.devlive.org${path}`,
-      locale: langTag === 'zh' ? 'zh_CN' : 'en_US',
-      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'ToolForge' }],
-    },
-    twitter: { card: 'summary_large_image', title, description, images: ['/og-image.png'] },
-  }
+  return tool ? pageMetadata(lang, `tools/${id}/`, `${toolName(tool, lang)} — ToolForge`, toolDescription(tool, lang)) : { title: 'ToolForge' }
 }
-
-export default async function ToolDetailPage({
-  params,
-}: {
-  params: Promise<{ lang: string; id: string }>
-}) {
+function Preview({ tool, lang }: { tool: ToolEntry; lang: Lang }) {
+  const zh = lang === 'zh'
+  return tool.slug === 'json-formatter' ? (
+    <figure className="site-preview">
+      <figcaption className="site-preview-bar">
+        <span>{toolName(tool, lang)}</span>
+        <span className="site-tag">{zh ? '操作示意' : 'Illustration'}</span>
+      </figcaption>
+      <div className="site-editors">
+        <div className="site-editor">
+          <p>{zh ? '输入' : 'Input'}</p>
+          <pre>{'{"name":"ToolForge","local":true,"hello":"world"}'}</pre>
+        </div>
+        <div className="site-editor">
+          <p>{zh ? '格式化结果' : 'Formatted result'}</p>
+          <pre>
+            {'{\n  '}
+            <span className="site-code-key">{'"name"'}</span>
+            {': '}
+            <span className="site-code-value">{'"ToolForge"'}</span>
+            {',\n  '}
+            <span className="site-code-key">{'"local"'}</span>
+            {': true,\n  '}
+            <span className="site-code-key">{'"hello"'}</span>
+            {': '}
+            <span className="site-code-value">{'"world"'}</span>
+            {'\n}'}
+          </pre>
+        </div>
+      </div>
+      <div className="site-preview-footer">
+        <CheckCircle2 aria-hidden="true" />
+        {zh ? 'JSON 有效' : 'Valid JSON'}
+        <span className="ml-auto">UTF-8 · {zh ? '2 空格' : '2 spaces'}</span>
+      </div>
+    </figure>
+  ) : (
+    <div className="site-keywords" aria-label={zh ? '搜索关键词' : 'Search keywords'}>
+      {[...new Set(tool.keywords)].slice(0, 8).map((keyword) => (
+        <span className="site-tag" key={keyword}>
+          {keyword}
+        </span>
+      ))}
+    </div>
+  )
+}
+export default async function ToolDetailPage({ params }: { params: Promise<{ lang: Lang; id: string }> }) {
   const { lang, id } = await params
-  const langTag = lang as Lang
   const tool = getTool(id)
   if (!tool) notFound()
-
-  const t = copy[langTag]
-  const name = toolName(tool, langTag)
-  const description = toolDescription(tool, langTag)
-  const keywords = [...new Set(tool.keywords.filter((keyword) => keyword && keyword.trim() !== ''))]
-  const status = toolStatus(tool)
-  const isUpcoming = status === 'upcoming'
-  const notReleased = isUpcoming && !tool.updateOnly
-  // 在线插件：通过应用内工具市场分发，安装/更新步骤与内置工具不同
-  const isMarket = toolChannel(tool) === 'market' 
-  const statusLabel = tool.updateOnly && isUpcoming
-    ? t.pendingUpdate
-    : { released: t.available, new: t.new, updated: t.updated, upcoming: t.upcoming }[status]
-  const related = [
-    ...catalog.filter((entry) => entry.slug !== tool.slug && entry.category === tool.category),
-    ...catalog.filter((entry) => entry.slug !== tool.slug && entry.category !== tool.category),
-  ].slice(0, 3)
-  const steps = notReleased
-    ? [
-        { title: t.futureOne, body: t.futureOneBody },
-        { title: t.futureTwo, body: t.futureTwoBody },
-        { title: t.futureThree, body: t.futureThreeBody },
-      ]
-    : isMarket
-      ? [
-          { title: t.marketOne, body: t.marketOneBody },
-          { title: t.marketTwo, body: t.marketTwoBody },
-          { title: t.marketThree, body: t.marketThreeBody },
-        ]
-      : [
-          { title: t.stepOne, body: t.stepOneBody },
-          { title: t.stepTwo, body: t.stepTwoBody },
-          { title: t.stepThree, body: t.stepThreeBody },
-        ]
-
-  return (
-    <article className={styles.detail}>
-      <div className={styles.wrap}>
-        <nav className={styles.breadcrumb} aria-label={langTag === 'zh' ? '面包屑导航' : 'Breadcrumb'}>
-          <Link href={`/${langTag}/`}>{t.home}</Link>
-          <ChevronRight size={12} aria-hidden="true" />
-          <Link href={`/${langTag}/tools/`}>{t.tools}</Link>
-          <ChevronRight size={12} aria-hidden="true" />
-          <span aria-current="page">{name}</span>
-        </nav>
-
-        <header className={styles.hero}>
-          <div className={styles.heroMain}>
-            <span className={styles.heroIcon}><span className={styles.heroGlyph} aria-hidden="true" style={{ maskImage: `url(/icons/${tool.slug}.svg)`, WebkitMaskImage: `url(/icons/${tool.slug}.svg)` }} /></span>
-            <div className={styles.heroCopy}>
-              <div className={styles.labels}>
-                <span className={styles.category}>{tool.categoryLabel[langTag]}</span>
-                {isMarket && <span className={styles.market}>{t.channelMarket}</span>}
-                <span className={`${styles.status} ${isUpcoming ? styles.pending : ''}`}>
-                  <span aria-hidden="true" />{statusLabel}
-                </span>
-              </div>
-              <h1>{name}</h1>
-              <p>{description}</p>
-            </div>
-          </div>
-          <div className={styles.heroActions}>
-            {isMarket && !notReleased ? (
-              <>
-                <InstallButton slug={tool.slug} lang={langTag} variant="primary" />
-                <Link href={`/${langTag}/#download`} className={styles.back}>
-                  <ArrowDownToLine size={13} aria-hidden="true" />{t.download}
-                </Link>
-              </>
-            ) : (
-              <Link href={notReleased ? `/${langTag}/changelog/` : `/${langTag}/#download`} className={styles.primary}>
-                {notReleased ? <Clock3 size={16} aria-hidden="true" /> : <ArrowDownToLine size={16} aria-hidden="true" />}
-                {notReleased ? t.changelog : tool.updateOnly && isUpcoming ? t.downloadStable : t.download}
-                <ArrowRight size={14} aria-hidden="true" />
-              </Link>
-            )}
-            <Link href={`/${langTag}/tools/`} className={styles.back}>
-              <ArrowLeft size={13} aria-hidden="true" />{t.back}
-            </Link>
-            <p>{notReleased ? t.upcomingActionNote : tool.updateOnly && isUpcoming ? t.updatingActionNote : isMarket ? t.installNote : t.desktopNote}</p>
-          </div>
-        </header>
-
-        {isUpcoming && (
-          <aside className={styles.notice}>
-            <Clock3 size={18} aria-hidden="true" />
-            <div>
-              <h2>{tool.updateOnly ? t.updatingTitle : t.upcomingTitle}</h2>
-              <p>{tool.updateOnly ? t.updatingNote : t.upcomingNote}</p>
-            </div>
-            <Link href={`/${langTag}/changelog/`}>{t.changelog}<ArrowRight size={13} aria-hidden="true" /></Link>
-          </aside>
-        )}
-
-        {isMarket && !isUpcoming && (
-          <aside className={styles.notice}>
-            <ShieldCheck size={18} aria-hidden="true" />
-            <div>
-              <h2>{t.marketTitle}</h2>
-              <p>{t.marketNote}</p>
-            </div>
-            <Link href={`/${langTag}/tools/`}>{t.viewAll}<ArrowRight size={13} aria-hidden="true" /></Link>
-          </aside>
-        )}
-
-        <div className={styles.contentGrid}>
-          <div className={styles.mainColumn}>
-            <section className={styles.overview} aria-labelledby="tool-overview">
-              <div className={styles.sectionLabel}><Layers3 size={14} aria-hidden="true" /><h2 id="tool-overview">{t.overview}</h2></div>
-              {tool.slug === 'json-formatter' ? (
-                <div className={styles.appPreview}>
-                  <HomeProductPreview lang={langTag} toolCount={catalog.length} />
-                </div>
-              ) : (
-                <figure className={styles.toolVisual}>
-                  <div className={styles.visualTop}>
-                    <span><img src="/icon.png" alt="" width={17} height={17} />ToolForge</span>
-                    <span>{tool.categoryLabel[langTag]}</span>
-                  </div>
-                  <div className={styles.visualCenter}>
-                    <span className={styles.visualIcon}><span className={styles.visualGlyph} aria-hidden="true" style={{ maskImage: `url(/icons/${tool.slug}.svg)`, WebkitMaskImage: `url(/icons/${tool.slug}.svg)` }} /></span>
-                    <p className={styles.visualEyebrow}>{t.overviewLabel}</p>
-                    <p className={styles.visualName}>{name}</p>
-                    <div className={styles.visualKeywords}>
-                      {keywords.slice(0, 4).map((keyword) => <span key={keyword}>{keyword}</span>)}
-                    </div>
-                  </div>
-                  <figcaption>{t.visualCaption}</figcaption>
-                </figure>
-              )}
-            </section>
-
-            <section className={styles.howTo} aria-labelledby="tool-steps">
-              <div className={styles.sectionLabel}><Sparkles size={14} aria-hidden="true" /><h2 id="tool-steps">{notReleased ? t.futureStepsTitle : isMarket ? t.marketStepsTitle : t.stepsTitle}</h2></div>
-              <ol className={styles.steps}>
-                {steps.map((step, index) => (
-                  <li key={step.title}>
-                    <span className={styles.stepNumber}>{String(index + 1).padStart(2, '0')}</span>
-                    <div><h3>{step.title}</h3><p>{step.body}</p></div>
-                  </li>
-                ))}
-              </ol>
-              <div className={styles.searchHint}><Search size={14} aria-hidden="true" /><span>{t.searchHint}</span><strong>{name}</strong></div>
-            </section>
-          </div>
-
-          <aside className={styles.sidebar}>
-            <section className={styles.infoPanel} aria-labelledby="tool-info">
-              <h2 id="tool-info">{t.info}</h2>
-              <dl>
-                <div><dt>{t.category}</dt><dd>{tool.categoryLabel[langTag]}</dd></div>
-                <div><dt>{t.status}</dt><dd className={isUpcoming ? styles.pendingText : styles.accentText}>{statusLabel}</dd></div>
-                <div><dt>{t.included}</dt><dd>{isMarket ? t.marketIncluded : t.includedValue}</dd></div>
-                {tool.version && <div><dt>{t.version}</dt><dd>{tool.version}</dd></div>}
-              </dl>
-              <Link href={`/${langTag}/changelog/`} className={styles.infoLink}>{t.changelog}<ArrowRight size={13} aria-hidden="true" /></Link>
-            </section>
-            <section className={styles.keywordPanel} aria-labelledby="tool-keywords">
-              <h2 id="tool-keywords">{t.keywords}</h2>
-              {keywords.length > 0 ? (
-                <div className={styles.keywords}>{keywords.map((keyword) => <span key={keyword}>{keyword}</span>)}</div>
-              ) : <p>{t.noKeywords}</p>}
-            </section>
-          </aside>
-        </div>
-
-        <section className={styles.related} aria-labelledby="related-tools">
-          <div className={styles.relatedHeading}>
-            <div><p>{t.relatedLabel}</p><h2 id="related-tools">{t.related}</h2></div>
-            <Link href={`/${langTag}/tools/`}>{t.viewAll}<ArrowRight size={14} aria-hidden="true" /></Link>
-          </div>
-          <div className={styles.relatedGrid}>{related.map((entry) => <ToolCard key={entry.slug} tool={entry} lang={langTag} />)}</div>
-        </section>
+  const zh = lang === 'zh'
+  const t = siteCopy[lang]
+  const data = getToolDocumentation(tool.slug)
+  const market = toolChannel(tool) === 'market'
+  const pending = toolStatus(tool) === 'upcoming'
+  const unpublished = pending && !tool.updateOnly
+  const help = data.help[lang]
+  const related = catalog.filter((entry) => entry.slug !== tool.slug && entry.category === tool.category).slice(0, 3)
+  const overview = (
+    <div className="site-prose">
+      <h2>
+        {tool.slug === 'json-formatter'
+          ? zh
+            ? '让结构清楚，让调试顺手。'
+            : 'Clear structure. Easier debugging.'
+          : zh
+            ? '它能帮你做什么？'
+            : 'What can this tool do?'}
+      </h2>
+      <p>{help[0] || toolDescription(tool, lang)}</p>
+      <Preview tool={tool} lang={lang} />
+      <h3>{zh ? '开始使用前' : 'Before you begin'}</h3>
+      <p>
+        {unpublished
+          ? zh
+            ? '正式发布后，在线插件可从工具市场安装。当前可以先了解用法与输入范围。'
+            : 'After release, this plugin can be installed from the tool market. You can read its usage and input limits in the meantime.'
+          : tool.builtinFallback
+            ? zh
+              ? '稳定版中仍可找到内置基础功能。当前代码已迁到在线插件，在线包发布后再按需安装更新。'
+              : 'The stable app still provides the basic built-in tool. The current code has moved to an online plugin; install it once the package is published.'
+            : market
+              ? zh
+                ? '通过应用内工具市场安装，插件可独立更新。安装前先查看所需权限，再确认操作。'
+                : 'Install through the in-app tool market. Plugins update independently; review their permissions before installing.'
+              : zh
+                ? '这是内置工具。安装适合你系统的 ToolForge 版本，在侧栏中搜索工具名称即可找到。'
+                : 'This tool is built in. Install ToolForge for your system, then search for its name in the sidebar.'}
+      </p>
+      <div className="site-note">
+        {zh
+          ? '网页用于了解工具和阅读文档。实际处理在 ToolForge 桌面应用中完成。'
+          : 'This website helps you discover tools and read their guides. Processing takes place in the ToolForge desktop app.'}
       </div>
+    </div>
+  )
+  const usage = (
+    <div className="site-prose">
+      <h2>{zh ? '使用方法与边界' : 'Usage and limits'}</h2>
+      {help.length > 0 ? (
+        <ol className="site-help-list">
+          {help.map((text, index) => (
+            <li key={index}>{text}</li>
+          ))}
+        </ol>
+      ) : (
+        <p>
+          {zh
+            ? '此工具尚未提供独立的使用说明。请先在应用内查看输入提示和帮助。'
+            : 'A standalone usage guide is not available yet. Check the input hints and help in the app.'}
+        </p>
+      )}
+      {tool.slug === 'json-formatter' && <Preview tool={tool} lang={lang} />}
+      <h3>{zh ? '需要安装帮助？' : 'Need installation help?'}</h3>
+      <p>
+        <Link className="site-link" href={`/${lang}/guide/${market ? 'plugins' : 'start'}/`}>
+          {market ? t.guidePlugins : t.guideStart}
+          <ArrowRight aria-hidden="true" />
+        </Link>
+      </p>
+    </div>
+  )
+  return (
+    <article className="site-wrap">
+      <header className="site-page-heading">
+        <nav className="site-breadcrumb" aria-label={zh ? '面包屑导航' : 'Breadcrumb'}>
+          <Link href={`/${lang}/tools/`}>{t.tools}</Link>
+          <ChevronRight aria-hidden="true" />
+          <span>{tool.categoryLabel[lang]}</span>
+          <ChevronRight aria-hidden="true" />
+          <span aria-current="page">{toolName(tool, lang)}</span>
+        </nav>
+        <div className="site-detail-head">
+          <div>
+            <div className="site-detail-title">
+              <ToolIcon slug={tool.slug} hasIcon={tool.hasIcon} />
+              <div>
+                <h1>{toolName(tool, lang)}</h1>
+                <div className="site-detail-meta">
+                  <span className="site-tag">{market ? (zh ? '在线插件' : 'Online plugin') : zh ? '应用内置' : 'Built-in'}</span>
+                  <span>{tool.categoryLabel[lang]}</span>
+                  <span>
+                    {zh ? '文档版本' : 'Documented version'} {tool.version}
+                  </span>
+                  <StatusBadge tool={tool} lang={lang} />
+                  {data.platforms.length > 0 && <span>{data.platforms.join(' / ')}</span>}
+                </div>
+              </div>
+            </div>
+            <p className="site-detail-summary">{toolDescription(tool, lang)}</p>
+          </div>
+          <div className="site-detail-actions">
+            {canInstall(tool) ? (
+              <InstallButton slug={tool.slug} lang={lang} variant="primary" />
+            ) : unpublished ? (
+              <Link href={`/${lang}/changelog/`} className="site-secondary">
+                <Clock3 aria-hidden="true" />
+                {zh ? '关注正式发布' : 'Watch for the release'}
+              </Link>
+            ) : (
+              <DownloadDialog lang={lang} />
+            )}
+          </div>
+        </div>
+      </header>
+      {pending && (
+        <div className="site-note site-note-warn">
+          {tool.builtinFallback || (!market && tool.updateOnly)
+            ? zh
+              ? '稳定版应用已包含此工具的基础功能。本文档对应尚未发布的更新；若涉及在线迁移，请等待在线包正式发布。'
+              : 'The stable app already includes the basic built-in tool. This guide covers unreleased changes; an online migration still requires a published plugin package.'
+            : tool.updateOnly
+              ? zh
+                ? `已发布版本 ${tool.publishedVersion ?? ''} 可用；本文档包含尚未发布的更新，请以实际安装版本为准。`
+                : `Published version ${tool.publishedVersion ?? ''} is available. This guide includes unreleased changes; check your installed version.`
+              : zh
+                ? '此工具尚未确认发布，当前仅提供功能与用法说明。'
+                : 'This tool is not yet confirmed as released. Its features and usage are documented here.'}
+        </div>
+      )}
+      {market && tool.releaseVerified === false && (
+        <div className="site-note site-note-warn">
+          {zh
+            ? '暂时无法核对在线插件的发布信息。你可以在应用内市场确认可用版本。'
+            : 'Online release details could not be verified. Check the in-app market for availability.'}
+        </div>
+      )}
+      <div className="site-detail-body">
+        <div>
+          <DetailTabs
+            label={zh ? '工具文档' : 'Tool documentation'}
+            panels={[
+              { id: 'overview', title: zh ? '工具概览' : 'Overview', content: overview },
+              { id: 'usage', title: zh ? '使用方法' : 'Usage', content: usage },
+              { id: 'permissions', title: zh ? '权限与 Agent' : 'Permissions & Agent', content: <ToolPermissions data={data} lang={lang} /> },
+            ]}
+          />
+        </div>
+        <aside className="site-info">
+          <h3>{zh ? '工具信息' : 'Tool information'}</h3>
+          {[
+            [zh ? '使用方式' : 'Use through', zh ? '桌面应用' : 'Desktop app'],
+            [zh ? '安装来源' : 'Source', market ? (zh ? '工具市场' : 'Tool market') : zh ? '应用内置' : 'Built-in'],
+            [zh ? '已发布插件版本' : 'Published plugin', tool.publishedVersion ?? '—'],
+            [zh ? '最低宿主版本' : 'Minimum app', data.minAppVersion || '—'],
+            [zh ? '系统权限' : 'Permissions', String(data.permissions.length)],
+          ].map(([label, value]) => (
+            <div className="site-info-row" key={label}>
+              <span>{label}</span>
+              <span>{value}</span>
+            </div>
+          ))}
+          <p className="site-info-help">
+            {zh ? '查看输入说明与所需权限，再选择适合你的使用方式。' : 'Review the inputs and permissions, then choose how to use the tool.'}
+          </p>
+          <Link className="site-link" href={`/${lang}/guide/start/`}>
+            {t.guideStart}
+            <ArrowRight aria-hidden="true" />
+          </Link>
+        </aside>
+      </div>
+      {related.length > 0 && (
+        <section className="site-tool-related site-section">
+          <div className="site-section-head">
+            <h2>{zh ? '继续探索，同样顺手' : 'More tools, just as useful'}</h2>
+            <Link className="site-link" href={`/${lang}/tools/`}>
+              {t.viewAll}
+              <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+          <div className="site-grid">
+            {related.map((item) => (
+              <ToolCard key={item.slug} tool={item} lang={lang} />
+            ))}
+          </div>
+        </section>
+      )}
     </article>
   )
 }

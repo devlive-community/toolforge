@@ -24,6 +24,11 @@ export interface ToolEntry {
   status?: ToolStatus
   /** status 为 upcoming 且由“有未发布的更新”引起（而非全新工具）时为 true */
   updateOnly?: boolean
+  /** Whether the current online registry could be read and checked. */
+  releaseVerified?: boolean
+  publishedVersion?: string
+  hasIcon?: boolean
+  builtinFallback?: boolean
 }
 
 export interface ReleaseAssetSet {
@@ -39,7 +44,7 @@ export interface ReleaseData {
   version: string
   url: string
   assets: ReleaseAssetSet
-  releases: { tag: string; name: string; date: string; body: string }[]
+  releases: { tag: string; name: string; date: string; body: string; summary?: { features: string[]; fixes: string[]; other: string[]; hidden: number } }[]
   fallback?: boolean
 }
 
@@ -61,6 +66,10 @@ export function toolStatus(tool: ToolEntry): ToolStatus {
 /** 分发渠道：缺失视为内置（历史数据兼容） */
 export function toolChannel(tool: ToolEntry): ToolChannel {
   return tool.channel ?? 'builtin'
+}
+
+export function canInstall(tool: ToolEntry): boolean {
+  return toolChannel(tool) === 'market' && tool.releaseVerified === true && Boolean(tool.publishedVersion)
 }
 
 /** 在线插件的应用内完整 id：官网与安装索引共用的 id 前缀 */
