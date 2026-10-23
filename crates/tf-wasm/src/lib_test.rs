@@ -345,3 +345,56 @@ fn calls_a_built_plugin() {
     println!("{:?} in {:?}", out, started.elapsed());
     assert!(out.is_ok());
 }
+
+#[test]
+fn file_scope_limits_reads_and_writes_to_granted_folders() {
+    let root = std::env::temp_dir().join(format!("tf-wasm-scope-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&root);
+    let (granted, outside) = (root.join("granted"), root.join("outside"));
+    std::fs::create_dir_all(&granted).unwrap();
+    std::fs::create_dir_all(&outside).unwrap();
+    std::fs::write(granted.join("in.txt"), "in").unwrap();
+    std::fs::write(outside.join("out.txt"), "out").unwrap();
+    let read = |p: &std::path::Path| json!({ "path": p.to_string_lossy() });
+
+    let plugin = load();
+    plugin.set_file_scope(FileScope::Roots {
+        read: vec![granted.canonicalize().unwrap()],
+        write: Vec::new(),
+    });
+    let ok = plugin
+        .run_task("read", read(&granted.join("in.txt")), &Ctx::default())
+        .unwrap();
+    assert_eq!(ok["text"], "in");
+    let err = plugin
+        .run_task("read", read(&outside.join("out.txt")), &Ctx::default())
+        .unwrap_err();
+    assert_eq!(err.code, "plugin.path_denied");
+    let escape = granted.join("../outside/out.txt");
+    let err = plugin
+        .run_task("read", read(&escape), &Ctx::default())
+        .unwrap_err();
+    assert_eq!(err.code, "plugin.path_denied", ".. cannot leave the folder");
+    let write = json!({ "path": granted.join("new.txt").to_string_lossy(), "text": "x" });
+    let err = plugin.call("write", write.clone()).unwrap_err();
+    assert_eq!(
+        err.code, "plugin.path_denied",
+        "read-only folders cannot be written"
+    );
+
+    plugin.set_file_scope(FileScope::Roots {
+        read: Vec::new(),
+        write: vec![granted.canonicalize().unwrap()],
+    });
+    plugin.call("write", write).unwrap();
+    assert_eq!(
+        std::fs::read_to_string(granted.join("new.txt")).unwrap(),
+        "x"
+    );
+
+    plugin.set_file_scope(FileScope::Any);
+    plugin
+        .run_task("read", read(&outside.join("out.txt")), &Ctx::default())
+        .unwrap();
+    std::fs::remove_dir_all(root).unwrap();
+}

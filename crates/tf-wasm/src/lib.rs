@@ -8,6 +8,7 @@
 
 use std::collections::HashMap;
 use std::io::{Read, Seek, SeekFrom};
+use std::path::{Path, PathBuf};
 use std::sync::{Mutex, OnceLock};
 use std::time::Duration;
 
@@ -80,12 +81,54 @@ struct TaskSlot(*const (dyn TaskContext + 'static));
 // SAFETY: 指针只在持有实例锁的同一次 run_task 调用中被解引用，调用返回前清空
 unsafe impl Send for TaskSlot {}
 
+/// 插件文件访问的范围
+#[derive(Debug, Clone, Default, PartialEq)]
+pub enum FileScope {
+    /// 不额外限制：桌面端界面调用，路径来自用户在对话框中的选择
+    #[default]
+    Any,
+    /// 只允许授权目录内（AI Agent 调用）；可写目录同时可读
+    Roots {
+        read: Vec<PathBuf>,
+        write: Vec<PathBuf>,
+    },
+}
+
+/// 规范化路径：存在时解析符号链接与 `..`；不存在时（将要写入的新文件）规范化其父目录
+pub fn normalize_path(path: &Path) -> Option<PathBuf> {
+    if let Ok(real) = path.canonicalize() {
+        return Some(real);
+    }
+    let parent = path.parent()?.canonicalize().ok()?;
+    Some(parent.join(path.file_name()?))
+}
+
+impl FileScope {
+    pub fn allows(&self, path: &Path, write: bool) -> bool {
+        match self {
+            Self::Any => true,
+            Self::Roots {
+                read,
+                write: writable,
+            } => {
+                let Some(target) = normalize_path(path) else {
+                    return false;
+                };
+                let inside = |roots: &[PathBuf]| roots.iter().any(|r| target.starts_with(r));
+                inside(writable) || (!write && inside(read))
+            }
+        }
+    }
+}
+
 struct State {
     wasi: WasiCtx,
     table: ResourceTable,
     limits: StoreLimits,
     task: Option<TaskSlot>,
     can_read_files: bool,
+    /// 本次调用允许访问的路径范围
+    scope: FileScope,
     can_network: bool,
     /// 回调监听；实例丢弃时随之关闭并释放端口
     callbacks: HashMap<u32, CallbackServer>,
@@ -96,6 +139,14 @@ struct State {
 }
 
 impl State {
+    fn within_scope(&self, path: &str, write: bool) -> Result<(), host::Failure> {
+        if self.scope.allows(Path::new(path), write) {
+            Ok(())
+        } else {
+            Err(failure("plugin.path_denied", path))
+        }
+    }
+
     fn task(&self) -> Option<&dyn TaskContext> {
         // SAFETY: 见 TaskSlot；run_task 返回前一定会把 task 置为 None
         self.task.as_ref().map(|slot| unsafe { &*slot.0 })
@@ -162,6 +213,7 @@ impl host::Host for State {
         if !self.can_read_files {
             return Err(failure("plugin.permission_denied", FS_PERMISSION));
         }
+        self.within_scope(&path, false)?;
         let meta = std::fs::metadata(&path).map_err(|e| failure("fs.not_found", e))?;
         if meta.is_dir() {
             return Err(failure("fs.not_a_file", &path));
@@ -178,6 +230,7 @@ impl host::Host for State {
         if !self.can_read_files {
             return Err(failure("plugin.permission_denied", FS_PERMISSION));
         }
+        self.within_scope(&path, false)?;
         let mut file = std::fs::File::open(&path).map_err(|e| failure("fs.io", e))?;
         file.seek(SeekFrom::Start(offset))
             .map_err(|e| failure("fs.io", e))?;
@@ -192,6 +245,7 @@ impl host::Host for State {
         if !self.can_read_files {
             return Err(failure("plugin.permission_denied", FS_PERMISSION));
         }
+        self.within_scope(&path, true)?;
         tf_net::write_file(&path, &data).map_err(to_failure)
     }
 
@@ -340,6 +394,7 @@ pub struct WasmPlugin {
     linker: Linker<State>,
     instance: Mutex<Option<Instance>>,
     call_ticks: u64,
+    scope: Mutex<FileScope>,
 }
 
 fn load_error(detail: impl ToString) -> PluginError {
@@ -375,11 +430,17 @@ impl WasmPlugin {
             linker,
             instance: Mutex::new(None),
             call_ticks: CALL_TICKS,
+            scope: Mutex::new(FileScope::Any),
         };
         // 立即实例化一次，尽早发现缺失的导入或导出
         let instance = plugin.instantiate()?;
         *plugin.instance.lock().unwrap_or_else(|e| e.into_inner()) = Some(instance);
         Ok(plugin)
+    }
+
+    /// 之后的调用只允许访问该范围内的文件（命令行的 MCP 服务按 agent 授权目录设置）
+    pub fn set_file_scope(&self, scope: FileScope) {
+        *self.scope.lock().unwrap_or_else(|e| e.into_inner()) = scope;
     }
 
     /// 修改普通调用的超时（默认 30 秒）
@@ -395,6 +456,7 @@ impl WasmPlugin {
             limits: StoreLimitsBuilder::new().memory_size(MEMORY_LIMIT).build(),
             task: None,
             can_read_files: self.manifest.permissions.iter().any(|p| p == FS_PERMISSION),
+            scope: FileScope::Any,
             can_network: self
                 .manifest
                 .permissions
@@ -427,6 +489,8 @@ impl WasmPlugin {
         }
         let instance = guard.as_mut().expect("instance created above");
         instance.store.set_epoch_deadline(ticks);
+        instance.store.data_mut().scope =
+            self.scope.lock().unwrap_or_else(|e| e.into_inner()).clone();
         // SAFETY: 擦除生命周期后存入 store；本函数返回前（含出错路径）一定清空
         instance.store.data_mut().task = task.map(|ctx| {
             TaskSlot(unsafe {

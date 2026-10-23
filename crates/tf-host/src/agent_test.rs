@@ -166,6 +166,11 @@ fn paths_must_stay_inside_granted_folders() {
         );
     }
 
+    let scope = policy.file_scope();
+    assert!(scope.allows(&readable.join("a.txt"), false));
+    assert!(!scope.allows(&outside.join("secret"), false));
+    assert!(scope.allows(&writable.join("new.txt"), true));
+
     let read = interface("read", &[FS_PERMISSION], false);
     let denied = policy.decide(
         PLUGIN,

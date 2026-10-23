@@ -67,15 +67,7 @@ pub struct Policy {
     roots: Vec<Root>,
 }
 
-/// 规范化路径：存在时解析符号链接；不存在时（将要写入的新文件）规范化其父目录
-pub fn normalize(path: &Path) -> Option<PathBuf> {
-    if let Ok(real) = path.canonicalize() {
-        return Some(real);
-    }
-    let parent = path.parent()?.canonicalize().ok()?;
-    let name = path.file_name()?;
-    Some(parent.join(name))
-}
+pub use tf_wasm::normalize_path as normalize;
 
 impl Policy {
     pub fn new(enabled: bool, grants: Vec<AgentGrant>, paths: &[AgentPath]) -> Self {
@@ -163,9 +155,23 @@ impl Policy {
             .any(|root| target.starts_with(&root.path) && (root.write || !write))
     }
 
-    /// 可读、可写的授权目录，用于限制 WASM 插件的文件访问
     pub fn roots(&self) -> &[Root] {
         &self.roots
+    }
+
+    /// WASM 插件的文件访问范围：只允许授权目录
+    pub fn file_scope(&self) -> tf_wasm::FileScope {
+        let pick = |write: bool| {
+            self.roots
+                .iter()
+                .filter(|r| r.write == write)
+                .map(|r| r.path.clone())
+                .collect()
+        };
+        tf_wasm::FileScope::Roots {
+            read: pick(false),
+            write: pick(true),
+        }
     }
 
     /// 判断一次调用；paths 为声明为路径的参数（路径，是否写入）
