@@ -9148,6 +9148,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-log-viewer"
+version = "0.1.0"
+dependencies = [
+ "encoding_rs",
+ "memchr",
+ "regex",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-low-poly"
 version = "0.1.0"
 dependencies = [
@@ -9784,18 +9797,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-log-viewer"
-version = "0.1.0"
-dependencies = [
- "encoding_rs",
- "memchr",
- "regex",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-ocr"
 version = "0.1.0"
 dependencies = [
@@ -10291,7 +10292,6 @@ dependencies = [
  "tfp-image-compressor",
  "tfp-input-stats",
  "tfp-local-server",
- "tfp-log-viewer",
  "tfp-ocr",
  "tfp-port-manager",
  "tfp-proxy-inspector",

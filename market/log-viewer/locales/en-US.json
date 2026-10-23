@@ -77,8 +77,7 @@
     "log.invalid_level": "Unknown level {{level}}",
     "log.line_out_of_range": "Line {{line}} does not exist",
     "log.view_expired": "The filter changed; the list will reload",
-    "log.file_expired": "The file was closed; open it again",
-    "log.filter_failed": "Filtering failed"
+    "log.file_expired": "The file was closed; open it again"
   },
   "export": {
     "selected_one": "{{count}} line selected",
@@ -88,5 +87,22 @@
     "copied_one": "Copied {{count}} line as HTML",
     "copied_other": "Copied {{count}} lines as HTML",
     "limited": "Exports are limited to {{max}} lines"
+  },
+  "api": {
+    "search": {
+      "summary": "Search a log file by text or regex and level, returning matching lines with line numbers",
+      "path": "Log file",
+      "query": "Text to find; empty matches every line",
+      "regex": "Treat the query as a regular expression",
+      "caseSensitive": "Match case",
+      "levels": "Levels to keep: none, trace, debug, info, warn, error; empty keeps all",
+      "offset": "Number of matches to skip",
+      "limit": "Matches to return, at most 1000"
+    },
+    "columns": {
+      "n": "Line",
+      "level": "Level",
+      "text": "Text"
+    }
   }
 }

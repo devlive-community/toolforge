@@ -1,7 +1,6 @@
 //! 行索引：记录每个完整行的起始偏移与级别，支持从上次位置继续扫描（文件追加时）。
 //! 没有换行结尾的最后一行称为尾行，文件继续增长时它可能变长，因此单独处理。
 
-use std::fs::File;
 use std::io::{Read, Seek, SeekFrom};
 
 use tf_plugin_api::{PluginError, PluginResult, cancelled};
@@ -41,7 +40,7 @@ impl Index {
     }
 
     /// 行的字节范围（不含换行符与行尾的 \r）
-    pub fn range(&self, line: usize, file: &mut File) -> PluginResult<(u64, u64)> {
+    pub fn range<R: Read + Seek>(&self, line: usize, file: &mut R) -> PluginResult<(u64, u64)> {
         let (start, end) = if line < self.complete() {
             let next = self
                 .starts
@@ -71,16 +70,16 @@ impl Index {
     }
 
     /// 从尾行起点扫描到 upto，记录新出现的完整行
-    pub fn scan(
+    pub fn scan<R: Read + Seek>(
         &mut self,
-        file: &mut File,
+        file: &mut R,
         upto: u64,
         mut progress: impl FnMut(u64),
         is_cancelled: impl Fn() -> bool,
     ) -> PluginResult<()> {
         file.seek(SeekFrom::Start(self.tail_start))
             .map_err(io_error)?;
-        let mut reader = file.take(upto.saturating_sub(self.tail_start));
+        let mut reader = file.by_ref().take(upto.saturating_sub(self.tail_start));
         let mut buffer = vec![0u8; CHUNK];
         let mut position = self.tail_start;
         let mut line_start = self.tail_start;

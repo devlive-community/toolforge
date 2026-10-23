@@ -67,7 +67,6 @@
 | **应用图标生成** | 由一张图片或 SVG 生成整套图标：Web（favicon.ico、PNG、webmanifest 与 HTML 片段）、iOS（Xcode AppIcon.appiconset）、Android（mipmap 与圆形图标）、macOS（.icns）、Windows（多尺寸 .ico），可设置留白、背景色与圆角；也可以把图片放进文件夹、磁盘、文档、光盘盒、相片、卡带等 37 种模板，导出 PNG / ICNS / ICO，或直接设为文件夹图标（macOS 上还可设到磁盘与任意文件），并可一键恢复默认图标 |
 | **CSV 查看器** | 打开最大 1 GB 的 CSV / TSV 文件（百万行不到一秒），自动识别编码、分隔符与表头；支持排序、搜索、筛选、列统计，并可导出为 CSV / TSV / JSON / Markdown |
 | **电子表格查看器** | 打开 xlsx / xlsm / xlsb / xls / ods 工作簿（最大 512 MB），工作表标签切换；支持排序、搜索、筛选、列统计，日期与公式结果自动转为可读文本，当前视图可导出为 CSV / TSV / JSON / Markdown |
-| **日志查看** | 秒开 GB 级日志，按级别、文本或正则筛选并高亮，像 `tail -f` 一样实时跟踪新行，查看行内 JSON；支持 GB18030 编码并去除颜色控制码 |
 
 更多工具持续开发中。
 

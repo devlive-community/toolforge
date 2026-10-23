@@ -45,7 +45,6 @@ tfp-hash = { path = "plugins/hash/backend" }
 tfp-image-compressor = { path = "plugins/image-compressor/backend" }
 tfp-input-stats = { path = "plugins/input-stats/backend" }
 tfp-local-server = { path = "plugins/local-server/backend" }
-tfp-log-viewer = { path = "plugins/log-viewer/backend" }
 tfp-ocr = { path = "plugins/ocr/backend" }
 tfp-text-encoding = { path = "plugins/text-encoding/backend" }
 tfp-icon-generator = { path = "plugins/icon-generator/backend" }

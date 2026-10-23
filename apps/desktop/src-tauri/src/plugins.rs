@@ -34,7 +34,6 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
         Arc::new(tfp_image_compressor::ImageCompressor::default()),
         os,
     );
-    registry.register_for(Arc::new(tfp_log_viewer::LogViewer::default()), os);
     registry.register_for(Arc::new(tfp_batch_rename::BatchRename::default()), os);
     registry.register_for(
         Arc::new(tfp_duplicate_finder::DuplicateFinder::default()),

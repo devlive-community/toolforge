@@ -67,7 +67,6 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **App Icon Generator** | Turn one image or SVG into icon sets for the web (favicon.ico, PNGs, webmanifest and HTML snippet), iOS (Xcode AppIcon.appiconset), Android (mipmaps and round icons), macOS (.icns) and Windows (multi-size .ico), with padding, background color and corner radius; or drop the image into 37 templates such as folders, drives, documents, disc cases, photos and cartridges, export PNG / ICNS / ICO and set it as a folder icon (on macOS also on drives and any file), with one click to restore the default |
 | **CSV Viewer** | Open CSV / TSV files up to 1 GB (a million rows in under a second) with automatic encoding, delimiter and header detection; sort, search, filter, column statistics and export to CSV / TSV / JSON / Markdown |
 | **Spreadsheet Viewer** | Open xlsx / xlsm / xlsb / xls / ods workbooks up to 512 MB with sheet tabs, sorting, search, filters and column statistics; dates and formula results become readable text, and the current view exports to CSV / TSV / JSON / Markdown |
-| **Log Viewer** | Open gigabyte log files instantly, filter by level, text or regex with highlighted matches, follow new lines like `tail -f`, and inspect JSON inside lines; GB18030 and ANSI colors handled |
 
 More tools are on the way.
 

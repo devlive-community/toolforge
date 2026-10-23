@@ -3,6 +3,7 @@
 
 mod ansi;
 mod doc;
+mod file;
 mod index;
 mod level;
 mod text;
@@ -106,6 +107,25 @@ struct IdArgs {
     id: u64,
 }
 
+/// 一次性搜索（命令行与 Agent）：打开、筛选并返回一页结果，不保留会话
+#[derive(Deserialize)]
+struct SearchArgs {
+    path: String,
+    #[serde(flatten)]
+    filter: Filter,
+    #[serde(default)]
+    offset: usize,
+    #[serde(default = "default_limit")]
+    limit: usize,
+}
+
+#[derive(Serialize)]
+struct Found {
+    n: usize,
+    level: &'static str,
+    text: String,
+}
+
 pub struct LogViewer {
     manifest: Manifest,
     docs: Docs,
@@ -177,6 +197,33 @@ impl LogViewer {
         );
         Ok(json!({ "view": view, "total": total, "elapsedMs": elapsed_ms }))
     }
+
+    fn search(&self, args: SearchArgs, ctx: &dyn TaskContext) -> PluginResult<Value> {
+        ctx.stage("log.index");
+        let doc = Doc::open(
+            Path::new(&args.path),
+            |done, total| ctx.progress(done, total),
+            || ctx.is_cancelled(),
+        )?;
+        ctx.stage("log.filter");
+        let cancelled = || ctx.is_cancelled();
+        let (view, _) = doc.filter(
+            &args.filter,
+            |done, all| ctx.progress(done, all),
+            &cancelled,
+        )?;
+        let page = doc.page(view, args.offset, args.limit.min(MAX_PAGE))?;
+        let lines: Vec<Found> = page
+            .lines
+            .into_iter()
+            .map(|line| Found {
+                n: line.n,
+                level: line.level,
+                text: line.text,
+            })
+            .collect();
+        Ok(json!({ "total": page.total, "lines": lines }))
+    }
 }
 
 impl ToolPlugin for LogViewer {
@@ -212,7 +259,14 @@ impl ToolPlugin for LogViewer {
         match function {
             "open" => to_value(self.open(parse_args(args)?, ctx)?),
             "filter" => self.filter(parse_args(args)?, ctx),
+            "search" => self.search(parse_args(args)?, ctx),
             _ => self.call(function, args),
         }
     }
 }
+
+tf_plugin_guest::export_plugin!(LogViewer);
+
+#[cfg(test)]
+#[path = "lib_test.rs"]
+mod tests;

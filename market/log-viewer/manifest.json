@@ -1,0 +1,45 @@
+{
+  "id": "org.devlive.toolforge.log-viewer",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["log", "logs", "tail", "tail -f", "follow", "grep", "filter", "error", "stack trace", "large file", "ansi", "color", "html", "日志", "日志查看", "大文件", "筛选", "实时跟踪"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "functions": {
+    "open": { "task": true, "interface": false },
+    "filter": { "task": true, "interface": false },
+    "search": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.search.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.search.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "query": { "type": "string", "description": "i18n:api.search.query", "x-positional": 1 },
+            "regex": { "type": "boolean", "description": "i18n:api.search.regex", "default": false },
+            "caseSensitive": { "type": "boolean", "description": "i18n:api.search.caseSensitive", "default": false },
+            "levels": { "type": "array", "description": "i18n:api.search.levels", "items": { "type": "string" } },
+            "offset": { "type": "integer", "description": "i18n:api.search.offset", "minimum": 0, "default": 0 },
+            "limit": { "type": "integer", "description": "i18n:api.search.limit", "minimum": 1, "maximum": 1000, "default": 200 }
+          }
+        },
+        "output": { "table": "/lines", "columns": [{ "key": "n", "label": "i18n:api.columns.n" }, { "key": "level", "label": "i18n:api.columns.level" }, { "key": "text", "label": "i18n:api.columns.text" }] },
+        "examples": ["tfp-log-viewer search app.log timeout --levels error --levels warn", "tfp-log-viewer search app.log 'user=\\d+' --regex --limit 50"]
+      }
+    },
+    "lines": { "interface": false },
+    "line": { "interface": false },
+    "refresh": { "interface": false },
+    "export": { "interface": false }
+  },
+  "sensitive": false
+}
