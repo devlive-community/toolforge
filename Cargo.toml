@@ -57,7 +57,6 @@ tfp-context-menu = { path = "plugins/context-menu/backend" }
 tfp-port-manager = { path = "plugins/port-manager/backend" }
 tfp-proxy-inspector = { path = "plugins/proxy-inspector/backend" }
 tfp-qrcode = { path = "plugins/qrcode/backend" }
-tfp-regex = { path = "plugins/regex/backend" }
 tfp-ssh-key = { path = "plugins/ssh-key/backend" }
 tfp-system-monitor = { path = "plugins/system-monitor/backend" }
 tfp-websocket = { path = "plugins/websocket/backend" }

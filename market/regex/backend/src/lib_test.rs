@@ -19,3 +19,9 @@ fn dispatches_test_and_replace() {
         .unwrap();
     assert_eq!(replaced["output"], "f00");
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked = tf_plugin_api::interface::check_declared_interfaces(&Regex::default()).unwrap();
+    assert_eq!(checked, 3);
+}

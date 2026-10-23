@@ -4,6 +4,7 @@ fn test_with(pattern: &str, flags: Flags, input: &str) -> PluginResult<TestOutpu
     test(TestArgs {
         pattern: pattern.into(),
         flags,
+        inline: Flags::default(),
         input: input.into(),
     })
 }
@@ -109,10 +110,27 @@ fn replaces_with_numbered_and_named_references() {
     let out = replace(ReplaceArgs {
         pattern: r"(?P<y>\d{4})-(\d{2})".into(),
         flags: Flags::default(),
+        inline: Flags::default(),
         input: "2024-02 and 2025-11".into(),
         replacement: "$2/${y}".into(),
     })
     .unwrap();
     assert_eq!(out.output, "02/2024 and 11/2025");
     assert_eq!(out.count, 2);
+}
+
+#[test]
+fn flat_flags_combine_with_structured_flags() {
+    let out = test(TestArgs {
+        pattern: "^hello$".into(),
+        flags: Flags::default(),
+        inline: Flags {
+            case_insensitive: true,
+            multi_line: true,
+            ..Flags::default()
+        },
+        input: "x\nHELLO\ny".into(),
+    })
+    .unwrap();
+    assert_eq!(out.count, 1);
 }

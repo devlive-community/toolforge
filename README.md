@@ -38,7 +38,6 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 
 | Tool | Description |
 |------|-------------|
-| **Regex Tester** | Live match and group highlighting with replacement preview; lookaround, backreferences and named groups; common pattern presets |
 | **Hash** | MD5, SHA-1, SHA-2, SHA3, SM3 and CRC32; live text hashing and HMAC with verification; drop files to hash them in a background task with live logs |
 | **JWT Decoder** | Decode headers and payloads, check expiry, verify HS / RS / PS / ES / EdDSA signatures and sign new tokens |
 | **Certificate Viewer** | Inspect PEM / DER certificates and chains (names, SANs, validity, key, usages, fingerprints), or fetch the chain a server presents and verify it with the system trust store, showing the TLS version and cipher |

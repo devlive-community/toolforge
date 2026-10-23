@@ -4,6 +4,7 @@ fn run(pattern: &str, input: &str) -> Report {
     analyze(Args {
         pattern: pattern.into(),
         flags: Flags::default(),
+        inline: Flags::default(),
         input: input.into(),
     })
     .unwrap()
@@ -106,8 +107,20 @@ fn rejects_invalid_patterns() {
     let err = analyze(Args {
         pattern: "(".into(),
         flags: Flags::default(),
+        inline: Flags::default(),
         input: String::new(),
     })
     .unwrap_err();
     assert_eq!(err.code, "regex.invalid");
+}
+
+/// 超过递归深度上限时按超出预算停止，而不是报告不支持
+#[test]
+fn stops_at_the_depth_limit_as_exceeded() {
+    let expr = Expr::parse_tree("(a|b)*c").unwrap().expr;
+    let text = "ab".repeat(50);
+    let (run, unsupported) = simulate_limited(&expr, &text, 20);
+    assert!(run.exceeded && !unsupported);
+    let (run, _) = simulate_limited(&expr, &text, usize::MAX);
+    assert!(!run.exceeded);
 }

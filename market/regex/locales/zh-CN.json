@@ -119,5 +119,41 @@
     "exceeded": "超过 {{budget}} 步",
     "matched": "匹配",
     "noMatch": "不匹配"
+  },
+  "api": {
+    "test": {
+      "summary": "查找正则表达式的全部匹配及分组",
+      "pattern": "正则表达式，支持断言与反向引用",
+      "input": "要搜索的文本",
+      "caseInsensitive": "忽略大小写（i）",
+      "multiLine": "^ 与 $ 匹配每行的开头和结尾（m）",
+      "dotAll": "点号匹配换行（s）",
+      "extended": "忽略表达式中的空白并允许注释（x）"
+    },
+    "columns": {
+      "index": "#",
+      "start": "起点",
+      "end": "终点",
+      "text": "匹配"
+    },
+    "replace": {
+      "summary": "替换正则表达式的全部匹配，可用 $1 或 ${name} 引用分组",
+      "pattern": "正则表达式，支持断言与反向引用",
+      "input": "要替换的文本",
+      "replacement": "替换文本",
+      "caseInsensitive": "忽略大小写（i）",
+      "multiLine": "^ 与 $ 匹配每行的开头和结尾（m）",
+      "dotAll": "点号匹配换行（s）",
+      "extended": "忽略表达式中的空白并允许注释（x）"
+    },
+    "analyze": {
+      "summary": "检查正则表达式的灾难性回溯（ReDoS）风险并测量步数增长",
+      "pattern": "正则表达式，支持断言与反向引用",
+      "input": "可选的模拟样本文本",
+      "caseInsensitive": "忽略大小写（i）",
+      "multiLine": "^ 与 $ 匹配每行的开头和结尾（m）",
+      "dotAll": "点号匹配换行（s）",
+      "extended": "忽略表达式中的空白并允许注释（x）"
+    }
   }
 }

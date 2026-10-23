@@ -1,0 +1,80 @@
+{
+  "id": "org.devlive.toolforge.regex",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["regex", "regexp", "regular expression", "match", "replace", "redos", "backtracking", "正则", "正则表达式", "匹配", "替换", "回溯"],
+  "accent": "pink",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "test": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.test.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["pattern", "input"],
+          "properties": {
+            "pattern": { "type": "string", "description": "i18n:api.test.pattern", "x-positional": 0 },
+            "input": { "type": "string", "description": "i18n:api.test.input", "x-stdin": true },
+            "caseInsensitive": { "type": "boolean", "description": "i18n:api.test.caseInsensitive", "default": false },
+            "multiLine": { "type": "boolean", "description": "i18n:api.test.multiLine", "default": false },
+            "dotAll": { "type": "boolean", "description": "i18n:api.test.dotAll", "default": false },
+            "extended": { "type": "boolean", "description": "i18n:api.test.extended", "default": false }
+          }
+        },
+        "output": { "table": "/matches", "columns": [{ "key": "index", "label": "i18n:api.columns.index" }, { "key": "start", "label": "i18n:api.columns.start" }, { "key": "end", "label": "i18n:api.columns.end" }, { "key": "text", "label": "i18n:api.columns.text" }] },
+        "examples": ["echo 'a1 b22 c333' | tfp-regex test '[a-z](\\d+)'"]
+      }
+    },
+    "replace": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.replace.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["pattern", "input", "replacement"],
+          "properties": {
+            "pattern": { "type": "string", "description": "i18n:api.replace.pattern", "x-positional": 0 },
+            "input": { "type": "string", "description": "i18n:api.replace.input", "x-stdin": true },
+            "replacement": { "type": "string", "description": "i18n:api.replace.replacement" },
+            "caseInsensitive": { "type": "boolean", "description": "i18n:api.replace.caseInsensitive", "default": false },
+            "multiLine": { "type": "boolean", "description": "i18n:api.replace.multiLine", "default": false },
+            "dotAll": { "type": "boolean", "description": "i18n:api.replace.dotAll", "default": false },
+            "extended": { "type": "boolean", "description": "i18n:api.replace.extended", "default": false }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["echo '2026-10-23' | tfp-regex replace '(\\d+)-(\\d+)-(\\d+)' --replacement '$3/$2/$1'"]
+      }
+    },
+    "analyze": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.analyze.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["pattern"],
+          "properties": {
+            "pattern": { "type": "string", "description": "i18n:api.analyze.pattern", "x-positional": 0 },
+            "input": { "type": "string", "description": "i18n:api.analyze.input", "default": "" },
+            "caseInsensitive": { "type": "boolean", "description": "i18n:api.analyze.caseInsensitive", "default": false },
+            "multiLine": { "type": "boolean", "description": "i18n:api.analyze.multiLine", "default": false },
+            "dotAll": { "type": "boolean", "description": "i18n:api.analyze.dotAll", "default": false },
+            "extended": { "type": "boolean", "description": "i18n:api.analyze.extended", "default": false }
+          }
+        },
+        "examples": ["tfp-regex analyze '(a+)+$'"]
+      }
+    }
+  },
+  "sensitive": false
+}

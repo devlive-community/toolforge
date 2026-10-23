@@ -28,11 +28,26 @@ pub struct Flags {
     pub extended: bool,
 }
 
+impl Flags {
+    /// 合并结构化的 flags 与命令行、Agent 的扁平写法：任一处打开即生效
+    pub fn or(self, other: Flags) -> Flags {
+        Flags {
+            case_insensitive: self.case_insensitive || other.case_insensitive,
+            multi_line: self.multi_line || other.multi_line,
+            dot_all: self.dot_all || other.dot_all,
+            extended: self.extended || other.extended,
+        }
+    }
+}
+
 #[derive(Deserialize)]
 pub struct TestArgs {
     pub pattern: String,
     #[serde(default)]
     pub flags: Flags,
+    /// 命令行与 Agent 的扁平写法
+    #[serde(flatten)]
+    pub inline: Flags,
     pub input: String,
 }
 
@@ -41,6 +56,9 @@ pub struct ReplaceArgs {
     pub pattern: String,
     #[serde(default)]
     pub flags: Flags,
+    /// 命令行与 Agent 的扁平写法
+    #[serde(flatten)]
+    pub inline: Flags,
     pub input: String,
     pub replacement: String,
 }
@@ -127,7 +145,7 @@ fn check_input(input: &str) -> PluginResult<()> {
 
 pub fn test(args: TestArgs) -> PluginResult<TestOutput> {
     check_input(&args.input)?;
-    let regex = build(&args.pattern, args.flags)?;
+    let regex = build(&args.pattern, args.flags.or(args.inline))?;
     let start = Instant::now();
     let offsets = Utf16Offsets::new(&args.input);
     let group_names: Vec<Option<String>> = regex
@@ -175,7 +193,7 @@ pub fn test(args: TestArgs) -> PluginResult<TestOutput> {
 
 pub fn replace(args: ReplaceArgs) -> PluginResult<ReplaceOutput> {
     check_input(&args.input)?;
-    let regex = build(&args.pattern, args.flags)?;
+    let regex = build(&args.pattern, args.flags.or(args.inline))?;
     let start = Instant::now();
     let mut count = 0;
     for m in regex.find_iter(&args.input) {

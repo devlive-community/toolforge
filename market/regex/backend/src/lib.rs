@@ -37,6 +37,8 @@ impl ToolPlugin for Regex {
     }
 }
 
+tf_plugin_guest::export_plugin!(Regex);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

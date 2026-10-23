@@ -16,9 +16,20 @@ use crate::engine::Flags;
 const PROBES: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 \t\n\r!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~é中я😀\u{a0}";
 const STEP_BUDGET: u64 = 1_000_000;
 const TIME_BUDGET: Duration = Duration::from_secs(2);
+/// 模拟的样本长度：WASM 栈小（实测深度 800 时 200 字符内的常见表达式都能完整模拟），超出部分截断
+#[cfg(target_arch = "wasm32")]
+const MAX_SAMPLE_CHARS: usize = 200;
+#[cfg(not(target_arch = "wasm32"))]
 const MAX_SAMPLE_CHARS: usize = 2000;
 const ATTACK_LENGTHS: [usize; 3] = [10, 20, 40];
+#[cfg(not(target_arch = "wasm32"))]
 const SIM_STACK: usize = 128 * 1024 * 1024;
+/// 模拟器的最大递归深度：本机在大栈线程中运行不设限；WASM 栈只有 512 KB，
+/// 实测 2000 层会溢出、1000 层安全，取 800 留出余量，超过后按超出预算停止
+#[cfg(target_arch = "wasm32")]
+const MAX_DEPTH: usize = 800;
+#[cfg(not(target_arch = "wasm32"))]
+const MAX_DEPTH: usize = usize::MAX;
 /// 上限不小于这个值的量词视为「无界」
 const UNBOUNDED: usize = 16;
 
@@ -94,6 +105,9 @@ pub struct Args {
     pub pattern: String,
     #[serde(default)]
     pub flags: Flags,
+    /// 命令行与 Agent 的扁平写法
+    #[serde(flatten)]
+    pub inline: Flags,
     #[serde(default)]
     pub input: String,
 }
@@ -491,6 +505,9 @@ struct Sim {
     deadline: Instant,
     aborted: bool,
     unsupported: bool,
+    /// 当前 m 的嵌套层数与上限
+    depth: usize,
+    max_depth: usize,
     groups: HashMap<*const Expr, usize>,
     captures: Vec<Option<(usize, usize)>>,
     char_memo: HashMap<(*const Expr, char), bool>,
@@ -569,6 +586,17 @@ impl Sim {
     }
 
     fn m(&mut self, e: &Expr, pos: usize, k: Cont<'_>) -> bool {
+        if self.depth >= self.max_depth {
+            self.aborted = true;
+            return false;
+        }
+        self.depth += 1;
+        let hit = self.m_inner(e, pos, k);
+        self.depth -= 1;
+        hit
+    }
+
+    fn m_inner(&mut self, e: &Expr, pos: usize, k: Cont<'_>) -> bool {
         if !self.tick() {
             return false;
         }
@@ -732,6 +760,10 @@ impl Sim {
 }
 
 fn simulate(expr: &Expr, text: &str) -> (Run, bool) {
+    simulate_limited(expr, text, MAX_DEPTH)
+}
+
+fn simulate_limited(expr: &Expr, text: &str, max_depth: usize) -> (Run, bool) {
     let start = Instant::now();
     let mut groups = HashMap::new();
     number_groups(expr, &mut groups);
@@ -742,6 +774,8 @@ fn simulate(expr: &Expr, text: &str) -> (Run, bool) {
         deadline: start + TIME_BUDGET,
         aborted: false,
         unsupported: false,
+        depth: 0,
+        max_depth,
         groups,
         captures: Vec::new(),
         char_memo: HashMap::new(),
@@ -809,7 +843,7 @@ fn analyze_inner(args: Args) -> PluginResult<Report> {
     if args.pattern.is_empty() {
         return Err(PluginError::new("regex.empty"));
     }
-    let pattern = with_flags(&args.pattern, args.flags);
+    let pattern = with_flags(&args.pattern, args.flags.or(args.inline));
     let tree = Expr::parse_tree(&pattern)
         .map_err(|e| PluginError::new("regex.invalid").with("detail", e.to_string()))?;
     let expr = tree.expr;
@@ -870,7 +904,14 @@ fn analyze_inner(args: Args) -> PluginResult<Report> {
     })
 }
 
-/// 在大栈线程中分析，避免深度回溯递归撑爆调用线程的栈
+/// WASM 不能开线程，直接分析，靠 MAX_DEPTH 防止递归撑爆栈
+#[cfg(target_arch = "wasm32")]
+pub fn analyze(args: Args) -> PluginResult<Report> {
+    analyze_inner(args)
+}
+
+/// 本机在大栈线程中分析，避免深度回溯递归撑爆调用线程的栈
+#[cfg(not(target_arch = "wasm32"))]
 pub fn analyze(args: Args) -> PluginResult<Report> {
     std::thread::Builder::new()
         .stack_size(SIM_STACK)

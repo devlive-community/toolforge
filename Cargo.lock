@@ -9346,6 +9346,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-regex"
+version = "0.1.0"
+dependencies = [
+ "fancy-regex",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-registry-viewer"
 version = "0.1.0"
 dependencies = [
@@ -9877,16 +9888,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-regex"
-version = "0.1.0"
-dependencies = [
- "fancy-regex",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-ssh-key"
 version = "0.1.0"
 dependencies = [
@@ -10298,7 +10299,6 @@ dependencies = [
  "tfp-port-manager",
  "tfp-proxy-inspector",
  "tfp-qrcode",
- "tfp-regex",
  "tfp-ssh-key",
  "tfp-system-monitor",
  "tfp-text-encoding",

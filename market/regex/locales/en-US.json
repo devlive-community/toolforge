@@ -119,5 +119,41 @@
     "exceeded": "Over {{budget}} steps",
     "matched": "Match",
     "noMatch": "No match"
+  },
+  "api": {
+    "test": {
+      "summary": "Find every match of a regular expression with its groups",
+      "pattern": "Regular expression; lookaround and backreferences are supported",
+      "input": "Text to search",
+      "caseInsensitive": "Ignore case (i)",
+      "multiLine": "^ and $ match at line breaks (m)",
+      "dotAll": "Dot matches newlines (s)",
+      "extended": "Ignore whitespace and allow comments in the pattern (x)"
+    },
+    "columns": {
+      "index": "#",
+      "start": "Start",
+      "end": "End",
+      "text": "Match"
+    },
+    "replace": {
+      "summary": "Replace every match of a regular expression, with $1 or ${name} group references",
+      "pattern": "Regular expression; lookaround and backreferences are supported",
+      "input": "Text to change",
+      "replacement": "Replacement text",
+      "caseInsensitive": "Ignore case (i)",
+      "multiLine": "^ and $ match at line breaks (m)",
+      "dotAll": "Dot matches newlines (s)",
+      "extended": "Ignore whitespace and allow comments in the pattern (x)"
+    },
+    "analyze": {
+      "summary": "Check a regular expression for catastrophic backtracking (ReDoS) and measure step growth",
+      "pattern": "Regular expression; lookaround and backreferences are supported",
+      "input": "Optional sample text to simulate",
+      "caseInsensitive": "Ignore case (i)",
+      "multiLine": "^ and $ match at line breaks (m)",
+      "dotAll": "Dot matches newlines (s)",
+      "extended": "Ignore whitespace and allow comments in the pattern (x)"
+    }
   }
 }
