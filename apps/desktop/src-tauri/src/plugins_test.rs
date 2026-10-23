@@ -98,8 +98,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
             "ssh-key",
         ),
         ("550e8400-e29b-41d4-a716-446655440000", "uuid"),
-        ("#16a34a", "color"),
-        ("rgb(22 163 74)", "color"),
         ("q%3Dhello%20world", "encoder"),
         ("VG9vbEZvcmdlIOW3peWFt+eusQ==", "encoder"),
         (
@@ -131,6 +129,8 @@ fn clipboard_samples_suggest_the_right_tool_first() {
     }
     for text in [
         "<a><b>1</b></a>",
+        "#16a34a",
+        "rgb(22 163 74)",
         "0xDEADBEEF",
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.c2ln",
         "hello world",

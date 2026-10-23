@@ -60,5 +60,12 @@
   "errors": {
     "color.empty": "Enter a color",
     "color.invalid": "“{{input}}” is not a recognized color"
+  },
+  "api": {
+    "convert": {
+      "summary": "Parse a color and show it in every format with contrast, tints, shades and harmonies",
+      "input": "Color in any CSS form, such as #3b82f6, rgb(), hsl() or a name",
+      "compare": "Second color to measure contrast against"
+    }
   }
 }

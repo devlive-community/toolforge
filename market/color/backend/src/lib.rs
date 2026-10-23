@@ -37,6 +37,8 @@ impl ToolPlugin for ColorTool {
     }
 }
 
+tf_plugin_guest::export_plugin!(ColorTool);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

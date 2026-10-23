@@ -1,0 +1,32 @@
+{
+  "id": "org.devlive.toolforge.color",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "convert",
+  "keywords": ["color", "colour", "hex", "rgb", "hsl", "hsv", "hwb", "cmyk", "lab", "oklch", "contrast", "wcag", "palette", "颜色", "色值", "对比度", "配色"],
+  "accent": "pink",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "convert": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.convert.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.convert.input", "x-positional": 0, "x-stdin": true },
+            "compare": { "type": "string", "description": "i18n:api.convert.compare" }
+          }
+        },
+        "examples": ["tfp-color convert '#3b82f6'", "tfp-color convert '#3b82f6' --compare white"]
+      }
+    }
+  },
+  "sensitive": false
+}

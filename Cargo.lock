@@ -8680,6 +8680,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-color"
+version = "0.1.0"
+dependencies = [
+ "csscolorparser",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-cors-inspector"
 version = "0.1.0"
 dependencies = [
@@ -9274,16 +9285,6 @@ dependencies = [
  "sha2 0.10.9",
  "tf-plugin-api",
  "x509-parser",
-]
-
-[[package]]
-name = "tfp-color"
-version = "0.1.0"
-dependencies = [
- "csscolorparser",
- "serde",
- "serde_json",
- "tf-plugin-api",
 ]
 
 [[package]]
@@ -10252,7 +10253,6 @@ dependencies = [
  "tfp-barcode",
  "tfp-batch-rename",
  "tfp-certificate",
- "tfp-color",
  "tfp-context-menu",
  "tfp-cron",
  "tfp-csv-viewer",

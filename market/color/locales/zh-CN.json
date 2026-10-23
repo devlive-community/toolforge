@@ -60,5 +60,12 @@
   "errors": {
     "color.empty": "请输入颜色",
     "color.invalid": "无法识别的颜色：“{{input}}”"
+  },
+  "api": {
+    "convert": {
+      "summary": "解析颜色，给出各种格式、对比度、明暗色阶与配色方案",
+      "input": "任意 CSS 写法的颜色，如 #3b82f6、rgb()、hsl() 或颜色名",
+      "compare": "用于计算对比度的另一种颜色"
+    }
   }
 }

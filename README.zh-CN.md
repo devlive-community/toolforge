@@ -57,7 +57,6 @@
 | **表格转换** | 在 Markdown、CSV、TSV（Excel 粘贴）、HTML、JSON、SQL INSERT、LaTeX 与文本边框表格之间转换，自动识别输入格式，按中日韩字符宽度对齐，可设置每列对齐、表头与转置 |
 | **文档转换** | Excel 转 Word、Word 转 Excel 在本地完成（工作表与表格互转，数字保持为数值）；Word 转 PDF、PDF 转 Word 调用本机安装的 LibreOffice（自动查找）；支持批量转换，不覆盖已有文件 |
 | **.env 编辑器** | 表格方式编辑 .env 文件：注释、空行、顺序与引号风格全部保留，支持 export 开关、行内注释与转义值（\n、\"），保存前校验重复键与非法键名；可导出值已清空的 .env.example |
-| **颜色转换** | HEX / RGB / HSL / HSV / HWB / CMYK / Lab / OKLCH 互转，WCAG 对比度检查，明暗色阶与配色 |
 | **密码生成** | 密码学安全的随机密码，可按类型选择与排除字符，并在本地检查强度与破解时间 |
 | **SSH 密钥** | 生成 OpenSSH 格式的 Ed25519、ECDSA、RSA 密钥并可设置口令；查看密钥、authorized_keys 与 known_hosts 的 SHA256 / MD5 指纹和随机图（与 ssh-keygen 一致），转换 PEM 格式 RSA 私钥，修改口令 |
 | **二维码** | 生成 PNG / SVG 二维码，可设置纠错等级、尺寸与颜色；识别图片中的二维码 |

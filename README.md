@@ -57,7 +57,6 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 | **Table Converter** | Convert tables between Markdown, CSV, TSV (Excel paste), HTML, JSON, SQL INSERT, LaTeX and bordered text with automatic input detection, CJK-aware column alignment, per-column alignment, header and transpose options |
 | **Document Converter** | Excel → Word and Word → Excel in pure Rust (sheets become tables and tables become sheets, numbers stay numbers), plus Word → PDF and PDF → Word through a locally installed LibreOffice, found automatically; batch conversion that never overwrites |
 | **.env Editor** | Edit dotenv files as a table — comments, blank lines, order and quoting preserved, export toggles, inline comments, escaped values (\n, \"), duplicate and invalid key validation; exports a matching .env.example with values cleared |
-| **Color Converter** | HEX / RGB / HSL / HSV / HWB / CMYK / Lab / OKLCH, WCAG contrast checks, tints, shades and harmonies |
 | **Password Generator** | Cryptographically secure passwords with per-type options and exclusions, plus a local strength and crack-time check |
 | **SSH Keys** | Generate Ed25519, ECDSA and RSA keys in the OpenSSH format with passphrases, inspect keys, authorized_keys and known_hosts with SHA256 / MD5 fingerprints and randomart identical to ssh-keygen, convert PEM RSA keys and change passphrases |
 | **QR Code** | Generate QR codes as PNG / SVG with error correction, size and colors; read QR codes from images |
