@@ -207,7 +207,9 @@ fn skips_loading_after_app_downgrade() {
         .install(&bytes, None, true, |_| false)
         .unwrap();
     let older = Installed::new(root, "0.2.0");
-    assert_eq!(older.list().len(), 1, "the package stays installed");
+    let list = older.list();
+    assert_eq!(list.len(), 1, "the package stays installed");
+    assert_eq!(list[0].min_app_version.as_deref(), Some("0.3.0"));
     let err = older.load("org.example.demo").err().unwrap();
     assert_eq!(err.code, "market.needs_app");
 }

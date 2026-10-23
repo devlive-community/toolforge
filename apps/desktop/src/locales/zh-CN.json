@@ -283,6 +283,8 @@
         "needsApp": "需要 ToolForge v{{version}} 及以上",
         "packageSize": "包大小",
         "minApp": "应用要求",
+        "updateApp": "更新应用",
+        "noAppUpdate": "暂无可用的应用更新：插件需要的 ToolForge v{{version}} 尚未发布",
         "installedAt": "安装时间",
         "uptodate": "已安装 {{name}}，已是最新版本",
         "builtinTool": "{{name}} 已内置在 ToolForge 中，无需安装",

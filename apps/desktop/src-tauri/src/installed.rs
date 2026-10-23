@@ -31,6 +31,9 @@ pub struct InstallInfo {
     /// 插件名称：语言 → 名称（"*" 为未翻译的名称）；旧版本安装记录中没有
     #[serde(default)]
     pub names: BTreeMap<String, String>,
+    /// 插件要求的最低应用版本；列出时以包内 manifest 为准，前端据此标记应用降级后不能加载的插件
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min_app_version: Option<String>,
 }
 
 /// 包内声明的插件名称。manifest.name 为 `i18n:键` 时从 locales/<语言>.json 读取，否则原样作为 "*"
@@ -162,6 +165,7 @@ impl Installed {
             installed_at: now_millis(),
             url: url.map(str::to_owned),
             names,
+            min_app_version: package.manifest.min_app_version.clone(),
         };
         std::fs::create_dir_all(&self.root)?;
         let target = self.dir(&id)?;
@@ -211,7 +215,12 @@ impl Installed {
             .filter(|e| !e.file_name().to_string_lossy().starts_with('.'))
             .filter_map(|e| {
                 let raw = std::fs::read(e.path().join(INSTALL_FILE)).ok()?;
-                serde_json::from_slice(&raw).ok()
+                let mut info: InstallInfo = serde_json::from_slice(&raw).ok()?;
+                // 早期安装记录没有这个字段
+                if let Ok(manifest) = self.manifest(&info.id) {
+                    info.min_app_version = manifest.min_app_version;
+                }
+                Some(info)
             })
             .collect();
         out.sort_by(|a, b| a.id.cmp(&b.id));

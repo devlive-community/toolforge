@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { usePluginText } from '../plugins/usePluginText'
 import { ToolTile, accentTiles } from '../plugins/ToolIcon'
 import { pluginById, useApp } from '../stores/app'
+import { useUpdate } from '../stores/update'
 import { PluginDetail, type PluginDetailInfo, type PluginDetailRow } from './PluginDetail'
 import { formatDownloadCount, loadDownloadStats, type PluginDownloadStats } from '../lib/pluginStats'
 
@@ -37,6 +38,8 @@ interface InstallInfo {
   url: string | null
   /** 语言 → 名称（"*" 为未翻译的名称） */
   names?: Record<string, string>
+  /** 已装版本要求的最低应用版本；高于当前版本时插件不会加载（应用降级后） */
+  minAppVersion?: string | null
 }
 
 /** 简单比较 x.y.z 版本，用于判断是否有更新 */
@@ -52,6 +55,30 @@ function newer(a: string, b: string) {
 type Pending = { kind: 'file'; path: string } | { kind: 'url'; entry: IndexEntry }
 
 type DetailTarget = { kind: 'online'; entry: IndexEntry } | { kind: 'local'; info: InstallInfo }
+
+/** 插件需要更高的应用版本时代替安装/打开按钮：有应用更新就打开更新弹窗，否则说明需要的版本尚未发布 */
+function UpdateAppButton({ version, size }: { version: string; size?: 'sm' }) {
+  const { t } = useTranslation()
+  const errorMessage = useErrorMessage('common')
+  const status = useUpdate((s) => s.status)
+  const onClick = async () => {
+    const update = useUpdate.getState()
+    if (['available', 'downloading', 'installing', 'ready'].includes(update.status)) {
+      update.setDialogOpen(true)
+      return
+    }
+    await update.check()
+    const result = useUpdate.getState()
+    if (result.status === 'latest') toast.info(t('market.online.noAppUpdate', { version }))
+    else if (result.status === 'error') toast.error(errorMessage(result.error))
+  }
+  return (
+    <Button size={size} variant="primary" loading={status === 'checking'} onClick={() => void onClick()}>
+      <RefreshCw />
+      {t('market.online.updateApp')}
+    </Button>
+  )
+}
 
 /** 在线插件图标的底色：与「全部工具」同一规则，accent 是什么颜色就显示什么颜色 */
 function tileFor(manifest: Manifest | undefined, accent: string | null | undefined) {
@@ -163,6 +190,14 @@ export function MarketOnline() {
   }
 
   const local = installed.filter((info) => !index?.some((entry) => entry.id === info.id))
+  /** 已装插件要求的应用版本高于当前版本时返回该版本（插件不会被加载） */
+  const blockedBy = (info: InstallInfo | undefined) => (info?.minAppVersion && newer(info.minAppVersion, appVersion) ? info.minAppVersion : null)
+  /** 在线条目因应用版本过低而不能安装、更新或使用时，返回需要的应用版本 */
+  const requiredFor = (entry: IndexEntry, current: InstallInfo | undefined) => {
+    const update = current && newer(entry.version, current.version)
+    if (!current || update) return entry.minAppVersion && newer(entry.minAppVersion, appVersion) ? entry.minAppVersion : null
+    return blockedBy(current)
+  }
 
   // ---- 详情抽屉：在线条目与本地已装插件都映射为同一组字段 ----
   const detailManifest: Manifest | undefined = detail ? pluginById(plugins, detail.kind === 'online' ? detail.entry.id : detail.info.id) : undefined
@@ -202,6 +237,8 @@ export function MarketOnline() {
       helpLines: detailHelpLines,
     }
   })()
+
+  const detailBlocked = detail?.kind === 'local' ? blockedBy(detail.info) : null
 
   const detailRows: PluginDetailRow[] = []
   if (detail?.kind === 'online') {
@@ -246,7 +283,7 @@ export function MarketOnline() {
             const current = installed.find((info) => info.id === entry.id)
             const manifest = pluginById(plugins, entry.id)
             const update = current && newer(entry.version, current.version)
-            const tooOld = !!entry.minAppVersion && newer(entry.minAppVersion, appVersion)
+            const required = requiredFor(entry, current)
             return (
               <div key={entry.id} className="flex flex-col gap-3 rounded-card border border-border bg-surface p-4 shadow-card">
                 <div className="flex items-start gap-3">
@@ -277,12 +314,13 @@ export function MarketOnline() {
                 <p className="text-[11px] text-fg-subtle" title={t('market.online.statsHint')}>
                   {t('market.online.totalDownloads', { value: downloadCount(downloadStats?.get(entry.id)?.totalDownloads) })}
                 </p>
+                {required && <p className="text-[11px] text-warning">{t('market.online.needsApp', { version: required })}</p>}
                 <div className="mt-auto flex items-center gap-2 text-[11px] text-fg-subtle">
                   <span>{t('market.version', { version: entry.version })}</span>
                   <span>·</span>
                   <span>{t(`category.${entry.category}`, { defaultValue: entry.category })}</span>
                   <div className="ml-auto flex items-center gap-1.5">
-                    {current && !update && manifest && (
+                    {current && !update && manifest && !required && (
                       <Button size="sm" variant="ghost" onClick={() => openTool(entry.id)}>
                         {t('market.open')}
                       </Button>
@@ -292,8 +330,8 @@ export function MarketOnline() {
                         <Trash2 />
                       </Button>
                     )}
-                    {(!current || update) && tooOld && <span className="text-warning">{t('market.online.needsApp', { version: entry.minAppVersion })}</span>}
-                    {(!current || update) && !tooOld && (
+                    {required && <UpdateAppButton size="sm" version={required} />}
+                    {(!current || update) && !required && (
                       <Button size="sm" variant="primary" loading={busy === entry.id} disabled={busy !== null} onClick={() => void run({ kind: 'url', entry }, false)}>
                         <CloudDownload />
                         {update ? t('market.online.update', { version: entry.version }) : t('market.online.install')}
@@ -313,6 +351,7 @@ export function MarketOnline() {
           <ul className="space-y-2">
             {local.map((info) => {
               const manifest = pluginById(plugins, info.id)
+              const required = blockedBy(info)
               return (
                 <li key={info.id} className="flex items-center gap-3 rounded-card border border-border bg-surface p-3 shadow-card">
                   <button
@@ -324,8 +363,10 @@ export function MarketOnline() {
                     <p className="text-[11px] text-fg-subtle">
                       {t('market.version', { version: info.version })} · {t(`market.online.trust.${info.trust}`)}
                     </p>
+                    {required && <p className="text-[11px] text-warning">{t('market.online.needsApp', { version: required })}</p>}
                   </button>
-                  {manifest && (
+                  {required && <UpdateAppButton size="sm" version={required} />}
+                  {manifest && !required && (
                     <Button size="sm" variant="ghost" onClick={() => openTool(info.id)}>
                       {t('market.open')}
                     </Button>
@@ -371,16 +412,17 @@ export function MarketOnline() {
                 const entry = detail.entry
                 const current = installed.find((info) => info.id === entry.id)
                 const update = current && newer(entry.version, current.version)
-                const tooOld = !!entry.minAppVersion && newer(entry.minAppVersion, appVersion)
+                const required = requiredFor(entry, current)
                 return (
                   <>
-                    {(!current || update) && !tooOld && (
+                    {required && <UpdateAppButton version={required} />}
+                    {(!current || update) && !required && (
                       <Button variant="primary" loading={busy === entry.id} disabled={busy !== null} onClick={() => void run({ kind: 'url', entry }, false)}>
                         <CloudDownload />
                         {update ? t('market.online.update', { version: entry.version }) : t('market.online.install')}
                       </Button>
                     )}
-                    {current && detailManifest && !update && (
+                    {current && detailManifest && !update && !required && (
                       <Button variant="ghost" onClick={() => { setDetail(null); openTool(entry.id) }}>
                         <SquareArrowOutUpRight />
                         {t('market.open')}
@@ -392,14 +434,20 @@ export function MarketOnline() {
                         {t('market.online.uninstall')}
                       </Button>
                     )}
-                    {tooOld && <span className="text-xs text-warning">{t('market.online.needsApp', { version: entry.minAppVersion })}</span>}
+                    {required && <span className="text-xs text-warning">{t('market.online.needsApp', { version: required })}</span>}
                   </>
                 )
               })()}
             </>
           ) : detail ? (
             <>
-              {detailManifest && (
+              {detailBlocked && (
+                <>
+                  <UpdateAppButton version={detailBlocked} />
+                  <span className="text-xs text-warning">{t('market.online.needsApp', { version: detailBlocked })}</span>
+                </>
+              )}
+              {detailManifest && !detailBlocked && (
                 <Button variant="primary" onClick={() => { setDetail(null); openTool(detail.info.id) }}>
                   <SquareArrowOutUpRight />
                   {t('market.open')}

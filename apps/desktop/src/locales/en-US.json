@@ -285,6 +285,8 @@
         "needsApp": "Requires ToolForge v{{version}} or later",
         "packageSize": "Package size",
         "minApp": "App requirement",
+        "updateApp": "Update app",
+        "noAppUpdate": "No app update available yet: ToolForge v{{version}}, which this plugin needs, has not been released",
         "installedAt": "Installed at",
         "uptodate": "{{name}} is already installed and up to date",
         "builtinTool": "{{name}} is already built into ToolForge",
