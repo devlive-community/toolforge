@@ -191,6 +191,8 @@ impl ToolPlugin for JsonFormatter {
     }
 }
 
+tf_plugin_guest::export_plugin!(JsonFormatter);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

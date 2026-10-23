@@ -1,0 +1,181 @@
+{
+  "id": "org.devlive.toolforge.json-formatter",
+  "version": "0.1.3",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["json", "format", "pretty", "minify", "validate", "repair", "json repair", "json5", "jcs", "rfc8785", "canonical", "json patch", "merge patch", "规范化", "格式化", "压缩", "校验", "数据修复"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],
+  "functions": {
+    "format": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.format.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.common.input", "x-positional": 0, "x-stdin": true },
+            "mode": { "type": "string", "description": "i18n:api.common.mode", "enum": ["json", "json5"], "default": "json" },
+            "indent": { "type": "string", "description": "i18n:api.common.indent", "enum": ["2", "4", "tab"], "default": "2" },
+            "sortKeys": { "type": "boolean", "description": "i18n:api.common.sortKeys", "default": false }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["cat data.json | tfp-json-formatter format --indent 4"]
+      }
+    },
+    "minify": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.minify.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.common.input", "x-positional": 0, "x-stdin": true },
+            "mode": { "type": "string", "description": "i18n:api.common.mode", "enum": ["json", "json5"], "default": "json" },
+            "sortKeys": { "type": "boolean", "description": "i18n:api.common.sortKeys", "default": false }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["cat data.json | tfp-json-formatter minify"]
+      }
+    },
+    "validate": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.validate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.common.input", "x-positional": 0, "x-stdin": true },
+            "mode": { "type": "string", "description": "i18n:api.common.mode", "enum": ["json", "json5"], "default": "json" }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["cat data.json | tfp-json-formatter validate"]
+      }
+    },
+    "repair": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.repair.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.common.input", "x-positional": 0, "x-stdin": true },
+            "indent": { "type": "string", "description": "i18n:api.common.indent", "enum": ["2", "4", "tab"], "default": "2" },
+            "sortKeys": { "type": "boolean", "description": "i18n:api.common.sortKeys", "default": false }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["cat broken.json | tfp-json-formatter repair"]
+      }
+    },
+    "canonicalize": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.canonicalize.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.common.input", "x-positional": 0, "x-stdin": true }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["cat data.json | tfp-json-formatter canonicalize"]
+      }
+    },
+    "escape": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.escape.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.common.input", "x-positional": 0, "x-stdin": true }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["cat note.txt | tfp-json-formatter escape"]
+      }
+    },
+    "unescape": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.unescape.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.common.input", "x-positional": 0, "x-stdin": true }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["cat escaped.txt | tfp-json-formatter unescape"]
+      }
+    },
+    "tree_children": { "interface": false },
+    "diff": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.diff.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["left", "right"],
+          "properties": {
+            "left": { "type": "string", "description": "i18n:api.common.left", "x-positional": 0 },
+            "right": { "type": "string", "description": "i18n:api.common.right", "x-positional": 1 },
+            "mode": { "type": "string", "description": "i18n:api.common.mode", "enum": ["json", "json5"], "default": "json" }
+          }
+        },
+        "output": { "table": "/items", "columns": [{ "key": "path", "label": "i18n:api.columns.path" }, { "key": "change", "label": "i18n:api.columns.change" }, { "key": "left", "label": "i18n:api.columns.left" }, { "key": "right", "label": "i18n:api.columns.right" }] },
+        "examples": ["tfp-json-formatter diff \"$(cat a.json)\" \"$(cat b.json)\""]
+      }
+    },
+    "diff_patch": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.diff_patch.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["left", "right", "kind"],
+          "properties": {
+            "left": { "type": "string", "description": "i18n:api.common.left", "x-positional": 0 },
+            "right": { "type": "string", "description": "i18n:api.common.right", "x-positional": 1 },
+            "mode": { "type": "string", "description": "i18n:api.common.mode", "enum": ["json", "json5"], "default": "json" },
+            "kind": { "type": "string", "description": "i18n:api.diff_patch.kind", "enum": ["patch", "merge"] }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["tfp-json-formatter diff_patch \"$(cat a.json)\" \"$(cat b.json)\" --kind merge"]
+      }
+    }
+  },
+  "sensitive": false
+}

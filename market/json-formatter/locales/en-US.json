@@ -170,5 +170,49 @@
       "json.repair.control_characters": "Control characters escaped: {{count}}",
       "json.repair.bom": "Leading BOM removed: {{count}}"
     }
+  },
+  "api": {
+    "common": {
+      "input": "JSON text",
+      "mode": "Parsing mode: strict JSON, or JSON5 allowing comments, trailing commas and single quotes",
+      "indent": "Indentation",
+      "sortKeys": "Sort object keys",
+      "left": "Original JSON text",
+      "right": "Changed JSON text"
+    },
+    "columns": {
+      "path": "Path",
+      "change": "Change",
+      "left": "Before",
+      "right": "After"
+    },
+    "format": {
+      "summary": "Pretty-print JSON"
+    },
+    "minify": {
+      "summary": "Minify JSON onto one line"
+    },
+    "validate": {
+      "summary": "Validate JSON and report the first syntax error with line and column"
+    },
+    "repair": {
+      "summary": "Repair malformed JSON (missing quotes, trailing commas, comments) and pretty-print it"
+    },
+    "canonicalize": {
+      "summary": "Canonicalize JSON according to RFC 8785 (JCS)"
+    },
+    "escape": {
+      "summary": "Escape text as a JSON string literal"
+    },
+    "unescape": {
+      "summary": "Unescape a JSON string literal back to text"
+    },
+    "diff": {
+      "summary": "List added, removed and changed paths between two JSON documents"
+    },
+    "diff_patch": {
+      "summary": "Generate a JSON Patch (RFC 6902) or Merge Patch (RFC 7386) from two JSON documents",
+      "kind": "Patch format"
+    }
   }
 }

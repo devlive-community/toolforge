@@ -168,5 +168,49 @@
       "json.repair.control_characters": "转义控制字符 {{count}} 处",
       "json.repair.bom": "移除开头 BOM {{count}} 处"
     }
+  },
+  "api": {
+    "common": {
+      "input": "JSON 文本",
+      "mode": "解析模式：严格 JSON，或允许注释、尾逗号、单引号的 JSON5",
+      "indent": "缩进",
+      "sortKeys": "按键名排序",
+      "left": "原始 JSON 文本",
+      "right": "修改后的 JSON 文本"
+    },
+    "columns": {
+      "path": "路径",
+      "change": "变化",
+      "left": "修改前",
+      "right": "修改后"
+    },
+    "format": {
+      "summary": "格式化（美化）JSON"
+    },
+    "minify": {
+      "summary": "把 JSON 压缩成一行"
+    },
+    "validate": {
+      "summary": "校验 JSON，报告第一个语法错误的行列号"
+    },
+    "repair": {
+      "summary": "修复不规范的 JSON（缺引号、尾逗号、注释等）并格式化"
+    },
+    "canonicalize": {
+      "summary": "按 RFC 8785（JCS）规范化 JSON"
+    },
+    "escape": {
+      "summary": "把文本转义为 JSON 字符串字面量"
+    },
+    "unescape": {
+      "summary": "把 JSON 字符串字面量还原为文本"
+    },
+    "diff": {
+      "summary": "列出两个 JSON 文档之间新增、删除和修改的路径"
+    },
+    "diff_patch": {
+      "summary": "根据两个 JSON 文档生成 JSON Patch（RFC 6902）或 Merge Patch（RFC 7386）",
+      "kind": "补丁格式"
+    }
   }
 }

@@ -8875,6 +8875,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-json-formatter"
+version = "0.1.0"
+dependencies = [
+ "json5",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-junit-viewer"
 version = "0.1.0"
 dependencies = [
@@ -9505,16 +9516,6 @@ dependencies = [
 name = "tfp-ip-calculator"
 version = "0.1.0"
 dependencies = [
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
-name = "tfp-json-formatter"
-version = "0.1.0"
-dependencies = [
- "json5",
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -10235,7 +10236,6 @@ dependencies = [
  "tfp-image-palette",
  "tfp-input-stats",
  "tfp-ip-calculator",
- "tfp-json-formatter",
  "tfp-json-query",
  "tfp-json-schema",
  "tfp-json-to-code",

@@ -14,7 +14,6 @@ pub fn builtin() -> PluginRegistry {
 /// 按系统注册内置插件；只支持其他系统的插件会被跳过
 pub fn builtin_for(os: &str) -> PluginRegistry {
     let registry = PluginRegistry::new();
-    registry.register_for(Arc::new(tfp_json_formatter::JsonFormatter::default()), os);
     registry.register_for(Arc::new(tfp_hash::Hash::default()), os);
     registry.register_for(Arc::new(tfp_uuid::UuidTool::default()), os);
     registry.register_for(Arc::new(tfp_regex::Regex::default()), os);
