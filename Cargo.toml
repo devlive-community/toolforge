@@ -95,7 +95,7 @@ opt-level = 3
 # 图标生成在本 crate 内实例化 image 的泛型缩放，未优化时测试很慢
 [profile.dev.package.tfp-icon-generator]
 opt-level = 3
-[profile.dev.package.tfp-image-palette]
+[profile.dev.package.tfm-image-palette]
 opt-level = 3
 [profile.release.package.tract-core]
 opt-level = 3
