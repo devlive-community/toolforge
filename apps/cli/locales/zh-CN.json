@@ -1,0 +1,58 @@
+{
+  "usage": "用法",
+  "functions": "函数",
+  "arguments": "参数",
+  "options": "选项",
+  "globalOptions": "通用选项",
+  "examples": "示例",
+  "commands": "命令",
+  "plugins": "插件",
+  "default": "默认：{{value}}",
+  "fromStdin": "省略时读取标准输入",
+  "required": "必填",
+  "choices": "可选：{{values}}",
+  "list": "逗号分隔或重复使用",
+  "functionHelp": "运行 {{command}} <函数> --help 查看该函数的选项。",
+  "pluginHelp": "运行 tfp <插件> --help 或 tfp-<插件> --help 查看插件的函数。",
+  "noPlugins": "暂时没有可以从命令行运行的插件。",
+  "cancelling": "正在取消…",
+  "cancelled": "已取消",
+  "global": {
+    "json": "输出原始 JSON 结果",
+    "args": "以 JSON 对象（或 @文件）给出基础参数",
+    "lang": "提示语言：zh-CN 或 en-US",
+    "verbose": "显示任务日志",
+    "help": "显示帮助"
+  },
+  "command": {
+    "list": "列出可以从命令行运行的插件",
+    "help": "显示帮助",
+    "run": "运行插件的某个函数",
+    "version": "显示版本"
+  },
+  "errors": {
+    "cli.unknown_plugin": "没有可以从命令行运行的插件 {{name}}",
+    "cli.unknown_function": "{{name}} 没有可在命令行使用的函数 {{function}}",
+    "cli.missing_function": "请指定函数；运行 {{command}} --help 查看可用函数",
+    "cli.unknown_option": "未知选项 {{option}}",
+    "cli.missing_value": "{{option}} 需要一个值",
+    "cli.invalid_value": "{{option}} 的值无效：{{value}}",
+    "cli.invalid_choice": "{{option}} 的值无效：{{value}}（可选：{{allowed}}）",
+    "cli.missing_required": "缺少必填参数 {{name}}",
+    "cli.unexpected_argument": "多余的参数 {{value}}",
+    "cli.args_json": "--args 必须是 JSON 对象",
+    "cli.args_file": "无法读取 {{path}}：{{detail}}",
+    "cli.stdin": "无法读取标准输入：{{detail}}",
+    "cli.data_dir": "找不到 ToolForge 数据目录"
+  },
+  "heading": "{{title}}：",
+  "withNotes": "{{text}}（{{notes}}）",
+  "notesOnly": "（{{notes}}）",
+  "noteSeparator": "；",
+  "errorLine": "错误：{{message}}",
+  "placeholder": {
+    "plugin": "插件",
+    "function": "函数",
+    "options": "选项"
+  }
+}

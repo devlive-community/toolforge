@@ -1,0 +1,58 @@
+{
+  "usage": "Usage",
+  "functions": "Functions",
+  "arguments": "Arguments",
+  "options": "Options",
+  "globalOptions": "Global options",
+  "examples": "Examples",
+  "commands": "Commands",
+  "plugins": "Plugins",
+  "default": "default: {{value}}",
+  "fromStdin": "reads standard input when omitted",
+  "required": "required",
+  "choices": "one of: {{values}}",
+  "list": "comma separated or repeated",
+  "functionHelp": "Run {{command}} <function> --help to see its options.",
+  "pluginHelp": "Run tfp <plugin> --help, or tfp-<plugin> --help, to see its functions.",
+  "noPlugins": "No plugin can be run from the command line yet.",
+  "cancelling": "Cancelling…",
+  "cancelled": "Cancelled",
+  "global": {
+    "json": "Print the raw JSON result",
+    "args": "Base arguments as a JSON object, or @file",
+    "lang": "Message language: zh-CN or en-US",
+    "verbose": "Show task logs",
+    "help": "Show help"
+  },
+  "command": {
+    "list": "List plugins that can be run from the command line",
+    "help": "Show help",
+    "run": "Run a function of a plugin",
+    "version": "Show the version"
+  },
+  "errors": {
+    "cli.unknown_plugin": "No plugin named {{name}} can be run from the command line",
+    "cli.unknown_function": "{{name}} has no command-line function {{function}}",
+    "cli.missing_function": "Choose a function; run {{command}} --help to list them",
+    "cli.unknown_option": "Unknown option {{option}}",
+    "cli.missing_value": "{{option}} needs a value",
+    "cli.invalid_value": "Invalid value for {{option}}: {{value}}",
+    "cli.invalid_choice": "Invalid value for {{option}}: {{value}} (choose from {{allowed}})",
+    "cli.missing_required": "Missing required argument {{name}}",
+    "cli.unexpected_argument": "Unexpected argument {{value}}",
+    "cli.args_json": "--args must be a JSON object",
+    "cli.args_file": "Cannot read {{path}}: {{detail}}",
+    "cli.stdin": "Cannot read standard input: {{detail}}",
+    "cli.data_dir": "Cannot locate the ToolForge data folder"
+  },
+  "heading": "{{title}}:",
+  "withNotes": "{{text}} ({{notes}})",
+  "notesOnly": "({{notes}})",
+  "noteSeparator": "; ",
+  "errorLine": "error: {{message}}",
+  "placeholder": {
+    "plugin": "plugin",
+    "function": "function",
+    "options": "options"
+  }
+}
