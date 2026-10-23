@@ -235,6 +235,23 @@ fn localized(
 }
 
 /// 递归收集目录下的 .tfp 文件（CI 会把历史版本下载到 previous/ 子目录供全量重建）
+/// 插件对外开放的调用通道（cli / agent），汇总各函数的接口声明，供市场展示
+pub fn channels(manifest: &serde_json::Value) -> Vec<String> {
+    let mut out: Vec<String> = manifest
+        .get("functions")
+        .and_then(serde_json::Value::as_object)
+        .into_iter()
+        .flat_map(|functions| functions.values())
+        .filter_map(|spec| spec.pointer("/interface/expose")?.as_array())
+        .flatten()
+        .filter_map(|c| c.as_str().filter(|c| matches!(*c, "cli" | "agent")))
+        .map(str::to_owned)
+        .collect();
+    out.sort();
+    out.dedup();
+    out
+}
+
 fn collect_tfp(dir: &Path, out: &mut Vec<PathBuf>) -> Result<(), String> {
     let entries = std::fs::read_dir(dir).map_err(|e| format!("{}: {e}", dir.display()))?;
     for entry in entries {
@@ -375,6 +392,7 @@ pub fn index(
             serde_json::from_slice(&package.files["manifest.json"]).map_err(|e| e.to_string())?;
         let entry = serde_json::json!({
             "minAppVersion": raw.get("minAppVersion"), "accent": raw.get("accent"),
+            "channels": channels(&raw),
             "id": manifest.id, "version": manifest.version, "category": manifest.category,
             "names": localized(&package, &manifest.name), "descriptions": localized(&package, &manifest.description),
             "icon": package.files.get("icon.svg").map(|svg| String::from_utf8_lossy(svg).into_owned()),

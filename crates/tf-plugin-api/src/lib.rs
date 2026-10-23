@@ -4,6 +4,7 @@
 //! 目前内置插件以原生 crate 形式注册，后续 WASM 插件会实现同一个 trait 的适配层，
 //! 因此宿主代码无需改动。
 
+pub mod interface;
 pub mod net;
 
 use indexmap::IndexMap;
@@ -56,6 +57,15 @@ pub struct FunctionSpec {
     /// 调用成功后记入「历史记录」（插件为 sensitive 时始终不记录）
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub history: bool,
+    /// 对 CLI / AI Agent 的接口声明，保留原始 JSON，用 [`FunctionSpec::declaration`] 解析
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interface: Option<Value>,
+}
+
+impl FunctionSpec {
+    pub fn declaration(&self) -> interface::Declaration {
+        interface::Declaration::parse(self.interface.as_ref())
+    }
 }
 
 /// 需要按需下载的外部资源（例如模型文件），由宿主统一下载、校验与存放。

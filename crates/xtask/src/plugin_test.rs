@@ -214,3 +214,17 @@ fn index_allows_only_identical_same_generation_retry() {
     );
     std::fs::remove_dir_all(root).unwrap();
 }
+
+#[test]
+fn channels_merge_function_interfaces() {
+    let manifest = serde_json::json!({
+        "functions": {
+            "a": { "interface": { "expose": ["cli"] } },
+            "b": { "interface": { "expose": ["agent", "cli", "future"] } },
+            "c": { "interface": false },
+            "d": {}
+        }
+    });
+    assert_eq!(channels(&manifest), ["agent", "cli"]);
+    assert!(channels(&serde_json::json!({})).is_empty());
+}
