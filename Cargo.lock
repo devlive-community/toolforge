@@ -8702,6 +8702,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-electricity-cost"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-expense-splitter"
 version = "0.1.0"
 dependencies = [

@@ -1,0 +1,192 @@
+{
+  "name": "Electricity Cost Calculator",
+  "description": "Estimate appliance energy with flat, monthly tiered or time-of-use tariffs and compare alternative usage.",
+  "locale": "en-US",
+  "calculate": "Estimate bill",
+  "offline": "Offline estimate",
+  "stale": "Inputs changed. This is the last successful estimate; calculate again to update.",
+  "common": {
+    "cancel": "Cancel"
+  },
+  "panes": {
+    "label": "Page area",
+    "input": "Inputs",
+    "result": "Results"
+  },
+  "input": {
+    "title": "Appliances & tariffs",
+    "days": "Days per billing month (1–31)",
+    "currency": "Currency label",
+    "sections": "Input section",
+    "boundary": "Energy = watts × quantity × equivalent daily hours × days ÷ 1000. Only saved tariffs persist; appliances and reports remain in this session."
+  },
+  "units": {
+    "w": "W",
+    "kw": "kW"
+  },
+  "appliances": {
+    "title": "Appliances ({{n}})",
+    "name": "Appliance name",
+    "quantity": "Quantity",
+    "presets": "Appliance preset",
+    "add": "Add appliance",
+    "remove": "Remove appliance",
+    "assumptions": "Presets are editable examples, not measured consumption. Enter actual average power and equivalent runtime. Refrigerators and cooling devices do not necessarily draw their rated power continuously. Combined daily period hours must not exceed 24."
+  },
+  "presets": {
+    "custom": "Custom appliance",
+    "lighting": "LED lighting",
+    "computer": "Computer",
+    "cooling": "Air conditioner",
+    "fridge": "Refrigerator"
+  },
+  "usage": {
+    "power": "Operating power",
+    "unit": "Power unit",
+    "peak": "Peak hours/day",
+    "shoulder": "Shoulder hours/day",
+    "valley": "Off-peak hours/day",
+    "baseline": "Current usage",
+    "compare": "Set alternative power or runtime",
+    "alternative": "Alternative usage (same quantity)"
+  },
+  "period": {
+    "peak": "Peak",
+    "shoulder": "Shoulder",
+    "valley": "Off-peak"
+  },
+  "tariff": {
+    "title": "Tariffs ({{n}})",
+    "name": "Tariff name",
+    "choose": "Edit tariff",
+    "kind": "Billing model",
+    "flat": "Flat rate",
+    "tiered": "Monthly tiers",
+    "tou": "Time of use",
+    "rate": "Rate / kWh",
+    "peak": "Peak rate",
+    "shoulder": "Shoulder rate",
+    "valley": "Off-peak rate",
+    "upTo": "Tier {{n}} cumulative cap (kWh)",
+    "unlimited": "All remaining energy",
+    "removeTier": "Remove tier",
+    "addTier": "Add a capped tier",
+    "add": "Add comparison tariff",
+    "remove": "Remove current tariff",
+    "example": "Prices are examples. Enter your own tariff; no regional prices are fetched.",
+    "exampleName": "Example tariff",
+    "newName": "New tariff",
+    "hint": {
+      "flat": "All period energy is combined and charged at one rate.",
+      "tiered": "Caps are increasing household totals per billing month; the final tier is unlimited. Each rate applies only to energy in that band. Caps do not reset per day or appliance.",
+      "tou": "Assign equivalent daily runtime to peak, shoulder and off-peak. Clock schedules and holidays are not inferred. This model does not combine with tiers."
+    }
+  },
+  "library": {
+    "title": "Saved tariffs",
+    "hint": "Tariffs use the existing ToolForge database. Saving the same tariff updates it; add saved plans to compare in this estimate.",
+    "save": "Save current tariff",
+    "use": "Replace current tariff",
+    "compare": "Add to comparison",
+    "empty": "No saved tariffs yet",
+    "delete": "Delete saved tariff",
+    "confirmDelete": "Confirm deletion",
+    "retry": "Retry save",
+    "reload": "Reload saved tariffs",
+    "failed": "Previous data is unchanged. Retry saves the same candidate.",
+    "compareLimit": "Compare at most 8 tariffs."
+  },
+  "result": {
+    "title": "Estimated electricity bill",
+    "plan": "View tariff result",
+    "empty": "See where your energy goes",
+    "emptyHint": "Add appliances and your own prices to compare a monthly bill with alternative usage.",
+    "monthlyCost": "Monthly cost",
+    "monthlyEnergy": "Monthly energy",
+    "dailyAverage": "Daily allocation",
+    "annual": "Annualized cost",
+    "kwh": "{{n}} kWh",
+    "period": "{{days}} days/month · {{count}} appliance entries · Annualized = 12 identical billing months, not actual calendar-year bills.",
+    "alternative": "Alternative usage",
+    "noAutomaticSavings": "Unchanged appliances keep their baseline usage. No fixed saving factor is assumed for efficiency labels or temperature changes.",
+    "tiers": "Baseline tier breakdown",
+    "periods": "Baseline period breakdown",
+    "tier": "Tier {{n}}",
+    "band": "{{kwh}} kWh × {{rate}} → {{cost}}",
+    "highest": "Tier {{n}} has been used.",
+    "remaining": " {{n}} kWh remains before the current cap.",
+    "noUsage": "No energy used.",
+    "distribution": "Appliance cost distribution",
+    "allocation": "Tiered bills are allocated by appliance energy share, not billed separately per device. Display cents use largest remainders and sum to the total bill.",
+    "share": "{{value}}% of bill",
+    "rowBase": "Base: {{energy}} kWh · {{cost}}",
+    "rowAlt": "Alt: {{energy}} kWh · {{cost}}"
+  },
+  "saving": {
+    "saving": "Annualized saving",
+    "increase": "Annualized increase",
+    "same": "Annualized difference (unchanged)"
+  },
+  "export": {
+    "json": "Export JSON",
+    "markdown": "Export Markdown",
+    "copy": "Copy Markdown report",
+    "copied": "Report copied",
+    "saved": "Report saved"
+  },
+  "page": {
+    "prev": "Previous page",
+    "next": "Next page",
+    "number": "Page {{n}}",
+    "total": "{{n}} items"
+  },
+  "logs": {
+    "title": "Task log",
+    "empty": "No entries",
+    "latest": "Jump to latest",
+    "started": "Calculating energy and tariffs",
+    "complete": "Calculation complete"
+  },
+  "stages": {
+    "calculate": "Calculate bills and alternatives",
+    "query": "Read appliance distribution",
+    "export": "Generate estimate report"
+  },
+  "functions": {
+    "defaults": "Read default input",
+    "new": "Create an appliance or tariff draft",
+    "schema": "Read the structured call contract",
+    "book": "Validate tariffs and prepare a storage candidate",
+    "editPage": "Page appliance editors",
+    "calculate": "Calculate energy and cost",
+    "query": "Page appliance distribution",
+    "export": "Export an estimate"
+  },
+  "errors": {
+    "electricity-cost": {
+      "number": "{{field}} must be a nonnegative decimal within range; exponents, whitespace and excess fractional digits are rejected.",
+      "hours": "Combined daily period runtime must not exceed 24 hours.",
+      "unit": "Power unit must be W or kW.",
+      "tiers": "Use 1–10 tiers, increasing cumulative caps and an unlimited final tier.",
+      "label": "Invalid names, quantities or IDs; IDs must be unique.",
+      "limits": "Use 1–31 days, 1–100 appliance entries, 1–8 tariffs and a currency label of at most 12 characters.",
+      "book": "Saved tariff state is invalid or exceeds 40 plans / 128 KiB. Existing data was not overwritten.",
+      "preset": "Unsupported preset or draft type.",
+      "expired": "Result expired. Calculate again.",
+      "page": "Invalid pagination or tariff index.",
+      "format": "Unsupported export format.",
+      "exportLimit": "Export exceeds 2 MiB.",
+      "copyLimit": "Copy exceeds 64 KiB. Save a file instead.",
+      "path": "Invalid file path.",
+      "schema": "Call contract unavailable."
+    }
+  },
+  "help": [
+    "All prices and powers are user inputs. Presets are examples only. Use measured average power or equivalent full-load runtime; rated power need not be continuous consumption.",
+    "W/kW power and period hours accept up to 3 decimal places; daily hours total at most 24. Prices accept up to 6 places and range from 0 to 1000. Rust calculates exact integer energy and rounds the monthly bill half-up to cents.",
+    "Monthly tiers use whole-household cumulative energy. Time of use applies to explicit period hours; the two models are separate. Taxes, fixed charges, demand charges, subsidies, seasonal changes and carryover are excluded; check supplier rules.",
+    "Annualized means 12 identical billing months. Daily cost is allocated from the monthly bill, not a separate daily tier calculation. Alternatives recompute the household bill with your new power/runtime; no automatic efficiency-label or temperature saving is assumed.",
+    "Only saved tariffs persist in the existing ToolForge SQLite, at most 40 plans / 128 KiB. A save is acknowledged before displaying new saved data; failures retry the same candidate. Appliance inputs and reports are not automatically stored.",
+    "Structured JSON contracts and paginated results prepare the core for future Agent adapters. No external MCP/CLI/API service is exposed. Calculation needs no file or network access; file exports still require an explicitly authorized path."
+  ]
+}

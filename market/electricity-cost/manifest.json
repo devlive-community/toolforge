@@ -1,0 +1,17 @@
+{
+  "id": "org.devlive.toolforge.electricity-cost",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "calc",
+  "keywords": ["electricity", "energy", "tariff", "kWh", "用电", "电费", "阶梯", "峰谷"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "sensitive": true,
+  "functions": {
+    "defaults": {}, "new": {}, "schema": {}, "book": {}, "editPage": {},
+    "calculate": {"task": true}, "query": {"task": true}, "export": {"task": true}
+  }
+}
