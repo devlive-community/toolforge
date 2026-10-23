@@ -5,6 +5,7 @@ import { DownloadDialog } from '@/components/DownloadDialog'
 import { InstallButton } from '@/components/InstallButton'
 import { DetailTabs } from '@/components/DetailTabs'
 import { ToolCard, ToolIcon } from '@/components/ToolCard'
+import { PluginDownloadsRow } from '@/components/PluginDownloadsRow'
 import { ToolPermissions } from '@/components/ToolPermissions'
 import { PluginHistory } from '@/components/PluginHistory'
 import { getPluginHistory } from '@/lib/plugin-history'
@@ -230,6 +231,14 @@ export default async function ToolDetailPage({ params }: { params: Promise<{ lan
             [zh ? '使用方式' : 'Use through', zh ? '桌面应用' : 'Desktop app'],
             [zh ? '安装来源' : 'Source', market ? (zh ? '工具市场' : 'Tool market') : zh ? '应用内置' : 'Built-in'],
             [zh ? '已发布插件版本' : 'Published plugin', tool.publishedVersion ?? '—'],
+          ].map(([label, value]) => (
+            <div className="site-info-row" key={label}>
+              <span>{label}</span>
+              <span>{value}</span>
+            </div>
+          ))}
+          {market && <PluginDownloadsRow slug={tool.slug} lang={lang} />}
+          {[
             [zh ? '最低宿主版本' : 'Minimum app', data.minAppVersion || '—'],
             [zh ? '系统权限' : 'Permissions', String(data.permissions.length)],
           ].map(([label, value]) => (
