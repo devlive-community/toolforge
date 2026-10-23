@@ -71,7 +71,6 @@ tfp-regex = { path = "plugins/regex/backend" }
 tfp-ssh-key = { path = "plugins/ssh-key/backend" }
 tfp-svg-converter = { path = "plugins/svg-converter/backend" }
 tfp-system-monitor = { path = "plugins/system-monitor/backend" }
-tfp-unicode = { path = "plugins/unicode/backend" }
 tfp-unit-converter = { path = "plugins/unit-converter/backend" }
 tfp-uuid = { path = "plugins/uuid/backend" }
 tfp-websocket = { path = "plugins/websocket/backend" }

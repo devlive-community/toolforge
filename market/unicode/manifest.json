@@ -1,0 +1,68 @@
+{
+  "id": "org.devlive.toolforge.unicode",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "text",
+  "keywords": ["unicode", "character", "code point", "utf-8", "utf-16", "zero width", "invisible", "homoglyph", "confusable", "bidi", "trojan source", "emoji", "normalization", "nfc", "字符", "码位", "零宽字符", "不可见字符", "形近字", "编码"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:read", "clipboard:write"],
+  "functions": {
+    "analyze": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.analyze.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["text"],
+          "properties": {
+            "text": { "type": "string", "description": "i18n:api.analyze.text", "x-positional": 0, "x-stdin": true }
+          }
+        },
+        "examples": ["printf 'invoice\\u202efdp.exe' | tfp-unicode analyze --json"]
+      }
+    },
+    "clean": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.clean.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["text"],
+          "properties": {
+            "text": { "type": "string", "description": "i18n:api.clean.text", "x-positional": 0, "x-stdin": true },
+            "removeInvisible": { "type": "boolean", "description": "i18n:api.clean.removeInvisible", "default": true },
+            "removeBidi": { "type": "boolean", "description": "i18n:api.clean.removeBidi", "default": true },
+            "normalizeSpaces": { "type": "boolean", "description": "i18n:api.clean.normalizeSpaces", "default": true },
+            "replaceConfusables": { "type": "boolean", "description": "i18n:api.clean.replaceConfusables", "default": false },
+            "removeControls": { "type": "boolean", "description": "i18n:api.clean.removeControls", "default": false },
+            "form": { "type": "string", "description": "i18n:api.clean.form", "enum": ["none", "nfc", "nfd", "nfkc", "nfkd"], "default": "none" }
+          }
+        },
+        "output": { "text": "/text" },
+        "examples": ["cat pasted.txt | tfp-unicode clean --form nfc"]
+      }
+    },
+    "lookup": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.lookup.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["query"],
+          "properties": {
+            "query": { "type": "string", "description": "i18n:api.lookup.query", "x-positional": 0 }
+          }
+        },
+        "examples": ["tfp-unicode lookup U+1F600"]
+      }
+    }
+  },
+  "sensitive": false
+}

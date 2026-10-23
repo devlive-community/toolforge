@@ -9284,6 +9284,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-unicode"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+ "unicode-general-category",
+ "unicode-normalization",
+ "unicode-script",
+ "unicode-security",
+ "unicode-segmentation",
+ "unicode_names2",
+]
+
+[[package]]
 name = "tfm-uscc"
 version = "0.1.0"
 dependencies = [
@@ -9841,21 +9857,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-unicode"
-version = "0.1.0"
-dependencies = [
- "serde",
- "serde_json",
- "tf-plugin-api",
- "unicode-general-category",
- "unicode-normalization",
- "unicode-script",
- "unicode-security",
- "unicode-segmentation",
- "unicode_names2",
-]
-
-[[package]]
 name = "tfp-unit-converter"
 version = "0.1.0"
 dependencies = [
@@ -10297,7 +10298,6 @@ dependencies = [
  "tfp-svg-converter",
  "tfp-system-monitor",
  "tfp-text-encoding",
- "tfp-unicode",
  "tfp-unit-converter",
  "tfp-url-parser",
  "tfp-uuid",

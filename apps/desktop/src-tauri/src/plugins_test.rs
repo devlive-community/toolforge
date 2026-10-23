@@ -85,7 +85,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
             r#"{"$schema":"http://json-schema.org/draft-07/schema#","type":"object"}"#,
             "json-schema",
         ),
-        ("invoice\u{202e}fdp.exe", "unicode"),
         (
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGl0yLqB5b3i2VtQ8aTuq8b2cX7k5K1eYz7Vf3c6M2y8 me@laptop",
             "ssh-key",
@@ -121,6 +120,7 @@ fn clipboard_samples_suggest_the_right_tool_first() {
     }
     for text in [
         "<a><b>1</b></a>",
+        "invoice\u{202e}fdp.exe",
         "{\"name\": \"Ada\", \"tags\": [1, 2]}",
         r#"{"type":"object","properties":{}}"#,
         "192.168.1.0/24",

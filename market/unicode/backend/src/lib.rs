@@ -97,6 +97,8 @@ impl ToolPlugin for UnicodeInspector {
     }
 }
 
+tf_plugin_guest::export_plugin!(UnicodeInspector);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

@@ -131,5 +131,25 @@
   },
   "errors": {
     "unicode.too_large": "超过 {{limit}} 的文本无法分析"
+  },
+  "api": {
+    "analyze": {
+      "summary": "逐个检查字符：码点、名称、类别、文字、编码，以及不可见字符和形近字符",
+      "text": "要检查的文本"
+    },
+    "clean": {
+      "summary": "删除不可见字符和双向控制字符，统一空格与 Unicode 规范化形式",
+      "text": "要清理的文本",
+      "removeInvisible": "删除零宽等不可见字符",
+      "removeBidi": "删除双向控制字符",
+      "normalizeSpaces": "把特殊空格换成普通空格",
+      "replaceConfusables": "把形近字符换成 ASCII 字符",
+      "removeControls": "删除控制字符",
+      "form": "Unicode 规范化形式"
+    },
+    "lookup": {
+      "summary": "按字符、码点或名称查找字符，并给出常见语言的转义写法",
+      "query": "字符、码点（如 U+1F600）或名称"
+    }
   }
 }

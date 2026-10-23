@@ -131,5 +131,25 @@
   },
   "errors": {
     "unicode.too_large": "Text larger than {{limit}} cannot be analyzed"
+  },
+  "api": {
+    "analyze": {
+      "summary": "Inspect every character: code point, name, category, script, encodings and hidden or look-alike characters",
+      "text": "Text to inspect"
+    },
+    "clean": {
+      "summary": "Remove invisible and bidirectional control characters, normalize spaces and Unicode forms",
+      "text": "Text to clean",
+      "removeInvisible": "Remove zero-width and other invisible characters",
+      "removeBidi": "Remove bidirectional control characters",
+      "normalizeSpaces": "Turn unusual spaces into ordinary spaces",
+      "replaceConfusables": "Replace look-alike characters with their ASCII forms",
+      "removeControls": "Remove control characters",
+      "form": "Unicode normalization form"
+    },
+    "lookup": {
+      "summary": "Look up a character by itself, its code point or its name and show escapes for common languages",
+      "query": "A character, a code point such as U+1F600, or a name"
+    }
   }
 }
