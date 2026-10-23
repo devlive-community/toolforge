@@ -71,5 +71,18 @@
     "table.invalid_json": "Invalid JSON at line {{line}}, column {{column}}",
     "table.unsupported_json": "JSON must be an array of objects or an array of arrays",
     "table.invalid_csv": "Could not read the CSV: {{detail}}"
+  },
+  "api": {
+    "convert": {
+      "summary": "Convert tables between Markdown, CSV, TSV, HTML, JSON, ASCII, SQL and LaTeX",
+      "input": "Table text",
+      "from": "Input format; detected when omitted",
+      "to": "Output format",
+      "header": "Whether the first row is a header; detected when omitted",
+      "transpose": "Swap rows and columns",
+      "trim": "Trim spaces around cells",
+      "compact": "Compact output without padding",
+      "tableName": "Table name for SQL output"
+    }
   }
 }

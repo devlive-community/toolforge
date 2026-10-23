@@ -71,5 +71,18 @@
     "table.invalid_json": "JSON 第 {{line}} 行第 {{column}} 列有误",
     "table.unsupported_json": "JSON 必须是对象数组或二维数组",
     "table.invalid_csv": "无法读取 CSV：{{detail}}"
+  },
+  "api": {
+    "convert": {
+      "summary": "在 Markdown、CSV、TSV、HTML、JSON、ASCII、SQL 与 LaTeX 之间转换表格",
+      "input": "表格文本",
+      "from": "输入格式；省略时自动识别",
+      "to": "输出格式",
+      "header": "第一行是否为表头；省略时自动判断",
+      "transpose": "行列互换",
+      "trim": "去掉单元格两端的空格",
+      "compact": "紧凑输出，不补齐空格",
+      "tableName": "SQL 输出使用的表名"
+    }
   }
 }

@@ -63,7 +63,6 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
     registry.register_for(Arc::new(tfp_json_query::JsonQuery::default()), os);
     registry.register_for(Arc::new(tfp_json_schema::JsonSchema::default()), os);
     registry.register_for(Arc::new(tfp_image_palette::ImagePalette::default()), os);
-    registry.register_for(Arc::new(tfp_table_converter::TableConverter::default()), os);
     registry.register_for(Arc::new(tfp_doc_converter::DocConverter::default()), os);
     registry.register_for(Arc::new(tfp_env_editor::EnvEditor::default()), os);
     registry.register_for(Arc::new(tfp_context_menu::ContextMenu::default()), os);

@@ -54,3 +54,10 @@ fn detects_tables_on_the_clipboard() {
     );
     assert!(tool.detect("just text").is_none());
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&TableConverter::default()).unwrap();
+    assert_eq!(checked, 1);
+}

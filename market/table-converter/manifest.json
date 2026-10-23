@@ -1,0 +1,39 @@
+{
+  "id": "org.devlive.toolforge.table-converter",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "convert",
+  "keywords": ["table", "markdown table", "csv", "tsv", "excel", "html table", "json", "sql insert", "latex", "ascii table", "表格", "表格转换", "Markdown 表格", "Excel"],
+  "accent": "green",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:read", "clipboard:write"],
+  "functions": {
+    "convert": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.convert.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input", "to"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.convert.input", "x-positional": 0, "x-stdin": true },
+            "from": { "type": "string", "description": "i18n:api.convert.from", "enum": ["markdown", "html", "json", "tsv", "csv"] },
+            "to": { "type": "string", "description": "i18n:api.convert.to", "enum": ["markdown", "csv", "tsv", "html", "json", "ascii", "sql", "latex"] },
+            "header": { "type": "boolean", "description": "i18n:api.convert.header" },
+            "transpose": { "type": "boolean", "description": "i18n:api.convert.transpose", "default": false },
+            "trim": { "type": "boolean", "description": "i18n:api.convert.trim", "default": true },
+            "compact": { "type": "boolean", "description": "i18n:api.convert.compact", "default": false },
+            "tableName": { "type": "string", "description": "i18n:api.convert.tableName" }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["cat data.csv | tfp-table-converter convert --to markdown"]
+      }
+    }
+  },
+  "sensitive": false
+}

@@ -124,6 +124,8 @@ impl ToolPlugin for TableConverter {
     }
 }
 
+tf_plugin_guest::export_plugin!(TableConverter);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

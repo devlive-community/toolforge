@@ -9222,6 +9222,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-table-converter"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+ "unicode-width 0.2.2",
+]
+
+[[package]]
 name = "tfm-test-card"
 version = "0.1.0"
 dependencies = [
@@ -9792,17 +9804,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-table-converter"
-version = "0.1.0"
-dependencies = [
- "csv",
- "serde",
- "serde_json",
- "tf-plugin-api",
- "unicode-width 0.2.2",
-]
-
-[[package]]
 name = "tfp-text-diff"
 version = "0.1.0"
 dependencies = [
@@ -10293,7 +10294,6 @@ dependencies = [
  "tfp-ssh-key",
  "tfp-svg-converter",
  "tfp-system-monitor",
- "tfp-table-converter",
  "tfp-text-diff",
  "tfp-text-encoding",
  "tfp-text-tools",
