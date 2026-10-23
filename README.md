@@ -38,7 +38,6 @@ and the modern interface supports light / dark themes, Chinese and English, and 
 
 | Tool | Description |
 |------|-------------|
-| **JSON Schema Validator** | Validate JSON against Draft 2020-12 or Draft 7 offline, with explicit format checks, document references, bounded diagnostics and JSON Pointer paths; open JSON files and save validation reports |
 | **JSON Query** | Query and reshape JSON or JSON Lines with jq (jaq engine; output matches jq) or JSONPath with normalized match paths; raw, compact and sorted output, examples, files up to 100 MB and a 10-second time limit |
 | **Regex Tester** | Live match and group highlighting with replacement preview; lookaround, backreferences and named groups; common pattern presets |
 | **Hex Viewer** | Open files of any size byte by byte with file-type detection, go to offset, hex or text search, a data inspector (integers, floats, UTF-8, Unix times in either byte order) and copying selections as hex, Base64, a C array or Python bytes |

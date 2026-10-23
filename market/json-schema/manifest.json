@@ -1,0 +1,55 @@
+{
+  "id": "org.devlive.toolforge.json-schema",
+  "version": "0.1.3",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["json schema", "validate", "draft 7", "2020-12", "schema", "infer", "generate", "生成", "校验", "结构", "约束"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "functions": {
+    "read_file": { "interface": false },
+    "infer": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.infer.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.infer.input", "x-positional": 0, "x-stdin": true },
+            "split": { "type": "string", "description": "i18n:api.infer.split", "enum": ["document", "array", "lines"], "default": "document" },
+            "draft": { "type": "string", "description": "i18n:api.infer.draft", "enum": ["2020-12", "7"], "default": "2020-12" },
+            "enums": { "type": "boolean", "description": "i18n:api.infer.enums", "default": true }
+          }
+        },
+        "output": { "text": "/schema" },
+        "examples": ["echo '[{\"id\":1,\"name\":\"a\"}]' | tfp-json-schema infer --split array"]
+      }
+    },
+    "validate": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.validate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["instance", "schema"],
+          "properties": {
+            "instance": { "type": "string", "description": "i18n:api.validate.instance", "x-positional": 0, "x-stdin": true },
+            "schema": { "type": "string", "description": "i18n:api.validate.schema" },
+            "draft": { "type": "string", "description": "i18n:api.validate.draft", "enum": ["2020-12", "7"], "default": "2020-12" },
+            "validateFormats": { "type": "boolean", "description": "i18n:api.validate.validateFormats", "default": false }
+          }
+        },
+        "examples": ["echo '{\"id\":\"x\"}' | tfp-json-schema validate --schema '{\"properties\":{\"id\":{\"type\":\"integer\"}}}'"]
+      }
+    }
+  },
+  "sensitive": false
+}

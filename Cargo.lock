@@ -8982,6 +8982,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-json-schema"
+version = "0.1.0"
+dependencies = [
+ "jsonschema",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-json-to-code"
 version = "0.1.0"
 dependencies = [
@@ -9736,16 +9747,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-json-schema"
-version = "0.1.0"
-dependencies = [
- "jsonschema",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-local-server"
 version = "0.1.0"
 dependencies = [
@@ -10288,7 +10289,6 @@ dependencies = [
  "tfp-image-palette",
  "tfp-input-stats",
  "tfp-json-query",
- "tfp-json-schema",
  "tfp-local-server",
  "tfp-log-viewer",
  "tfp-ocr",

@@ -60,7 +60,6 @@ tfp-icon-generator.workspace = true
 tfp-hex-viewer.workspace = true
 tfp-folder-compare.workspace = true
 tfp-json-query.workspace = true
-tfp-json-schema.workspace = true
 tfp-image-palette.workspace = true
 tfp-doc-converter.workspace = true
 tfp-env-editor.workspace = true

@@ -126,5 +126,21 @@
     "array": "Use each top-level array item as a sample",
     "lines": "Read JSON Lines, one sample per line",
     "done": "Generated a schema from {{count}} samples"
+  },
+  "api": {
+    "infer": {
+      "summary": "Infer a JSON Schema from sample JSON documents",
+      "input": "Sample JSON",
+      "split": "How samples are split: one document, each array item, or one per line",
+      "draft": "JSON Schema draft",
+      "enums": "Infer enums for fields with few distinct values"
+    },
+    "validate": {
+      "summary": "Validate a JSON document against a JSON Schema and list every violation",
+      "instance": "JSON document to validate",
+      "schema": "JSON Schema text",
+      "draft": "JSON Schema draft",
+      "validateFormats": "Also check format keywords such as email and date"
+    }
   }
 }

@@ -78,14 +78,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
     let registry = builtin();
     let cases = [
         (
-            r#"{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object"}"#,
-            "json-schema",
-        ),
-        (
-            r#"{"$schema":"http://json-schema.org/draft-07/schema#","type":"object"}"#,
-            "json-schema",
-        ),
-        (
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGl0yLqB5b3i2VtQ8aTuq8b2cX7k5K1eYz7Vf3c6M2y8 me@laptop",
             "ssh-key",
         ),
@@ -115,6 +107,8 @@ fn clipboard_samples_suggest_the_right_tool_first() {
     }
     for text in [
         "<a><b>1</b></a>",
+        r#"{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object"}"#,
+        r#"{"$schema":"http://json-schema.org/draft-07/schema#","type":"object"}"#,
         "curl -X POST https://api.example.com -d a=1",
         "550e8400-e29b-41d4-a716-446655440000",
         "invoice\u{202e}fdp.exe",

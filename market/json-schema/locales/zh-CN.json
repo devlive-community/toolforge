@@ -126,5 +126,21 @@
     "array": "把顶层数组的每一项作为样例",
     "lines": "按行读取 JSON Lines 样例",
     "done": "已根据 {{count}} 个样例生成 Schema"
+  },
+  "api": {
+    "infer": {
+      "summary": "根据 JSON 样例推断 JSON Schema",
+      "input": "JSON 样例",
+      "split": "样例拆分方式：整个文档、数组的每一项或每行一个",
+      "draft": "JSON Schema 草案版本",
+      "enums": "取值较少的字段推断为枚举"
+    },
+    "validate": {
+      "summary": "用 JSON Schema 校验 JSON 文档，列出全部不符合项",
+      "instance": "要校验的 JSON 文档",
+      "schema": "JSON Schema 文本",
+      "draft": "JSON Schema 草案版本",
+      "validateFormats": "同时校验 email、date 等 format 关键字"
+    }
   }
 }

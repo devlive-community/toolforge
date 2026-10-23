@@ -98,3 +98,10 @@ fn task_contract_returns_structured_diagnostics() {
     );
     assert_eq!(ctx.file_reads.load(Ordering::SeqCst), 0);
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&JsonSchema::default()).unwrap();
+    assert_eq!(checked, 1);
+}

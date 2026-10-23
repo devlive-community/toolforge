@@ -72,6 +72,8 @@ impl ToolPlugin for JsonSchema {
     }
 }
 
+tf_plugin_guest::export_plugin!(JsonSchema);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;
