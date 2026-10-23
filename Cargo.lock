@@ -9550,6 +9550,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-xlsx-viewer"
+version = "0.1.0"
+dependencies = [
+ "calamine",
+ "csv",
+ "jiff",
+ "rust_xlsxwriter",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-xml-formatter"
 version = "0.1.0"
 dependencies = [
@@ -9921,19 +9935,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-xlsx-viewer"
-version = "0.1.0"
-dependencies = [
- "calamine",
- "csv",
- "jiff",
- "rust_xlsxwriter",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "thiserror"
 version = "1.0.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -10302,7 +10303,6 @@ dependencies = [
  "tfp-system-monitor",
  "tfp-text-encoding",
  "tfp-websocket",
- "tfp-xlsx-viewer",
  "url",
  "uuid",
  "zip 4.6.1",
@@ -10689,8 +10689,6 @@ checksum = "6af6ae20167a9ece4bcb41af5b80f8a1f1df981f6391189ce00fd257af04126a"
 [[package]]
 name = "typed-path"
 version = "0.12.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8e28f89b80c87b8fb0cf04ab448d5dd0dd0ade2f8891bae878de66a75a28600e"
 
 [[package]]
 name = "typeid"

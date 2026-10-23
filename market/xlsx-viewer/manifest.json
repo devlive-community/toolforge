@@ -1,0 +1,64 @@
+{
+  "id": "org.devlive.toolforge.xlsx-viewer",
+  "version": "0.1.1",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["xlsx", "xls", "excel", "ods", "spreadsheet", "table", "viewer", "filter", "sort", "export", "表格", "工作簿", "查看", "筛选", "排序", "导出"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "open": { "task": true, "interface": false },
+    "rows": { "interface": false },
+    "stats": { "interface": false },
+    "export": { "task": true, "interface": false },
+    "search": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.search.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.search.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "query": { "type": "string", "description": "i18n:api.search.query", "x-positional": 1 },
+            "sheet": { "type": "integer", "description": "i18n:api.search.sheet", "minimum": 0, "default": 0 },
+            "header": { "type": "boolean", "description": "i18n:api.search.header", "default": true },
+            "offset": { "type": "integer", "description": "i18n:api.search.offset", "minimum": 0, "default": 0 },
+            "limit": { "type": "integer", "description": "i18n:api.search.limit", "minimum": 1, "maximum": 1000, "default": 200 },
+            "format": { "type": "string", "description": "i18n:api.search.format", "enum": ["csv", "tsv", "json", "markdown"], "default": "csv" }
+          }
+        },
+        "output": { "text": "/text" },
+        "examples": ["tfp-xlsx-viewer search sales.xlsx Shanghai --sheet 1 --format markdown"]
+      }
+    },
+    "convert": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.convert.summary",
+        "effect": "write",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path", "output", "format"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.convert.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "sheet": { "type": "integer", "description": "i18n:api.convert.sheet", "minimum": 0, "default": 0 },
+            "header": { "type": "boolean", "description": "i18n:api.convert.header", "default": true },
+            "output": { "type": "string", "description": "i18n:api.convert.output", "format": "path", "x-access": "write" },
+            "format": { "type": "string", "description": "i18n:api.convert.format", "enum": ["csv", "tsv", "json", "markdown"] }
+          }
+        },
+        "examples": ["tfp-xlsx-viewer convert sales.xlsx --output sales.csv --format csv"]
+      }
+    }
+  },
+  "sensitive": false
+}

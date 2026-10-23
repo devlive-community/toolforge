@@ -14,7 +14,11 @@ members = [
     "plugins/*/backend",
     "market/*/backend",
 ]
-exclude = ["crates/tf-wasm/fixture", "market/xml-formatter/backend/vendor/sxd-xpath"]
+exclude = [
+    "crates/tf-wasm/fixture",
+    "market/xml-formatter/backend/vendor/sxd-xpath",
+    "market/xlsx-viewer/backend/vendor/typed-path",
+]
 
 [workspace.package]
 version = "0.2.2"
@@ -58,7 +62,6 @@ tfp-ssh-key = { path = "plugins/ssh-key/backend" }
 tfp-svg-converter = { path = "plugins/svg-converter/backend" }
 tfp-system-monitor = { path = "plugins/system-monitor/backend" }
 tfp-websocket = { path = "plugins/websocket/backend" }
-tfp-xlsx-viewer = { path = "plugins/xlsx-viewer/backend" }
 
 [profile.release]
 codegen-units = 1
@@ -121,3 +124,7 @@ opt-level = 3
 opt-level = 3
 [profile.release.package.zune-jpeg]
 opt-level = 3
+
+[patch.crates-io]
+# std::os::wasi 在 wasm32-wasip2 上仍是不稳定特性，原版需要 nightly 才能编译（见 vendor 内 UPSTREAM.md）
+typed-path = { path = "market/xlsx-viewer/backend/vendor/typed-path" }

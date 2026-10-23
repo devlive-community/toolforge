@@ -62,7 +62,6 @@ tfp-svg-converter.workspace = true
 tfp-ssh-key.workspace = true
 tfp-system-monitor.workspace = true
 tfp-websocket.workspace = true
-tfp-xlsx-viewer.workspace = true
 zip = { version = "4", default-features = false, features = ["deflate"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]

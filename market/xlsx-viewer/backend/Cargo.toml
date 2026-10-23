@@ -1,0 +1,23 @@
+[package]
+name = "tfm-xlsx-viewer"
+description = "ToolForge market plugin: browse, sort, filter and export spreadsheets"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[lib]
+# cdylib 编译为 WASM 组件，rlib 供本机单元测试
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+calamine = "0.36"
+csv = "1"
+jiff = "0.2"
+serde.workspace = true
+serde_json.workspace = true
+tf-plugin-api.workspace = true
+tf-plugin-guest = { path = "../../../crates/tf-plugin-guest" }
+
+[dev-dependencies]
+rust_xlsxwriter = "0.99"
