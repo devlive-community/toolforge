@@ -9259,6 +9259,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-text-tools"
+version = "0.1.0"
+dependencies = [
+ "fastrand",
+ "heck 0.5.0",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+ "unicode-segmentation",
+]
+
+[[package]]
 name = "tfm-timestamp"
 version = "0.1.0"
 dependencies = [
@@ -9828,18 +9841,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-text-tools"
-version = "0.1.0"
-dependencies = [
- "fastrand",
- "heck 0.5.0",
- "serde",
- "serde_json",
- "tf-plugin-api",
- "unicode-segmentation",
-]
-
-[[package]]
 name = "tfp-unicode"
 version = "0.1.0"
 dependencies = [
@@ -10296,7 +10297,6 @@ dependencies = [
  "tfp-svg-converter",
  "tfp-system-monitor",
  "tfp-text-encoding",
- "tfp-text-tools",
  "tfp-unicode",
  "tfp-unit-converter",
  "tfp-url-parser",

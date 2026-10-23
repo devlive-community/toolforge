@@ -13,3 +13,10 @@ fn dispatches_all_functions() {
     let stats = tool.call("stats", json!({"input": "a b"})).unwrap();
     assert_eq!(stats["words"], 2);
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&TextTools::default()).unwrap();
+    assert_eq!(checked, 3);
+}

@@ -75,7 +75,6 @@ tfp-regex.workspace = true
 tfp-svg-converter.workspace = true
 tfp-ssh-key.workspace = true
 tfp-system-monitor.workspace = true
-tfp-text-tools.workspace = true
 tfp-unicode.workspace = true
 tfp-unit-converter.workspace = true
 tfp-uuid.workspace = true

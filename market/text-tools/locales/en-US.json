@@ -105,5 +105,33 @@
     "underMinute": "Under a minute",
     "minutes": "About {{count}} min",
     "topWords": "Top English words"
+  },
+  "api": {
+    "cases": {
+      "summary": "Convert text into camelCase, snake_case, kebab-case and other naming styles",
+      "input": "Text to convert, one name per line"
+    },
+    "columns": {
+      "style": "Style",
+      "output": "Result"
+    },
+    "lines": {
+      "summary": "Trim, de-duplicate, sort, number or wrap lines of text",
+      "input": "Text to process",
+      "trim": "Trim spaces on each line",
+      "removeEmpty": "Remove empty lines",
+      "dedupe": "Remove duplicate lines",
+      "ignoreCase": "Ignore case when de-duplicating and sorting",
+      "sort": "Sort order",
+      "reverse": "Reverse the line order",
+      "shuffle": "Shuffle the lines",
+      "number": "Number the lines",
+      "prefix": "Text to add before each line",
+      "suffix": "Text to add after each line"
+    },
+    "stats": {
+      "summary": "Count characters, words, lines, sentences and reading time",
+      "input": "Text to count"
+    }
   }
 }

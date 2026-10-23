@@ -105,5 +105,33 @@
     "underMinute": "不到 1 分钟",
     "minutes": "约 {{count}} 分钟",
     "topWords": "高频英文单词"
+  },
+  "api": {
+    "cases": {
+      "summary": "把文本转换成 camelCase、snake_case、kebab-case 等命名风格",
+      "input": "要转换的文本，每行一个名称"
+    },
+    "columns": {
+      "style": "风格",
+      "output": "结果"
+    },
+    "lines": {
+      "summary": "按行去空白、去重、排序、编号或加前后缀",
+      "input": "要处理的文本",
+      "trim": "去掉每行两端的空格",
+      "removeEmpty": "删除空行",
+      "dedupe": "删除重复行",
+      "ignoreCase": "去重与排序时忽略大小写",
+      "sort": "排序方式",
+      "reverse": "倒序排列",
+      "shuffle": "随机打乱",
+      "number": "加行号",
+      "prefix": "每行前添加的文本",
+      "suffix": "每行后添加的文本"
+    },
+    "stats": {
+      "summary": "统计字符、单词、行、句子与阅读时间",
+      "input": "要统计的文本"
+    }
   }
 }

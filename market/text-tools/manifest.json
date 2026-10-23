@@ -1,0 +1,75 @@
+{
+  "id": "org.devlive.toolforge.text-tools",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "text",
+  "keywords": ["text", "case", "camel", "snake", "kebab", "sort", "dedupe", "lines", "count", "words", "大小写", "命名", "排序", "去重", "字数", "统计"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:read", "clipboard:write"],
+  "functions": {
+    "cases": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.cases.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.cases.input", "x-positional": 0, "x-stdin": true }
+          }
+        },
+        "output": { "table": "", "columns": [{ "key": "style", "label": "i18n:api.columns.style" }, { "key": "output", "label": "i18n:api.columns.output" }] },
+        "examples": ["tfp-text-tools cases 'user profile id'"]
+      }
+    },
+    "lines": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.lines.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.lines.input", "x-positional": 0, "x-stdin": true },
+            "trim": { "type": "boolean", "description": "i18n:api.lines.trim", "default": false },
+            "removeEmpty": { "type": "boolean", "description": "i18n:api.lines.removeEmpty", "default": false },
+            "dedupe": { "type": "boolean", "description": "i18n:api.lines.dedupe", "default": false },
+            "ignoreCase": { "type": "boolean", "description": "i18n:api.lines.ignoreCase", "default": false },
+            "sort": { "type": "string", "description": "i18n:api.lines.sort", "enum": ["none", "asc", "desc", "natural", "length"], "default": "none" },
+            "reverse": { "type": "boolean", "description": "i18n:api.lines.reverse", "default": false },
+            "shuffle": { "type": "boolean", "description": "i18n:api.lines.shuffle", "default": false },
+            "number": { "type": "boolean", "description": "i18n:api.lines.number", "default": false },
+            "prefix": { "type": "string", "description": "i18n:api.lines.prefix" },
+            "suffix": { "type": "string", "description": "i18n:api.lines.suffix" }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["cat list.txt | tfp-text-tools lines --dedupe --sort natural"]
+      }
+    },
+    "stats": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.stats.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.stats.input", "x-positional": 0, "x-stdin": true }
+          }
+        },
+        "examples": ["cat article.md | tfp-text-tools stats"]
+      }
+    }
+  },
+  "sensitive": false
+}
