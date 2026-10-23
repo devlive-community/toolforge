@@ -167,8 +167,9 @@ mod imp {
     }
 
     pub fn file_size(path: &str) -> PluginResult<u64> {
+        // 与宿主一致：取不到元数据一律视为不存在
         let meta = std::fs::metadata(path).map_err(|e| {
-            PluginError::new("fs.io")
+            PluginError::new("fs.not_found")
                 .with("path", path)
                 .with("detail", e.to_string())
         })?;

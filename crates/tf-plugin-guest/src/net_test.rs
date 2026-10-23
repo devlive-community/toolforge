@@ -16,5 +16,9 @@ fn read_to_end_reads_whole_files_within_the_limit() {
     let err = read_to_end(&path_str, 1024).unwrap_err();
     assert_eq!(err.code, "fs.too_large");
     std::fs::remove_file(path).unwrap();
-    assert!(read_to_end(&path_str, u64::MAX).is_err());
+    assert_eq!(
+        read_to_end(&path_str, u64::MAX).unwrap_err().code,
+        "fs.not_found",
+        "matches the host"
+    );
 }
