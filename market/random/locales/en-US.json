@@ -94,5 +94,42 @@
     "random.no_items": "The list is empty",
     "random.not_enough_items": "The list has only {{available}} items, not enough for that",
     "random.invalid_sides": "A die needs at least 2 sides"
+  },
+  "api": {
+    "numbers": {
+      "summary": "Draw random integers in a range",
+      "min": "Smallest value",
+      "max": "Largest value",
+      "count": "How many numbers",
+      "unique": "No repeated numbers",
+      "sorted": "Sort the result",
+      "seed": "Seed for a reproducible result"
+    },
+    "draw": {
+      "summary": "Draw winners from a list, optionally weighted",
+      "items": "One item per line; append *weight for weighted draws",
+      "count": "How many winners",
+      "weighted": "Use the weights in the list",
+      "seed": "Seed for a reproducible result"
+    },
+    "shuffle": {
+      "summary": "Shuffle a list",
+      "items": "One item per line",
+      "seed": "Seed for a reproducible result"
+    },
+    "groups": {
+      "summary": "Split a list into random groups",
+      "items": "One item per line",
+      "groups": "Number of groups",
+      "size": "People per group, instead of a number of groups",
+      "shuffle": "Shuffle before grouping",
+      "seed": "Seed for a reproducible result"
+    },
+    "dice": {
+      "summary": "Roll dice",
+      "count": "How many dice",
+      "sides": "Sides per die",
+      "seed": "Seed for a reproducible result"
+    }
   }
 }

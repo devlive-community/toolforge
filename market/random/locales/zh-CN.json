@@ -94,5 +94,42 @@
     "random.no_items": "名单是空的",
     "random.not_enough_items": "名单只有 {{available}} 项，不够抽取或分组",
     "random.invalid_sides": "面数至少为 2"
+  },
+  "api": {
+    "numbers": {
+      "summary": "在范围内抽取随机整数",
+      "min": "最小值",
+      "max": "最大值",
+      "count": "个数",
+      "unique": "不重复",
+      "sorted": "结果排序",
+      "seed": "种子，相同种子得到相同结果"
+    },
+    "draw": {
+      "summary": "从名单中抽取，可按权重",
+      "items": "每行一项；加权抽取时在末尾写 *权重",
+      "count": "抽取人数",
+      "weighted": "按名单中的权重抽取",
+      "seed": "种子，相同种子得到相同结果"
+    },
+    "shuffle": {
+      "summary": "打乱名单顺序",
+      "items": "每行一项",
+      "seed": "种子，相同种子得到相同结果"
+    },
+    "groups": {
+      "summary": "把名单随机分组",
+      "items": "每行一项",
+      "groups": "组数",
+      "size": "每组人数（与组数二选一）",
+      "shuffle": "分组前先打乱",
+      "seed": "种子，相同种子得到相同结果"
+    },
+    "dice": {
+      "summary": "掷骰子",
+      "count": "骰子个数",
+      "sides": "每个骰子的面数",
+      "seed": "种子，相同种子得到相同结果"
+    }
   }
 }

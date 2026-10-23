@@ -1,0 +1,126 @@
+{
+  "id": "org.devlive.toolforge.random",
+  "version": "0.1.1",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "other",
+  "keywords": [
+    "random",
+    "random number",
+    "lottery",
+    "draw",
+    "raffle",
+    "pick",
+    "shuffle",
+    "team",
+    "group",
+    "dice",
+    "coin",
+    "随机",
+    "随机数",
+    "抽签",
+    "抽奖",
+    "点名",
+    "分组",
+    "打乱",
+    "骰子",
+    "硬币"
+  ],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "numbers": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.numbers.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "min": { "type": "integer", "description": "i18n:api.numbers.min", "default": 1 },
+            "max": { "type": "integer", "description": "i18n:api.numbers.max", "default": 100 },
+            "count": { "type": "integer", "description": "i18n:api.numbers.count", "minimum": 1, "maximum": 10000, "default": 1 },
+            "unique": { "type": "boolean", "description": "i18n:api.numbers.unique", "default": false },
+            "sorted": { "type": "boolean", "description": "i18n:api.numbers.sorted", "default": false },
+            "seed": { "type": "string", "description": "i18n:api.numbers.seed" }
+          }
+        },
+        "examples": ["tfp-random numbers --min 1 --max 6 --count 3"]
+      }
+    },
+    "draw": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.draw.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["items"],
+          "properties": {
+            "items": { "type": "string", "description": "i18n:api.draw.items", "x-positional": 0, "x-stdin": true },
+            "count": { "type": "integer", "description": "i18n:api.draw.count", "minimum": 1, "maximum": 10000, "default": 1 },
+            "weighted": { "type": "boolean", "description": "i18n:api.draw.weighted", "default": false },
+            "seed": { "type": "string", "description": "i18n:api.draw.seed" }
+          }
+        },
+        "examples": ["printf 'Ada\\nGrace\\nLinus\\n' | tfp-random draw --count 2"]
+      }
+    },
+    "shuffle": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.shuffle.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["items"],
+          "properties": {
+            "items": { "type": "string", "description": "i18n:api.shuffle.items", "x-positional": 0, "x-stdin": true },
+            "seed": { "type": "string", "description": "i18n:api.shuffle.seed" }
+          }
+        },
+        "examples": ["cat names.txt | tfp-random shuffle"]
+      }
+    },
+    "groups": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.groups.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["items"],
+          "properties": {
+            "items": { "type": "string", "description": "i18n:api.groups.items", "x-positional": 0, "x-stdin": true },
+            "groups": { "type": "integer", "description": "i18n:api.groups.groups", "minimum": 1 },
+            "size": { "type": "integer", "description": "i18n:api.groups.size", "minimum": 1 },
+            "shuffle": { "type": "boolean", "description": "i18n:api.groups.shuffle", "default": true },
+            "seed": { "type": "string", "description": "i18n:api.groups.seed" }
+          }
+        },
+        "examples": ["cat names.txt | tfp-random groups --groups 3"]
+      }
+    },
+    "dice": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.dice.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "count": { "type": "integer", "description": "i18n:api.dice.count", "minimum": 1, "maximum": 10000, "default": 1 },
+            "sides": { "type": "integer", "description": "i18n:api.dice.sides", "minimum": 2, "default": 6 },
+            "seed": { "type": "string", "description": "i18n:api.dice.seed" }
+          }
+        },
+        "examples": ["tfp-random dice --count 2 --sides 20"]
+      }
+    }
+  },
+  "sensitive": false
+}

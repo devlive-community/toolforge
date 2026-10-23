@@ -130,6 +130,8 @@ impl ToolPlugin for RandomTool {
     }
 }
 
+tf_plugin_guest::export_plugin!(RandomTool);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;
