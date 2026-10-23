@@ -98,7 +98,10 @@ pub fn run() {
             plugins.start_services(&data_dir.join("plugins"));
             let builtin: Arc<HashSet<String>> =
                 Arc::new(plugins.manifests().into_iter().map(|m| m.id).collect());
-            let installed = Arc::new(installed::Installed::new(data_dir.join("installed")));
+            let installed = Arc::new(installed::Installed::new(
+                data_dir.join("installed"),
+                app.package_info().version.to_string(),
+            ));
             market::load_installed(
                 app.handle(),
                 installed.clone(),

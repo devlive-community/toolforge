@@ -3,6 +3,7 @@
 //! 本地与 CI 执行完全相同的检查，保证「本地通过 = CI 通过」。
 
 mod check;
+mod manifests;
 mod notes;
 mod plugin;
 mod rules;

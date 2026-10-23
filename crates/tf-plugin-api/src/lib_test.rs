@@ -99,3 +99,22 @@ fn resources_are_missing_by_default() {
     assert_eq!(err.code, "resource.missing");
     assert_eq!(err.params["id"], "u2netp");
 }
+
+#[test]
+fn manifest_min_app_version_is_optional() {
+    let legacy = Manifest::from_static(
+        r#"{"id":"a","version":"1.0.0","name":"n","description":"d","category":"dev"}"#,
+    );
+    assert_eq!(legacy.min_app_version, None);
+    assert!(
+        serde_json::to_value(&legacy)
+            .unwrap()
+            .get("minAppVersion")
+            .is_none()
+    );
+
+    let current = Manifest::from_static(
+        r#"{"id":"a","version":"1.0.0","minAppVersion":"0.3.0","name":"n","description":"d","category":"dev"}"#,
+    );
+    assert_eq!(current.min_app_version.as_deref(), Some("0.3.0"));
+}

@@ -126,7 +126,7 @@ pub fn render(commits: &[Commit], compare: Option<(&str, &str)>) -> String {
     format!("{}\n", blocks.join("\n\n"))
 }
 
-fn git(root: &Path, args: &[&str]) -> Result<String, String> {
+pub(crate) fn git(root: &Path, args: &[&str]) -> Result<String, String> {
     let output = Command::new("git")
         .args(args)
         .current_dir(root)

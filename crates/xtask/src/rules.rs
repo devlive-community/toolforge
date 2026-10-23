@@ -184,7 +184,8 @@ fn check_package_json(path: &Path, relative: &str) -> Vec<Violation> {
 }
 
 pub fn run(root: &Path) -> Result<(), String> {
-    let violations = scan(root);
+    let mut violations = scan(root);
+    violations.extend(crate::manifests::scan(root));
     if violations.is_empty() {
         println!("\x1b[32m✓\x1b[0m convention rules");
         return Ok(());

@@ -1,8 +1,13 @@
 use super::*;
 
 fn package(id: &str, version: &str) -> Vec<u8> {
+    package_with(id, version, "")
+}
+
+/// extra 为追加到 manifest 的字段，形如 `"minAppVersion":"0.3.0",`
+fn package_with(id: &str, version: &str, extra: &str) -> Vec<u8> {
     let manifest = format!(
-        r#"{{"id":"{id}","version":"{version}","name":"i18n:name","description":"i18n:description","category":"text","functions":{{"run":{{}}}}}}"#
+        r#"{{"id":"{id}","version":"{version}",{extra}"name":"i18n:name","description":"i18n:description","category":"text","functions":{{"run":{{}}}}}}"#
     );
     let files = BTreeMap::from([
         ("manifest.json".to_owned(), manifest.into_bytes()),
@@ -21,10 +26,14 @@ fn package(id: &str, version: &str) -> Vec<u8> {
     tf_package::build(&files, None).unwrap()
 }
 
-fn temp(name: &str) -> Installed {
+fn temp_root(name: &str) -> PathBuf {
     let root = std::env::temp_dir().join(format!("tf-installed-{name}-{}", std::process::id()));
     let _ = std::fs::remove_dir_all(&root);
-    Installed::new(root)
+    root
+}
+
+fn temp(name: &str) -> Installed {
+    Installed::new(temp_root(name), "0.2.0")
 }
 
 #[test]
@@ -168,4 +177,37 @@ fn records_localized_names() {
         Some("Plain")
     );
     std::fs::remove_dir_all(installed.root()).unwrap();
+}
+
+#[test]
+fn rejects_packages_that_need_a_newer_app() {
+    let installed = temp("needs-app");
+    let bytes = package_with("org.example.demo", "1.0.0", r#""minAppVersion":"0.3.0","#);
+    let err = installed
+        .install(&bytes, None, true, |_| false)
+        .unwrap_err();
+    assert_eq!(err.code, "market.needs_app");
+    assert_eq!(err.params["version"], "0.3.0");
+    assert!(installed.list().is_empty());
+}
+
+#[test]
+fn accepts_packages_within_app_version() {
+    let installed = temp("within-app");
+    let bytes = package_with("org.example.demo", "1.0.0", r#""minAppVersion":"0.2.0","#);
+    let (_, manifest) = installed.install(&bytes, None, true, |_| false).unwrap();
+    assert_eq!(manifest.min_app_version.as_deref(), Some("0.2.0"));
+}
+
+#[test]
+fn skips_loading_after_app_downgrade() {
+    let root = temp_root("downgrade");
+    let bytes = package_with("org.example.demo", "1.0.0", r#""minAppVersion":"0.3.0","#);
+    Installed::new(root.clone(), "0.3.0")
+        .install(&bytes, None, true, |_| false)
+        .unwrap();
+    let older = Installed::new(root, "0.2.0");
+    assert_eq!(older.list().len(), 1, "the package stays installed");
+    let err = older.load("org.example.demo").err().unwrap();
+    assert_eq!(err.code, "market.needs_app");
 }

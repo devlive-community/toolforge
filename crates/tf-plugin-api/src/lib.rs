@@ -90,6 +90,9 @@ impl ResourceSpec {
 pub struct Manifest {
     pub id: String,
     pub version: String,
+    /// 需要的最低应用版本；旧插件没有声明时视为兼容任意版本
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub min_app_version: Option<String>,
     /// 形如 `i18n:name`，由前端在插件命名空间内翻译
     pub name: String,
     pub description: String,

@@ -85,11 +85,28 @@ fn servable(path: &str) -> bool {
 
 pub struct Installed {
     root: PathBuf,
+    /// 当前应用版本，用于校验插件声明的 minAppVersion
+    app_version: String,
 }
 
 impl Installed {
-    pub fn new(root: PathBuf) -> Self {
-        Self { root }
+    pub fn new(root: PathBuf, app_version: impl Into<String>) -> Self {
+        Self {
+            root,
+            app_version: app_version.into(),
+        }
+    }
+
+    /// 插件要求的应用版本高于当前版本时拒绝；未声明的旧插件视为兼容
+    fn check_app_version(&self, manifest: &Manifest) -> AppResult<()> {
+        match &manifest.min_app_version {
+            Some(min) if !crate::version::at_least(&self.app_version, min) => {
+                Err(AppError::new("market.needs_app")
+                    .with("id", manifest.id.as_str())
+                    .with("version", min.as_str()))
+            }
+            _ => Ok(()),
+        }
     }
 
     fn dir(&self, id: &str) -> AppResult<PathBuf> {
@@ -123,6 +140,7 @@ impl Installed {
                 .with("id", id)
                 .with("names", names_value()));
         }
+        self.check_app_version(&package.manifest)?;
         let (trust, key_id) = trust_parts(&package.trust);
         if trust != "official" && !allow_unsigned {
             let mut err = AppError::new("package.untrusted")
@@ -209,6 +227,7 @@ impl Installed {
     /// 编译 WASM 组件
     pub fn load(&self, id: &str) -> AppResult<Arc<WasmPlugin>> {
         let manifest = self.manifest(id)?;
+        self.check_app_version(&manifest)?;
         let wasm = std::fs::read(self.dir(id)?.join("plugin.wasm"))?;
         Ok(Arc::new(WasmPlugin::load(manifest, &wasm)?))
     }
