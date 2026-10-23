@@ -140,6 +140,9 @@
     return node
   }
 
+  let hoverIndex = null
+  let pinnedIndex = null
+
   function renderTrend(daily) {
     const box = $('trend')
     const width = Math.max(320, box.clientWidth)
@@ -164,12 +167,10 @@
       svg.append(label)
     }
     const barW = Math.max(3, (plotW / values.length) * 0.56)
-    values.forEach((v, i) => {
+    const bars = values.map((v, i) => {
       const bar = svgEl('rect', { x: x(i) - barW / 2, y: y(v), width: barW, height: Math.max(0, pad.top + plotH - y(v)), rx: 3, class: 'bar' })
-      const title = svgEl('title', {})
-      title.textContent = T.daily(daily[i].date, v.toLocaleString(lang))
-      bar.append(title)
       svg.append(bar)
+      return bar
     })
     const points = values.map((v, i) => `${x(i)},${y(v)}`)
     svg.append(svgEl('path', { d: `M${x(0)},${pad.top + plotH} L${points.join(' L')} L${x(values.length - 1)},${pad.top + plotH} Z`, class: 'area' }))
@@ -183,7 +184,46 @@
       label.textContent = d.date.slice(5)
       svg.append(label)
     })
-    box.replaceChildren(svg)
+    // 悬停显示详情，点击把详情钉住；命中区覆盖整个列，0 高度的柱也能选中
+    hoverIndex = null
+    const hitW = plotW / values.length
+    values.forEach((_, i) => {
+      const hit = svgEl('rect', { x: pad.left + hitW * i, y: pad.top, width: hitW, height: plotH, class: 'hit' })
+      hit.addEventListener('pointerenter', () => {
+        hoverIndex = i
+        syncTip()
+      })
+      hit.addEventListener('pointerleave', () => {
+        if (hoverIndex === i) {
+          hoverIndex = null
+          syncTip()
+        }
+      })
+      hit.addEventListener('click', () => {
+        pinnedIndex = pinnedIndex === i ? null : i
+        syncTip()
+      })
+      svg.append(hit)
+    })
+    const tip = el('div', 'chart-tip')
+    tip.hidden = true
+    const syncTip = () => {
+      const index = hoverIndex ?? pinnedIndex
+      bars.forEach((bar, i) => {
+        bar.classList.toggle('pinned', pinnedIndex === i)
+        bar.classList.toggle('active', hoverIndex === i)
+      })
+      if (index === null) {
+        tip.hidden = true
+        return
+      }
+      tip.textContent = T.daily(daily[index].date, values[index].toLocaleString(lang))
+      tip.style.left = Math.min(width - 80, Math.max(80, x(index))) + 'px'
+      tip.style.top = Math.max(30, y(values[index])) + 'px'
+      tip.hidden = false
+    }
+    box.replaceChildren(svg, tip)
+    syncTip()
     box.setAttribute('aria-label', T.trend)
   }
   function gradient(id, from, fromOpacity, to, toOpacity) {
@@ -270,11 +310,17 @@
       renderRanking(latest)
       renderVersions(latest)
       renderRecent(latest)
+      // 首次渲染成功才撤掉骨架；之后刷新失败保留旧数据，只在状态区提示
+      document.body.classList.remove('loading', 'load-error')
       status.classList.remove('error')
       $('updated').textContent = T.updated(new Date(latest.asOf).toLocaleTimeString(lang))
     } catch {
       status.classList.add('error')
       $('updated').textContent = T.failed
+      if (!latest) {
+        document.body.classList.remove('loading')
+        document.body.classList.add('load-error')
+      }
     }
   }
 
@@ -283,6 +329,7 @@
     clearTimeout(resizeTimer)
     resizeTimer = setTimeout(() => latest && renderTrend(latest.daily), 150)
   })
+  document.body.classList.add('loading')
   load()
   setInterval(load, REFRESH_MS)
 })()

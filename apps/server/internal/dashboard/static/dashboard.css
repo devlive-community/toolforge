@@ -228,9 +228,39 @@ main {
 .chart .bar {
   fill: url(#barFill);
   transition: opacity 0.2s;
+  pointer-events: none;
 }
-.chart .bar:hover {
+.chart .bar.active {
   opacity: 0.8;
+}
+.chart .bar.pinned {
+  stroke: var(--brand);
+  stroke-width: 1.5;
+}
+.chart .hit {
+  fill: transparent;
+  cursor: pointer;
+}
+.chart .area,
+.chart .line,
+.chart .dot {
+  pointer-events: none;
+}
+.chart-tip {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  background: rgba(10, 20, 15, 0.95);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 7px 10px;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  transform: translate(-50%, calc(-100% - 10px));
+  font-variant-numeric: tabular-nums;
 }
 .chart .area {
   fill: url(#areaFill);
@@ -390,6 +420,61 @@ code {
     opacity: 0;
     transform: translateY(-4px);
   }
+}
+/* 加载与错误状态：数据到达前显示骨架，失败后图表区给出占位文案 */
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+body.loading .kpi .value {
+  color: transparent;
+}
+body.loading .kpi .value::after,
+body.loading .bars::before,
+body.loading .versions tbody::after,
+body.loading .feed::before {
+  content: '';
+  display: block;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--panel-2) 25%, #1d3025 45%, var(--panel-2) 65%);
+  background-size: 200% 100%;
+  animation: shimmer 1.1s infinite linear;
+}
+body.loading .kpi .value::after {
+  height: 24px;
+  margin-top: 8px;
+}
+body.loading .bars::before {
+  height: 200px;
+}
+body.loading .versions tbody::after {
+  height: 180px;
+}
+body.loading .feed::before {
+  height: 200px;
+}
+body.loading .chart::after,
+body.load-error .chart::after {
+  content: '正在加载…';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--quiet);
+  font-size: 13px;
+}
+body.load-error .chart::after {
+  content: '数据暂时不可用，稍后自动重试';
+}
+html:lang(en-US) body.loading .chart::after {
+  content: 'Loading…';
+}
+html:lang(en-US) body.load-error .chart::after {
+  content: 'Data is temporarily unavailable; retrying automatically';
 }
 .empty {
   color: var(--quiet);
