@@ -1,0 +1,60 @@
+{
+  "id": "org.devlive.toolforge.mock-data",
+  "version": "0.1.1",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["mock", "fake", "test data", "faker", "seed", "sql insert", "json", "csv", "id card", "模拟数据", "测试数据", "假数据", "身份证", "手机号"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "functions": {
+    "generate": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.generate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["field"],
+          "properties": {
+            "field": { "type": "array", "description": "i18n:api.generate.field", "items": { "type": "string" }, "x-positional": 0 },
+            "rows": { "type": "integer", "description": "i18n:api.generate.rows", "minimum": 1, "maximum": 100000, "default": 10 },
+            "locale": { "type": "string", "description": "i18n:api.generate.locale", "enum": ["zh-cn", "en-us"], "default": "en-us" },
+            "format": { "type": "string", "description": "i18n:api.generate.format", "enum": ["json", "jsonl", "csv", "sql"], "default": "json" },
+            "dialect": { "type": "string", "description": "i18n:api.generate.dialect", "enum": ["mysql", "postgres", "sqlite"], "default": "mysql" },
+            "table": { "type": "string", "description": "i18n:api.generate.table", "default": "mock_data" },
+            "seed": { "type": "integer", "description": "i18n:api.generate.seed", "minimum": 0 }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["tfp-mock-data generate id:id name:name email:email --rows 5 --format csv"]
+      }
+    },
+    "save": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.save.summary",
+        "effect": "write",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["field", "seed", "path"],
+          "properties": {
+            "field": { "type": "array", "description": "i18n:api.save.field", "items": { "type": "string" }, "x-positional": 0 },
+            "rows": { "type": "integer", "description": "i18n:api.save.rows", "minimum": 1, "maximum": 100000, "default": 10 },
+            "locale": { "type": "string", "description": "i18n:api.save.locale", "enum": ["zh-cn", "en-us"], "default": "en-us" },
+            "format": { "type": "string", "description": "i18n:api.save.format", "enum": ["json", "jsonl", "csv", "sql"], "default": "json" },
+            "dialect": { "type": "string", "description": "i18n:api.save.dialect", "enum": ["mysql", "postgres", "sqlite"], "default": "mysql" },
+            "table": { "type": "string", "description": "i18n:api.save.table", "default": "mock_data" },
+            "seed": { "type": "integer", "description": "i18n:api.save.seed", "minimum": 0 },
+            "path": { "type": "string", "description": "i18n:api.save.path", "format": "path", "x-access": "write" }
+          }
+        },
+        "examples": ["tfp-mock-data save id:id email:email --rows 10000 --format jsonl --seed 7 --path users.jsonl"]
+      }
+    }
+  },
+  "sensitive": false
+}

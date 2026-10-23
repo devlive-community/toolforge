@@ -107,6 +107,30 @@
     "mock.no_options": "请为“{{field}}”填写选项",
     "mock.invalid_date": "“{{field}}”中的“{{value}}”不是日期（YYYY-MM-DD）",
     "mock.no_table": "请输入表名",
+    "mock.invalid_field": "“{{field}}”不是“名称:类型”形式的字段，例如 email:email",
     "mock.no_seed": "保存时需要种子"
+  },
+  "api": {
+    "generate": {
+      "summary": "生成逼真的模拟数据，输出 JSON、JSON Lines、CSV 或 SQL；预览最多 200 行",
+      "field": "“名称:类型”形式的字段，可重复；类型：id, uuid, name, firstName, lastName, username, email, phone, idCard, gender, age, birthday, date, datetime, timestamp, integer, float, boolean, province, city, address, zip, company, job, url, ip, ipv6, mac, color, password, word, sentence, paragraph",
+      "rows": "生成的行数",
+      "locale": "姓名、地址与文本使用的语言",
+      "format": "输出格式",
+      "dialect": "SQL 方言",
+      "table": "SQL 输出使用的表名",
+      "seed": "随机种子，相同种子生成相同数据"
+    },
+    "save": {
+      "summary": "生成全部模拟数据并写入文件",
+      "field": "“名称:类型”形式的字段，可重复；类型：id, uuid, name, firstName, lastName, username, email, phone, idCard, gender, age, birthday, date, datetime, timestamp, integer, float, boolean, province, city, address, zip, company, job, url, ip, ipv6, mac, color, password, word, sentence, paragraph",
+      "rows": "生成的行数",
+      "locale": "姓名、地址与文本使用的语言",
+      "format": "输出格式",
+      "dialect": "SQL 方言",
+      "table": "SQL 输出使用的表名",
+      "seed": "随机种子，相同种子生成相同数据",
+      "path": "要写入的文件"
+    }
   }
 }

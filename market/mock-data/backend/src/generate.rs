@@ -92,10 +92,38 @@ pub struct Field {
 pub struct Schema {
     pub locale: Locale,
     pub rows: usize,
+    #[serde(default)]
     pub fields: Vec<Field>,
+    /// 命令行与 Agent 的扁平写法：`名称:类型`，追加在 fields 之后
+    #[serde(default)]
+    pub field: Vec<String>,
     /// 为空时随机生成并在结果中返回
     #[serde(default)]
     pub seed: Option<u64>,
+}
+
+impl Schema {
+    /// 把扁平写法的字段并入 fields，其余选项取默认值
+    pub fn expand_flat_fields(&mut self) -> PluginResult<()> {
+        for spec in std::mem::take(&mut self.field) {
+            let invalid = || PluginError::new("mock.invalid_field").with("field", spec.as_str());
+            let (name, kind) = spec.split_once(':').ok_or_else(invalid)?;
+            let kind = serde_json::from_value(Value::String(kind.trim().to_owned()))
+                .map_err(|_| invalid())?;
+            self.fields.push(Field {
+                name: name.trim().to_owned(),
+                kind,
+                min: None,
+                max: None,
+                decimals: None,
+                from: None,
+                to: None,
+                options: None,
+                null_percent: 0,
+            });
+        }
+        Ok(())
+    }
 }
 
 /// 一行中共享的「人物」信息

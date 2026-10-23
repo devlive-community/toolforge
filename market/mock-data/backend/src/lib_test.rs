@@ -63,3 +63,31 @@ fn reports_errors() {
     random.as_object_mut().unwrap().remove("seed");
     assert!(tool.call("generate", random).unwrap()["seed"].is_u64());
 }
+
+#[test]
+fn flat_fields_use_name_and_type() {
+    let tool = MockData::default();
+    let args = json!({ "locale": "en-us", "rows": 3, "seed": 1, "field": ["id:id", "mail:email"], "format": "csv" });
+    let preview = tool.call("generate", args).unwrap();
+    assert_eq!(
+        preview["output"].as_str().unwrap().lines().next(),
+        Some("id,mail")
+    );
+    let error = tool
+        .call(
+            "generate",
+            json!({ "locale": "en-us", "rows": 3, "field": ["mail:nope"], "format": "csv" }),
+        )
+        .unwrap_err();
+    assert_eq!(
+        (error.code.as_str(), error.params["field"].as_str()),
+        ("mock.invalid_field", Some("mail:nope"))
+    );
+}
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&MockData::default()).unwrap();
+    assert_eq!(checked, 1);
+}

@@ -60,8 +60,9 @@ fn check_table(options: &output::Options) -> PluginResult<()> {
     Ok(())
 }
 
-fn preview(args: GenerateArgs) -> PluginResult<Preview> {
+fn preview(mut args: GenerateArgs) -> PluginResult<Preview> {
     check_table(&args.options)?;
+    args.schema.expand_flat_fields()?;
     let data = generate::generate(&args.schema, Some(PREVIEW_ROWS), today())?;
     Ok(Preview {
         output: output::render(&data, &args.options),
@@ -71,18 +72,15 @@ fn preview(args: GenerateArgs) -> PluginResult<Preview> {
     })
 }
 
-fn save(args: SaveArgs) -> PluginResult<Saved> {
+fn save(mut args: SaveArgs) -> PluginResult<Saved> {
     check_table(&args.options)?;
+    args.schema.expand_flat_fields()?;
     if args.schema.seed.is_none() {
         return Err(PluginError::new("mock.no_seed"));
     }
     let data = generate::generate(&args.schema, None, today())?;
     let text = output::render(&data, &args.options);
-    std::fs::write(&args.path, &text).map_err(|e| {
-        PluginError::new("fs.io")
-            .with("path", args.path.as_str())
-            .with("detail", e.to_string())
-    })?;
+    tf_plugin_guest::net::write_file(&args.path, text.as_bytes())?;
     Ok(Saved {
         path: args.path,
         rows: data.rows.len(),
@@ -115,6 +113,8 @@ impl ToolPlugin for MockData {
         }
     }
 }
+
+tf_plugin_guest::export_plugin!(MockData);
 
 #[cfg(test)]
 #[path = "lib_test.rs"]

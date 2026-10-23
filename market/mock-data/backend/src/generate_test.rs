@@ -21,6 +21,7 @@ fn schema(locale: Locale, fields: Vec<Field>, rows: usize) -> Schema {
         locale,
         rows,
         fields,
+        field: Vec::new(),
         seed: Some(42),
     }
 }

@@ -49,7 +49,6 @@ tfp-image-info = { path = "plugins/image-info/backend" }
 tfp-input-stats = { path = "plugins/input-stats/backend" }
 tfp-local-server = { path = "plugins/local-server/backend" }
 tfp-log-viewer = { path = "plugins/log-viewer/backend" }
-tfp-mock-data = { path = "plugins/mock-data/backend" }
 tfp-ocr = { path = "plugins/ocr/backend" }
 tfp-pdf = { path = "plugins/pdf/backend" }
 tfp-text-encoding = { path = "plugins/text-encoding/backend" }

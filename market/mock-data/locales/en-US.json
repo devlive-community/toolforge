@@ -107,6 +107,30 @@
     "mock.no_options": "Add options for “{{field}}”",
     "mock.invalid_date": "“{{value}}” in “{{field}}” is not a date (YYYY-MM-DD)",
     "mock.no_table": "Enter a table name",
+    "mock.invalid_field": "“{{field}}” is not a field in name:type form, such as email:email",
     "mock.no_seed": "A seed is required to save"
+  },
+  "api": {
+    "generate": {
+      "summary": "Generate realistic mock data as JSON, JSON Lines, CSV or SQL; previews at most 200 rows",
+      "field": "Field in name:type form, repeatable; types: id, uuid, name, firstName, lastName, username, email, phone, idCard, gender, age, birthday, date, datetime, timestamp, integer, float, boolean, province, city, address, zip, company, job, url, ip, ipv6, mac, color, password, word, sentence, paragraph",
+      "rows": "Number of rows",
+      "locale": "Language of names, addresses and text",
+      "format": "Output format",
+      "dialect": "SQL dialect",
+      "table": "Table name for SQL output",
+      "seed": "Random seed; the same seed gives the same data"
+    },
+    "save": {
+      "summary": "Generate every row of mock data and write it to a file",
+      "field": "Field in name:type form, repeatable; types: id, uuid, name, firstName, lastName, username, email, phone, idCard, gender, age, birthday, date, datetime, timestamp, integer, float, boolean, province, city, address, zip, company, job, url, ip, ipv6, mac, color, password, word, sentence, paragraph",
+      "rows": "Number of rows",
+      "locale": "Language of names, addresses and text",
+      "format": "Output format",
+      "dialect": "SQL dialect",
+      "table": "Table name for SQL output",
+      "seed": "Random seed; the same seed gives the same data",
+      "path": "File to write"
+    }
   }
 }

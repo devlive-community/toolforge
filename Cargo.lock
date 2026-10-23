@@ -9082,6 +9082,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-mock-data"
+version = "0.1.0"
+dependencies = [
+ "jiff",
+ "rand 0.9.5",
+ "rand_chacha 0.9.0",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-nonogram"
 version = "0.1.0"
 dependencies = [
@@ -9761,18 +9774,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-mock-data"
-version = "0.1.0"
-dependencies = [
- "jiff",
- "rand 0.9.5",
- "rand_chacha 0.9.0",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-ocr"
 version = "0.1.0"
 dependencies = [
@@ -10290,7 +10291,6 @@ dependencies = [
  "tfp-json-schema",
  "tfp-local-server",
  "tfp-log-viewer",
- "tfp-mock-data",
  "tfp-ocr",
  "tfp-pdf",
  "tfp-port-manager",
