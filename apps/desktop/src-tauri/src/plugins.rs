@@ -20,10 +20,6 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
     registry.register_for(Arc::new(tfp_encoder::Encoder::default()), os);
     registry.register_for(Arc::new(tfp_text_tools::TextTools::default()), os);
     registry.register_for(Arc::new(tfp_text_diff::TextDiff::default()), os);
-    registry.register_for(
-        Arc::new(tfp_format_converter::FormatConverter::default()),
-        os,
-    );
     registry.register_for(Arc::new(tfp_image_converter::ImageConverter::default()), os);
     registry.register_for(Arc::new(tfp_password::Password::default()), os);
     registry.register_for(Arc::new(tfp_qrcode::QrCodeTool::default()), os);

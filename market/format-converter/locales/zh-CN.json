@@ -84,5 +84,13 @@
     "dropped_nested_array": "INI 无法表示嵌套数组，已跳过",
     "empty_container": "空数组或空对象无法表示，已省略",
     "properties_conflict": "键与已有层级冲突，保留为扁平键"
+  },
+  "api": {
+    "convert": {
+      "summary": "在 JSON、YAML、TOML、CSV、XML、INI 与 properties 之间转换数据",
+      "input": "要转换的文本",
+      "from": "输入格式；auto 为自动识别",
+      "to": "输出格式"
+    }
   }
 }

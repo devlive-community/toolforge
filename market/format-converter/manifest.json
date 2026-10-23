@@ -1,0 +1,34 @@
+{
+  "id": "org.devlive.toolforge.format-converter",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "convert",
+  "keywords": ["json", "yaml", "yml", "toml", "csv", "xml", "ini", "properties", "json5", "convert", "converter", "格式转换", "互转"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:read", "clipboard:write", "fs:user-selected"],
+  "functions": {
+    "convert": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.convert.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input", "to"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.convert.input", "x-positional": 0, "x-stdin": true },
+            "from": { "type": "string", "description": "i18n:api.convert.from", "enum": ["auto", "json", "yaml", "toml", "csv", "xml", "ini", "properties", "json5"], "default": "auto" },
+            "to": { "type": "string", "description": "i18n:api.convert.to", "enum": ["json", "yaml", "toml", "csv", "xml", "ini", "properties"] }
+          }
+        },
+        "output": { "text": "/output" },
+        "examples": ["cat config.yaml | tfp-format-converter convert --to json"]
+      }
+    }
+  },
+  "sensitive": false
+}

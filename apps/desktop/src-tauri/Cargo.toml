@@ -47,7 +47,6 @@ tfp-dns-lookup.workspace = true
 tfp-disk-usage.workspace = true
 tfp-duplicate-finder.workspace = true
 tfp-encoder.workspace = true
-tfp-format-converter.workspace = true
 tfp-hash.workspace = true
 tfp-image-converter.workspace = true
 tfp-image-compressor.workspace = true

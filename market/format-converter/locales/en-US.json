@@ -85,5 +85,13 @@
     "dropped_nested_array": "INI cannot hold nested arrays; skipped",
     "empty_container": "Empty arrays or objects cannot be represented; omitted",
     "properties_conflict": "Key conflicts with an existing level; kept as a flat key"
+  },
+  "api": {
+    "convert": {
+      "summary": "Convert data between JSON, YAML, TOML, CSV, XML, INI and properties",
+      "input": "Text to convert",
+      "from": "Input format; auto detects it",
+      "to": "Output format"
+    }
   }
 }

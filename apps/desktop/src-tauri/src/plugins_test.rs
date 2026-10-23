@@ -78,7 +78,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
     let registry = builtin();
     let cases = [
         ("{\"name\": \"Ada\", \"tags\": [1, 2]}", "json-to-code"),
-        ("[1, 2, 3]", "format-converter"),
         (
             r#"{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object"}"#,
             "json-schema",
@@ -108,14 +107,12 @@ fn clipboard_samples_suggest_the_right_tool_first() {
         ("10.0.0.1", "ip-calculator"),
         ("github.com", "dns-lookup"),
         ("name\tage\nAda\t36\n", "csv-viewer"),
-        ("name: app\nversion: 1\n", "format-converter"),
         ("localhost:3000", "port-manager"),
         (
             include_str!("../../../../plugins/certificate/backend/fixtures/chain.pem"),
             "certificate",
         ),
         ("db.internal:5432", "port-manager"),
-        ("[server]\nport = 80\n", "format-converter"),
     ];
     for (text, expected) in cases {
         let suggestions = registry.detect(text);
@@ -128,6 +125,9 @@ fn clipboard_samples_suggest_the_right_tool_first() {
     }
     for text in [
         "<a><b>1</b></a>",
+        "[1, 2, 3]",
+        "name: app\nversion: 1\n",
+        "[server]\nport = 80\n",
         "30 9 * * MON-FRI",
         "#16a34a",
         "rgb(22 163 74)",

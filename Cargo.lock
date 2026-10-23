@@ -8805,6 +8805,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-format-converter"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "json5",
+ "quick-xml 0.42.0",
+ "serde",
+ "serde_json",
+ "serde_yaml_ng",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+ "toml 1.1.6+spec-1.1.0",
+]
+
+[[package]]
 name = "tfm-fractal"
 version = "0.1.0"
 dependencies = [
@@ -9417,20 +9432,6 @@ dependencies = [
  "similar",
  "tf-plugin-api",
  "walkdir",
-]
-
-[[package]]
-name = "tfp-format-converter"
-version = "0.1.0"
-dependencies = [
- "csv",
- "json5",
- "quick-xml 0.42.0",
- "serde",
- "serde_json",
- "serde_yaml_ng",
- "tf-plugin-api",
- "toml 1.1.6+spec-1.1.0",
 ]
 
 [[package]]
@@ -10264,7 +10265,6 @@ dependencies = [
  "tfp-encoder",
  "tfp-env-editor",
  "tfp-folder-compare",
- "tfp-format-converter",
  "tfp-hash",
  "tfp-hex-viewer",
  "tfp-icon-generator",
