@@ -38,9 +38,6 @@ export function ReleaseHistory({ lang, page = 1 }: { lang: Lang; page?: number }
       <ReleaseNavigation lang={lang} />
       {items.length > 0 ? (
         <>
-          <p className="site-original-language">
-            {zh ? '摘要保留发布原文，可展开完整说明。' : 'Summaries retain the publisher’s wording. Expand a release for the full notes.'}
-          </p>
           {items.slice((page - 1) * RELEASE_PAGE_SIZE, page * RELEASE_PAGE_SIZE).map((item, i) => (
             <article className="site-release" key={item.tag} id={`release-${item.tag}`}>
               <div className="site-release-date">{item.date && <time dateTime={item.date}>{item.date}</time>}</div>

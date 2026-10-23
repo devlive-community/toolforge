@@ -14,11 +14,6 @@ export function PluginVersions({ tools, lang }: { tools: ToolEntry[]; lang: Lang
   const zh = lang === 'zh'
   return (
     <>
-      <p className="site-original-language">
-        {zh
-          ? '以下为官方插件索引中已发布的当前版本。插件独立更新，不与应用版本混排。'
-          : 'Current published versions from the official plugin index. Plugins update independently of the desktop app.'}
-      </p>
       {unknown && (
         <div className="site-note site-note-warn">
           {zh

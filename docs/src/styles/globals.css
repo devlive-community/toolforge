@@ -1685,11 +1685,6 @@ body {
   font-size: 12px;
   color: var(--site-brand-ink);
 }
-.site .site-original-language {
-  font-size: 11px;
-  color: var(--site-quiet);
-  margin-bottom: 15px;
-}
 @media (max-width: 540px) {
   .site .site-article-tabs {
     gap: 17px;
@@ -1930,4 +1925,42 @@ body {
   gap: 7px;
   flex-wrap: wrap;
   margin: 18px 0 23px;
+}
+
+/* 文字后跟图标的链接：图标与文字保持在同一行 */
+.site .site-link,
+.site .site-footer-links a,
+.site .site-plugin-release > a:last-child,
+.site .site-release-links a {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+.site .site-footer-links a {
+  gap: 4px;
+}
+.site .site-footer-links a svg.lucide {
+  width: 13px;
+  height: 13px;
+}
+
+/* 删除提示后，页签下方紧接第一条发布记录，不再重复分隔线 */
+.site .site-article-tabs + .site-release {
+  border-top: 0;
+  padding-top: 6px;
+}
+
+/* 搜索框：焦点落在整个输入框上，用柔和的描边与光晕代替输入区域的方框 */
+.site .site-search input:focus-visible {
+  outline: none;
+}
+.site .site-search {
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.site .site-search:focus-within {
+  border-color: color-mix(in srgb, var(--site-brand) 45%, var(--site-line));
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--site-brand) 12%, transparent),
+    0 7px 20px color-mix(in srgb, var(--site-ink) 3%, transparent);
 }
