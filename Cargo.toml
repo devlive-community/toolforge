@@ -50,7 +50,6 @@ tfp-ocr = { path = "plugins/ocr/backend" }
 tfp-text-encoding = { path = "plugins/text-encoding/backend" }
 tfp-icon-generator = { path = "plugins/icon-generator/backend" }
 tfp-folder-compare = { path = "plugins/folder-compare/backend" }
-tfp-json-query = { path = "plugins/json-query/backend" }
 tfp-doc-converter = { path = "plugins/doc-converter/backend" }
 tfp-context-menu = { path = "plugins/context-menu/backend" }
 tfp-port-manager = { path = "plugins/port-manager/backend" }

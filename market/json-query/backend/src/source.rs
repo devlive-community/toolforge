@@ -3,6 +3,7 @@
 use serde::Deserialize;
 use serde::de::IgnoredAny;
 use tf_plugin_api::{PluginError, PluginResult};
+use tf_plugin_guest::net;
 
 /// 文件大小上限
 const MAX_FILE: u64 = 100 * 1024 * 1024;
@@ -18,15 +19,20 @@ pub fn load(source: &Source) -> PluginResult<String> {
     match source {
         Source::Text { text } => Ok(text.clone()),
         Source::Path { path } => {
-            let meta = std::fs::metadata(path)
+            let size = net::file_size(path)
                 .map_err(|_| PluginError::new("fs.not_found").with("path", path.as_str()))?;
-            if meta.len() > MAX_FILE {
-                return Err(PluginError::new("query.file_too_large").with("size", meta.len()));
+            if size > MAX_FILE {
+                return Err(PluginError::new("query.file_too_large").with("size", size));
             }
-            let bytes = std::fs::read(path).map_err(|e| {
+            let bytes = net::read_to_end(path, MAX_FILE).map_err(|error| {
+                let detail = error
+                    .params
+                    .get("detail")
+                    .and_then(|d| d.as_str())
+                    .unwrap_or(&error.code);
                 PluginError::new("query.read_failed")
                     .with("path", path.as_str())
-                    .with("detail", e.to_string())
+                    .with("detail", detail)
             })?;
             String::from_utf8(bytes).map_err(|_| PluginError::new("query.not_utf8"))
         }

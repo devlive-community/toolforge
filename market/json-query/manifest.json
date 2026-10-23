@@ -1,0 +1,39 @@
+{
+  "id": "org.devlive.toolforge.json-query",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["jq", "jsonpath", "json query", "filter json", "select", "json lines", "jsonl", "查询", "过滤", "提取"],
+  "accent": "orange",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected", "clipboard:write"],
+  "functions": {
+    "query": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.query.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["query"],
+          "properties": {
+            "query": { "type": "string", "description": "i18n:api.query.query", "x-positional": 0 },
+            "input": { "type": "string", "description": "i18n:api.query.input", "x-stdin": true },
+            "path": { "type": "string", "description": "i18n:api.query.path", "format": "path", "x-access": "read" },
+            "language": { "type": "string", "description": "i18n:api.query.language", "enum": ["jq", "jsonpath"], "default": "jq" },
+            "raw": { "type": "boolean", "description": "i18n:api.query.raw", "default": false },
+            "compact": { "type": "boolean", "description": "i18n:api.query.compact", "default": false },
+            "sortKeys": { "type": "boolean", "description": "i18n:api.query.sortKeys", "default": false }
+          }
+        },
+        "output": { "table": "/results", "columns": [{ "key": "text", "label": "i18n:api.columns.text" }] },
+        "examples": ["echo '{\"users\":[{\"name\":\"a\"}]}' | tfp-json-query query '.users[].name' --raw", "tfp-json-query query '$..name' --path data.json --language jsonpath"]
+      }
+    }
+  },
+  "sensitive": false
+}

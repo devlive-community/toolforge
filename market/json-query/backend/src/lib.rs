@@ -70,7 +70,14 @@ impl Results {
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct QueryArgs {
-    source: Source,
+    #[serde(default)]
+    source: Option<Source>,
+    /// 命令行与 Agent 的扁平写法：要查询的文件
+    #[serde(default)]
+    path: Option<String>,
+    /// 命令行与 Agent 的扁平写法：要查询的 JSON 文本
+    #[serde(default)]
+    input: Option<String>,
     query: String,
     #[serde(default)]
     language: Language,
@@ -88,8 +95,21 @@ struct Answer {
     elapsed_ms: u64,
 }
 
+impl QueryArgs {
+    /// 结构化的 source 优先，其次是扁平写法的文件、文本
+    fn source(&self) -> Source {
+        match (&self.source, &self.path, &self.input) {
+            (Some(source), _, _) => source.clone(),
+            (None, Some(path), _) => Source::Path { path: path.clone() },
+            (None, None, input) => Source::Text {
+                text: input.clone().unwrap_or_default(),
+            },
+        }
+    }
+}
+
 fn query(args: QueryArgs) -> PluginResult<Answer> {
-    let text = source::load(&args.source)?;
+    let text = source::load(&args.source())?;
     let inputs = source::validate(&text)?;
     let started = Instant::now();
     let results = match args.language {
@@ -127,6 +147,8 @@ impl ToolPlugin for JsonQuery {
         }
     }
 }
+
+tf_plugin_guest::export_plugin!(JsonQuery);
 
 #[cfg(test)]
 #[path = "lib_test.rs"]

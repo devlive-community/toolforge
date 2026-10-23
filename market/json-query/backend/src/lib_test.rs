@@ -29,3 +29,30 @@ fn answers_queries_in_both_languages() {
         .unwrap_err();
     assert_eq!(bad.code, "query.invalid_json");
 }
+
+#[test]
+fn accepts_flat_input_and_path() {
+    let plugin = JsonQuery::default();
+    let text = plugin
+        .call("query", json!({ "input": "{\"a\":1}", "query": ".a" }))
+        .unwrap();
+    assert_eq!(text["results"][0]["text"], "1");
+
+    let file = std::env::temp_dir().join(format!("tf-json-query-{}.json", std::process::id()));
+    std::fs::write(&file, "[\"x\"]").unwrap();
+    let from_file = plugin
+        .call(
+            "query",
+            json!({ "path": file, "query": ".[0]", "raw": true }),
+        )
+        .unwrap();
+    std::fs::remove_file(&file).unwrap();
+    assert_eq!(from_file["results"][0]["text"], "x");
+}
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&JsonQuery::default()).unwrap();
+    assert_eq!(checked, 0);
+}

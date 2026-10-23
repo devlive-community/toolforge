@@ -1,7 +1,4 @@
-//! 用 jaq 执行 jq 程序。jaq 无法中途打断，所以放在单独的线程里并设超时；输出个数与大小有上限。
-
-use std::sync::mpsc;
-use std::time::Duration;
+//! 用 jaq 执行 jq 程序。jaq 无法中途打断，失控时由宿主的调用超时中断；输出个数与大小有上限。
 
 use jaq_core::load::{Arena, File, Loader};
 use jaq_core::{Compiler, Ctx, Vars, data, unwrap_valr};
@@ -12,8 +9,6 @@ use jaq_json::{Num, Val, read};
 use tf_plugin_api::{PluginError, PluginResult};
 
 use crate::{Options, Output, Results};
-
-pub const TIMEOUT: Duration = Duration::from_secs(10);
 
 /// 错误位置（1 开始的行列）：slice 指向 code 中的某处
 fn position(code: &str, at: &str) -> (usize, usize) {
@@ -142,22 +137,12 @@ fn execute(code: &str, input: &str, options: &Options) -> PluginResult<Results> 
     Ok(results)
 }
 
-/// 在新线程中执行，超时则放弃等待
+/// 直接执行：WASM 沙箱不能开线程，失控的查询由宿主的调用超时中断
 pub fn run(code: &str, input: String, options: Options) -> PluginResult<Results> {
     if code.trim().is_empty() {
         return Err(PluginError::new("query.empty_query"));
     }
-    let (tx, rx) = mpsc::channel();
-    let code = code.to_owned();
-    std::thread::Builder::new()
-        .name("jq".into())
-        .spawn(move || {
-            let _ = tx.send(execute(&code, &input, &options));
-        })
-        .map_err(|e| PluginError::new("query.runtime").with("detail", e.to_string()))?;
-    rx.recv_timeout(TIMEOUT).unwrap_or_else(|_| {
-        Err(PluginError::new("query.timeout").with("seconds", TIMEOUT.as_secs()))
-    })
+    execute(code, &input, &options)
 }
 
 #[cfg(test)]

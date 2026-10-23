@@ -68,12 +68,26 @@
     "query.syntax": "Syntax error at line {{line}}, column {{column}}: expected {{expected}}",
     "query.undefined": "“{{name}}” is not defined (line {{line}}, column {{column}})",
     "query.runtime": "{{detail}}",
-    "query.timeout": "The query took longer than {{seconds}} seconds and was stopped",
     "query.jsonpath": "Invalid JSONPath at column {{column}}: {{detail}}",
     "query.file_too_large": "The file is too large (over 100 MB)",
     "query.read_failed": "Could not read {{path}}: {{detail}}",
     "query.not_utf8": "The file is not UTF-8 text",
     "query.undefined_filter": "Unknown filter “{{name}}” at line {{line}}, column {{column}}",
     "query.undefined_variable": "Unknown variable “{{name}}” at line {{line}}, column {{column}}"
+  },
+  "api": {
+    "query": {
+      "summary": "Query JSON or JSON Lines with jq or JSONPath",
+      "query": "jq program or JSONPath expression",
+      "input": "JSON text to query",
+      "path": "JSON file to query instead of the input text",
+      "language": "Query language",
+      "raw": "Print strings without quotes, like jq -r",
+      "compact": "Print each result on one line",
+      "sortKeys": "Sort object keys"
+    },
+    "columns": {
+      "text": "Result"
+    }
   }
 }

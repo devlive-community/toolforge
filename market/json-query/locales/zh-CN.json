@@ -68,12 +68,26 @@
     "query.syntax": "第 {{line}} 行第 {{column}} 列语法错误：应为 {{expected}}",
     "query.undefined": "第 {{line}} 行第 {{column}} 列：“{{name}}”未定义",
     "query.runtime": "{{detail}}",
-    "query.timeout": "查询超过 {{seconds}} 秒，已停止",
     "query.jsonpath": "JSONPath 第 {{column}} 列有误：{{detail}}",
     "query.file_too_large": "文件过大（超过 100 MB）",
     "query.read_failed": "无法读取 {{path}}：{{detail}}",
     "query.not_utf8": "文件不是 UTF-8 文本",
     "query.undefined_filter": "第 {{line}} 行第 {{column}} 列：未定义的过滤器“{{name}}”",
     "query.undefined_variable": "第 {{line}} 行第 {{column}} 列：未定义的变量“{{name}}”"
+  },
+  "api": {
+    "query": {
+      "summary": "用 jq 或 JSONPath 查询 JSON 或 JSON Lines",
+      "query": "jq 程序或 JSONPath 表达式",
+      "input": "要查询的 JSON 文本",
+      "path": "要查询的 JSON 文件，替代输入文本",
+      "language": "查询语言",
+      "raw": "字符串结果不加引号，同 jq -r",
+      "compact": "每个结果输出为一行",
+      "sortKeys": "按键名排序对象"
+    },
+    "columns": {
+      "text": "结果"
+    }
   }
 }

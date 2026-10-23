@@ -1,15 +1,20 @@
 [package]
-name = "tfp-json-query"
-description = "ToolForge plugin: query JSON with jq or JSONPath"
+name = "tfm-json-query"
+description = "ToolForge market plugin: query JSON with jq or JSONPath"
 version = "0.1.0"
 edition.workspace = true
 license.workspace = true
 authors.workspace = true
 
+[lib]
+# cdylib 编译为 WASM 组件，rlib 供本机单元测试
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
 serde.workspace = true
 serde_json.workspace = true
 tf-plugin-api.workspace = true
+tf-plugin-guest = { path = "../../../crates/tf-plugin-guest" }
 jaq-core = "3.1"
 jaq-json = "2.0"
 jaq-std = "3.0"

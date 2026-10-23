@@ -9059,6 +9059,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-json-query"
+version = "0.1.0"
+dependencies = [
+ "jaq-core",
+ "jaq-json",
+ "jaq-std",
+ "serde",
+ "serde_json",
+ "serde_json_path",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-json-schema"
 version = "0.1.0"
 dependencies = [
@@ -9754,19 +9768,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-json-query"
-version = "0.1.0"
-dependencies = [
- "jaq-core",
- "jaq-json",
- "jaq-std",
- "serde",
- "serde_json",
- "serde_json_path",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-local-server"
 version = "0.1.0"
 dependencies = [
@@ -10289,7 +10290,6 @@ dependencies = [
  "tfp-icon-generator",
  "tfp-image-compressor",
  "tfp-input-stats",
- "tfp-json-query",
  "tfp-local-server",
  "tfp-log-viewer",
  "tfp-ocr",
