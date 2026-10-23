@@ -94,13 +94,24 @@ function releaseStatusSets() {
       .sort((a, b) => compareVersions(a, b))
     if (tags.length < 2) return null
     const [prevTag, latestTag] = tags.slice(-2) // 升序排序后末尾两个为 [次新, 最新]
-    // CI checkout 通常是浅克隆且没有 tag 引用：按显式 refspec 浅拉两个 tag
-    // （git fetch <tag> 只写 FETCH_HEAD 不建本地引用，后续 ls-tree 会找不到）
-    execFileSync(
-      'git',
-      ['fetch', '--depth=1', '--quiet', '--no-tags', 'origin', `+refs/tags/${latestTag}:refs/tags/${latestTag}`, `+refs/tags/${prevTag}:refs/tags/${prevTag}`],
-      { cwd: root, stdio: 'ignore' },
-    )
+    // 本地缺少 tag 时按显式 refspec 拉取（git fetch <tag> 只写 FETCH_HEAD 不建本地引用，后续 ls-tree 会找不到）。
+    // 只有本来就是浅克隆时才带 --depth=1：在完整仓库上带 --depth 拉取会写入 .git/shallow，把本地历史截断
+    const missing = [latestTag, prevTag].filter((tag) => {
+      try {
+        gitOutput(['rev-parse', '--verify', '--quiet', `refs/tags/${tag}`])
+        return false
+      } catch {
+        return true
+      }
+    })
+    if (missing.length > 0) {
+      const shallow = gitOutput(['rev-parse', '--is-shallow-repository']) === 'true'
+      execFileSync(
+        'git',
+        ['fetch', ...(shallow ? ['--depth=1'] : []), '--quiet', '--no-tags', 'origin', ...missing.map((tag) => `+refs/tags/${tag}:refs/tags/${tag}`)],
+        { cwd: root, stdio: 'ignore' },
+      )
+    }
     return collectToolReleaseStatus({ previousRef: prevTag, latestRef: latestTag, git: gitOutput })
   } catch (error) {
     console.warn(`[generate-data] release status unavailable (${String(error.message).split('\n')[0]}), treating all tools as released`)
