@@ -53,5 +53,17 @@
       "bracketId": "方括号中的编号 [123]"
     }
   },
-  "ignoredLines": "{{count}} 行已忽略差异"
+  "ignoredLines": "{{count}} 行已忽略差异",
+  "api": {
+    "diff": {
+      "summary": "按行、单词或字符比较两段文本，输出 unified diff",
+      "left": "原始文本",
+      "right": "修改后的文本",
+      "mode": "按行、单词或字符比较",
+      "algorithm": "比较算法",
+      "ignoreCase": "忽略大小写",
+      "ignoreWhitespace": "忽略空白变化",
+      "ignorePatterns": "要忽略的行的正则表达式"
+    }
+  }
 }

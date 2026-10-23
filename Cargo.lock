@@ -9247,6 +9247,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-text-diff"
+version = "0.1.0"
+dependencies = [
+ "regex",
+ "serde",
+ "serde_json",
+ "similar",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-timestamp"
 version = "0.1.0"
 dependencies = [
@@ -9804,17 +9816,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-text-diff"
-version = "0.1.0"
-dependencies = [
- "regex",
- "serde",
- "serde_json",
- "similar",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-text-encoding"
 version = "0.1.0"
 dependencies = [
@@ -10294,7 +10295,6 @@ dependencies = [
  "tfp-ssh-key",
  "tfp-svg-converter",
  "tfp-system-monitor",
- "tfp-text-diff",
  "tfp-text-encoding",
  "tfp-text-tools",
  "tfp-unicode",

@@ -54,5 +54,17 @@
     }
   },
   "ignoredLines_one": "{{count}} line differs only in ignored text",
-  "ignoredLines_other": "{{count}} lines differ only in ignored text"
+  "ignoredLines_other": "{{count}} lines differ only in ignored text",
+  "api": {
+    "diff": {
+      "summary": "Compare two texts by line, word or character and print a unified diff",
+      "left": "Original text",
+      "right": "Changed text",
+      "mode": "Compare by lines, words or characters",
+      "algorithm": "Diff algorithm",
+      "ignoreCase": "Ignore letter case",
+      "ignoreWhitespace": "Ignore whitespace changes",
+      "ignorePatterns": "Regular expressions for lines to ignore"
+    }
+  }
 }

@@ -32,6 +32,8 @@ impl ToolPlugin for TextDiff {
     }
 }
 
+tf_plugin_guest::export_plugin!(TextDiff);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;
