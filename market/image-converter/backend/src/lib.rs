@@ -38,6 +38,8 @@ impl ToolPlugin for ImageConverter {
     }
 }
 
+tf_plugin_guest::export_plugin!(ImageConverter);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

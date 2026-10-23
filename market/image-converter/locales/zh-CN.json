@@ -76,5 +76,22 @@
     "image.unsupported": "不支持的图片格式",
     "image.decode_failed": "图片解码失败：{{detail}}",
     "image.encode_failed": "图片编码失败：{{detail}}"
+  },
+  "api": {
+    "convert": {
+      "summary": "在 PNG、JPEG、WebP、GIF、BMP、ICO 与 TIFF 之间转换图片",
+      "paths": "要转换的图片",
+      "target": "目标格式；keep 表示保持原格式",
+      "quality": "JPEG 与 WebP 的质量",
+      "outputDir": "转换结果的输出目录，默认与源文件同目录",
+      "suffix": "追加到输出文件名的后缀"
+    },
+    "columns": {
+      "name": "文件",
+      "output": "输出",
+      "format": "格式",
+      "afterBytes": "字节",
+      "error": "错误"
+    }
   }
 }

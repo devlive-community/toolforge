@@ -346,11 +346,7 @@ fn convert_one(
         None => source.parent().map(Path::to_path_buf).unwrap_or_default(),
     };
     let output = output_path(source, &dir, &args.suffix, target.extension());
-    std::fs::write(&output, &encoded).map_err(|e| {
-        PluginError::new("fs.io")
-            .with("path", output.to_string_lossy().as_ref())
-            .with("detail", e.to_string())
-    })?;
+    tf_plugin_guest::net::write_file(&output.to_string_lossy(), &encoded)?;
 
     Ok(Converted {
         output,

@@ -1,5 +1,5 @@
 {
-  "name": "@toolforge-plugin/image-converter",
+  "name": "@toolforge-market/image-converter",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -22,6 +22,7 @@
     "@types/react": "19.3.0",
     "react": "19.3.0",
     "typescript": "5.9.3",
-    "vite": "8.3.0"
+    "vite": "8.3.0",
+    "tailwindcss": "4.3.3"
   }
 }

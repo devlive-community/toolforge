@@ -76,5 +76,22 @@
     "image.unsupported": "Not a supported image format",
     "image.decode_failed": "The image could not be decoded: {{detail}}",
     "image.encode_failed": "The image could not be encoded: {{detail}}"
+  },
+  "api": {
+    "convert": {
+      "summary": "Convert images between PNG, JPEG, WebP, GIF, BMP, ICO and TIFF",
+      "paths": "Images to convert",
+      "target": "Target format; keep uses the source format",
+      "quality": "Quality for JPEG and WebP",
+      "outputDir": "Directory for converted files; defaults to each source directory",
+      "suffix": "Suffix added to output file names"
+    },
+    "columns": {
+      "name": "File",
+      "output": "Output",
+      "format": "Format",
+      "afterBytes": "Bytes",
+      "error": "Error"
+    }
   }
 }

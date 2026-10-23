@@ -8951,6 +8951,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-image-converter"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "image",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-image-stitcher"
 version = "0.2.0"
 dependencies = [
@@ -9683,17 +9695,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-image-converter"
-version = "0.1.0"
-dependencies = [
- "data-encoding",
- "image",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-image-info"
 version = "0.1.0"
 dependencies = [
@@ -10284,7 +10285,6 @@ dependencies = [
  "tfp-hex-viewer",
  "tfp-icon-generator",
  "tfp-image-compressor",
- "tfp-image-converter",
  "tfp-image-info",
  "tfp-image-palette",
  "tfp-input-stats",
