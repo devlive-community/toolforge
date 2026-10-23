@@ -1,3 +1,4 @@
+import { devTopics } from '@/lib/dev-docs'
 import type { MetadataRoute } from 'next'
 import { catalog, LANGS, release } from '@/lib/catalog'
 import { guideTopics } from '@/lib/guides'
@@ -11,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'changelog/',
     'changelog/plugins/',
     ...guideTopics.map((topic) => `guide/${topic}/`),
+    ...devTopics.map((topic) => `docs/${topic}/`),
     ...catalog.map((tool) => `tools/${tool.slug}/`),
     ...Array.from({ length: Math.max(0, Math.ceil(release.releases.length / RELEASE_PAGE_SIZE) - 1) }, (_, i) => `changelog/page/${i + 2}/`),
   ]

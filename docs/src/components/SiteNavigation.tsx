@@ -12,6 +12,7 @@ export function SiteNavigation({ lang, open, onNavigate }: { lang: Lang; open: b
       {[
         { href: `/${lang}/tools/`, label: t.tools },
         { href: `/${lang}/guide/start/`, prefix: `/${lang}/guide/`, label: t.guide },
+        { href: `/${lang}/docs/plugin-development/`, prefix: `/${lang}/docs/`, label: t.docs },
         { href: `/${lang}/changelog/`, label: t.updates },
       ].map((item) => (
         <Link

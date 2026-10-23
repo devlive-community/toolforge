@@ -2125,3 +2125,81 @@ body {
   color: var(--site-quiet);
   margin-top: 8px;
 }
+
+/* 技术文档 Markdown 正文 */
+.site .site-markdown h2 {
+  margin-top: 34px;
+  padding-top: 20px;
+  border-top: 1px solid var(--site-line);
+}
+.site .site-markdown h3 {
+  margin-top: 22px;
+}
+.site .site-markdown a {
+  display: inline;
+  color: var(--site-brand-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.site .site-markdown :not(pre) > code {
+  font:
+    12px ui-monospace,
+    monospace;
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid var(--site-line);
+  background: var(--site-soft);
+  color: var(--site-ink);
+}
+.site .site-markdown pre {
+  margin: 14px 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid var(--site-line);
+  background: var(--site-soft);
+  font:
+    12px/1.65 ui-monospace,
+    monospace;
+  color: var(--site-ink);
+}
+.site .site-markdown pre code {
+  font: inherit;
+}
+.site .site-markdown table {
+  width: 100%;
+  margin: 14px 0;
+  border-collapse: collapse;
+  font-size: 13px;
+  display: block;
+  overflow-x: auto;
+}
+.site .site-markdown th,
+.site .site-markdown td {
+  text-align: left;
+  vertical-align: top;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--site-line);
+}
+.site .site-markdown th {
+  color: var(--site-ink);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.site .site-markdown td {
+  color: var(--site-sub);
+}
+.site .site-markdown td code {
+  white-space: nowrap;
+}
+.site .site-markdown blockquote {
+  margin: 16px 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--site-brand);
+  border-radius: 0 8px 8px 0;
+  background: var(--site-tint);
+  color: var(--site-sub);
+}
+.site .site-markdown blockquote p {
+  margin: 0;
+}
