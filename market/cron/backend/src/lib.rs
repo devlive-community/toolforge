@@ -38,6 +38,8 @@ impl ToolPlugin for CronTool {
     }
 }
 
+tf_plugin_guest::export_plugin!(CronTool);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

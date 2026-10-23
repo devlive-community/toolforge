@@ -37,7 +37,6 @@ tfp-background-remover = { path = "plugins/background-remover/backend" }
 tfp-barcode = { path = "plugins/barcode/backend" }
 tfp-batch-rename = { path = "plugins/batch-rename/backend" }
 tfp-certificate = { path = "plugins/certificate/backend" }
-tfp-cron = { path = "plugins/cron/backend" }
 tfp-csv-viewer = { path = "plugins/csv-viewer/backend" }
 tfp-curl-converter = { path = "plugins/curl-converter/backend" }
 tfp-dns-lookup = { path = "plugins/dns-lookup/backend" }

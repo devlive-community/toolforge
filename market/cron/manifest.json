@@ -1,0 +1,47 @@
+{
+  "id": "org.devlive.toolforge.cron",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["cron", "crontab", "schedule", "quartz", "job", "timer", "定时任务", "表达式", "计划任务"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "evaluate": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.evaluate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["expression"],
+          "properties": {
+            "expression": { "type": "string", "description": "i18n:api.evaluate.expression", "x-positional": 0 },
+            "timezone": { "type": "string", "description": "i18n:api.evaluate.timezone" },
+            "count": { "type": "integer", "description": "i18n:api.evaluate.count", "minimum": 1, "maximum": 100, "default": 10 },
+            "domAndDow": { "type": "boolean", "description": "i18n:api.evaluate.domAndDow", "default": false }
+          }
+        },
+        "examples": ["tfp-cron evaluate '30 9 * * MON-FRI' --timezone Asia/Shanghai --count 5"]
+      }
+    },
+    "timezones": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.timezones.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [],
+          "properties": {}
+        },
+        "examples": ["tfp-cron timezones"]
+      }
+    }
+  },
+  "sensitive": false
+}

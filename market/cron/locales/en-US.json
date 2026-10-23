@@ -136,5 +136,17 @@
     "cron.field_count": "Expected 5, 6 or 7 fields but found {{count}}",
     "cron.never": "This expression never runs (for example February 30)",
     "cron.unknown_timezone": "Unknown time zone {{timezone}}"
+  },
+  "api": {
+    "evaluate": {
+      "summary": "Explain a cron expression and list its next and previous run times",
+      "expression": "Cron expression with 5 or 6 fields",
+      "timezone": "IANA time zone; the system time zone when omitted",
+      "count": "How many run times to list",
+      "domAndDow": "Require both day of month and day of week to match instead of either"
+    },
+    "timezones": {
+      "summary": "List the IANA time zones that can be used"
+    }
   }
 }

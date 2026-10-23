@@ -8702,6 +8702,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-cron"
+version = "0.1.0"
+dependencies = [
+ "croner",
+ "jiff",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-crypto"
 version = "0.1.0"
 dependencies = [
@@ -9297,17 +9309,6 @@ dependencies = [
  "tf-plugin-api",
  "windows-sys 0.61.2",
  "winreg",
-]
-
-[[package]]
-name = "tfp-cron"
-version = "0.1.0"
-dependencies = [
- "croner",
- "jiff",
- "serde",
- "serde_json",
- "tf-plugin-api",
 ]
 
 [[package]]
@@ -10254,7 +10255,6 @@ dependencies = [
  "tfp-batch-rename",
  "tfp-certificate",
  "tfp-context-menu",
- "tfp-cron",
  "tfp-csv-viewer",
  "tfp-curl-converter",
  "tfp-disk-usage",

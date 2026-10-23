@@ -104,7 +104,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
             "curl -X POST https://api.example.com -d a=1",
             "curl-converter",
         ),
-        ("30 9 * * MON-FRI", "cron"),
         ("192.168.1.0/24", "ip-calculator"),
         ("10.0.0.1", "ip-calculator"),
         ("github.com", "dns-lookup"),
@@ -129,6 +128,7 @@ fn clipboard_samples_suggest_the_right_tool_first() {
     }
     for text in [
         "<a><b>1</b></a>",
+        "30 9 * * MON-FRI",
         "#16a34a",
         "rgb(22 163 74)",
         "0xDEADBEEF",

@@ -136,5 +136,17 @@
     "cron.field_count": "应为 5、6 或 7 段，实际为 {{count}} 段",
     "cron.never": "该表达式永远不会执行（例如 2 月 30 日）",
     "cron.unknown_timezone": "未知时区 {{timezone}}"
+  },
+  "api": {
+    "evaluate": {
+      "summary": "解释 cron 表达式，列出接下来和之前的运行时间",
+      "expression": "5 段或 6 段的 cron 表达式",
+      "timezone": "IANA 时区；省略时使用系统时区",
+      "count": "列出的运行次数",
+      "domAndDow": "要求「日」与「星期」同时满足（默认任一满足即可）"
+    },
+    "timezones": {
+      "summary": "列出可用的 IANA 时区"
+    }
   }
 }
