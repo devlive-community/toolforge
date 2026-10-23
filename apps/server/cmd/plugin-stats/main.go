@@ -20,6 +20,7 @@ import (
 	"toolforge.dev/plugin-stats/internal/asset"
 	"toolforge.dev/plugin-stats/internal/catalog"
 	"toolforge.dev/plugin-stats/internal/config"
+	"toolforge.dev/plugin-stats/internal/registry"
 	"toolforge.dev/plugin-stats/internal/store"
 	"toolforge.dev/plugin-stats/migrations"
 )
@@ -110,7 +111,13 @@ func run(args []string) error {
 		presigner = &asset.Presigner{SecretID: cfg.CosSecretID, SecretKey: cfg.CosSecretKey}
 		slog.Info("download URLs are COS presigned for a private bucket")
 	}
-	h := (&api.API{Store: storage, Signer: cfg.Signer, AssetBaseURL: cfg.AssetBaseURL, Presigner: presigner, BuildSHA: buildSHA, Logger: slog.Default()}).Handler()
+	var names *registry.Cache
+	if cfg.RegistryURL != "" {
+		names = &registry.Cache{URL: cfg.RegistryURL, Client: &http.Client{Timeout: 15 * time.Second}}
+		// Names are display data: refresh in the background and never block serving.
+		go names.Run(ctx, 10*time.Minute, func(error) { slog.Warn("plugin registry refresh failed") })
+	}
+	h := (&api.API{Store: storage, Signer: cfg.Signer, AssetBaseURL: cfg.AssetBaseURL, Presigner: presigner, Registry: names, BuildSHA: buildSHA, Logger: slog.Default()}).Handler()
 	srv := &http.Server{Addr: cfg.ListenAddr, Handler: h, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 << 10, ErrorLog: slog.NewLogLogger(slog.Default().Handler(), slog.LevelError)}
 	done := make(chan error, 1)
 	go func() { done <- srv.ListenAndServe() }()

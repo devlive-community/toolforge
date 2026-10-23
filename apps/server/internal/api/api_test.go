@@ -13,6 +13,7 @@ import (
 
 	"toolforge.dev/plugin-stats/internal/asset"
 	"toolforge.dev/plugin-stats/internal/receipt"
+	"toolforge.dev/plugin-stats/internal/registry"
 	"toolforge.dev/plugin-stats/internal/store"
 )
 
@@ -47,6 +48,15 @@ func (f *fakeRepo) Batch(context.Context, []string) (store.Stats, error) {
 }
 func (f *fakeRepo) Total(context.Context) (store.TotalResult, error) {
 	return store.TotalResult{TotalDownloads: "9007199254740993"}, f.err
+}
+func (f *fakeRepo) Dashboard(context.Context) (store.DashboardResult, error) {
+	return store.DashboardResult{
+		TotalDownloads: "9007199254740993",
+		Ranking:        []store.RankedPlugin{{PluginID: "org.devlive.toolforge.hash", Downloads: "3"}, {PluginID: "org.devlive.toolforge.unknown", Downloads: "1"}},
+		TopVersions:    []store.RankedVersion{},
+		Daily:          []store.DailyDownloads{},
+		Recent:         []store.RecentDownload{},
+	}, f.err
 }
 func fixtureAPI() (*API, *fakeRepo) {
 	signer, _ := receipt.New("k1", map[string][]byte{"k1": bytes.Repeat([]byte{7}, 32)})
@@ -183,5 +193,76 @@ func TestStatsCountPrecisionReadinessAndSafeErrors(t *testing.T) {
 	h.ServeHTTP(w, httptest.NewRequest(http.MethodGet, "/v1/plugins/unknown/stats", nil))
 	if w.Code != 404 {
 		t.Fatal("unknown plugin is not 404")
+	}
+}
+
+func TestDashboardMergesPluginNames(t *testing.T) {
+	index := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte(`{"plugins":[{"id":"org.devlive.toolforge.hash","category":"dev","names":{"zh-CN":"哈希计算","en-US":"Hash"}}]}`))
+	}))
+	defer index.Close()
+	a, repo := fixtureAPI()
+	a.Registry = &registry.Cache{URL: index.URL, Client: index.Client()}
+	if err := a.Registry.Refresh(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	w := httptest.NewRecorder()
+	a.Handler().ServeHTTP(w, httptest.NewRequest("GET", "/v1/dashboard", nil))
+	if w.Code != 200 || w.Header().Get("Access-Control-Allow-Origin") != "*" || !strings.Contains(w.Header().Get("Cache-Control"), "max-age") {
+		t.Fatalf("dashboard response %d %v", w.Code, w.Header())
+	}
+	var body struct {
+		TotalDownloads string `json:"totalDownloads"`
+		PluginInfo     map[string]struct {
+			Names map[string]string `json:"names"`
+		} `json:"pluginInfo"`
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
+		t.Fatal(err)
+	}
+	if body.TotalDownloads != "9007199254740993" || body.PluginInfo["org.devlive.toolforge.hash"].Names["zh-CN"] != "哈希计算" {
+		t.Fatalf("dashboard body: %s", w.Body.String())
+	}
+	if _, ok := body.PluginInfo["org.devlive.toolforge.unknown"]; ok {
+		t.Fatal("unknown plugin got metadata")
+	}
+
+	a.Registry = nil
+	w = httptest.NewRecorder()
+	a.Handler().ServeHTTP(w, httptest.NewRequest("GET", "/v1/dashboard", nil))
+	if w.Code != 200 || !strings.Contains(w.Body.String(), `"pluginInfo":{}`) {
+		t.Fatalf("dashboard without registry: %d %s", w.Code, w.Body.String())
+	}
+	repo.err = errors.New("database down")
+	w = httptest.NewRecorder()
+	a.Handler().ServeHTTP(w, httptest.NewRequest("GET", "/v1/dashboard", nil))
+	if w.Code != 503 {
+		t.Fatalf("storage failure returned %d", w.Code)
+	}
+}
+
+func TestDashboardPageAndAssets(t *testing.T) {
+	a, _ := fixtureAPI()
+	h := a.Handler()
+	for _, tc := range []struct{ path, contentType, cache string }{
+		{"/", "text/html", "no-cache"},
+		{"/assets/dashboard.js", "text/javascript", "max-age=300"},
+		{"/assets/dashboard.css", "text/css", "max-age=300"},
+	} {
+		w := httptest.NewRecorder()
+		h.ServeHTTP(w, httptest.NewRequest("GET", tc.path, nil))
+		if w.Code != 200 || !strings.HasPrefix(w.Header().Get("Content-Type"), tc.contentType) || !strings.Contains(w.Header().Get("Cache-Control"), tc.cache) {
+			t.Fatalf("%s: %d %v", tc.path, w.Code, w.Header())
+		}
+		if !strings.Contains(w.Header().Get("Content-Security-Policy"), "script-src 'self'") {
+			t.Fatalf("%s: missing CSP", tc.path)
+		}
+	}
+	for _, path := range []string{"/assets/index.html", "/assets/../go.mod", "/index.html", "/other"} {
+		w := httptest.NewRecorder()
+		h.ServeHTTP(w, httptest.NewRequest("GET", path, nil))
+		if w.Code == 200 {
+			t.Fatalf("%s served", path)
+		}
 	}
 }

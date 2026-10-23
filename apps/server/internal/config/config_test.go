@@ -26,13 +26,18 @@ func TestSafeConfiguration(t *testing.T) {
 	if !strings.Contains(c.DSN, "parseTime=true") || c.Signer == nil {
 		t.Fatal("missing configuration")
 	}
+	t.Setenv("PLUGIN_REGISTRY_URL", "")
+	c, err = Read(true)
+	if err != nil || c.RegistryURL != "" {
+		t.Fatal("explicitly empty registry URL must disable dashboard names")
+	}
 	t.Setenv("RECEIPT_KEYS_JSON", "not-secret-json")
 	if _, err := Read(false); err != nil {
 		t.Fatal("administrative CLI required receipt keys")
 	}
 }
 func TestUnsafeConfigurationRejected(t *testing.T) {
-	for _, tc := range []struct{ key, value string }{{"STATS_LISTEN_ADDR", "0.0.0.0:8088"}, {"PLUGIN_ASSET_BASE_URL", "http://insecure.invalid"}, {"PLUGIN_ASSET_BASE_URL", "https://user:password@host.invalid"}, {"MYSQL_USER", "root"}, {"MYSQL_DSN", "user:secret@tcp(remote.invalid:3306)/db"}, {"RECEIPT_KEYS_JSON", `{"k1":"c2hvcnQ="}`}} {
+	for _, tc := range []struct{ key, value string }{{"STATS_LISTEN_ADDR", "0.0.0.0:8088"}, {"PLUGIN_ASSET_BASE_URL", "http://insecure.invalid"}, {"PLUGIN_ASSET_BASE_URL", "https://user:password@host.invalid"}, {"MYSQL_USER", "root"}, {"PLUGIN_REGISTRY_URL", "http://plugins.invalid/registry.json"}, {"PLUGIN_REGISTRY_URL", "https://user:password@plugins.invalid/registry.json"}, {"PLUGIN_REGISTRY_URL", "https://plugins.invalid/registry.json#frag"}, {"MYSQL_DSN", "user:secret@tcp(remote.invalid:3306)/db"}, {"RECEIPT_KEYS_JSON", `{"k1":"c2hvcnQ="}`}} {
 		t.Run(tc.key+tc.value, func(t *testing.T) {
 			baseEnv(t)
 			t.Setenv(tc.key, tc.value)

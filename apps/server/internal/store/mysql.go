@@ -456,3 +456,125 @@ func DigestBytes(sha string) ([]byte, error) {
 	}
 	return b, nil
 }
+
+// DashboardDays is how many days the dashboard trend covers. Confirmed attempts
+// live at least 30 days (see Cleanup), so the whole range is available.
+const DashboardDays = 30
+
+// dashboardOffset buckets the trend by Beijing time, where most users are.
+const dashboardOffset = 8 * time.Hour
+
+type RankedPlugin struct {
+	PluginID  string `json:"pluginId"`
+	Downloads string `json:"downloads"`
+}
+type RankedVersion struct {
+	PluginID  string `json:"pluginId"`
+	Version   string `json:"version"`
+	Downloads string `json:"downloads"`
+}
+type DailyDownloads struct {
+	Date      string `json:"date"`
+	Downloads string `json:"downloads"`
+}
+type RecentDownload struct {
+	PluginID string    `json:"pluginId"`
+	Version  string    `json:"version"`
+	At       time.Time `json:"at"`
+}
+
+// DashboardResult aggregates everything the public dashboard shows. Counts are
+// decimal strings like the other endpoints so clients never lose precision.
+type DashboardResult struct {
+	TotalDownloads    string           `json:"totalDownloads"`
+	Plugins           int              `json:"plugins"`
+	Versions          int              `json:"versions"`
+	DownloadedPlugins int              `json:"downloadedPlugins"`
+	Ranking           []RankedPlugin   `json:"ranking"`
+	TopVersions       []RankedVersion  `json:"topVersions"`
+	Daily             []DailyDownloads `json:"daily"`
+	Recent            []RecentDownload `json:"recent"`
+	CountedSince      time.Time        `json:"countedSince"`
+	AsOf              time.Time        `json:"asOf"`
+}
+
+// Dashboard reads aggregate counts only: no attempt IDs, receipts or client data.
+func (s *Store) Dashboard(ctx context.Context) (DashboardResult, error) {
+	out := DashboardResult{Ranking: []RankedPlugin{}, TopVersions: []RankedVersion{}, Daily: []DailyDownloads{}, Recent: []RecentDownload{}}
+	err := s.read(ctx, func(tx *sql.Tx, since, asof time.Time) error {
+		out.CountedSince, out.AsOf = since, asof
+		if err := tx.QueryRowContext(ctx, `SELECT CAST(COALESCE(SUM(downloads),0) AS CHAR), COUNT(CASE WHEN downloads>0 THEN 1 END) FROM plugin_stats`).Scan(&out.TotalDownloads, &out.DownloadedPlugins); err != nil {
+			return err
+		}
+		if err := tx.QueryRowContext(ctx, `SELECT COUNT(DISTINCT plugin_id), COUNT(*) FROM plugin_versions WHERE status='active'`).Scan(&out.Plugins, &out.Versions); err != nil {
+			return err
+		}
+		rows, err := tx.QueryContext(ctx, `SELECT plugin_id, downloads FROM plugin_stats WHERE downloads>0 ORDER BY downloads DESC, plugin_id LIMIT 20`)
+		if err != nil {
+			return err
+		}
+		for rows.Next() {
+			var r RankedPlugin
+			var n uint64
+			if err := rows.Scan(&r.PluginID, &n); err != nil {
+				rows.Close()
+				return err
+			}
+			r.Downloads = strconv.FormatUint(n, 10)
+			out.Ranking = append(out.Ranking, r)
+		}
+		rows.Close()
+		rows, err = tx.QueryContext(ctx, `SELECT plugin_id, version, downloads FROM plugin_version_stats WHERE downloads>0 ORDER BY downloads DESC, plugin_id, version LIMIT 10`)
+		if err != nil {
+			return err
+		}
+		for rows.Next() {
+			var r RankedVersion
+			var n uint64
+			if err := rows.Scan(&r.PluginID, &r.Version, &n); err != nil {
+				rows.Close()
+				return err
+			}
+			r.Downloads = strconv.FormatUint(n, 10)
+			out.TopVersions = append(out.TopVersions, r)
+		}
+		rows.Close()
+		// Day buckets in Beijing time; the oldest bucket starts at its local midnight.
+		local := asof.Add(dashboardOffset)
+		firstDay := time.Date(local.Year(), local.Month(), local.Day(), 0, 0, 0, 0, time.UTC).AddDate(0, 0, -(DashboardDays - 1))
+		counts := make(map[string]uint64, DashboardDays)
+		rows, err = tx.QueryContext(ctx, `SELECT DATE_FORMAT(DATE_ADD(confirmed_at, INTERVAL 8 HOUR), '%Y-%m-%d') AS day, COUNT(*) FROM download_attempts WHERE status='confirmed' AND confirmed_at>=? GROUP BY day`, firstDay.Add(-dashboardOffset))
+		if err != nil {
+			return err
+		}
+		for rows.Next() {
+			var day string
+			var n uint64
+			if err := rows.Scan(&day, &n); err != nil {
+				rows.Close()
+				return err
+			}
+			counts[day] = n
+		}
+		rows.Close()
+		for i := 0; i < DashboardDays; i++ {
+			day := firstDay.AddDate(0, 0, i).Format("2006-01-02")
+			out.Daily = append(out.Daily, DailyDownloads{Date: day, Downloads: strconv.FormatUint(counts[day], 10)})
+		}
+		rows, err = tx.QueryContext(ctx, `SELECT plugin_id, version, confirmed_at FROM download_attempts WHERE status='confirmed' ORDER BY confirmed_at DESC LIMIT 12`)
+		if err != nil {
+			return err
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var r RecentDownload
+			if err := rows.Scan(&r.PluginID, &r.Version, &r.At); err != nil {
+				return err
+			}
+			r.At = r.At.UTC()
+			out.Recent = append(out.Recent, r)
+		}
+		return rows.Err()
+	})
+	return out, err
+}

@@ -20,6 +20,8 @@ type Config struct {
 	// COS credentials enable presigned download URLs for private buckets;
 	// both values must be set together, otherwise plain URLs are served.
 	CosSecretID, CosSecretKey string
+	// RegistryURL is the public plugin index read for dashboard names; empty disables names.
+	RegistryURL string
 }
 
 func env(key, fallback string) string {
@@ -94,6 +96,17 @@ func Read(serving bool) (Config, error) {
 	c.Signer, err = receipt.New(os.Getenv("RECEIPT_ACTIVE_KID"), keys)
 	if err != nil {
 		return c, errors.New("invalid receipt keyring")
+	}
+	// Unset keeps the public plugin index; an explicitly empty value disables
+	// dashboard names without failing the deployment.
+	if value, ok := os.LookupEnv("PLUGIN_REGISTRY_URL"); ok {
+		c.RegistryURL = value
+	}
+	if c.RegistryURL != "" {
+		index, err := url.Parse(c.RegistryURL)
+		if err != nil || index.Scheme != "https" || index.Host == "" || index.User != nil || index.Fragment != "" {
+			return c, errors.New("PLUGIN_REGISTRY_URL requires an HTTPS URL")
+		}
 	}
 	c.CosSecretID = os.Getenv("COS_SECRET_ID")
 	c.CosSecretKey = os.Getenv("COS_SECRET_KEY")

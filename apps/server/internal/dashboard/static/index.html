@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>ToolForge 插件数据</title>
+    <link rel="stylesheet" href="/assets/dashboard.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <div>
+          <h1 data-i18n="title">ToolForge 插件数据</h1>
+          <p data-i18n="subtitle">官方在线插件的下载情况</p>
+        </div>
+      </div>
+      <div class="status">
+        <span class="live" aria-hidden="true"></span>
+        <span id="updated" data-i18n="loading">正在加载…</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="kpis" aria-label="KPI">
+        <article class="kpi kpi-primary">
+          <h2 data-i18n="total">累计下载</h2>
+          <p class="value" id="kpi-total">—</p>
+          <p class="hint" id="kpi-since"></p>
+        </article>
+        <article class="kpi">
+          <h2 data-i18n="today">今日下载</h2>
+          <p class="value" id="kpi-today">—</p>
+          <p class="hint" id="kpi-today-delta"></p>
+        </article>
+        <article class="kpi">
+          <h2 data-i18n="week">近 7 天</h2>
+          <p class="value" id="kpi-week">—</p>
+          <p class="hint" data-i18n="weekHint">最近 7 天合计</p>
+        </article>
+        <article class="kpi">
+          <h2 data-i18n="month">近 30 天</h2>
+          <p class="value" id="kpi-month">—</p>
+          <p class="hint" data-i18n="monthHint">最近 30 天合计</p>
+        </article>
+        <article class="kpi">
+          <h2 data-i18n="plugins">在线插件</h2>
+          <p class="value" id="kpi-plugins">—</p>
+          <p class="hint" id="kpi-versions"></p>
+        </article>
+        <article class="kpi">
+          <h2 data-i18n="downloaded">有下载的插件</h2>
+          <p class="value" id="kpi-downloaded">—</p>
+          <p class="hint" id="kpi-coverage"></p>
+        </article>
+      </section>
+
+      <section class="grid">
+        <article class="card trend">
+          <header>
+            <h2 data-i18n="trend">近 30 天下载趋势</h2>
+            <span class="tag" data-i18n="timezone">北京时间</span>
+          </header>
+          <div id="trend" class="chart" role="img"></div>
+        </article>
+
+        <article class="card ranking">
+          <header>
+            <h2 data-i18n="ranking">插件下载排行</h2>
+            <span class="tag">TOP 10</span>
+          </header>
+          <ol id="ranking" class="bars"></ol>
+        </article>
+
+        <article class="card versions">
+          <header>
+            <h2 data-i18n="versions">热门版本</h2>
+            <span class="tag">TOP 10</span>
+          </header>
+          <table>
+            <thead>
+              <tr>
+                <th data-i18n="plugin">插件</th>
+                <th data-i18n="version">版本</th>
+                <th class="num" data-i18n="downloads">下载</th>
+              </tr>
+            </thead>
+            <tbody id="versions"></tbody>
+          </table>
+        </article>
+
+        <article class="card recent">
+          <header>
+            <h2 data-i18n="recent">最近下载</h2>
+            <span class="tag" data-i18n="liveTag">实时</span>
+          </header>
+          <ul id="recent" class="feed"></ul>
+        </article>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <p data-i18n="note">下载量为客户端完整下载并通过大小、SHA-256 与官方签名校验后确认的次数，不等于设备数或安装量。</p>
+    </footer>
+    <script src="/assets/dashboard.js" defer></script>
+  </body>
+</html>

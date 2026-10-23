@@ -16,7 +16,9 @@ import (
 
 	"toolforge.dev/plugin-stats/internal/asset"
 	"toolforge.dev/plugin-stats/internal/catalog"
+	"toolforge.dev/plugin-stats/internal/dashboard"
 	"toolforge.dev/plugin-stats/internal/receipt"
+	"toolforge.dev/plugin-stats/internal/registry"
 	"toolforge.dev/plugin-stats/internal/store"
 )
 
@@ -28,6 +30,7 @@ type Repository interface {
 	Plugin(context.Context, string, int, int) (store.PluginResult, error)
 	Batch(context.Context, []string) (store.Stats, error)
 	Total(context.Context) (store.TotalResult, error)
+	Dashboard(context.Context) (store.DashboardResult, error)
 }
 type API struct {
 	Store        Repository
@@ -36,9 +39,11 @@ type API struct {
 	// Presigner signs COS download URLs for private buckets; when nil the
 	// plain asset URL is served and the bucket must allow anonymous reads.
 	Presigner *asset.Presigner
-	BuildSHA  string
-	Now       func() time.Time
-	Logger    *slog.Logger
+	// Registry supplies plugin names for the dashboard; nil shows IDs only.
+	Registry *registry.Cache
+	BuildSHA string
+	Now      func() time.Time
+	Logger   *slog.Logger
 }
 
 func (a *API) Handler() http.Handler {
@@ -63,6 +68,9 @@ func (a *API) Handler() http.Handler {
 	mux.HandleFunc("GET /v1/plugins/{id}/stats", a.plugin)
 	mux.HandleFunc("GET /v1/stats", a.batch)
 	mux.HandleFunc("GET /v1/stats/total", a.total)
+	mux.HandleFunc("GET /v1/dashboard", a.dashboard)
+	mux.HandleFunc("GET /{$}", dashboard.Index)
+	mux.HandleFunc("GET /assets/{file}", dashboard.Asset)
 	inFlight := make(chan struct{}, 128)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "no-store")
@@ -268,6 +276,32 @@ func (a *API) total(w http.ResponseWriter, r *http.Request) {
 	}
 	cacheJSON(w, out)
 }
+
+// DashboardResponse adds display names from the plugin index to the aggregates.
+type DashboardResponse struct {
+	store.DashboardResult
+	PluginInfo map[string]registry.Plugin `json:"pluginInfo"`
+}
+
+func (a *API) dashboard(w http.ResponseWriter, r *http.Request) {
+	out, err := a.Store.Dashboard(r.Context())
+	if err != nil {
+		a.fail(w, err)
+		return
+	}
+	ids := make([]string, 0, len(out.Ranking)+len(out.TopVersions)+len(out.Recent))
+	for _, p := range out.Ranking {
+		ids = append(ids, p.PluginID)
+	}
+	for _, v := range out.TopVersions {
+		ids = append(ids, v.PluginID)
+	}
+	for _, d := range out.Recent {
+		ids = append(ids, d.PluginID)
+	}
+	cacheJSON(w, DashboardResponse{DashboardResult: out, PluginInfo: a.Registry.Lookup(ids)})
+}
+
 func (a *API) fail(w http.ResponseWriter, err error) {
 	switch {
 	case errors.Is(err, store.ErrNotFound):

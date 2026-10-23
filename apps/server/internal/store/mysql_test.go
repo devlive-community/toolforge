@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -284,4 +285,62 @@ func TestMySQLTransactionsAndStatistics(t *testing.T) {
 			t.Fatal("deleted receipt recreated", err)
 		}
 	})
+}
+
+func TestMySQLDashboard(t *testing.T) {
+	s := integrationStore(t)
+	ctx := context.Background()
+	empty, err := s.Dashboard(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if empty.TotalDownloads != "0" || len(empty.Ranking) != 0 || len(empty.Recent) != 0 || len(empty.Daily) != DashboardDays {
+		t.Fatalf("empty dashboard: %+v", empty)
+	}
+	importCatalog(t, s, 1, []catalog.Package{testPackage("plugin", "1.0.0"), testPackage("plugin", "1.1.0"), testPackage("other", "1.0.0")})
+	now := time.Now().UTC().Truncate(time.Second)
+	confirm := func(id, version, key string, at time.Time) {
+		t.Helper()
+		a, err := s.Issue(ctx, id, version, key, "k1", at)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := s.Confirm(ctx, a.Claims, a.SHA256, a.Size, at); err != nil {
+			t.Fatal(err)
+		}
+	}
+	confirm("plugin", "1.1.0", strings.Repeat("1", 32), now)
+	confirm("plugin", "1.1.0", strings.Repeat("2", 32), now)
+	confirm("other", "1.0.0", strings.Repeat("3", 32), now.Add(-48*time.Hour))
+	if _, err := s.Issue(ctx, "other", "1.0.0", strings.Repeat("4", 32), "k1", now); err != nil {
+		t.Fatal(err)
+	}
+
+	d, err := s.Dashboard(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if d.TotalDownloads != "3" || d.Plugins != 2 || d.Versions != 3 || d.DownloadedPlugins != 2 {
+		t.Fatalf("totals: %+v", d)
+	}
+	if len(d.Ranking) != 2 || d.Ranking[0] != (RankedPlugin{"plugin", "2"}) || d.Ranking[1] != (RankedPlugin{"other", "1"}) {
+		t.Fatalf("ranking: %+v", d.Ranking)
+	}
+	if d.TopVersions[0] != (RankedVersion{"plugin", "1.1.0", "2"}) {
+		t.Fatalf("top versions: %+v", d.TopVersions)
+	}
+	if len(d.Daily) != DashboardDays || d.Daily[DashboardDays-1].Downloads != "2" {
+		t.Fatalf("daily: %+v", d.Daily)
+	}
+	var sum int
+	for _, day := range d.Daily {
+		n, _ := strconv.Atoi(day.Downloads)
+		sum += n
+	}
+	if sum != 3 {
+		t.Fatalf("daily total %d; unconfirmed attempts must not count", sum)
+	}
+	if len(d.Recent) != 3 || d.Recent[0].PluginID != "plugin" || d.Recent[2].PluginID != "other" {
+		t.Fatalf("recent: %+v", d.Recent)
+	}
 }

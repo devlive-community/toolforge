@@ -88,7 +88,11 @@ STATS_LISTEN_ADDR=127.0.0.1:8088
 PLUGIN_ASSET_BASE_URL=https://plugins.toolforge.devlive.org
 RECEIPT_ACTIVE_KID=2026-01
 RECEIPT_KEYS_JSON='{"2026-01":"<base64-of-at-least-32-random-bytes>"}'
+# 可选：看板插件名来源；未设置时使用公共插件索引，显式置空则看板只显示插件 ID
+PLUGIN_REGISTRY_URL=https://plugins.toolforge.devlive.org/registry.json
 ```
+
+服务进程内嵌公共统计看板（`/` 页面与 `/assets/dashboard.js|css`），数据来自 `/v1/dashboard` 聚合接口；Nginx 站点需放行 `location = /` 与 `location /assets/` 两个前缀（见模板），其余路径仍返回 404。
 
 不要把占位符直接投入生产。HMAC 密钥只属于服务运行配置，迁移和目录导入无需此密钥；轮换保留旧密钥至所有旧凭据过期。MySQL 用户为本机 `localhost` 连接授权，先以对应 OS 身份测试 socket 权限。
 
