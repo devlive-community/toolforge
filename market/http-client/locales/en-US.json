@@ -334,5 +334,28 @@
     "refreshed": "Token refreshed",
     "cleared": "Authorization cleared",
     "copied": "Token copied to the clipboard"
+  },
+  "api": {
+    "send": {
+      "summary": "Send an HTTP request and show the status, headers and body",
+      "method": "HTTP method such as GET, POST, PUT or DELETE",
+      "url": "Request URL including the query string",
+      "header": "Request header in Name: value form, repeatable",
+      "data": "Request body; sent as JSON when it parses as JSON, otherwise as text",
+      "timeoutMs": "Timeout in milliseconds",
+      "followRedirects": "Follow redirects",
+      "useProxy": "Use the system proxy"
+    },
+    "to_curl": {
+      "summary": "Turn a request into an equivalent curl command",
+      "method": "HTTP method such as GET, POST, PUT or DELETE",
+      "url": "Request URL including the query string",
+      "header": "Request header in Name: value form, repeatable",
+      "data": "Request body; sent as JSON when it parses as JSON, otherwise as text"
+    },
+    "import_curl": {
+      "summary": "Parse a curl command into a request with warnings for unsupported options",
+      "command": "curl command to import"
+    }
   }
 }

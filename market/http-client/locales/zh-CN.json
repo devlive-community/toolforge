@@ -334,5 +334,28 @@
     "refreshed": "令牌已刷新",
     "cleared": "授权已清除",
     "copied": "令牌已复制到剪贴板"
+  },
+  "api": {
+    "send": {
+      "summary": "发送 HTTP 请求，返回状态、响应头与响应体",
+      "method": "请求方法，如 GET、POST、PUT 或 DELETE",
+      "url": "请求地址，可包含查询参数",
+      "header": "Name: value 形式的请求头，可重复",
+      "data": "请求体；能解析为 JSON 时按 JSON 发送，否则按文本发送",
+      "timeoutMs": "超时时间（毫秒）",
+      "followRedirects": "跟随重定向",
+      "useProxy": "使用系统代理"
+    },
+    "to_curl": {
+      "summary": "把请求转换为等价的 curl 命令",
+      "method": "请求方法，如 GET、POST、PUT 或 DELETE",
+      "url": "请求地址，可包含查询参数",
+      "header": "Name: value 形式的请求头，可重复",
+      "data": "请求体；能解析为 JSON 时按 JSON 发送，否则按文本发送"
+    },
+    "import_curl": {
+      "summary": "把 curl 命令解析为请求，并提示不支持的选项",
+      "command": "要导入的 curl 命令"
+    }
   }
 }

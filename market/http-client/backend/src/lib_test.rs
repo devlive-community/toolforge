@@ -300,3 +300,10 @@ fn streaming_functions_reuse_the_request_model() {
         .unwrap();
     assert_eq!(imported["request"]["stream"], true);
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&HttpClient::default()).unwrap();
+    assert_eq!(checked, 2);
+}

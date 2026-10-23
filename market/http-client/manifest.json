@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.http-client",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "minAppVersion": "0.2.0",
   "name": "i18n:name",
   "description": "i18n:description",
@@ -10,25 +10,79 @@
   "locales": ["zh-CN", "en-US"],
   "permissions": ["network", "clipboard:write", "fs:user-selected"],
   "functions": {
-    "send": { "task": true },
-    "to_curl": {},
-    "stream": { "task": true },
-    "stream_poll": {},
-    "stream_stop": {},
-    "stream_close": {},
-    "stream_export": {},
-    "save_body": {},
-    "workspace_validate": {},
-    "new_id": {},
-    "resolve_request": {},
-    "import_curl": {},
-    "oauth_begin": {},
-    "oauth_wait": { "task": true },
-    "oauth_cancel": {},
-    "oauth_refresh": { "task": true },
-    "oauth_sessions": {},
-    "oauth_clear": {},
-    "oauth_reveal": {}
+    "send": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.send.summary",
+        "effect": "external",
+        "uses": ["network"],
+        "params": {
+          "type": "object",
+          "required": ["url"],
+          "properties": {
+            "method": { "type": "string", "description": "i18n:api.send.method", "default": "GET" },
+            "url": { "type": "string", "description": "i18n:api.send.url", "x-positional": 0 },
+            "header": { "type": "array", "description": "i18n:api.send.header", "items": { "type": "string" } },
+            "data": { "type": "string", "description": "i18n:api.send.data", "x-stdin": true },
+            "timeoutMs": { "type": "integer", "description": "i18n:api.send.timeoutMs", "minimum": 1, "default": 30000 },
+            "followRedirects": { "type": "boolean", "description": "i18n:api.send.followRedirects", "default": true },
+            "useProxy": { "type": "boolean", "description": "i18n:api.send.useProxy", "default": true }
+          }
+        },
+        "output": { "text": "/body" },
+        "examples": ["tfp-http-client send https://httpbin.org/get", "tfp-http-client send https://httpbin.org/post --method POST --header 'X-Trace: 1' --data '{\"name\":\"a\"}'"]
+      }
+    },
+    "to_curl": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.to_curl.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["url"],
+          "properties": {
+            "method": { "type": "string", "description": "i18n:api.to_curl.method", "default": "GET" },
+            "url": { "type": "string", "description": "i18n:api.to_curl.url", "x-positional": 0 },
+            "header": { "type": "array", "description": "i18n:api.to_curl.header", "items": { "type": "string" } },
+            "data": { "type": "string", "description": "i18n:api.to_curl.data", "x-stdin": true }
+          }
+        },
+        "examples": ["tfp-http-client to_curl https://httpbin.org/post --method POST --data '{\"name\":\"a\"}'"]
+      }
+    },
+    "stream": { "task": true, "interface": false },
+    "stream_poll": { "interface": false },
+    "stream_stop": { "interface": false },
+    "stream_close": { "interface": false },
+    "stream_export": { "interface": false },
+    "save_body": { "interface": false },
+    "workspace_validate": { "interface": false },
+    "new_id": { "interface": false },
+    "resolve_request": { "interface": false },
+    "import_curl": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.import_curl.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["command"],
+          "properties": {
+            "command": { "type": "string", "description": "i18n:api.import_curl.command", "x-positional": 0, "x-stdin": true }
+          }
+        },
+        "examples": ["tfp-http-client import_curl 'curl -X POST https://httpbin.org/post -d a=1'"]
+      }
+    },
+    "oauth_begin": { "interface": false },
+    "oauth_wait": { "task": true, "interface": false },
+    "oauth_cancel": { "interface": false },
+    "oauth_refresh": { "task": true, "interface": false },
+    "oauth_sessions": { "interface": false },
+    "oauth_clear": { "interface": false },
+    "oauth_reveal": { "interface": false }
   },
   "sensitive": false
 }

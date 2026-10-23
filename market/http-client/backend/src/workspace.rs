@@ -91,6 +91,12 @@ pub struct RequestArgs {
     /// 绑定的授权会话：发送时注入 Bearer
     #[serde(default)]
     pub oauth: Option<SessionArgs>,
+    /// 命令行与 Agent 的扁平写法：`名称: 值` 形式的请求头，追加在 headers 之后
+    #[serde(default)]
+    pub header: Vec<String>,
+    /// 命令行与 Agent 的扁平写法：请求体，能解析为 JSON 时按 JSON 发送，否则按文本
+    #[serde(default)]
+    pub data: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -332,7 +338,23 @@ pub fn resolve(mut request: Request, variables: &[Variable]) -> PluginResult<Req
 
 impl RequestArgs {
     pub fn resolve(&self) -> PluginResult<Request> {
-        resolve(self.request.clone(), &self.variables)
+        let mut request = self.request.clone();
+        for line in &self.header {
+            let (key, value) = line.split_once(':').ok_or_else(|| {
+                PluginError::new("http.invalid_header").with("name", line.as_str())
+            })?;
+            request.headers.push(Pair {
+                key: key.trim().to_owned(),
+                value: value.trim().to_owned(),
+                enabled: true,
+            });
+        }
+        if let Some(data) = &self.data {
+            let json = serde_json::from_str::<serde_json::Value>(data).is_ok();
+            request.body.kind = if json { BodyKind::Json } else { BodyKind::Text };
+            request.body.text = data.clone();
+        }
+        resolve(request, &self.variables)
     }
 
     pub fn protect_error(&self, mut error: PluginError) -> PluginError {

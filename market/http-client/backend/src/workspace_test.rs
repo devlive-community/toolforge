@@ -276,3 +276,35 @@ fn rejects_dangling_oauth_bindings() {
         "http.workspace_duplicate_id"
     );
 }
+
+#[test]
+fn flat_headers_and_data_extend_the_request() {
+    let args: RequestArgs = serde_json::from_value(json!({
+        "method": "POST",
+        "url": "http://localhost/items",
+        "header": ["X-Trace: 1", "Accept:application/json"],
+        "data": "{\"name\":\"a\"}"
+    }))
+    .unwrap();
+    let request = args.resolve().unwrap();
+    let headers: Vec<_> = request
+        .headers
+        .iter()
+        .map(|p| (p.key.as_str(), p.value.as_str()))
+        .collect();
+    assert_eq!(headers, [("X-Trace", "1"), ("Accept", "application/json")]);
+    assert!(matches!(request.body.kind, BodyKind::Json));
+    assert_eq!(request.body.text, "{\"name\":\"a\"}");
+
+    let text: RequestArgs = serde_json::from_value(
+        json!({ "method": "POST", "url": "http://localhost", "data": "a=1" }),
+    )
+    .unwrap();
+    assert!(matches!(text.resolve().unwrap().body.kind, BodyKind::Text));
+
+    let invalid: RequestArgs = serde_json::from_value(
+        json!({ "method": "GET", "url": "http://localhost", "header": ["broken"] }),
+    )
+    .unwrap();
+    assert_eq!(invalid.resolve().unwrap_err().code, "http.invalid_header");
+}
