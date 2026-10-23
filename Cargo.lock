@@ -9387,6 +9387,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-svg-converter"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "image",
+ "resvg",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-table-converter"
 version = "0.1.0"
 dependencies = [
@@ -9887,18 +9900,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-svg-converter"
-version = "0.1.0"
-dependencies = [
- "data-encoding",
- "image",
- "resvg",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-system-monitor"
 version = "0.1.0"
 dependencies = [
@@ -10299,7 +10300,6 @@ dependencies = [
  "tfp-qrcode",
  "tfp-regex",
  "tfp-ssh-key",
- "tfp-svg-converter",
  "tfp-system-monitor",
  "tfp-text-encoding",
  "tfp-websocket",

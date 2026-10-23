@@ -11,6 +11,7 @@ use image::{ExtendedColorType, ImageEncoder, Rgb, RgbImage, RgbaImage};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use tf_plugin_api::{LogLevel, PluginError, PluginResult, TaskContext, cancelled};
+use tf_plugin_guest::net;
 
 use crate::render;
 
@@ -154,7 +155,7 @@ pub fn output_path(source: &Path, dir: &Path, suffix: &str, extension: &str) -> 
         .unwrap_or_else(|| "image".to_owned());
     let mut candidate = dir.join(format!("{stem}{suffix}.{extension}"));
     let mut index = 1;
-    while candidate.exists() || candidate == source {
+    while candidate == source || net::file_size(&candidate.to_string_lossy()).is_ok() {
         candidate = dir.join(format!("{stem}{suffix} ({index}).{extension}"));
         index += 1;
     }
@@ -268,10 +269,15 @@ fn convert_one(
         None => source.parent().map(Path::to_path_buf).unwrap_or_default(),
     };
     let output = output_path(source, &dir, &args.suffix, format.extension());
-    std::fs::write(&output, &encoded).map_err(|e| {
+    net::write_file(&output.to_string_lossy(), &encoded).map_err(|error| {
+        let detail = error
+            .params
+            .get("detail")
+            .and_then(|d| d.as_str())
+            .unwrap_or(&error.code);
         PluginError::new("svg.io")
             .with("path", output.to_string_lossy().as_ref())
-            .with("detail", e.to_string())
+            .with("detail", detail)
     })?;
 
     Ok(Converted {
@@ -290,11 +296,7 @@ pub fn run(args: Args, ctx: &dyn TaskContext) -> PluginResult<Report> {
     if args.paths.is_empty() {
         return Err(PluginError::new("svg.no_files"));
     }
-    if let Some(dir) = args.output_dir.as_deref().filter(|d| !d.is_empty())
-        && !Path::new(dir).is_dir()
-    {
-        return Err(PluginError::new("svg.output_dir_missing").with("path", dir));
-    }
+    // 沙箱内无法预先检查目录，目录不存在时每个文件各自报告写入失败
     let start = Instant::now();
     let count = args.paths.len();
     let mut files = Vec::with_capacity(count);

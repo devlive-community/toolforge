@@ -56,3 +56,15 @@ fn rejects_zero_sized_targets() {
     let tree = parse(SAMPLE.as_bytes()).unwrap();
     assert_eq!(render(&tree, 0, 10).unwrap_err().code, "svg.render_failed");
 }
+
+/// 能读到任一系统字体时，文本应当被渲染出来（读不到字体的环境跳过）
+#[test]
+fn renders_text_with_system_fonts() {
+    if fonts().is_empty() {
+        return;
+    }
+    let svg = r#"<svg xmlns="http://www.w3.org/2000/svg" width="200" height="60"><rect width="200" height="60" fill="white"/><text x="10" y="40" font-family="sans-serif" font-size="32" fill="black">Hi 你好</text></svg>"#;
+    let image = render(&parse(svg.as_bytes()).unwrap(), 200, 60).unwrap();
+    let dark = image.pixels().filter(|p| p[0] < 128 && p[3] > 0).count();
+    assert!(dark > 100, "only {dark} dark pixels");
+}

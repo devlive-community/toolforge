@@ -65,12 +65,28 @@
   },
   "errors": {
     "svg.no_files": "Add at least one SVG file",
-    "svg.output_dir_missing": "The output folder does not exist: {{path}}",
     "svg.file_too_large": "The file is larger than {{limit}}",
     "svg.pixels_too_large": "The output is too large ({{width}} × {{height}})",
     "svg.invalid": "The SVG could not be parsed: {{detail}}",
     "svg.render_failed": "The SVG could not be rendered: {{detail}}",
     "svg.encode_failed": "The image could not be encoded: {{detail}}",
     "svg.io": "File I/O failed: {{path}}: {{detail}}"
+  },
+  "api": {
+    "convert": {
+      "summary": "Render SVG files to PNG, JPEG or WebP",
+      "paths": "SVG files to render",
+      "format": "Output format",
+      "quality": "Quality for JPEG and WebP",
+      "outputDir": "Directory for rendered files; defaults to each source directory",
+      "suffix": "Suffix added to output file names"
+    },
+    "columns": {
+      "name": "File",
+      "output": "Output",
+      "format": "Format",
+      "afterBytes": "Bytes",
+      "error": "Error"
+    }
   }
 }

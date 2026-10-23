@@ -39,6 +39,8 @@ impl ToolPlugin for SvgConverter {
     }
 }
 
+tf_plugin_guest::export_plugin!(SvgConverter);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

@@ -65,12 +65,28 @@
   },
   "errors": {
     "svg.no_files": "请先添加 SVG 文件",
-    "svg.output_dir_missing": "输出目录不存在：{{path}}",
     "svg.file_too_large": "文件超过 {{limit}}",
     "svg.pixels_too_large": "输出尺寸过大（{{width}} × {{height}}）",
     "svg.invalid": "无法解析 SVG：{{detail}}",
     "svg.render_failed": "SVG 渲染失败：{{detail}}",
     "svg.encode_failed": "图片编码失败：{{detail}}",
     "svg.io": "文件读写失败：{{path}}：{{detail}}"
+  },
+  "api": {
+    "convert": {
+      "summary": "把 SVG 文件渲染为 PNG、JPEG 或 WebP",
+      "paths": "要渲染的 SVG 文件",
+      "format": "输出格式",
+      "quality": "JPEG 与 WebP 的质量",
+      "outputDir": "渲染结果的输出目录，默认与源文件同目录",
+      "suffix": "追加到输出文件名的后缀"
+    },
+    "columns": {
+      "name": "文件",
+      "output": "输出",
+      "format": "格式",
+      "afterBytes": "字节",
+      "error": "错误"
+    }
   }
 }

@@ -1,0 +1,37 @@
+{
+  "id": "org.devlive.toolforge.svg-converter",
+  "version": "0.1.1",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": ["svg", "png", "jpeg", "jpg", "webp", "rasterize", "vector", "convert", "export", "矢量", "转换", "位图", "栅格化", "导出"],
+  "accent": "green",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "convert": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.convert.summary",
+        "effect": "write",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["paths"],
+          "properties": {
+            "paths": { "type": "array", "description": "i18n:api.convert.paths", "items": { "type": "string", "format": "path", "x-access": "read" }, "x-positional": 0 },
+            "format": { "type": "string", "description": "i18n:api.convert.format", "enum": ["png", "jpeg", "webp"], "default": "png" },
+            "quality": { "type": "integer", "description": "i18n:api.convert.quality", "minimum": 1, "maximum": 100, "default": 85 },
+            "outputDir": { "type": "string", "description": "i18n:api.convert.outputDir", "format": "path", "x-access": "write" },
+            "suffix": { "type": "string", "description": "i18n:api.convert.suffix", "default": "" }
+          }
+        },
+        "output": { "table": "/files", "columns": [{ "key": "name", "label": "i18n:api.columns.name" }, { "key": "output", "label": "i18n:api.columns.output" }, { "key": "format", "label": "i18n:api.columns.format" }, { "key": "afterBytes", "label": "i18n:api.columns.afterBytes" }, { "key": "error", "label": "i18n:api.columns.error" }] },
+        "examples": ["tfp-svg-converter convert logo.svg --format png", "tfp-svg-converter convert a.svg b.svg --format webp --output-dir out"]
+      }
+    }
+  },
+  "sensitive": false
+}

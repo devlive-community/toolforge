@@ -59,7 +59,6 @@ tfp-proxy-inspector = { path = "plugins/proxy-inspector/backend" }
 tfp-qrcode = { path = "plugins/qrcode/backend" }
 tfp-regex = { path = "plugins/regex/backend" }
 tfp-ssh-key = { path = "plugins/ssh-key/backend" }
-tfp-svg-converter = { path = "plugins/svg-converter/backend" }
 tfp-system-monitor = { path = "plugins/system-monitor/backend" }
 tfp-websocket = { path = "plugins/websocket/backend" }
 

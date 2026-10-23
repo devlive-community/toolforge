@@ -236,7 +236,7 @@ fn reports_broken_files_without_stopping_the_batch() {
 }
 
 #[test]
-fn refuses_an_empty_batch_and_missing_output_dir() {
+fn refuses_an_empty_batch_and_reports_a_missing_output_dir_per_file() {
     let dir = temp_dir("empty");
     let ctx = Ctx::default();
     assert_eq!(
@@ -247,7 +247,12 @@ fn refuses_an_empty_batch_and_missing_output_dir() {
     let svg = sample_svg(&dir, "sample.svg");
     let mut args = base_args(vec![svg], &dir);
     args.output_dir = Some(dir.join("nowhere").to_string_lossy().into_owned());
-    assert_eq!(run(args, &ctx).unwrap_err().code, "svg.output_dir_missing");
+    let report = run(args, &ctx).unwrap();
+    assert_eq!(report.succeeded, 0);
+    assert_eq!(
+        report.files[0].error.as_ref().map(|e| e.code.as_str()),
+        Some("svg.io")
+    );
 }
 
 #[test]
