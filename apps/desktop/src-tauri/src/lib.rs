@@ -1,3 +1,4 @@
+mod cli_tools;
 mod commands;
 mod deeplink;
 mod diagnostics;
@@ -131,6 +132,9 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            cli_tools::cli_status,
+            cli_tools::cli_install,
+            cli_tools::cli_uninstall,
             commands::app_info,
             commands::app_log,
             commands::app_open_url,

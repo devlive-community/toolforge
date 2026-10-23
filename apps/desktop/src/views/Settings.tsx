@@ -1,7 +1,7 @@
-import { Button, SegmentedControl, Select, Switch, toast } from '@toolforge/ui'
-import { formatBytes, host, useErrorMessage, type AppError } from '@toolforge/plugin-ui-sdk'
+import { Badge, Button, SegmentedControl, Select, Switch, Tooltip, toast } from '@toolforge/ui'
+import { formatBytes, host, useCopy, useErrorMessage, type AppError } from '@toolforge/plugin-ui-sdk'
 import { invoke } from '@tauri-apps/api/core'
-import { ChevronRight, FolderOpen, PackageOpen, RefreshCw } from 'lucide-react'
+import { Check, ChevronRight, Copy, FolderOpen, PackageOpen, RefreshCw, SquareTerminal, Trash2 } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SUPPORTED_LOCALES, resolveLocale, type Locale } from '../i18n'
@@ -24,6 +24,95 @@ function Row({ label, hint, warning, children }: { label: string; hint?: string;
       </div>
       {children}
     </div>
+  )
+}
+
+/** 命令行工具的总入口，与各插件的 tfp-<插件> 一起列出 */
+const CLI_ENTRY = 'tfp'
+
+interface CliStatus {
+  available: boolean
+  installed: boolean
+  dir: string | null
+  commands: string[]
+  pathHint: string | null
+}
+
+/** 命令行工具：在 ~/.toolforge/bin 生成 tfp 与 tfp-<插件>，安装或卸载插件后由后端自动刷新 */
+function CliToolsSection() {
+  const { t } = useTranslation()
+  const errorMessage = useErrorMessage()
+  const { copy, copied } = useCopy()
+  const [status, setStatus] = useState<CliStatus | null>(null)
+  const [busy, setBusy] = useState(false)
+
+  useEffect(() => {
+    invoke<CliStatus>('cli_status')
+      .then(setStatus)
+      .catch(() => {})
+  }, [])
+
+  const run = async (command: 'cli_install' | 'cli_uninstall') => {
+    setBusy(true)
+    try {
+      const next = await invoke<CliStatus>(command)
+      setStatus(next)
+      toast.success(command === 'cli_install' ? t('settings.cli.installed', { count: next.commands.length + 1 }) : t('settings.cli.removed'))
+    } catch (error) {
+      toast.error(errorMessage(error))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  if (!status) return null
+  return (
+    <Section title={t('settings.cli.title')}>
+      <div className="divide-y divide-border rounded-card border border-border bg-surface shadow-card">
+        <Row
+          label={t('settings.cli.label')}
+          hint={status.installed ? t('settings.cli.installedHint', { dir: status.dir }) : t('settings.cli.hint')}
+          warning={status.available ? null : t('settings.cli.unavailable')}
+        >
+          {status.installed ? (
+            <Button loading={busy} onClick={() => void run('cli_uninstall')}>
+              <Trash2 />
+              {t('settings.cli.uninstall')}
+            </Button>
+          ) : (
+            <Button variant="primary" loading={busy} disabled={!status.available} onClick={() => void run('cli_install')}>
+              <SquareTerminal />
+              {t('settings.cli.install')}
+            </Button>
+          )}
+        </Row>
+        {status.installed && (
+          <div className="space-y-3 px-5 py-4">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-xs text-fg-muted">{t('settings.cli.commands')}</span>
+              {[CLI_ENTRY, ...status.commands].map((command) => (
+                <Badge key={command}>{command}</Badge>
+              ))}
+            </div>
+            {status.pathHint && (
+              <div className="space-y-1.5">
+                <p className="text-xs text-fg-muted">{t('settings.cli.path')}</p>
+                <div className="flex items-center gap-2 rounded-control border border-border bg-surface-2 px-3 py-2">
+                  <code className="min-w-0 flex-1 truncate font-mono text-xs text-fg" data-selectable>
+                    {status.pathHint}
+                  </code>
+                  <Tooltip content={t('settings.cli.copy')}>
+                    <Button size="icon-sm" variant="ghost" aria-label={t('settings.cli.copy')} onClick={() => void copy(status.pathHint ?? '')}>
+                      {copied ? <Check className="text-success" /> : <Copy />}
+                    </Button>
+                  </Tooltip>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </Section>
   )
 }
 
@@ -146,6 +235,7 @@ export function Settings() {
           </Row>
         </div>
       </Section>
+      <CliToolsSection />
       <Section title={t('update.title')}>
         <div className="divide-y divide-border rounded-card border border-border bg-surface shadow-card">
           <Row label={t('update.check')} hint={updateHint()}>

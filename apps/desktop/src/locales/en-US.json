@@ -116,7 +116,21 @@
       "diagnosticsExport": "Export…",
       "diagnosticsDone": "Diagnostics saved ({{size}})",
       "openLogs": "Open logs",
-      "shortcutFailed": "The shortcut could not be registered at startup: {{detail}}. Choose another one."
+      "shortcutFailed": "The shortcut could not be registered at startup: {{detail}}. Choose another one.",
+      "cli": {
+        "title": "Command line",
+        "label": "tfp commands",
+        "hint": "Create tfp and tfp-<plugin> commands in ~/.toolforge/bin to run plugins that support the command line from a terminal",
+        "installedHint": "Commands live in {{dir}} and update when plugins are installed or removed",
+        "install": "Create commands",
+        "uninstall": "Remove commands",
+        "unavailable": "This build does not include the command line tool; build toolforge-cli first during development",
+        "commands": "Commands",
+        "path": "Add this line to your shell profile (such as ~/.zshrc) so the terminal can find them",
+        "copy": "Copy",
+        "installed": "Created {{count}} commands",
+        "removed": "Removed the command line tools"
+      }
     },
     "tool": {
       "favorite": "Favorite",
@@ -375,7 +389,8 @@
       "resource.too_large": "The download is too large",
       "market.invalid_download": "The official plugin download address is invalid. Refresh the market and try again.",
       "market.download_metadata_mismatch": "The package does not match the plugin index. Refresh and try again.",
-      "market.stats_unavailable": "The plugin download service is unavailable. Try again later."
+      "market.stats_unavailable": "The plugin download service is unavailable. Try again later.",
+      "cli.unavailable": "The command line tool is unavailable: tfp is missing from this build"
     },
     "logs": {
       "task": {

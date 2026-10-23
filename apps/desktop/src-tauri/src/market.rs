@@ -45,6 +45,8 @@ pub fn load_installed(
                 Err(err) => log::warn!("installed plugin {} failed to load: {}", info.id, err.code),
             }
         }
+        // 应用升级后内置插件可能变化，已生成的命令行入口随之刷新
+        crate::cli_tools::refresh(&registry);
         if loaded > 0 {
             let _ = app.emit(PLUGINS_CHANGED, ());
         }
@@ -79,6 +81,7 @@ pub(crate) fn install_into(
         info.version,
         info.trust
     );
+    crate::cli_tools::refresh(registry);
     let _ = app.emit(PLUGINS_CHANGED, ());
     Ok(info)
 }
@@ -168,6 +171,7 @@ pub fn plugin_uninstall(
 ) -> AppResult<()> {
     state.installed.uninstall(&plugin_id)?;
     state.plugins.unregister(&plugin_id);
+    crate::cli_tools::refresh(&state.plugins);
     let _ = app.emit(PLUGINS_CHANGED, ());
     Ok(())
 }

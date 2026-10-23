@@ -114,7 +114,21 @@
       "diagnosticsExport": "导出…",
       "diagnosticsDone": "诊断包已保存（{{size}}）",
       "openLogs": "打开日志目录",
-      "shortcutFailed": "启动时未能注册快捷键：{{detail}}，请更换其他快捷键。"
+      "shortcutFailed": "启动时未能注册快捷键：{{detail}}，请更换其他快捷键。",
+      "cli": {
+        "title": "命令行工具",
+        "label": "tfp 命令",
+        "hint": "在 ~/.toolforge/bin 生成 tfp 与 tfp-<插件> 命令，在终端里直接调用支持命令行的插件",
+        "installedHint": "命令已生成在 {{dir}}，安装或卸载插件后会自动更新",
+        "install": "生成命令",
+        "uninstall": "移除命令",
+        "unavailable": "当前安装包不含命令行工具；开发时请先编译 toolforge-cli",
+        "commands": "可用命令",
+        "path": "把这一行加入 shell 配置（如 ~/.zshrc）后，终端就能找到这些命令",
+        "copy": "复制",
+        "installed": "已生成 {{count}} 个命令",
+        "removed": "已移除命令行工具"
+      }
     },
     "tool": {
       "favorite": "加入收藏",
@@ -373,7 +387,8 @@
       "resource.too_large": "下载内容过大",
       "market.invalid_download": "官方插件下载地址无效，请刷新插件市场后重试",
       "market.download_metadata_mismatch": "下载包与插件索引不一致，请刷新后重试",
-      "market.stats_unavailable": "插件下载服务暂不可用，请稍后重试"
+      "market.stats_unavailable": "插件下载服务暂不可用，请稍后重试",
+      "cli.unavailable": "命令行工具不可用：安装包中找不到 tfp"
     },
     "logs": {
       "task": {
