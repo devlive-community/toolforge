@@ -175,3 +175,73 @@ fn registers_platform_specific_plugins_only_where_supported() {
     assert!(has("windows"));
     assert!(!has("macos") && !has("linux"));
 }
+
+/// 按参数 Schema 构造一份入参：有默认值用默认值，必填参数取枚举首项或示例值
+fn sample_args(params: &serde_json::Value) -> serde_json::Value {
+    use serde_json::{Value, json};
+    let required: Vec<&str> = params["required"]
+        .as_array()
+        .map(|r| r.iter().filter_map(Value::as_str).collect())
+        .unwrap_or_default();
+    let mut args = serde_json::Map::new();
+    for (name, schema) in params["properties"].as_object().into_iter().flatten() {
+        let value = if let Some(default) = schema.get("default") {
+            default.clone()
+        } else if !required.contains(&name.as_str()) {
+            continue;
+        } else if let Some(first) = schema.pointer("/enum/0") {
+            first.clone()
+        } else {
+            match schema["type"].as_str() {
+                Some("integer" | "number") => schema.get("minimum").cloned().unwrap_or(json!(1)),
+                Some("boolean") => json!(false),
+                Some("array") => json!([schema
+                    .pointer("/items/enum/0")
+                    .cloned()
+                    .unwrap_or(json!("1"))]),
+                _ => json!("1"),
+            }
+        };
+        args.insert(name.clone(), value);
+    }
+    Value::Object(args)
+}
+
+/// 接口声明里的参数 Schema 必须能被插件后端接受：默认值 + 必填参数不能触发 plugin.invalid_args。
+/// 需要真实文件的函数（含路径参数）与耗时任务不在这里调用
+#[test]
+fn declared_interfaces_match_backend_args() {
+    use tf_plugin_api::interface::{Channel, Declaration};
+    let mut checked = 0;
+    for os in ["macos", "windows", "linux"] {
+        let registry = builtin_for(os);
+        for manifest in registry.manifests() {
+            for (function, spec) in &manifest.functions {
+                let declaration = spec.declaration();
+                assert_ne!(
+                    declaration,
+                    Declaration::Invalid,
+                    "{} {function}",
+                    manifest.id
+                );
+                let Some(interface) = declaration.exposed(Channel::Cli) else {
+                    continue;
+                };
+                let raw = interface.params.to_string();
+                if spec.task || raw.contains("\"format\":\"path\"") {
+                    continue;
+                }
+                let args = sample_args(&interface.params);
+                if let Err(err) = registry.call(&manifest.id, function, args.clone()) {
+                    assert_ne!(
+                        err.code, "plugin.invalid_args",
+                        "{} {function} rejected {args}: {:?}",
+                        manifest.id, err.params
+                    );
+                }
+                checked += 1;
+            }
+        }
+    }
+    assert!(checked > 0, "no declared interface was exercised");
+}

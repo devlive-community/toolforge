@@ -131,5 +131,47 @@
     "saved": "Saved to {{path}}",
     "invalidLines": "Unrecognized lines: {{lines}}",
     "elapsed": "{{ms}} ms"
+  },
+  "api": {
+    "common": {
+      "algorithms": "Digest algorithms to compute",
+      "uppercase": "Print hexadecimal digests in uppercase"
+    },
+    "columns": {
+      "algorithm": "Algorithm",
+      "digest": "Digest",
+      "mac": "MAC",
+      "matches": "Matches",
+      "status": "Status",
+      "path": "Path"
+    },
+    "hash_text": {
+      "summary": "Compute digests of a text (UTF-8 bytes)",
+      "input": "Text to hash"
+    },
+    "hmac_text": {
+      "summary": "Compute HMAC values of a text and optionally compare with an expected MAC",
+      "input": "Message text",
+      "key": "Secret key",
+      "keyEncoding": "How the key is encoded",
+      "output": "Encoding of the resulting MAC",
+      "expected": "Expected MAC in any encoding, to verify against"
+    },
+    "hash_files": {
+      "summary": "Compute digests of files",
+      "paths": "Files to hash"
+    },
+    "manifest_create": {
+      "summary": "Write a checksum manifest for every file in a folder",
+      "dir": "Folder to scan",
+      "output": "Where to save the manifest file",
+      "algorithm": "Digest algorithm for the manifest",
+      "recursive": "Include subfolders"
+    },
+    "manifest_verify": {
+      "summary": "Verify files against a checksum manifest",
+      "manifest": "Manifest file to verify",
+      "algorithm": "Digest algorithm; detected from the manifest when omitted"
+    }
   }
 }

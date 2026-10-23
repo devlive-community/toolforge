@@ -131,5 +131,47 @@
     "saved": "已保存到 {{path}}",
     "invalidLines": "无法识别的行：{{lines}}",
     "elapsed": "耗时 {{ms}}ms"
+  },
+  "api": {
+    "common": {
+      "algorithms": "要计算的摘要算法",
+      "uppercase": "十六进制摘要使用大写"
+    },
+    "columns": {
+      "algorithm": "算法",
+      "digest": "摘要",
+      "mac": "MAC",
+      "matches": "是否一致",
+      "status": "状态",
+      "path": "路径"
+    },
+    "hash_text": {
+      "summary": "计算文本（UTF-8 字节）的摘要",
+      "input": "要计算的文本"
+    },
+    "hmac_text": {
+      "summary": "计算文本的 HMAC，可与期望值比对",
+      "input": "消息文本",
+      "key": "密钥",
+      "keyEncoding": "密钥的编码方式",
+      "output": "结果 MAC 的编码",
+      "expected": "用于校验的期望 MAC（任意编码）"
+    },
+    "hash_files": {
+      "summary": "计算文件的摘要",
+      "paths": "要计算的文件"
+    },
+    "manifest_create": {
+      "summary": "为文件夹中的所有文件生成校验和清单",
+      "dir": "要扫描的文件夹",
+      "output": "清单文件的保存位置",
+      "algorithm": "清单使用的摘要算法",
+      "recursive": "包含子文件夹"
+    },
+    "manifest_verify": {
+      "summary": "按校验和清单校验文件",
+      "manifest": "要校验的清单文件",
+      "algorithm": "摘要算法；不指定时从清单识别"
+    }
   }
 }

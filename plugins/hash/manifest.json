@@ -1,19 +1,114 @@
 {
   "id": "org.devlive.toolforge.hash",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "dev",
   "keywords": ["hash", "md5", "sha1", "sha256", "sha512", "sha3", "sm3", "crc32", "checksum", "sha256sum", "md5sum", "manifest", "hmac", "mac", "signature", "哈希", "摘要", "校验和", "清单"],
   "accent": "orange",
   "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.2",
   "permissions": ["clipboard:write", "fs:user-selected"],
   "functions": {
-    "hash_text": { "history": true },
-    "hmac_text": {},
-    "hash_files": { "task": true },
-    "manifest_create": { "task": true },
-    "manifest_verify": { "task": true }
+    "hash_text": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.hash_text.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.hash_text.input", "x-positional": 0, "x-stdin": true },
+            "algorithms": { "type": "array", "description": "i18n:api.common.algorithms", "items": { "type": "string", "enum": ["md5", "sha1", "sha224", "sha256", "sha384", "sha512", "sha3_256", "sha3_512", "sm3", "crc32"] }, "default": ["sha256"] },
+            "uppercase": { "type": "boolean", "description": "i18n:api.common.uppercase", "default": false }
+          }
+        },
+        "output": { "table": "/results", "columns": [{ "key": "algorithm", "label": "i18n:api.columns.algorithm" }, { "key": "digest", "label": "i18n:api.columns.digest" }] },
+        "examples": ["echo -n hello | tfp-hash hash_text --algorithms sha256,md5"]
+      }
+    },
+    "hmac_text": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.hmac_text.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input", "key"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.hmac_text.input", "x-positional": 0, "x-stdin": true },
+            "key": { "type": "string", "description": "i18n:api.hmac_text.key", "x-sensitive": true },
+            "keyEncoding": { "type": "string", "description": "i18n:api.hmac_text.keyEncoding", "enum": ["text", "hex", "base64"], "default": "text" },
+            "algorithms": { "type": "array", "description": "i18n:api.common.algorithms", "items": { "type": "string", "enum": ["md5", "sha1", "sha224", "sha256", "sha384", "sha512", "sha3_256", "sha3_512", "sm3", "crc32"] }, "default": ["sha256"] },
+            "output": { "type": "string", "description": "i18n:api.hmac_text.output", "enum": ["hex", "base64"], "default": "hex" },
+            "uppercase": { "type": "boolean", "description": "i18n:api.common.uppercase", "default": false },
+            "expected": { "type": "string", "description": "i18n:api.hmac_text.expected" }
+          }
+        },
+        "output": { "table": "/results", "columns": [{ "key": "algorithm", "label": "i18n:api.columns.algorithm" }, { "key": "mac", "label": "i18n:api.columns.mac" }, { "key": "matches", "label": "i18n:api.columns.matches" }] },
+        "examples": ["echo -n payload | tfp-hash hmac_text --key secret"]
+      }
+    },
+    "hash_files": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.hash_files.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["paths"],
+          "properties": {
+            "paths": { "type": "array", "description": "i18n:api.hash_files.paths", "items": { "type": "string", "format": "path", "x-access": "read" }, "x-positional": 0 },
+            "algorithms": { "type": "array", "description": "i18n:api.common.algorithms", "items": { "type": "string", "enum": ["md5", "sha1", "sha224", "sha256", "sha384", "sha512", "sha3_256", "sha3_512", "sm3", "crc32"] }, "default": ["sha256"] },
+            "uppercase": { "type": "boolean", "description": "i18n:api.common.uppercase", "default": false }
+          }
+        },
+        "examples": ["tfp-hash hash_files ./a.iso ./b.iso --algorithms sha256"]
+      }
+    },
+    "manifest_create": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.manifest_create.summary",
+        "effect": "write",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["dir", "output"],
+          "properties": {
+            "dir": { "type": "string", "description": "i18n:api.manifest_create.dir", "format": "path", "x-access": "read", "x-positional": 0 },
+            "output": { "type": "string", "description": "i18n:api.manifest_create.output", "format": "path", "x-access": "write" },
+            "algorithm": { "type": "string", "description": "i18n:api.manifest_create.algorithm", "enum": ["md5", "sha1", "sha224", "sha256", "sha384", "sha512", "sha3_256", "sha3_512", "sm3", "crc32"], "default": "sha256" },
+            "recursive": { "type": "boolean", "description": "i18n:api.manifest_create.recursive", "default": true }
+          }
+        },
+        "examples": ["tfp-hash manifest_create ./release --output ./release/SHA256SUMS"]
+      }
+    },
+    "manifest_verify": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.manifest_verify.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["manifest"],
+          "properties": {
+            "manifest": { "type": "string", "description": "i18n:api.manifest_verify.manifest", "format": "path", "x-access": "read", "x-positional": 0 },
+            "algorithm": { "type": "string", "description": "i18n:api.manifest_verify.algorithm", "enum": ["md5", "sha1", "sha224", "sha256", "sha384", "sha512", "sha3_256", "sha3_512", "sm3", "crc32"] }
+          }
+        },
+        "output": { "table": "/entries", "columns": [{ "key": "status", "label": "i18n:api.columns.status" }, { "key": "path", "label": "i18n:api.columns.path" }] },
+        "examples": ["tfp-hash manifest_verify ./release/SHA256SUMS"]
+      }
+    }
   },
   "sensitive": false
 }
