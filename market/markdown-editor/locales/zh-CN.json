@@ -89,5 +89,16 @@
   },
   "errors": {
     "md.too_large": "文档超过 {{limit}}"
+  },
+  "api": {
+    "render": {
+      "summary": "把 Markdown 渲染成 HTML，并给出大纲与统计",
+      "source": "Markdown 文本"
+    },
+    "export_html": {
+      "summary": "把 Markdown 导出为独立的 HTML 文档",
+      "source": "Markdown 文本",
+      "title": "文档标题；省略时使用第一个标题"
+    }
   }
 }

@@ -34,6 +34,8 @@ impl ToolPlugin for MarkdownEditor {
     }
 }
 
+tf_plugin_guest::export_plugin!(MarkdownEditor);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

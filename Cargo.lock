@@ -9047,6 +9047,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-markdown-editor"
+version = "0.1.0"
+dependencies = [
+ "pulldown-cmark",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-maze"
 version = "0.1.0"
 dependencies = [
@@ -9619,16 +9630,6 @@ dependencies = [
  "encoding_rs",
  "memchr",
  "regex",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
-name = "tfp-markdown-editor"
-version = "0.1.0"
-dependencies = [
- "pulldown-cmark",
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -10279,7 +10280,6 @@ dependencies = [
  "tfp-json-schema",
  "tfp-local-server",
  "tfp-log-viewer",
- "tfp-markdown-editor",
  "tfp-mock-data",
  "tfp-number-words",
  "tfp-ocr",

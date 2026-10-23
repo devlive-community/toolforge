@@ -89,5 +89,16 @@
   },
   "errors": {
     "md.too_large": "The document is larger than {{limit}}"
+  },
+  "api": {
+    "render": {
+      "summary": "Render Markdown to HTML with an outline and statistics",
+      "source": "Markdown text"
+    },
+    "export_html": {
+      "summary": "Export Markdown as a standalone HTML document",
+      "source": "Markdown text",
+      "title": "Document title; the first heading when omitted"
+    }
   }
 }
