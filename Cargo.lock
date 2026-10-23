@@ -8591,6 +8591,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-base-converter"
+version = "0.1.0"
+dependencies = [
+ "num-bigint",
+ "num-traits",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-boardgame-score"
 version = "0.1.0"
 dependencies = [
@@ -9182,17 +9194,6 @@ dependencies = [
  "image",
  "resvg",
  "rxing",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
-name = "tfp-base-converter"
-version = "0.1.0"
-dependencies = [
- "num-bigint",
- "num-traits",
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -10210,7 +10211,6 @@ dependencies = [
  "tfp-archive",
  "tfp-background-remover",
  "tfp-barcode",
- "tfp-base-converter",
  "tfp-batch-rename",
  "tfp-certificate",
  "tfp-color",

@@ -26,7 +26,6 @@ pub fn builtin_for(os: &str) -> PluginRegistry {
         os,
     );
     registry.register_for(Arc::new(tfp_image_converter::ImageConverter::default()), os);
-    registry.register_for(Arc::new(tfp_base_converter::BaseConverter::default()), os);
     registry.register_for(Arc::new(tfp_color::ColorTool::default()), os);
     registry.register_for(Arc::new(tfp_password::Password::default()), os);
     registry.register_for(Arc::new(tfp_qrcode::QrCodeTool::default()), os);

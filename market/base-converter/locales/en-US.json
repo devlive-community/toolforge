@@ -57,5 +57,15 @@
     "base.too_long": "The number is longer than {{limit}} digits",
     "base.invalid_bit": "Bit {{bit}} is out of range",
     "base.out_of_range": "The value does not fit in 64 bits"
+  },
+  "api": {
+    "convert": {
+      "summary": "Convert an integer of any size between bases 2-36, with two's complement views",
+      "input": "Number to convert; accepts a sign, 0x/0o/0b prefixes and separators",
+      "from": "Input base 2-36; 0 detects the base from the prefix (decimal by default)",
+      "custom": "Extra base 2-36 to include in the result",
+      "uppercase": "Use uppercase letters for digits above 9",
+      "group": "Group digits for readability"
+    }
   }
 }

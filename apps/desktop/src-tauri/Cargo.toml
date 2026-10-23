@@ -38,7 +38,6 @@ tf-plugin-api.workspace = true
 tfp-archive.workspace = true
 tfp-background-remover.workspace = true
 tfp-barcode.workspace = true
-tfp-base-converter.workspace = true
 tfp-batch-rename.workspace = true
 tfp-certificate.workspace = true
 tfp-color.workspace = true

@@ -37,6 +37,8 @@ impl ToolPlugin for BaseConverter {
     }
 }
 
+tf_plugin_guest::export_plugin!(BaseConverter);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

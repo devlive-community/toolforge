@@ -87,6 +87,68 @@ impl Declaration {
     }
 }
 
+/// 按参数 Schema 构造一份入参：有默认值用默认值，必填参数取枚举首项或示例值
+pub fn sample_args(params: &Value) -> Value {
+    let required: Vec<&str> = params["required"]
+        .as_array()
+        .map(|r| r.iter().filter_map(Value::as_str).collect())
+        .unwrap_or_default();
+    let mut args = serde_json::Map::new();
+    for (name, schema) in params["properties"].as_object().into_iter().flatten() {
+        let value = if let Some(default) = schema.get("default") {
+            default.clone()
+        } else if !required.contains(&name.as_str()) {
+            continue;
+        } else if let Some(first) = schema.pointer("/enum/0") {
+            first.clone()
+        } else {
+            match schema["type"].as_str() {
+                Some("integer" | "number") => schema.get("minimum").cloned().unwrap_or(1.into()),
+                Some("boolean") => false.into(),
+                Some("array") => Value::Array(vec![
+                    schema
+                        .pointer("/items/enum/0")
+                        .cloned()
+                        .unwrap_or_else(|| "1".into()),
+                ]),
+                _ => "1".into(),
+            }
+        };
+        args.insert(name.clone(), value);
+    }
+    Value::Object(args)
+}
+
+/// 供插件测试使用：用 [`sample_args`] 调用插件所有已声明、非任务、无路径参数的函数，
+/// 声明的 Schema 必须能被后端接受（不能返回 `plugin.invalid_args`）。返回实际调用的函数数
+pub fn check_declared_interfaces(plugin: &dyn crate::ToolPlugin) -> Result<usize, String> {
+    let manifest = plugin.manifest();
+    let mut checked = 0;
+    for (function, spec) in &manifest.functions {
+        let declaration = spec.declaration();
+        if declaration == Declaration::Invalid {
+            return Err(format!("{} {function}: invalid interface", manifest.id));
+        }
+        let Some(interface) = declaration.exposed(Channel::Cli) else {
+            continue;
+        };
+        if spec.task || interface.params.to_string().contains("\"format\":\"path\"") {
+            continue;
+        }
+        let args = sample_args(&interface.params);
+        if let Err(err) = plugin.call(function, args.clone())
+            && err.code == "plugin.invalid_args"
+        {
+            return Err(format!(
+                "{} {function} rejected {args}: {:?}",
+                manifest.id, err.params
+            ));
+        }
+        checked += 1;
+    }
+    Ok(checked)
+}
+
 #[cfg(test)]
 #[path = "interface_test.rs"]
 mod tests;

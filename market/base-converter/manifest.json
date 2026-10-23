@@ -1,0 +1,35 @@
+{
+  "id": "org.devlive.toolforge.base-converter",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "calc",
+  "keywords": ["base", "radix", "binary", "octal", "decimal", "hex", "hexadecimal", "two's complement", "bits", "进制", "二进制", "八进制", "十六进制", "补码"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "convert": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.convert.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.convert.input", "x-positional": 0, "x-stdin": true },
+            "from": { "type": "integer", "description": "i18n:api.convert.from", "minimum": 0, "maximum": 36, "default": 0 },
+            "custom": { "type": "integer", "description": "i18n:api.convert.custom", "minimum": 2, "maximum": 36, "default": 36 },
+            "uppercase": { "type": "boolean", "description": "i18n:api.convert.uppercase", "default": false },
+            "group": { "type": "boolean", "description": "i18n:api.convert.group", "default": false }
+          }
+        },
+        "examples": ["tfp-base-converter convert 0xff", "tfp-base-converter convert 777 --from 8 --group"]
+      }
+    }
+  },
+  "sensitive": false
+}
