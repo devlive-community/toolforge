@@ -342,7 +342,9 @@
         "hide": "Hide {{name}}",
         "show": "Show {{name}}",
         "uninstall": "Uninstall {{name}}",
-        "uninstallBuiltin": "Built-in tools cannot be uninstalled"
+        "uninstallBuiltin": "Built-in tools cannot be uninstalled",
+        "open": "Open {{name}}",
+        "notLoaded": "The plugin is not loaded, so it cannot be opened"
       },
       "config": {
         "title": "Configure {{name}}",

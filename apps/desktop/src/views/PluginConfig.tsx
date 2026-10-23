@@ -1,9 +1,9 @@
-import { Badge, Button, Empty, Modal, SegmentedControl, Switch, Tabs, toast } from '@toolforge/ui'
+import { Badge, Button, Empty, Modal, Select, Switch, Tabs, cn, toast } from '@toolforge/ui'
 import type { Manifest } from '@toolforge/plugin-ui-sdk'
 import { useErrorMessage } from '@toolforge/plugin-ui-sdk'
 import { invoke } from '@tauri-apps/api/core'
 import { Bot, ChevronRight, ShieldAlert, SquareTerminal } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { usePluginText } from '../plugins/usePluginText'
 import { useApp } from '../stores/app'
@@ -80,13 +80,96 @@ export function PluginConfigDialog({ manifest, config, onChange, onClose }: { ma
     void apply('interface_set_plugin', { enabled })
   }
 
-  const channel = config?.[tab] ?? null
   const modeLabel = (mode: Mode) => t(`market.config.mode.${mode}`)
+
+  const renderPanel = (key: Channel) => {
+    const channel = config?.[key] ?? null
+    if (!channel) {
+      return (
+        <Empty
+          icon={key === 'cli' ? <SquareTerminal /> : <Bot />}
+          title={t(`market.config.unsupported.${key}`)}
+          description={t('market.config.unsupportedHint')}
+        />
+      )
+    }
+    return (
+      <div className="space-y-3">
+        {!channel.ready && (
+          <div className="flex items-center justify-between gap-3 rounded-control bg-warning-soft px-3 py-2">
+            <p className="text-xs text-warning">{t(`market.config.notReady.${key}`)}</p>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                onClose()
+                navigate({ view: 'settings' })
+              }}
+            >
+              {t('market.config.openSettings')}
+              <ChevronRight />
+            </Button>
+          </div>
+        )}
+        <div className="flex items-center justify-between gap-4 rounded-control border border-border px-3 py-2.5">
+          <div>
+            <p className="text-[13px] font-medium text-fg">{t(`market.config.enable.${key}`)}</p>
+            <p className="mt-0.5 text-xs text-fg-muted">{t(`market.config.enableHint.${key}`)}</p>
+            {key === 'agent' && config?.native && <p className="mt-1 text-xs text-fg-subtle">{t('market.config.nativeHint')}</p>}
+          </div>
+          <Switch checked={channel.enabled} disabled={busy} onCheckedChange={togglePlugin} aria-label={t(`market.config.enable.${key}`)} />
+        </div>
+        <ul className="divide-y divide-border rounded-control border border-border">
+          {channel.functions.map((fn) => (
+            <li key={fn.name} className="flex items-center gap-3 px-3 py-2">
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-xs text-fg">{summary(fn.summary)}</p>
+                <div className="mt-1 flex flex-wrap items-center gap-1">
+                  <code className="font-mono text-[11px] text-fg-subtle">{fn.name}</code>
+                  <Badge variant={EFFECT_BADGE[fn.effect]}>{t(`market.config.effect.${fn.effect}`)}</Badge>
+                  {fn.uses.map((use) => (
+                    <code key={use} className="rounded-sm bg-surface-2 px-1.5 py-0.5 font-mono text-[11px] text-fg-muted">
+                      {use}
+                    </code>
+                  ))}
+                  {fn.capped && <span className="text-[11px] text-fg-subtle">{t('market.config.capped')}</span>}
+                </div>
+              </div>
+              {key === 'cli' ? (
+                <Switch
+                  size="sm"
+                  checked={fn.mode !== 'off'}
+                  disabled={busy || !channel.enabled}
+                  onCheckedChange={(on) => void apply('interface_set_function', { function: fn.name, mode: on ? null : 'off' })}
+                  aria-label={summary(fn.summary)}
+                />
+              ) : (
+                <Select<'default' | Mode>
+                  size="sm"
+                  className="w-40 shrink-0"
+                  value={fn.custom ?? 'default'}
+                  disabled={busy || !channel.enabled}
+                  aria-label={summary(fn.summary)}
+                  options={[
+                    { value: 'default', label: t('market.config.mode.default', { mode: modeLabel(fn.defaultMode) }) },
+                    { value: 'off', label: modeLabel('off') },
+                    { value: 'ask', label: modeLabel('ask') },
+                    ...(fn.capped ? [] : [{ value: 'allow' as const, label: modeLabel('allow') }]),
+                  ]}
+                  onValueChange={(value) => void apply('interface_set_function', { function: fn.name, mode: value === 'default' ? null : value })}
+                />
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
 
   return (
     <>
       <Modal open={open} onOpenChange={(next) => !next && onClose()} title={t('market.config.title', { name })} closeLabel={t('common:close')} size="lg">
-        <div className="space-y-4">
+        <div className="space-y-4 px-5 pb-5">
           <Tabs<Channel>
             value={tab}
             onValueChange={setTab}
@@ -95,86 +178,14 @@ export function PluginConfigDialog({ manifest, config, onChange, onClose }: { ma
               { value: 'agent', label: t('market.config.agent'), icon: <Bot /> },
             ]}
           />
-          {/* 固定高度，切换页签与开关时弹窗不跳动 */}
-          <div className="h-96 overflow-y-auto">
-            {!channel ? (
-              <Empty
-                icon={tab === 'cli' ? <SquareTerminal /> : <Bot />}
-                title={t(`market.config.unsupported.${tab}`)}
-                description={t('market.config.unsupportedHint')}
-              />
-            ) : (
-              <div className="space-y-3">
-                {!channel.ready && (
-                  <div className="flex items-center justify-between gap-3 rounded-control bg-warning-soft px-3 py-2">
-                    <p className="text-xs text-warning">{t(`market.config.notReady.${tab}`)}</p>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => {
-                        onClose()
-                        navigate({ view: 'settings' })
-                      }}
-                    >
-                      {t('market.config.openSettings')}
-                      <ChevronRight />
-                    </Button>
-                  </div>
-                )}
-                <div className="flex items-center justify-between gap-4 rounded-control border border-border px-3 py-2.5">
-                  <div>
-                    <p className="text-[13px] font-medium text-fg">{t(`market.config.enable.${tab}`)}</p>
-                    <p className="mt-0.5 text-xs text-fg-muted">{t(`market.config.enableHint.${tab}`)}</p>
-                    {tab === 'agent' && config?.native && <p className="mt-1 text-xs text-fg-subtle">{t('market.config.nativeHint')}</p>}
-                  </div>
-                  <Switch checked={channel.enabled} disabled={busy} onCheckedChange={togglePlugin} aria-label={t(`market.config.enable.${tab}`)} />
-                </div>
-                <ul className="divide-y divide-border rounded-control border border-border">
-                  {channel.functions.map((fn) => (
-                    <li key={fn.name} className="flex flex-wrap items-center gap-3 px-3 py-2">
-                      <div className="min-w-0 flex-1">
-                        <p className="text-xs text-fg">{summary(fn.summary)}</p>
-                        <div className="mt-1 flex flex-wrap items-center gap-1">
-                          <code className="font-mono text-[11px] text-fg-subtle">{fn.name}</code>
-                          <Badge variant={EFFECT_BADGE[fn.effect]}>{t(`market.config.effect.${fn.effect}`)}</Badge>
-                          {fn.uses.map((use) => (
-                            <code key={use} className="rounded-sm bg-surface-2 px-1.5 py-0.5 font-mono text-[11px] text-fg-muted">
-                              {use}
-                            </code>
-                          ))}
-                          {fn.capped && <span className="text-[11px] text-fg-subtle">{t('market.config.capped')}</span>}
-                        </div>
-                      </div>
-                      {tab === 'cli' ? (
-                        <Switch
-                          size="sm"
-                          checked={fn.mode !== 'off'}
-                          disabled={busy || !channel.enabled}
-                          onCheckedChange={(on) => void apply('interface_set_function', { function: fn.name, mode: on ? null : 'off' })}
-                          aria-label={summary(fn.summary)}
-                        />
-                      ) : (
-                        <SegmentedControl
-                          size="sm"
-                          value={fn.custom ?? 'default'}
-                          aria-label={summary(fn.summary)}
-                          options={[
-                            { value: 'default', label: t('market.config.mode.default', { mode: modeLabel(fn.defaultMode) }) },
-                            { value: 'off', label: modeLabel('off') },
-                            { value: 'ask', label: modeLabel('ask') },
-                            ...(fn.capped ? [] : [{ value: 'allow' as const, label: modeLabel('allow') }]),
-                          ]}
-                          onValueChange={(value) => {
-                            if (busy || !channel.enabled) return
-                            void apply('interface_set_function', { function: fn.name, mode: value === 'default' ? null : value })
-                          }}
-                        />
-                      )}
-                    </li>
-                  ))}
-                </ul>
+          {/* 两个页签叠放在同一个网格格子里，未选中的不可见但占位：
+              弹窗高度取两者中较高的一个，切换页签不跳动，也不出现内部滚动条 */}
+          <div className="grid">
+            {(['cli', 'agent'] as const).map((key) => (
+              <div key={key} className={cn('[grid-area:1/1]', key !== tab && 'invisible')} aria-hidden={key !== tab}>
+                {renderPanel(key)}
               </div>
-            )}
+            ))}
           </div>
         </div>
       </Modal>
@@ -200,8 +211,45 @@ export function PluginConfigDialog({ manifest, config, onChange, onClose }: { ma
           </>
         }
       >
-        <p className="text-[13px] text-fg">{t('market.config.sensitiveBody', { name })}</p>
+        <p className="px-5 pb-5 text-[13px] text-fg">{t('market.config.sensitiveBody', { name })}</p>
       </Modal>
     </>
   )
+}
+
+/** 两个页签共用：哪些工具支持配置、读取配置后打开弹窗 */
+export function useToolConfig(plugins: Manifest[]) {
+  const errorMessage = useErrorMessage()
+  /** 插件 id → 开放的通道（cli / agent）；没有声明的旧插件不在其中 */
+  const [support, setSupport] = useState<Record<string, string[]>>({})
+  const [configuring, setConfiguring] = useState<{ manifest: Manifest; config: PluginInterfaceConfig } | null>(null)
+
+  useEffect(() => {
+    invoke<Record<string, string[]>>('interface_support')
+      .then(setSupport)
+      .catch(() => {})
+  }, [plugins])
+
+  const configure = async (manifest: Manifest) => {
+    try {
+      setConfiguring({ manifest, config: await loadPluginConfig(manifest.id) })
+    } catch (error) {
+      toast.error(errorMessage(error))
+    }
+  }
+
+  const dialog = (
+    <PluginConfigDialog
+      manifest={configuring?.manifest ?? null}
+      config={configuring?.config ?? null}
+      onChange={(config) => setConfiguring((current) => (current ? { ...current, config } : current))}
+      onClose={() => setConfiguring(null)}
+    />
+  )
+
+  return {
+    supported: (id: string) => (support[id] ?? []).length > 0,
+    configure: (manifest: Manifest) => void configure(manifest),
+    dialog,
+  }
 }

@@ -340,7 +340,9 @@
         "hide": "隐藏 {{name}}",
         "show": "显示 {{name}}",
         "uninstall": "卸载 {{name}}",
-        "uninstallBuiltin": "内置工具不能卸载"
+        "uninstallBuiltin": "内置工具不能卸载",
+        "open": "打开 {{name}}",
+        "notLoaded": "插件尚未加载，无法打开"
       },
       "config": {
         "title": "配置 {{name}}",

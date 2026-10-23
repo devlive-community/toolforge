@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Badge, Button, Empty, Input, SegmentedControl, Select, Switch, Tabs, Tooltip, cn, toast } from '@toolforge/ui'
+import { Badge, Button, Empty, Input, SegmentedControl, Select, Switch, Tabs, cn, toast } from '@toolforge/ui'
 import type { Manifest } from '@toolforge/plugin-ui-sdk'
 import { useErrorMessage } from '@toolforge/plugin-ui-sdk'
 import { invoke } from '@tauri-apps/api/core'
-import { CloudDownload, Eye, EyeOff, LayoutGrid, PackageSearch, Search, Settings2, SquareArrowOutUpRight, Trash2 } from 'lucide-react'
+import { CloudDownload, LayoutGrid, PackageSearch, Search, SquareArrowOutUpRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { CATEGORIES } from '../lib/categories'
 import { ToolTile } from '../plugins/ToolIcon'
@@ -12,8 +12,9 @@ import { useApp } from '../stores/app'
 import { toolStatus, usePrefs, type ToolStatus } from '../stores/prefs'
 import { MarketOnline } from './MarketOnline'
 import { Page } from './Page'
-import { PluginConfigDialog, loadPluginConfig, type PluginInterfaceConfig } from './PluginConfig'
+import { useToolConfig } from './PluginConfig'
 import { PluginDetail } from './PluginDetail'
+import { ToolActions } from './ToolActions'
 
 type Filter = 'all' | 'changed' | 'hidden'
 
@@ -26,56 +27,6 @@ function matches(manifest: Manifest, query: string, text: (m: Manifest, v: strin
     .toLowerCase()
     .split(/\s+/)
     .every((word) => haystack.includes(word))
-}
-
-/** 工具卡片的操作：全部是图标按钮 + Tooltip；不可用的操作置灰并说明原因 */
-function ToolActions({
-  name,
-  supported,
-  hidden,
-  removable,
-  busy,
-  onConfigure,
-  onToggleHidden,
-  onUninstall,
-}: {
-  name: string
-  supported: boolean
-  hidden: boolean
-  removable: boolean
-  busy: boolean
-  onConfigure: () => void
-  onToggleHidden: () => void
-  onUninstall: () => void
-}) {
-  const { t } = useTranslation()
-  const configureLabel = supported ? t('market.actions.configure', { name }) : t('market.actions.configureUnsupported')
-  const hideLabel = hidden ? t('market.actions.show', { name }) : t('market.actions.hide', { name })
-  const uninstallLabel = removable ? t('market.actions.uninstall', { name }) : t('market.actions.uninstallBuiltin')
-  return (
-    <div className="ml-auto flex items-center gap-0.5">
-      <Tooltip content={configureLabel}>
-        {/* 禁用的按钮不触发指针事件，包一层才能显示提示 */}
-        <span className="inline-flex">
-          <Button size="icon-sm" variant="ghost" aria-label={configureLabel} disabled={!supported} onClick={onConfigure}>
-            <Settings2 />
-          </Button>
-        </span>
-      </Tooltip>
-      <Tooltip content={hideLabel}>
-        <Button size="icon-sm" variant="ghost" aria-label={hideLabel} onClick={onToggleHidden}>
-          {hidden ? <EyeOff /> : <Eye />}
-        </Button>
-      </Tooltip>
-      <Tooltip content={uninstallLabel}>
-        <span className="inline-flex">
-          <Button size="icon-sm" variant="ghost" aria-label={uninstallLabel} disabled={!removable || busy} onClick={onUninstall}>
-            <Trash2 />
-          </Button>
-        </span>
-      </Tooltip>
-    </div>
-  )
 }
 
 export function Market() {
@@ -93,29 +44,16 @@ export function Market() {
   const [selected, setSelected] = useState<Manifest | null>(null)
   const [tab, setTab] = useState<'tools' | 'online'>('tools')
   const errorMessage = useErrorMessage()
-  /** 插件 id → 开放的通道（cli / agent）；没有声明的旧插件不在其中 */
-  const [support, setSupport] = useState<Record<string, string[]>>({})
+  const config = useToolConfig(plugins)
   /** 在线安装的插件（可以卸载）；内置插件不在其中 */
   const [installedIds, setInstalledIds] = useState<string[]>([])
-  const [configuring, setConfiguring] = useState<{ manifest: Manifest; config: PluginInterfaceConfig } | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
 
   useEffect(() => {
-    invoke<Record<string, string[]>>('interface_support')
-      .then(setSupport)
-      .catch(() => {})
     invoke<{ id: string }[]>('plugin_installed')
       .then((list) => setInstalledIds(list.map((info) => info.id)))
       .catch(() => {})
   }, [plugins])
-
-  const configure = async (manifest: Manifest) => {
-    try {
-      setConfiguring({ manifest, config: await loadPluginConfig(manifest.id) })
-    } catch (error) {
-      toast.error(errorMessage(error))
-    }
-  }
 
   const uninstall = async (manifest: Manifest) => {
     setBusy(manifest.id)
@@ -209,16 +147,19 @@ export function Market() {
                   <span>{t('market.version', { version: manifest.version })}</span>
                   <span>·</span>
                   <span>{t(`category.${manifest.category}`, { defaultValue: manifest.category })}</span>
-                  <ToolActions
-                    name={text(manifest, manifest.name)}
-                    supported={(support[manifest.id] ?? []).length > 0}
-                    hidden={isHidden}
-                    removable={installedIds.includes(manifest.id)}
-                    busy={busy === manifest.id}
-                    onConfigure={() => void configure(manifest)}
-                    onToggleHidden={() => setHidden(manifest.id, !isHidden)}
-                    onUninstall={() => void uninstall(manifest)}
-                  />
+                  <div className="ml-auto">
+                    <ToolActions
+                      name={text(manifest, manifest.name)}
+                      supported={config.supported(manifest.id)}
+                      onConfigure={() => config.configure(manifest)}
+                      onOpen={() => openTool(manifest.id)}
+                      hidden={isHidden}
+                      onToggleHidden={() => setHidden(manifest.id, !isHidden)}
+                      removable={installedIds.includes(manifest.id)}
+                      busy={busy === manifest.id}
+                      onUninstall={() => void uninstall(manifest)}
+                    />
+                  </div>
                 </div>
               </div>
             )
@@ -266,22 +207,17 @@ export function Market() {
           )
         }
         onConfigure={
-          selected && (support[selected.id] ?? []).length > 0
+          selected && config.supported(selected.id)
             ? () => {
                 const manifest = selected
                 setSelected(null)
-                void configure(manifest)
+                config.configure(manifest)
               }
             : undefined
         }
         onClose={() => setSelected(null)}
       />
-      <PluginConfigDialog
-        manifest={configuring?.manifest ?? null}
-        config={configuring?.config ?? null}
-        onChange={(config) => setConfiguring((current) => (current ? { ...current, config } : current))}
-        onClose={() => setConfiguring(null)}
-      />
+      {config.dialog}
     </Page>
   )
 }

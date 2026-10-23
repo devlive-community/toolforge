@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { invoke } from '@tauri-apps/api/core'
-import { Badge, Button, Empty, Modal, Spinner, Tooltip, cn, toast } from '@toolforge/ui'
+import { Badge, Button, Empty, Modal, Spinner, cn, toast } from '@toolforge/ui'
 import type { Manifest } from '@toolforge/plugin-ui-sdk'
 import { host, useErrorMessage, type AppError } from '@toolforge/plugin-ui-sdk'
 import { CloudDownload, FileUp, PackageCheck, RefreshCw, ShieldAlert, ShieldCheck, SquareArrowOutUpRight, Trash2 } from 'lucide-react'
@@ -8,8 +8,11 @@ import { useTranslation } from 'react-i18next'
 import { usePluginText } from '../plugins/usePluginText'
 import { ToolTile, accentTiles } from '../plugins/ToolIcon'
 import { pluginById, useApp } from '../stores/app'
+import { usePrefs } from '../stores/prefs'
 import { useUpdate } from '../stores/update'
+import { useToolConfig } from './PluginConfig'
 import { PluginDetail, type PluginDetailInfo, type PluginDetailRow } from './PluginDetail'
+import { ToolActions } from './ToolActions'
 import { formatDownloadCount, loadDownloadStats, type PluginDownloadStats } from '../lib/pluginStats'
 
 interface IndexEntry {
@@ -91,6 +94,9 @@ export function MarketOnline() {
   const errorMessage = useErrorMessage('common')
   const plugins = useApp((s) => s.plugins)
   const openTool = useApp((s) => s.openTool)
+  const hiddenTools = usePrefs((s) => s.hiddenTools)
+  const setHidden = usePrefs((s) => s.setToolHidden)
+  const config = useToolConfig(plugins)
   const appVersion = useApp((s) => s.info?.version ?? '0.0.0')
   const [index, setIndex] = useState<IndexEntry[] | null>(null)
   const [indexError, setIndexError] = useState<AppError | null>(null)
@@ -255,6 +261,22 @@ export function MarketOnline() {
     detailRows.push({ label: t('market.online.installedAt'), value: new Date(detail.info.installedAt).toLocaleString() })
   }
 
+  /** 已安装工具的图标操作；插件未加载或需要更新应用时不能打开 */
+  const InstalledActions = ({ id, name, manifest, blocked }: { id: string; name: string; manifest: Manifest | undefined; blocked: string | null | undefined }) => (
+    <ToolActions
+      name={name}
+      supported={!!manifest && config.supported(id)}
+      onConfigure={() => manifest && config.configure(manifest)}
+      onOpen={() => openTool(id)}
+      openBlocked={blocked ? t('market.online.needsApp', { version: blocked }) : manifest ? null : t('market.actions.notLoaded')}
+      hidden={hiddenTools.includes(id)}
+      onToggleHidden={() => setHidden(id, !hiddenTools.includes(id))}
+      removable
+      busy={busy !== null}
+      onUninstall={() => void uninstall(id)}
+    />
+  )
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-3">
@@ -320,17 +342,8 @@ export function MarketOnline() {
                   <span>·</span>
                   <span>{t(`category.${entry.category}`, { defaultValue: entry.category })}</span>
                   <div className="ml-auto flex items-center gap-1.5">
-                    {current && !update && manifest && !required && (
-                      <Button size="sm" variant="ghost" onClick={() => openTool(entry.id)}>
-                        {t('market.open')}
-                      </Button>
-                    )}
                     {current && (
-                      <Tooltip content={t('market.online.uninstall')}>
-                        <Button size="icon-sm" variant="ghost" aria-label={t('market.online.uninstall')} disabled={busy !== null} onClick={() => void uninstall(entry.id)}>
-                          <Trash2 />
-                        </Button>
-                      </Tooltip>
+                      <InstalledActions id={entry.id} name={manifest ? text(manifest, manifest.name) : localized(entry.names)} manifest={manifest} blocked={required} />
                     )}
                     {required && <UpdateAppButton size="sm" version={required} />}
                     {(!current || update) && !required && (
@@ -368,16 +381,7 @@ export function MarketOnline() {
                     {required && <p className="text-[11px] text-warning">{t('market.online.needsApp', { version: required })}</p>}
                   </button>
                   {required && <UpdateAppButton size="sm" version={required} />}
-                  {manifest && !required && (
-                    <Button size="sm" variant="ghost" onClick={() => openTool(info.id)}>
-                      {t('market.open')}
-                    </Button>
-                  )}
-                  <Tooltip content={t('market.online.uninstall')}>
-                    <Button size="icon-sm" variant="ghost" aria-label={t('market.online.uninstall')} disabled={busy !== null} onClick={() => void uninstall(info.id)}>
-                      <Trash2 />
-                    </Button>
-                  </Tooltip>
+                  <InstalledActions id={info.id} name={manifest ? text(manifest, manifest.name) : info.id} manifest={manifest} blocked={required} />
                 </li>
               )
             })}
@@ -468,6 +472,7 @@ export function MarketOnline() {
         onClose={() => setDetail(null)}
       />
 
+      {config.dialog}
       <Modal
         open={confirm !== null}
         onOpenChange={(open) => !open && setConfirm(null)}
@@ -491,7 +496,7 @@ export function MarketOnline() {
         }
       >
         {confirm && (
-          <div className="space-y-2 text-[13px] text-fg">
+          <div className="space-y-2 px-5 pb-5 text-[13px] text-fg">
             <p>
               {t(`market.online.untrusted.${String(confirm.error.params?.trust ?? 'unsigned')}`, {
                 id: String(confirm.error.params?.id ?? ''),
