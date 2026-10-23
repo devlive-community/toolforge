@@ -130,6 +130,45 @@
         "copy": "Copy",
         "installed": "Created {{count}} commands",
         "removed": "Removed the command line tools"
+      },
+      "agent": {
+        "title": "AI Agent",
+        "enabled": "Let AI agents call plugins",
+        "enabledHint": "When on, AI agents connected over MCP (such as Claude Code) can call the plugin functions granted below. Off by default",
+        "connect": "Connect",
+        "connectHint": "Add this to your MCP client; it starts tfp mcp to talk to ToolForge without listening on any port",
+        "unavailable": "This build does not include the tfp command line tool; build toolforge-cli first during development",
+        "folders": "Granted folders",
+        "foldersHint": "File paths from agents must be inside these folders; writable folders are readable too",
+        "addRead": "Add read-only folder",
+        "addWrite": "Add writable folder",
+        "noFolders": "No folder is granted yet, so functions that need files are refused",
+        "read": "Read-only",
+        "write": "Writable",
+        "remove": "Remove",
+        "plugins": "Plugins",
+        "pluginsHint": "Only plugins that declare an AI agent interface are listed. Once a plugin is on, read-only functions are allowed and writes or external effects ask each time by default; adjust each function as needed",
+        "noPlugins": "No plugin declares an AI agent interface yet",
+        "native": "Native",
+        "nativeHint": "Native built-in plugins are not sandboxed, so their functions that use files always ask",
+        "expand": "Show functions",
+        "collapse": "Hide functions",
+        "mode": {
+          "default": "Default ({{mode}})",
+          "off": "Off",
+          "ask": "Ask each time",
+          "allow": "Always allow"
+        },
+        "effect": {
+          "read": "Read-only",
+          "write": "Writes",
+          "external": "External"
+        },
+        "capped": "Always asks",
+        "sensitiveTitle": "Open a sensitive plugin",
+        "sensitiveBody": "{{name}} handles secrets such as keys and tokens. Once opened, AI agents can pass such data to it and read the results. Open it anyway?",
+        "sensitiveConfirm": "Open anyway",
+        "copy": "Copy"
       }
     },
     "tool": {
@@ -311,6 +350,12 @@
         "statsHint": "Successful downloads confirmed by clients after integrity checks, counted from the statistics launch.",
         "statsLoading": "Loading…",
         "statsUnavailable": "Unavailable"
+      },
+      "interfaces": {
+        "title": "Command line & AI Agent",
+        "cli": "CLI",
+        "agent": "AI Agent",
+        "manage": "Manage AI agent access"
       }
     }
   },
@@ -390,7 +435,9 @@
       "market.invalid_download": "The official plugin download address is invalid. Refresh the market and try again.",
       "market.download_metadata_mismatch": "The package does not match the plugin index. Refresh and try again.",
       "market.stats_unavailable": "The plugin download service is unavailable. Try again later.",
-      "cli.unavailable": "The command line tool is unavailable: tfp is missing from this build"
+      "cli.unavailable": "The command line tool is unavailable: tfp is missing from this build",
+      "agent.invalid_mode": "Invalid access mode",
+      "fs.not_a_directory": "Not a folder: {{path}}"
     },
     "logs": {
       "task": {

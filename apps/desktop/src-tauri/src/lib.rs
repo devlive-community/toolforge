@@ -1,3 +1,4 @@
+mod agent;
 mod cli_tools;
 mod commands;
 mod deeplink;
@@ -132,6 +133,13 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            agent::agent_overview,
+            agent::agent_set_enabled,
+            agent::agent_set_plugin,
+            agent::agent_set_function,
+            agent::agent_add_path,
+            agent::agent_remove_path,
+            agent::plugin_interfaces,
             cli_tools::cli_status,
             cli_tools::cli_install,
             cli_tools::cli_uninstall,

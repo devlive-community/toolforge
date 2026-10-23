@@ -128,6 +128,45 @@
         "copy": "复制",
         "installed": "已生成 {{count}} 个命令",
         "removed": "已移除命令行工具"
+      },
+      "agent": {
+        "title": "AI Agent",
+        "enabled": "允许 AI Agent 调用插件",
+        "enabledHint": "开启后，通过 MCP 连接的 AI Agent（如 Claude Code）可以调用下面授权的插件函数；默认关闭",
+        "connect": "连接方式",
+        "connectHint": "把下面的配置加入 MCP 客户端，客户端会启动 tfp mcp 与 ToolForge 通信，不监听任何端口",
+        "unavailable": "当前安装包不含命令行工具 tfp；开发时请先编译 toolforge-cli",
+        "folders": "授权目录",
+        "foldersHint": "Agent 传入的文件路径必须位于这些目录内；可写目录同时可读",
+        "addRead": "添加只读目录",
+        "addWrite": "添加可写目录",
+        "noFolders": "尚未授权任何目录，需要文件的函数都会被拒绝",
+        "read": "只读",
+        "write": "可写",
+        "remove": "移除",
+        "plugins": "插件",
+        "pluginsHint": "只列出声明了 AI Agent 接口的插件。开启插件后：只读函数默认允许，写入和对外操作默认每次确认，可以逐个函数调整",
+        "noPlugins": "暂无声明了 AI Agent 接口的插件",
+        "native": "原生",
+        "nativeHint": "原生内置插件不在沙箱中运行，用到文件的函数每次都需要确认",
+        "expand": "展开函数",
+        "collapse": "收起函数",
+        "mode": {
+          "default": "默认（{{mode}}）",
+          "off": "关闭",
+          "ask": "每次确认",
+          "allow": "始终允许"
+        },
+        "effect": {
+          "read": "只读",
+          "write": "写入",
+          "external": "对外操作"
+        },
+        "capped": "始终需要确认",
+        "sensitiveTitle": "开放敏感插件",
+        "sensitiveBody": "{{name}} 会处理密钥、令牌等敏感数据。开放后 AI Agent 可以把这些数据交给插件并读取结果，确定要开放吗？",
+        "sensitiveConfirm": "仍要开放",
+        "copy": "复制"
       }
     },
     "tool": {
@@ -309,6 +348,12 @@
         "statsHint": "客户端完整下载并通过校验后确认的成功次数；从统计服务上线起累计。",
         "statsLoading": "加载中…",
         "statsUnavailable": "暂不可用"
+      },
+      "interfaces": {
+        "title": "命令行与 AI Agent",
+        "cli": "命令行",
+        "agent": "AI Agent",
+        "manage": "管理 AI Agent 授权"
       }
     }
   },
@@ -388,7 +433,9 @@
       "market.invalid_download": "官方插件下载地址无效，请刷新插件市场后重试",
       "market.download_metadata_mismatch": "下载包与插件索引不一致，请刷新后重试",
       "market.stats_unavailable": "插件下载服务暂不可用，请稍后重试",
-      "cli.unavailable": "命令行工具不可用：安装包中找不到 tfp"
+      "cli.unavailable": "命令行工具不可用：安装包中找不到 tfp",
+      "agent.invalid_mode": "无效的授权方式",
+      "fs.not_a_directory": "不是文件夹：{{path}}"
     },
     "logs": {
       "task": {

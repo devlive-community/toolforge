@@ -18,3 +18,17 @@ export function Section({ title, children }: { title: string; children: ReactNod
     </section>
   )
 }
+
+/** 设置项：左侧标题与说明，右侧控件 */
+export function Row({ label, hint, warning, children }: { label: string; hint?: string; warning?: string | null; children: ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-6 px-5 py-4">
+      <div>
+        <p className="text-[13px] font-medium text-fg">{label}</p>
+        {hint && <p className="mt-0.5 text-xs text-fg-muted">{hint}</p>}
+        {warning && <p className="mt-1 text-xs text-warning">{warning}</p>}
+      </div>
+      {children}
+    </div>
+  )
+}

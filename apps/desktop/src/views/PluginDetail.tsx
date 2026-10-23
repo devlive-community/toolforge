@@ -1,6 +1,62 @@
-import { Fragment, type ReactNode } from 'react'
-import { Badge, Drawer } from '@toolforge/ui'
+import { Fragment, useEffect, useState, type ReactNode } from 'react'
+import { invoke } from '@tauri-apps/api/core'
+import { Badge, Button, Drawer } from '@toolforge/ui'
+import { ChevronRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { useApp } from '../stores/app'
+
+interface InterfaceInfo {
+  function: string
+  summary: string
+  channels: ('cli' | 'agent')[]
+  effect: 'read' | 'write' | 'external'
+}
+
+/** 插件开放给命令行与 AI Agent 的函数；声明由 Rust 解析，未安装的在线插件没有 */
+function InterfacesSection({ pluginId, onNavigate }: { pluginId: string; onNavigate: () => void }) {
+  const { t } = useTranslation()
+  const navigate = useApp((s) => s.navigate)
+  const [items, setItems] = useState<InterfaceInfo[]>([])
+
+  useEffect(() => {
+    invoke<InterfaceInfo[]>('plugin_interfaces', { pluginId })
+      .then(setItems)
+      .catch(() => setItems([]))
+  }, [pluginId])
+
+  if (items.length === 0) return null
+  return (
+    <section className="space-y-2">
+      <h3 className="text-xs font-semibold text-fg-muted">{t('market.interfaces.title')}</h3>
+      <ul className="space-y-1.5">
+        {items.map((item) => (
+          <li key={item.function} className="flex flex-wrap items-center gap-1.5 text-xs">
+            <span className="text-fg">{item.summary.startsWith('i18n:') ? t(item.summary.slice(5), { ns: pluginId }) : item.summary}</span>
+            {item.channels.map((channel) => (
+              <Badge key={channel} variant="info">
+                {t(`market.interfaces.${channel}`)}
+              </Badge>
+            ))}
+            <Badge>{t(`settings.agent.effect.${item.effect}`)}</Badge>
+          </li>
+        ))}
+      </ul>
+      {items.some((item) => item.channels.includes('agent')) && (
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => {
+            onNavigate()
+            navigate({ view: 'settings' })
+          }}
+        >
+          {t('market.interfaces.manage')}
+          <ChevronRight />
+        </Button>
+      )}
+    </section>
+  )
+}
 
 /** 详情抽屉的归一化插件信息：内置插件与在线插件都映射到这组字段 */
 export interface PluginDetailInfo {
@@ -66,6 +122,7 @@ export function PluginDetail({ info, icon, originBadge, actions, extraRows, onCl
               </ul>
             </section>
           )}
+          <InterfacesSection pluginId={info.id} onNavigate={onClose} />
           <section className="space-y-2 text-xs">
             <h3 className="font-semibold text-fg-muted">{t('market.details')}</h3>
             <dl className="grid grid-cols-[96px_minmax(0,1fr)] gap-x-3 gap-y-1.5">

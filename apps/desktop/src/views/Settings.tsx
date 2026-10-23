@@ -2,30 +2,18 @@ import { Badge, Button, SegmentedControl, Select, Switch, Tooltip, toast } from 
 import { formatBytes, host, useCopy, useErrorMessage, type AppError } from '@toolforge/plugin-ui-sdk'
 import { invoke } from '@tauri-apps/api/core'
 import { Check, ChevronRight, Copy, FolderOpen, PackageOpen, RefreshCw, SquareTerminal, Trash2 } from 'lucide-react'
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SUPPORTED_LOCALES, resolveLocale, type Locale } from '../i18n'
 import type { ThemeMode } from '../lib/boot'
 import { useApp } from '../stores/app'
 import { usePrefs } from '../stores/prefs'
 import { useUpdate } from '../stores/update'
-import { Page, Section } from './Page'
+import { AgentSection } from './AgentSettings'
+import { Page, Row, Section } from './Page'
 import { ShortcutRecorder } from './ShortcutRecorder'
 
 const LOCALE_LABELS: Record<Locale, string> = { 'zh-CN': '简体中文', 'en-US': 'English' }
-
-function Row({ label, hint, warning, children }: { label: string; hint?: string; warning?: string | null; children: ReactNode }) {
-  return (
-    <div className="flex items-center justify-between gap-6 px-5 py-4">
-      <div>
-        <p className="text-[13px] font-medium text-fg">{label}</p>
-        {hint && <p className="mt-0.5 text-xs text-fg-muted">{hint}</p>}
-        {warning && <p className="mt-1 text-xs text-warning">{warning}</p>}
-      </div>
-      {children}
-    </div>
-  )
-}
 
 /** 命令行工具的总入口，与各插件的 tfp-<插件> 一起列出 */
 const CLI_ENTRY = 'tfp'
@@ -236,6 +224,7 @@ export function Settings() {
         </div>
       </Section>
       <CliToolsSection />
+      <AgentSection />
       <Section title={t('update.title')}>
         <div className="divide-y divide-border rounded-card border border-border bg-surface shadow-card">
           <Row label={t('update.check')} hint={updateHint()}>
