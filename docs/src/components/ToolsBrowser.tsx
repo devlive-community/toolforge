@@ -21,10 +21,11 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { ToolCard } from './ToolCard'
+import { SiteSelect } from './SiteSelect'
 import { toolChannel, toolName, toolStatus, type Lang, type ToolChannel, type ToolEntry, type ToolStatus } from '@/lib/catalog'
 import { fetchTotalDownloads, pluginStatsId } from '@/lib/stats'
 
-const PAGE_SIZE = 8
+const PAGE_SIZE = 12
 const categoryIcons: Record<string, LucideIcon> = {
   calc: Calculator,
   convert: ArrowLeftRight,
@@ -173,16 +174,16 @@ function Catalog({ tools, lang, initialQuery, initialCategory }: { tools: ToolEn
       <div className="site-catalog">
         <aside>
           <h2 className="site-sidebar-label">{t.categories}</h2>
-          <select className="site-select site-mobile-category" aria-label={t.categories} value={category} onChange={(e) => changeCategory(e.target.value)}>
-            <option value="all">
-              {t.all} · {scoped.length}
-            </option>
-            {categories.map(([id, label]) => (
-              <option key={id} value={id}>
-                {label[lang]} · {scoped.filter((tool) => tool.category === id).length}
-              </option>
-            ))}
-          </select>
+          <SiteSelect
+            className="site-mobile-category"
+            label={t.categories}
+            value={category}
+            onChange={changeCategory}
+            options={[
+              { value: 'all', label: `${t.all} · ${scoped.length}` },
+              ...categories.map(([id, label]) => ({ value: id, label: `${label[lang]} · ${scoped.filter((tool) => tool.category === id).length}` })),
+            ]}
+          />
           <nav className="site-categories" aria-label={t.categories}>
             <button className="site-category" type="button" aria-pressed={category === 'all'} onClick={() => changeCategory('all')}>
               <LayoutGrid aria-hidden="true" />
@@ -210,22 +211,19 @@ function Catalog({ tools, lang, initialQuery, initialCategory }: { tools: ToolEn
                 {filtered.length} {t.count}
               </small>
             </h2>
-            <label className="sr-only" htmlFor="tool-source">
-              {t.source}
-            </label>
-            <select
-              id="tool-source"
-              className="site-select"
+            <SiteSelect<'all' | ToolChannel>
+              label={t.source}
               value={channel}
-              onChange={(e) => {
-                setChannel(e.target.value as 'all' | ToolChannel)
+              onChange={(value) => {
+                setChannel(value)
                 setPage(1)
               }}
-            >
-              <option value="all">{t.allSources}</option>
-              <option value="builtin">{t.builtin}</option>
-              <option value="market">{t.market}</option>
-            </select>
+              options={[
+                { value: 'all', label: t.allSources },
+                { value: 'builtin', label: t.builtin },
+                { value: 'market', label: t.market },
+              ]}
+            />
           </div>
           <details className="site-filter-popover">
             <summary>
