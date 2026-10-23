@@ -1,4 +1,4 @@
-//! 插件使用的网络与文件写入能力：编译为 WASM 组件时调用宿主函数，
+//! 插件使用的网络与文件读写能力：编译为 WASM 组件时调用宿主函数，
 //! 本机构建（单元测试）时直接使用 `tf-net`，两者行为一致。包括一次性请求、流式请求、回调监听与写文件。
 //! 插件需要在 manifest 中声明 `network`（HTTP 请求、回调监听）或 `fs:user-selected`（写文件）。
 
@@ -239,6 +239,29 @@ pub fn read_file(path: &str, offset: u64, length: u32) -> PluginResult<Vec<u8>> 
     imp::read_file(path, offset, length)
 }
 
+/// 宿主单次读取的上限，分块读取整个文件时使用
+const READ_CHUNK: u64 = 4 * 1024 * 1024;
+
+/// 读取整个用户选择的文件；超过 `limit` 字节返回 `fs.too_large`
+pub fn read_to_end(path: &str, limit: u64) -> PluginResult<Vec<u8>> {
+    let size = file_size(path)?;
+    if size > limit {
+        return Err(tf_plugin_api::PluginError::new("fs.too_large")
+            .with("path", path)
+            .with("limit", format!("{} MB", limit / (1024 * 1024))));
+    }
+    let mut out = Vec::with_capacity(size as usize);
+    while (out.len() as u64) < size {
+        let length = (size - out.len() as u64).min(READ_CHUNK) as u32;
+        let chunk = read_file(path, out.len() as u64, length)?;
+        if chunk.is_empty() {
+            break;
+        }
+        out.extend_from_slice(&chunk);
+    }
+    Ok(out)
+}
+
 /// 127.0.0.1 上的一次性回调监听，drop 时关闭并释放端口
 pub struct Callback {
     inner: imp::Listener,
@@ -284,3 +307,7 @@ impl Stream {
         self.inner.read(wait)
     }
 }
+
+#[cfg(test)]
+#[path = "net_test.rs"]
+mod tests;
