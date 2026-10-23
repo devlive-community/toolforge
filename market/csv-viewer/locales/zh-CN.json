@@ -2,7 +2,7 @@
   "name": "CSV 查看器",
   "description": "打开大型 CSV / TSV 文件，排序、搜索、筛选、查看列统计并导出",
   "help": [
-    "支持最大 1 GB 的文件。行数据由 Rust 按页读取，百万行约一秒即可打开，滚动流畅。",
+    "支持最大 256 MB 的文件。行数据由 Rust 按页读取，百万行约一秒即可打开，滚动流畅。",
     "自动识别编码（UTF-8、UTF-16、GBK/GB18030）、分隔符与表头；识别有误时可在工具栏中修改。",
     "点击列标题排序；打开列详情可查看统计信息与最常见的值，并添加筛选条件。",
     "可把当前视图（排序、筛选后）导出为 CSV、TSV、JSON 或 Markdown 表格；也可以直接粘贴从电子表格复制的内容。"
@@ -16,7 +16,7 @@
   },
   "open": {
     "drop": "拖入 CSV / TSV 文件，或点击打开",
-    "hint": "最大 1 GB · 支持 CSV、TSV 与 TXT",
+    "hint": "最大 256 MB · 支持 CSV、TSV 与 TXT",
     "filter": "表格",
     "paste": "粘贴表格",
     "another": "打开",
@@ -118,5 +118,27 @@
     "csv.table_expired": "为释放内存，该表格已关闭，请重新打开",
     "csv.too_large": "数据超过 {{limit}}",
     "csv.empty": "没有可解析的内容"
+  },
+  "api": {
+    "search": {
+      "summary": "搜索 CSV 文件中的行并输出一页匹配结果",
+      "path": "CSV、TSV 或 TXT 文件，最大 256 MB",
+      "query": "在任意单元格中查找的文本；为空返回所有行",
+      "delimiter": "分隔符，如 , ; | 或 tab；省略时自动识别",
+      "header": "第一行是否为表头；省略时自动识别",
+      "encoding": "编码，如 utf-8 或 gb18030；省略时自动识别",
+      "offset": "跳过的行数",
+      "limit": "返回的行数，最多 1000",
+      "format": "输出格式"
+    },
+    "convert": {
+      "summary": "把整个 CSV 文件转换为 CSV、TSV、JSON 或 Markdown",
+      "path": "CSV、TSV 或 TXT 文件，最大 256 MB",
+      "delimiter": "分隔符，如 , ; | 或 tab；省略时自动识别",
+      "header": "第一行是否为表头；省略时自动识别",
+      "encoding": "编码，如 utf-8 或 gb18030；省略时自动识别",
+      "output": "要写入的文件",
+      "format": "输出格式"
+    }
   }
 }

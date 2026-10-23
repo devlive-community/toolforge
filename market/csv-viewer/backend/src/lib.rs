@@ -8,7 +8,7 @@ mod table;
 mod view;
 
 use std::collections::VecDeque;
-use std::io::{BufWriter, Read};
+use std::io::Read;
 use std::path::Path;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
@@ -26,7 +26,8 @@ use table::{Column, Table};
 use view::Spec;
 
 const MANIFEST: &str = include_str!("../../manifest.json");
-const MAX_FILE: u64 = 1024 * 1024 * 1024;
+/// 沙箱内存上限为 1 GB，解析时原文与表格同时在内存中，文件上限取 256 MB
+const MAX_FILE: u64 = 256 * 1024 * 1024;
 const MAX_TEXT: usize = 20 * 1024 * 1024;
 /// 同时保留的表格数量，更早的会被释放
 const CAPACITY: usize = 3;
@@ -77,6 +78,11 @@ impl Tables {
             .map(|(_, t)| t.clone())
             .ok_or_else(|| PluginError::new("csv.table_expired"))
     }
+
+    fn remove(&self, id: u64) {
+        let mut items = self.items.lock().unwrap_or_else(|e| e.into_inner());
+        items.retain(|(i, _)| *i != id);
+    }
 }
 
 impl Loaded {
@@ -102,6 +108,36 @@ struct OpenArgs {
     path: String,
     #[serde(flatten)]
     options: Options,
+}
+
+/// 一次性搜索（命令行与 Agent）：打开、按文本搜索并把一页结果按指定格式输出，不保留会话
+#[derive(Deserialize)]
+struct SearchArgs {
+    path: String,
+    #[serde(flatten)]
+    options: Options,
+    #[serde(default)]
+    query: String,
+    #[serde(default)]
+    offset: usize,
+    #[serde(default = "default_limit")]
+    limit: usize,
+    #[serde(default = "default_format")]
+    format: export::Format,
+}
+
+fn default_format() -> export::Format {
+    export::Format::Csv
+}
+
+/// 一次性转换（命令行与 Agent）：把整张表导出为文件
+#[derive(Deserialize)]
+struct ConvertArgs {
+    path: String,
+    #[serde(flatten)]
+    options: Options,
+    output: String,
+    format: export::Format,
 }
 
 #[derive(Deserialize)]
@@ -203,7 +239,7 @@ impl CsvViewer {
         let start = Instant::now();
         let size = ctx.file_size(&args.path)?;
         if size > MAX_FILE {
-            return Err(PluginError::new("csv.too_large").with("limit", "1 GB"));
+            return Err(PluginError::new("csv.too_large").with("limit", "256 MB"));
         }
         ctx.stage("csv.read");
         let mut reader = ctx.open_file(&args.path)?;
@@ -246,14 +282,75 @@ impl CsvViewer {
         Ok(info)
     }
 
+    fn search(&self, args: SearchArgs, ctx: &dyn TaskContext) -> PluginResult<Value> {
+        let info = self.open(
+            OpenArgs {
+                path: args.path,
+                options: args.options,
+            },
+            ctx,
+        )?;
+        let loaded = self.tables.get(info.id)?;
+        self.tables.remove(info.id);
+        let spec = Spec {
+            query: args.query,
+            ..Spec::default()
+        };
+        let view = loaded.view(&spec)?;
+        let view = view.as_deref().map(Vec::as_slice);
+        let total = view::view_len(&loaded.table, view);
+        let end = args
+            .offset
+            .saturating_add(args.limit.min(view::MAX_PAGE))
+            .min(total);
+        let rows: Vec<u32> = (args.offset.min(end)..end)
+            .map(|position| view::row_at(view, position) as u32)
+            .collect();
+        let mut out = Vec::new();
+        export::write(
+            &loaded.table,
+            Some(&rows),
+            args.format,
+            loaded.has_header,
+            &mut out,
+            |_| {},
+            || ctx.is_cancelled(),
+        )?;
+        Ok(json!({
+            "total": total,
+            "rows": rows.len(),
+            "text": String::from_utf8_lossy(&out),
+        }))
+    }
+
+    fn convert(&self, args: ConvertArgs, ctx: &dyn TaskContext) -> PluginResult<Value> {
+        let info = self.open(
+            OpenArgs {
+                path: args.path,
+                options: args.options,
+            },
+            ctx,
+        )?;
+        let result = self.export(
+            ExportArgs {
+                id: info.id,
+                path: args.output,
+                format: args.format,
+                spec: Spec::default(),
+            },
+            ctx,
+        );
+        self.tables.remove(info.id);
+        result
+    }
+
     fn export(&self, args: ExportArgs, ctx: &dyn TaskContext) -> PluginResult<Value> {
         let loaded = self.tables.get(args.id)?;
         let view = loaded.view(&args.spec)?;
         let total = view::view_len(&loaded.table, view.as_deref().map(Vec::as_slice));
         ctx.stage("csv.export");
-        let file = std::fs::File::create(&args.path)
-            .map_err(|e| PluginError::new("fs.io").with("detail", e.to_string()))?;
-        let mut out = BufWriter::new(file);
+        // 先在内存中写好再一次写出，取消或出错时不会留下半个文件
+        let mut out = Vec::new();
         let rows = export::write(
             &loaded.table,
             view.as_deref().map(Vec::as_slice),
@@ -263,16 +360,8 @@ impl CsvViewer {
             |done| ctx.progress(done as u64, total.max(1) as u64),
             || ctx.is_cancelled(),
         );
-        let rows = match rows {
-            Ok(rows) => rows,
-            Err(err) => {
-                drop(out);
-                let _ = std::fs::remove_file(&args.path);
-                return Err(err);
-            }
-        };
-        std::io::Write::flush(&mut out)
-            .map_err(|e| PluginError::new("fs.io").with("detail", e.to_string()))?;
+        let rows = rows?;
+        tf_plugin_guest::net::write_file(&args.path, &out)?;
         ctx.log(
             LogLevel::Info,
             "csv.exported",
@@ -339,10 +428,14 @@ impl ToolPlugin for CsvViewer {
         match function {
             "open" => to_value(self.open(parse_args(args)?, ctx)?),
             "export" => self.export(parse_args(args)?, ctx),
+            "search" => self.search(parse_args(args)?, ctx),
+            "convert" => self.convert(parse_args(args)?, ctx),
             _ => self.call(function, args),
         }
     }
 }
+
+tf_plugin_guest::export_plugin!(CsvViewer);
 
 #[cfg(test)]
 #[path = "lib_test.rs"]

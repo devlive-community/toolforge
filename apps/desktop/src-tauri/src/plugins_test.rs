@@ -86,7 +86,6 @@ fn clipboard_samples_suggest_the_right_tool_first() {
             "ssh-key",
         ),
         ("github.com", "dns-lookup"),
-        ("name\tage\nAda\t36\n", "csv-viewer"),
         ("localhost:3000", "port-manager"),
         (
             include_str!("../../../../plugins/certificate/backend/fixtures/chain.pem"),
@@ -105,6 +104,7 @@ fn clipboard_samples_suggest_the_right_tool_first() {
     }
     for text in [
         "<a><b>1</b></a>",
+        "name\tage\nAda\t36\n",
         "q%3Dhello%20world",
         "VG9vbEZvcmdlIOW3peWFt+eusQ==",
         r#"{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object"}"#,

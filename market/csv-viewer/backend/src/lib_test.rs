@@ -144,3 +144,39 @@ fn keeps_only_recent_tables() {
     );
     assert!(tool.call("rows", json!({ "id": ids[3] })).is_ok());
 }
+
+#[test]
+fn searches_and_converts_in_one_call() {
+    let tool = CsvViewer::default();
+    let ctx = Ctx::default();
+    let path = temp("one-shot.csv", b"name,age\nAda,36\nBob,7\nAdam,40\n");
+    let found = tool
+        .run_task(
+            "search",
+            json!({ "path": path, "query": "ad", "limit": 1, "format": "tsv" }),
+            &ctx,
+        )
+        .unwrap();
+    assert_eq!(
+        (found["total"].as_u64(), found["rows"].as_u64()),
+        (Some(2), Some(1))
+    );
+    assert_eq!(found["text"], "name\tage\nAda\t36\n");
+
+    let output = temp("one-shot.json", b"");
+    tool.run_task(
+        "convert",
+        json!({ "path": path, "output": output, "format": "json" }),
+        &ctx,
+    )
+    .unwrap();
+    let json: Value = serde_json::from_str(&std::fs::read_to_string(&output).unwrap()).unwrap();
+    assert_eq!(json[2], json!({ "name": "Adam", "age": 40 }));
+}
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&CsvViewer::default()).unwrap();
+    assert_eq!(checked, 0);
+}

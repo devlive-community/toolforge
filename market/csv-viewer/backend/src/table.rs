@@ -46,6 +46,14 @@ impl Table {
         }
     }
 
+    /// 预留单元格文本的容量，避免解析大文件时反复扩容造成内存峰值翻倍
+    pub fn with_text_capacity(bytes: usize) -> Self {
+        Self {
+            text: String::with_capacity(bytes),
+            ..Self::new()
+        }
+    }
+
     pub fn push_row<'a>(&mut self, cells: impl IntoIterator<Item = &'a str>) {
         for cell in cells {
             self.text.push_str(cell);

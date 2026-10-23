@@ -121,7 +121,7 @@ pub fn parse(
         .flexible(true)
         .delimiter(delimiter)
         .from_reader(text.as_bytes());
-    let mut table = Table::new();
+    let mut table = Table::with_text_capacity(text.len());
     let mut record = csv::ByteRecord::new();
     let mut count = 0u64;
     loop {

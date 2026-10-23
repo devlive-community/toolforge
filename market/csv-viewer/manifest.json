@@ -1,0 +1,67 @@
+{
+  "id": "org.devlive.toolforge.csv-viewer",
+  "version": "0.1.1",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["csv", "tsv", "excel", "table", "spreadsheet", "viewer", "filter", "sort", "export", "表格", "查看", "筛选", "排序", "导出"],
+  "accent": "green",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected", "clipboard:read", "clipboard:write"],
+  "functions": {
+    "open": { "task": true, "interface": false },
+    "parse_text": { "interface": false },
+    "rows": { "interface": false },
+    "stats": { "interface": false },
+    "export": { "task": true, "interface": false },
+    "search": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.search.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.search.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "query": { "type": "string", "description": "i18n:api.search.query", "x-positional": 1 },
+            "delimiter": { "type": "string", "description": "i18n:api.search.delimiter" },
+            "header": { "type": "boolean", "description": "i18n:api.search.header" },
+            "encoding": { "type": "string", "description": "i18n:api.search.encoding" },
+            "offset": { "type": "integer", "description": "i18n:api.search.offset", "minimum": 0, "default": 0 },
+            "limit": { "type": "integer", "description": "i18n:api.search.limit", "minimum": 1, "maximum": 1000, "default": 200 },
+            "format": { "type": "string", "description": "i18n:api.search.format", "enum": ["csv", "tsv", "json", "markdown"], "default": "csv" }
+          }
+        },
+        "output": { "text": "/text" },
+        "examples": ["tfp-csv-viewer search orders.csv Shanghai --limit 20 --format markdown"]
+      }
+    },
+    "convert": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.convert.summary",
+        "effect": "write",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path", "output", "format"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.convert.path", "format": "path", "x-access": "read", "x-positional": 0 },
+            "delimiter": { "type": "string", "description": "i18n:api.convert.delimiter" },
+            "header": { "type": "boolean", "description": "i18n:api.convert.header" },
+            "encoding": { "type": "string", "description": "i18n:api.convert.encoding" },
+            "output": { "type": "string", "description": "i18n:api.convert.output", "format": "path", "x-access": "write" },
+            "format": { "type": "string", "description": "i18n:api.convert.format", "enum": ["csv", "tsv", "json", "markdown"] }
+          }
+        },
+        "examples": ["tfp-csv-viewer convert orders.csv --output orders.json --format json"]
+      }
+    }
+  },
+  "sensitive": false
+}
