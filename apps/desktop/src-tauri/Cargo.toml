@@ -62,7 +62,6 @@ tfp-text-encoding.workspace = true
 tfp-icon-generator.workspace = true
 tfp-hex-viewer.workspace = true
 tfp-folder-compare.workspace = true
-tfp-number-words.workspace = true
 tfp-url-parser.workspace = true
 tfp-json-query.workspace = true
 tfp-json-schema.workspace = true

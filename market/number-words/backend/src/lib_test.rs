@@ -52,3 +52,10 @@ fn produces_every_output_with_notes() {
     assert_eq!(find(&bytes, "roman")["note"]["code"], "num.roman_range");
     assert_eq!(find(&convert_value("12"), "roman")["value"], "XII");
 }
+
+#[test]
+fn declared_interfaces_match_backend_args() {
+    let checked =
+        tf_plugin_api::interface::check_declared_interfaces(&NumberWords::default()).unwrap();
+    assert_eq!(checked, 1);
+}

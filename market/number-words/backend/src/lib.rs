@@ -186,6 +186,8 @@ impl ToolPlugin for NumberWords {
     }
 }
 
+tf_plugin_guest::export_plugin!(NumberWords);
+
 #[cfg(test)]
 #[path = "lib_test.rs"]
 mod tests;

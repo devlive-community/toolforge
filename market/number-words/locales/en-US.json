@@ -50,5 +50,15 @@
     "num.rounded_cents": "Rounded to two decimal places",
     "num.roman_range": "Only whole numbers from 1 to 3999",
     "num.bytes_integer": "Only for whole, positive numbers"
+  },
+  "api": {
+    "convert": {
+      "summary": "Write a number as Chinese uppercase money, Chinese numerals, English words and Roman numerals",
+      "input": "Number, Chinese number, money in uppercase or Roman numeral"
+    },
+    "columns": {
+      "kind": "Kind",
+      "value": "Value"
+    }
   }
 }

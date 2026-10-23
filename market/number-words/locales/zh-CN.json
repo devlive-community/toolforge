@@ -50,5 +50,15 @@
     "num.rounded_cents": "已四舍五入到两位小数",
     "num.roman_range": "只支持 1 到 3999 的整数",
     "num.bytes_integer": "只适用于正整数"
+  },
+  "api": {
+    "convert": {
+      "summary": "把数字写成人民币大写、中文数字、英文读法和罗马数字",
+      "input": "数字、中文数字、人民币大写或罗马数字"
+    },
+    "columns": {
+      "kind": "类型",
+      "value": "结果"
+    }
   }
 }

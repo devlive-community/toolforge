@@ -1,0 +1,32 @@
+{
+  "id": "org.devlive.toolforge.number-words",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "calc",
+  "keywords": ["number to words", "amount in words", "rmb", "chinese numerals", "roman numerals", "check writing", "thousands separator", "scientific notation", "大写", "金额大写", "人民币大写", "数字大写", "中文数字", "罗马数字", "千分位"],
+  "accent": "pink",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "convert": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.convert.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.convert.input", "x-positional": 0 }
+          }
+        },
+        "output": { "table": "/outputs", "columns": [{ "key": "kind", "label": "i18n:api.columns.kind" }, { "key": "value", "label": "i18n:api.columns.value" }] },
+        "examples": ["tfp-number-words convert 1234.56"]
+      }
+    }
+  },
+  "sensitive": false
+}

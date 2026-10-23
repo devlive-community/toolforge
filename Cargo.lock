@@ -9081,6 +9081,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-number-words"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-packing-list"
 version = "0.1.0"
 dependencies = [
@@ -9642,15 +9652,6 @@ dependencies = [
  "jiff",
  "rand 0.9.5",
  "rand_chacha 0.9.0",
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
-name = "tfp-number-words"
-version = "0.1.0"
-dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -10281,7 +10282,6 @@ dependencies = [
  "tfp-local-server",
  "tfp-log-viewer",
  "tfp-mock-data",
- "tfp-number-words",
  "tfp-ocr",
  "tfp-password",
  "tfp-pdf",
