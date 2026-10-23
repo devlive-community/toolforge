@@ -8811,6 +8811,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-env-editor"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-expense-splitter"
 version = "0.1.0"
 dependencies = [
@@ -9606,15 +9616,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tfp-env-editor"
-version = "0.1.0"
-dependencies = [
- "serde",
- "serde_json",
- "tf-plugin-api",
-]
-
-[[package]]
 name = "tfp-folder-compare"
 version = "0.1.0"
 dependencies = [
@@ -10279,7 +10280,6 @@ dependencies = [
  "tfp-dns-lookup",
  "tfp-doc-converter",
  "tfp-duplicate-finder",
- "tfp-env-editor",
  "tfp-folder-compare",
  "tfp-hash",
  "tfp-hex-viewer",

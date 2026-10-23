@@ -48,7 +48,6 @@
 | **批量重命名** | 组合替换 / 正则、插入、删除、大小写、编号、模板（日期与 EXIF 拍摄时间）等规则批量改名，实时预览并检查冲突，两阶段安全改名并可撤销 |
 | **压缩包管理** | 浏览、预览、解压 ZIP、7z、TAR 及 tar.gz / bz2 / xz / zst（含加密的 ZIP 与 7z），防止路径穿越；创建 ZIP、7z、tar.gz、tar.xz 并可设置 AES-256 密码，全部纯 Rust 实现 |
 | **文档转换** | Excel 转 Word、Word 转 Excel 在本地完成（工作表与表格互转，数字保持为数值）；Word 转 PDF、PDF 转 Word 调用本机安装的 LibreOffice（自动查找）；支持批量转换，不覆盖已有文件 |
-| **.env 编辑器** | 表格方式编辑 .env 文件：注释、空行、顺序与引号风格全部保留，支持 export 开关、行内注释与转义值（\n、\"），保存前校验重复键与非法键名；可导出值已清空的 .env.example |
 | **SSH 密钥** | 生成 OpenSSH 格式的 Ed25519、ECDSA、RSA 密钥并可设置口令；查看密钥、authorized_keys 与 known_hosts 的 SHA256 / MD5 指纹和随机图（与 ssh-keygen 一致），转换 PEM 格式 RSA 私钥，修改口令 |
 | **二维码** | 生成 PNG / SVG 二维码，可设置纠错等级、尺寸与颜色；识别图片中的二维码 |
 | **条形码** | 生成 EAN-13、EAN-8、UPC-A、ITF-14、Code 128、Code 39、Code 93、Codabar 以及 Data Matrix、PDF417、Aztec，商品码自动补全或核对校验位，EAN/UPC 按标准绘制护线与分组数字；保存为 SVG 或 PNG，可识别图片或剪贴板截图中的所有条码 |

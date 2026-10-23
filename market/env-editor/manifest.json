@@ -1,0 +1,71 @@
+{
+  "id": "org.devlive.toolforge.env-editor",
+  "version": "0.1.2",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": ["env", "dotenv", "environment", "variables", "secrets", "config", "环境变量", "配置", "配置文件"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "open": { "interface": false },
+    "save": { "interface": false },
+    "export_example": { "interface": false },
+    "compare": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.compare.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["paths"],
+          "properties": {
+            "paths": { "type": "array", "description": "i18n:api.compare.paths", "items": { "type": "string", "format": "path", "x-access": "read" }, "x-positional": 0 }
+          }
+        },
+        "examples": ["tfp-env-editor compare .env .env.example"]
+      }
+    },
+    "merge_preview": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.merge_preview.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["base", "target"],
+          "properties": {
+            "base": { "type": "string", "description": "i18n:api.merge_preview.base", "format": "path", "x-access": "read", "x-positional": 0 },
+            "target": { "type": "string", "description": "i18n:api.merge_preview.target", "format": "path", "x-access": "read", "x-positional": 1 },
+            "fill": { "type": "boolean", "description": "i18n:api.merge_preview.fill", "default": false }
+          }
+        },
+        "output": { "text": "/text" },
+        "examples": ["tfp-env-editor merge_preview .env.example .env"]
+      }
+    },
+    "merge": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.merge.summary",
+        "effect": "write",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["base", "target"],
+          "properties": {
+            "base": { "type": "string", "description": "i18n:api.merge.base", "format": "path", "x-access": "read", "x-positional": 0 },
+            "target": { "type": "string", "description": "i18n:api.merge.target", "format": "path", "x-access": "write", "x-positional": 1 },
+            "fill": { "type": "boolean", "description": "i18n:api.merge.fill", "default": false }
+          }
+        },
+        "examples": ["tfp-env-editor merge .env.example .env --fill"]
+      }
+    }
+  },
+  "sensitive": false
+}

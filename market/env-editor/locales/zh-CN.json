@@ -103,5 +103,23 @@
     "cancel": "取消",
     "apply": "写入文件",
     "merged": "已向 {{file}} 添加 {{count}} 个键"
+  },
+  "api": {
+    "compare": {
+      "summary": "对比多个 .env 文件，列出缺少、多余、为空、重复与取值不同的键",
+      "paths": "2 到 8 个 .env 文件"
+    },
+    "merge_preview": {
+      "summary": "预览从基准文件补齐缺少键后的目标 .env 文件",
+      "base": "作为基准的 .env 文件，从中补齐缺少的键",
+      "target": "补齐缺少键的 .env 文件",
+      "fill": "复制基准值，而不是留空"
+    },
+    "merge": {
+      "summary": "把基准文件中缺少的键补进目标 .env 文件并保存",
+      "base": "作为基准的 .env 文件，从中补齐缺少的键",
+      "target": "补齐缺少键的 .env 文件",
+      "fill": "复制基准值，而不是留空"
+    }
   }
 }

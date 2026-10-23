@@ -103,5 +103,23 @@
     "cancel": "Cancel",
     "apply": "Write file",
     "merged": "Added {{count}} keys to {{file}}"
+  },
+  "api": {
+    "compare": {
+      "summary": "Compare .env files and report missing, extra, empty, duplicate and differing keys",
+      "paths": "Two to eight .env files"
+    },
+    "merge_preview": {
+      "summary": "Preview a target .env file with the keys it lacks from a reference file",
+      "base": "Reference .env file whose keys are copied",
+      "target": ".env file that receives the missing keys",
+      "fill": "Copy the reference values instead of leaving them empty"
+    },
+    "merge": {
+      "summary": "Add the keys a target .env file lacks from a reference file and save it",
+      "base": "Reference .env file whose keys are copied",
+      "target": ".env file that receives the missing keys",
+      "fill": "Copy the reference values instead of leaving them empty"
+    }
   }
 }

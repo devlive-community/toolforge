@@ -56,7 +56,6 @@ tfp-folder-compare = { path = "plugins/folder-compare/backend" }
 tfp-json-query = { path = "plugins/json-query/backend" }
 tfp-image-palette = { path = "plugins/image-palette/backend" }
 tfp-doc-converter = { path = "plugins/doc-converter/backend" }
-tfp-env-editor = { path = "plugins/env-editor/backend" }
 tfp-context-menu = { path = "plugins/context-menu/backend" }
 tfp-port-manager = { path = "plugins/port-manager/backend" }
 tfp-proxy-inspector = { path = "plugins/proxy-inspector/backend" }

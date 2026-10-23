@@ -8,6 +8,7 @@ use serde_json::Value;
 use tf_plugin_api::{
     Manifest, PluginError, PluginResult, ToolPlugin, parse_args, to_value, unknown_function,
 };
+use tf_plugin_guest::net;
 
 const MANIFEST: &str = include_str!("../../manifest.json");
 
@@ -57,20 +58,36 @@ struct ExampleResult {
 
 /// 读取并解析文件（值为真实值，未做显示转义）
 fn read_lines(path: &str) -> PluginResult<Vec<document::Line>> {
-    let meta = std::fs::metadata(path).map_err(|e| {
-        PluginError::new("env.io")
-            .with("path", path)
-            .with("detail", e.to_string())
+    let bytes = net::read_to_end(path, document::MAX_FILE).map_err(|error| {
+        if error.code == "fs.too_large" {
+            return PluginError::new("env.file_too_large").with("limit", "1 MB");
+        }
+        let detail = error
+            .params
+            .get("detail")
+            .and_then(Value::as_str)
+            .unwrap_or(&error.code);
+        io_error(path, detail)
     })?;
-    if meta.len() > document::MAX_FILE {
-        return Err(PluginError::new("env.file_too_large").with("limit", "1 MB"));
-    }
-    let text = std::fs::read_to_string(path).map_err(|e| {
-        PluginError::new("env.io")
-            .with("path", path)
-            .with("detail", e.to_string())
-    })?;
+    let text = String::from_utf8(bytes).map_err(|e| io_error(path, &e.to_string()))?;
     Ok(document::parse(&text))
+}
+
+fn io_error(path: &str, detail: &str) -> PluginError {
+    PluginError::new("env.io")
+        .with("path", path)
+        .with("detail", detail)
+}
+
+fn write_text(path: &str, text: &str) -> PluginResult<()> {
+    net::write_file(path, text.as_bytes()).map_err(|error| {
+        let detail = error
+            .params
+            .get("detail")
+            .and_then(Value::as_str)
+            .unwrap_or(&error.code);
+        io_error(path, detail)
+    })
 }
 
 /// 打开并解析文件；值统一转为单行显示转义，UI 编辑后再保存
@@ -131,11 +148,7 @@ fn save_file(args: SaveArgs) -> PluginResult<SaveResult> {
     let lines = unescape_lines(args.lines);
     document::validate(&lines)?;
     let text = document::serialize(&lines);
-    std::fs::write(&args.path, &text).map_err(|e| {
-        PluginError::new("env.io")
-            .with("path", args.path.as_str())
-            .with("detail", e.to_string())
-    })?;
+    write_text(&args.path, &text)?;
     Ok(SaveResult {
         bytes: text.len() as u64,
     })
@@ -146,14 +159,10 @@ fn export_example(args: SaveArgs) -> PluginResult<ExampleResult> {
     document::validate(&lines)?;
     let text = document::to_example_text(&lines);
     let output = format!("{}.example", args.path);
-    if std::path::Path::new(&output).exists() {
+    if net::file_size(&output).is_ok() {
         return Err(PluginError::new("env.example_exists").with("path", output.as_str()));
     }
-    std::fs::write(&output, &text).map_err(|e| {
-        PluginError::new("env.io")
-            .with("path", output.as_str())
-            .with("detail", e.to_string())
-    })?;
+    write_text(&output, &text)?;
     Ok(ExampleResult { path: output })
 }
 
@@ -212,11 +221,7 @@ fn merge_text(args: &MergeArgs) -> PluginResult<MergeResult> {
 fn merge_files(args: MergeArgs) -> PluginResult<MergeResult> {
     let result = merge_text(&args)?;
     if !result.added.is_empty() {
-        std::fs::write(&args.target, &result.text).map_err(|e| {
-            PluginError::new("env.io")
-                .with("path", args.target.as_str())
-                .with("detail", e.to_string())
-        })?;
+        write_text(&args.target, &result.text)?;
     }
     Ok(result)
 }
@@ -238,6 +243,8 @@ impl ToolPlugin for EnvEditor {
         }
     }
 }
+
+tf_plugin_guest::export_plugin!(EnvEditor);
 
 #[cfg(test)]
 #[path = "lib_test.rs"]
