@@ -8526,6 +8526,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tf-host"
+version = "0.2.2"
+dependencies = [
+ "dirs",
+ "serde",
+ "serde_json",
+ "tf-core",
+ "tf-package",
+ "tf-plugin-api",
+ "tf-wasm",
+]
+
+[[package]]
 name = "tf-net"
 version = "0.2.2"
 dependencies = [
@@ -10206,6 +10219,7 @@ dependencies = [
  "tauri-plugin-single-instance",
  "tauri-plugin-updater",
  "tf-core",
+ "tf-host",
  "tf-package",
  "tf-plugin-api",
  "tf-wasm",

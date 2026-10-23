@@ -3,6 +3,7 @@ resolver = "3"
 members = [
     "apps/desktop/src-tauri",
     "crates/tf-core",
+    "crates/tf-host",
     "crates/tf-plugin-api",
     "crates/tf-package",
     "crates/tf-plugin-guest",
@@ -25,6 +26,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order", "arbitrary_precision"] }
 thiserror = "2"
 tf-core = { path = "crates/tf-core" }
+tf-host = { path = "crates/tf-host" }
 tf-plugin-api = { path = "crates/tf-plugin-api" }
 tf-net = { path = "crates/tf-net" }
 tf-package = { path = "crates/tf-package" }

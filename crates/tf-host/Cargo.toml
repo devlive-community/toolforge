@@ -1,0 +1,16 @@
+[package]
+name = "tf-host"
+description = "ToolForge host services shared by the desktop app and the CLI"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+dirs = "6"
+serde.workspace = true
+serde_json.workspace = true
+tf-core.workspace = true
+tf-package.workspace = true
+tf-plugin-api.workspace = true
+tf-wasm.workspace = true

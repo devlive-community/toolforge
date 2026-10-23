@@ -2,7 +2,6 @@ mod commands;
 mod deeplink;
 mod diagnostics;
 mod history;
-mod installed;
 mod launcher;
 mod lifecycle;
 mod market;
@@ -13,7 +12,6 @@ mod plugins;
 mod resources;
 mod tasks;
 mod updater;
-mod version;
 mod window;
 
 use std::collections::HashSet;
@@ -21,6 +19,7 @@ use std::sync::Arc;
 
 use tauri::{Manager, RunEvent};
 use tf_core::{AppLog, PluginRegistry, Resources, Store, TaskManager};
+pub use tf_host::{installed, version};
 
 /// 应用日志单个文件上限与保留的文件数
 const LOG_BYTES: u64 = 2 * 1024 * 1024;

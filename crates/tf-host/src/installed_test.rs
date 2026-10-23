@@ -137,7 +137,7 @@ fn rejects_builtin_ids_and_serves_only_ui_files() {
     std::fs::remove_dir_all(installed.root()).unwrap();
 }
 
-/// 端到端：`TOOLFORGE_TEST_TFP=<签名的 .tfp> cargo test -p toolforge installs_real_package -- --ignored`
+/// 端到端：`TOOLFORGE_TEST_TFP=<签名的 .tfp> cargo test -p tf-host installs_real_package -- --ignored`
 #[test]
 #[ignore]
 fn installs_real_package() {
