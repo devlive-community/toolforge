@@ -9,7 +9,7 @@ fn argv(items: &[&str]) -> Vec<String> {
 
 fn hash_command(items: &[&str]) -> i32 {
     let catalog = Catalog::new(builtin::all(), None);
-    plugin_command(&catalog, false, "tfp-hash", "hash", &argv(items))
+    plugin_command(&catalog, None, "tfp-hash", "hash", &argv(items))
 }
 
 #[test]
@@ -77,7 +77,7 @@ fn task_functions_run_and_return_plugin_errors() {
 fn unknown_plugins_are_usage_errors() {
     let catalog = Catalog::new(builtin::all(), None);
     assert_eq!(
-        plugin_command(&catalog, false, "tfp-nope", "nope", &[]),
+        plugin_command(&catalog, None, "tfp-nope", "nope", &[]),
         EXIT_USAGE
     );
 }
@@ -105,4 +105,46 @@ fn output_follows_the_declared_hint() {
         "Algorithm  Digest\nmd5        5d41402abc4b2a76b9719d911017c592"
     );
     assert!(output_text(&value, interface, true, &messages).contains("\"results\""));
+}
+
+#[test]
+fn respects_command_line_settings_and_records_history() {
+    use tf_core::InterfaceGrant;
+    use tf_core::store::PLUGIN_SCOPE;
+    let catalog = Catalog::new(builtin::all(), None);
+    let store = Store::open_in_memory().unwrap();
+    let run =
+        |items: &[&str]| plugin_command(&catalog, Some(&store), "tfp-hash", "hash", &argv(items));
+
+    assert_eq!(run(&["hash_text", "hello"]), EXIT_OK);
+    let history = store.history_list("", 10, 0).unwrap();
+    assert_eq!(
+        (history[0].source.as_str(), history[0].input.as_str()),
+        ("cli", "hello")
+    );
+
+    let off = |function: &str| InterfaceGrant {
+        channel: "cli".into(),
+        plugin_id: "org.devlive.toolforge.hash".into(),
+        function: function.into(),
+        mode: "off".into(),
+        uses: None,
+    };
+    store.interface_grant_set(&off("hash_text")).unwrap();
+    assert_eq!(
+        run(&["hash_text", "hello"]),
+        EXIT_USAGE,
+        "disabled functions are refused"
+    );
+    assert_eq!(run(&["hmac_text", "x", "--key", "k"]), EXIT_OK);
+    let listed = cli_manifests(&catalog, Some(&store), "en-US");
+    assert!(!listed[0].0.functions.contains_key("hash_text"));
+
+    store.interface_grant_set(&off(PLUGIN_SCOPE)).unwrap();
+    assert_eq!(
+        run(&["hmac_text", "x", "--key", "k"]),
+        EXIT_USAGE,
+        "disabled plugins are refused"
+    );
+    assert!(cli_manifests(&catalog, Some(&store), "en-US").is_empty());
 }

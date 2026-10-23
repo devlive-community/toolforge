@@ -108,6 +108,7 @@ pub fn run() {
                 installed.clone(),
                 plugins.clone(),
                 builtin.clone(),
+                store.clone(),
             );
             plugin_stats::init(store.clone());
             app.manage(AppState {

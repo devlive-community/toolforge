@@ -15,6 +15,9 @@ use crate::context::CliContext;
 use crate::help;
 use crate::i18n::{Messages, detect_lang};
 use crate::render::render;
+use tf_core::Store;
+use tf_host::cli_access::CliAccess;
+use tf_plugin_api::Manifest;
 use tf_plugin_api::interface::Channel;
 
 pub const EXIT_OK: i32 = 0;
@@ -68,8 +71,10 @@ pub fn main(argv: &[String]) -> i32 {
     let program = program_name(argv.first().map(String::as_str).unwrap_or("tfp"));
     let rest = argv.get(1..).unwrap_or_default();
     let catalog = Catalog::open();
+    let store = tf_host::app_data_dir().and_then(|dir| Store::open(&dir.join("toolforge.db")).ok());
+    let store = store.as_ref();
     if let Some(plugin) = program.strip_prefix("tfp-") {
-        return plugin_command(&catalog, true, &program, plugin, rest);
+        return plugin_command(&catalog, store, &program, plugin, rest);
     }
 
     let (global, positional) = match args::split_global(rest) {
@@ -81,7 +86,7 @@ pub fn main(argv: &[String]) -> i32 {
         None => {
             println!(
                 "{}",
-                help::global(&catalog.manifests(messages.lang(), Channel::Cli), &messages)
+                help::global(&cli_manifests(&catalog, store, messages.lang()), &messages)
             );
             EXIT_OK
         }
@@ -93,19 +98,25 @@ pub fn main(argv: &[String]) -> i32 {
                 .cloned()
                 .collect();
             forwarded.push("--help".to_owned());
-            plugin_command(&catalog, true, &format!("tfp {plugin}"), plugin, &forwarded)
+            plugin_command(
+                &catalog,
+                store,
+                &format!("tfp {plugin}"),
+                plugin,
+                &forwarded,
+            )
         }
         Some("help") => {
             println!(
                 "{}",
-                help::global(&catalog.manifests(messages.lang(), Channel::Cli), &messages)
+                help::global(&cli_manifests(&catalog, store, messages.lang()), &messages)
             );
             EXIT_OK
         }
         Some("list") => {
             println!(
                 "{}",
-                help::list(&catalog.manifests(messages.lang(), Channel::Cli), &messages)
+                help::list(&cli_manifests(&catalog, store, messages.lang()), &messages)
             );
             EXIT_OK
         }
@@ -119,15 +130,39 @@ pub fn main(argv: &[String]) -> i32 {
             let index = rest.iter().position(|a| a == plugin).unwrap_or(0);
             let mut forwarded = rest.to_vec();
             forwarded.remove(index);
-            plugin_command(&catalog, true, &format!("tfp {plugin}"), plugin, &forwarded)
+            plugin_command(
+                &catalog,
+                store,
+                &format!("tfp {plugin}"),
+                plugin,
+                &forwarded,
+            )
         }
     }
 }
 
-/// history 为 true 时把成功的调用记入应用的历史记录（来源 cli）；测试中关闭
+/// 命令行可用的插件：去掉用户在工具市场关闭的插件与函数
+fn cli_manifests(catalog: &Catalog, store: Option<&Store>, lang: &str) -> Vec<(Manifest, Value)> {
+    let access = CliAccess::load(store).unwrap_or_default();
+    catalog
+        .manifests(lang, Channel::Cli)
+        .into_iter()
+        .filter(|(m, _)| access.plugin_enabled(&m.id))
+        .map(|(mut m, locale)| {
+            let id = m.id.clone();
+            m.functions
+                .retain(|name, _| access.function_enabled(&id, name));
+            (m, locale)
+        })
+        .filter(|(m, _)| !cli_functions(m).is_empty())
+        .collect()
+}
+
+/// store 为应用数据库：读取命令行开关，并把成功的调用记入历史（来源 cli）；
+/// 为 None 时（测试）全部开启且不记录
 fn plugin_command(
     catalog: &Catalog,
-    history: bool,
+    store: Option<&Store>,
     command: &str,
     plugin: &str,
     argv: &[String],
@@ -142,7 +177,27 @@ fn plugin_command(
         Err(err) => return fail(&err, &Messages::new(lang)),
     };
     let messages = Messages::new(lang).with_plugin(loaded.locale);
-    let manifest = loaded.plugin.manifest().clone();
+    let mut manifest = loaded.plugin.manifest().clone();
+    let access = CliAccess::load(store).unwrap_or_default();
+    if !access.plugin_enabled(&manifest.id) {
+        return fail(
+            &AppError::new("cli.plugin_disabled").with("name", plugin),
+            &messages,
+        );
+    }
+    let id = manifest.id.clone();
+    if let Some(first) = rest.first()
+        && manifest.functions.contains_key(first)
+        && !access.function_enabled(&id, first)
+    {
+        let err = AppError::new("cli.function_disabled")
+            .with("name", plugin)
+            .with("function", first.as_str());
+        return fail(&err, &messages);
+    }
+    manifest
+        .functions
+        .retain(|name, _| access.function_enabled(&id, name));
     let functions = cli_functions(&manifest);
     if functions.is_empty() {
         let err = AppError::new("cli.unknown_plugin").with("name", plugin);
@@ -186,7 +241,7 @@ fn plugin_command(
         function: &function,
         task: spec.task,
         interface,
-        history,
+        store,
     };
     run_function(&call, &global, args_rest, &messages)
 }
@@ -196,7 +251,7 @@ struct Call<'a> {
     function: &'a str,
     task: bool,
     interface: &'a tf_plugin_api::interface::Interface,
-    history: bool,
+    store: Option<&'a Store>,
 }
 
 fn run_function(call: &Call<'_>, global: &Global, argv: &[String], messages: &Messages) -> i32 {
@@ -237,13 +292,10 @@ fn run_function(call: &Call<'_>, global: &Global, argv: &[String], messages: &Me
 
     match result {
         Ok(value) => {
-            if call.history
-                && let Some(store) = tf_host::app_data_dir()
-                    .and_then(|dir| tf_core::Store::open(&dir.join("toolforge.db")).ok())
-            {
+            if let Some(store) = call.store {
                 let masked = tf_host::agent::mask_sensitive(&interface.params, &parsed.args);
                 tf_host::history::record(
-                    &store,
+                    store,
                     "cli",
                     plugin.manifest(),
                     function,

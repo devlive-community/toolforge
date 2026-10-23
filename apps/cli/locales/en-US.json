@@ -52,7 +52,9 @@
     "agent.relative_path": "{{name}} must be an absolute path: {{path}}",
     "agent.needs_confirmation": "This call needs the user's confirmation, but the client cannot ask; set the function to Always allow in ToolForge settings if you trust it",
     "agent.declined": "The user declined this call",
-    "plugin.path_denied": "The plugin may not access {{detail}}"
+    "plugin.path_denied": "The plugin may not access {{detail}}",
+    "cli.plugin_disabled": "{{name}} is turned off for the command line in the ToolForge market",
+    "cli.function_disabled": "{{function}} of {{name}} is turned off for the command line in the ToolForge market"
   },
   "heading": "{{title}}:",
   "withNotes": "{{text}} ({{notes}})",

@@ -1,9 +1,11 @@
 //! 设置页「命令行工具」：在 `~/.toolforge/bin` 生成 `tfp` 与 `tfp-<插件>`，指向安装包里的 tfp。
-//! 只为声明了 CLI 接口的插件生成命令；安装或卸载插件后自动刷新已生成的命令。
+//! 只为声明了 CLI 接口、且用户没有在工具市场关闭命令行的插件生成命令；
+//! 安装或卸载插件、修改命令行开关后自动刷新已生成的命令。
 
 use serde::Serialize;
 use tauri::State;
-use tf_core::{AppError, AppResult, PluginRegistry};
+use tf_core::{AppError, AppResult, PluginRegistry, Store};
+use tf_host::cli_access::CliAccess;
 use tf_host::cli_links;
 use tf_plugin_api::interface::Channel;
 
@@ -21,11 +23,13 @@ pub struct CliStatus {
     pub path_hint: Option<String>,
 }
 
-/// 声明了 CLI 接口的已加载插件名
-pub fn cli_plugins(registry: &PluginRegistry) -> Vec<String> {
+/// 声明了 CLI 接口且命令行开启的已加载插件名
+pub fn cli_plugins(registry: &PluginRegistry, store: Option<&Store>) -> Vec<String> {
+    let access = CliAccess::load(store).unwrap_or_default();
     let mut out: Vec<String> = registry
         .manifests()
         .into_iter()
+        .filter(|m| access.plugin_enabled(&m.id))
         .filter(|m| {
             m.functions
                 .values()
@@ -54,17 +58,17 @@ fn status() -> CliStatus {
     }
 }
 
-fn write(registry: &PluginRegistry) -> AppResult<()> {
+fn write(registry: &PluginRegistry, store: &Store) -> AppResult<()> {
     let sidecar = sidecar().ok_or_else(|| AppError::new("cli.unavailable"))?;
     let dir = cli_links::bin_dir().ok_or_else(|| AppError::new("cli.unavailable"))?;
-    cli_links::write(&dir, &sidecar, &cli_plugins(registry))?;
+    cli_links::write(&dir, &sidecar, &cli_plugins(registry, Some(store)))?;
     Ok(())
 }
 
-/// 插件变化后刷新已生成的命令；没有生成过就什么也不做
-pub fn refresh(registry: &PluginRegistry) {
+/// 插件或命令行开关变化后刷新已生成的命令；没有生成过就什么也不做
+pub fn refresh(registry: &PluginRegistry, store: &Store) {
     if cli_links::bin_dir().is_some_and(|dir| cli_links::installed(&dir))
-        && let Err(err) = write(registry)
+        && let Err(err) = write(registry, store)
     {
         log::warn!("refreshing command line links failed: {}", err.code);
     }
@@ -77,7 +81,7 @@ pub fn cli_status() -> CliStatus {
 
 #[tauri::command]
 pub fn cli_install(state: State<'_, AppState>) -> AppResult<CliStatus> {
-    write(&state.plugins)?;
+    write(&state.plugins, &state.store)?;
     Ok(status())
 }
 

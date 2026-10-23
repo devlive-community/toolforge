@@ -52,7 +52,9 @@
     "agent.relative_path": "{{name}} 必须是绝对路径：{{path}}",
     "agent.needs_confirmation": "该调用需要用户确认，但客户端无法发起确认；如信任该函数，可在 ToolForge 设置中改为始终允许",
     "agent.declined": "用户拒绝了这次调用",
-    "plugin.path_denied": "插件无权访问 {{detail}}"
+    "plugin.path_denied": "插件无权访问 {{detail}}",
+    "cli.plugin_disabled": "{{name}} 已在 ToolForge 工具市场中关闭命令行调用",
+    "cli.function_disabled": "{{name}} 的 {{function}} 已在 ToolForge 工具市场中关闭命令行调用"
   },
   "heading": "{{title}}：",
   "withNotes": "{{text}}（{{notes}}）",

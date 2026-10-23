@@ -25,6 +25,7 @@ pub fn load_installed(
     installed: Arc<Installed>,
     registry: Arc<PluginRegistry>,
     builtin: Arc<HashSet<String>>,
+    store: Arc<tf_core::Store>,
 ) {
     let app = app.clone();
     std::thread::spawn(move || {
@@ -46,7 +47,7 @@ pub fn load_installed(
             }
         }
         // 应用升级后内置插件可能变化，已生成的命令行入口随之刷新
-        crate::cli_tools::refresh(&registry);
+        crate::cli_tools::refresh(&registry, &store);
         if loaded > 0 {
             let _ = app.emit(PLUGINS_CHANGED, ());
         }
@@ -81,7 +82,9 @@ pub(crate) fn install_into(
         info.version,
         info.trust
     );
-    crate::cli_tools::refresh(registry);
+    if let Some(state) = app.try_state::<AppState>() {
+        crate::cli_tools::refresh(registry, &state.store);
+    }
     let _ = app.emit(PLUGINS_CHANGED, ());
     Ok(info)
 }
@@ -171,7 +174,7 @@ pub fn plugin_uninstall(
 ) -> AppResult<()> {
     state.installed.uninstall(&plugin_id)?;
     state.plugins.unregister(&plugin_id);
-    crate::cli_tools::refresh(&state.plugins);
+    crate::cli_tools::refresh(&state.plugins, &state.store);
     let _ = app.emit(PLUGINS_CHANGED, ());
     Ok(())
 }
