@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { invoke } from '@tauri-apps/api/core'
-import { Badge, Button, Empty, Modal, Spinner, cn, toast } from '@toolforge/ui'
+import { Badge, Button, Checkbox, Empty, Modal, Spinner, cn, toast } from '@toolforge/ui'
 import type { Manifest } from '@toolforge/plugin-ui-sdk'
 import { host, useErrorMessage, type AppError } from '@toolforge/plugin-ui-sdk'
 import { CloudDownload, FileUp, PackageCheck, RefreshCw, ShieldAlert, ShieldCheck, SquareArrowOutUpRight, Trash2 } from 'lucide-react'
@@ -118,6 +118,9 @@ export function MarketOnline() {
   const installingFile = busy.has(FILE_KEY)
   const [confirm, setConfirm] = useState<{ pending: Pending; error: AppError } | null>(null)
   const [detail, setDetail] = useState<DetailTarget | null>(null)
+  /** 多选的插件 ID（在线条目与本地已装插件共用） */
+  const [selected, setSelected] = useState<ReadonlySet<string>>(() => new Set())
+  const [bulkUninstall, setBulkUninstall] = useState<string[] | null>(null)
 
   const localized = (values: Record<string, string>) => values[i18n.language] ?? values['en-US'] ?? Object.values(values)[0] ?? ''
   /** 插件显示名：按当前语言取包内名称，没有时用 id */
@@ -166,7 +169,47 @@ export function MarketOnline() {
 
   const refresh = () => {
     setIndex(null)
+    setSelected(new Set())
     void load()
+  }
+
+  const toggleSelected = (id: string, on: boolean) =>
+    setSelected((current) => {
+      const next = new Set(current)
+      if (on) next.add(id)
+      else next.delete(id)
+      return next
+    })
+
+  /** 选中的在线条目：可安装或可更新，且当前没有被其他原因阻止 */
+  const installableIds = (index ?? [])
+    .filter((entry) => {
+      const current = installed.find((info) => info.id === entry.id)
+      const update = current && newer(entry.version, current.version)
+      return (!current || update) && !requiredFor(entry, current)
+    })
+    .map((entry) => entry.id)
+  /** 已安装的插件 ID（在线索引中的与本地的） */
+  const installedIds = installed.map((info) => info.id)
+
+  const installSelected = () => {
+    const entries = (index ?? []).filter((entry) => selected.has(entry.id) && installableIds.includes(entry.id))
+    setSelected(new Set())
+    // 每个条目都走 run：去重、并发上限由队列统一控制
+    for (const entry of entries) void run({ kind: 'url', entry }, false)
+  }
+
+  const uninstallSelected = async (ids: string[]) => {
+    setBulkUninstall(null)
+    setSelected(new Set())
+    // 逐个卸载，失败的单个不影响其余项，结束后汇总
+    let done = 0
+    for (const id of ids) {
+      if (!installed.some((info) => info.id === id)) continue
+      await uninstall(id, { quiet: true })
+      done += 1
+    }
+    if (done > 0) toast.success(t('market.online.bulkUninstalled', { count: done }))
   }
 
   const queue = useMemo(() => createInstallQueue(() => usePrefs.getState().maxConcurrentInstalls), [])
@@ -197,13 +240,13 @@ export function MarketOnline() {
     if (path) await run({ kind: 'file', path }, false)
   }
 
-  const uninstall = async (id: string) => {
+  const uninstall = async (id: string, options: { quiet?: boolean } = {}) => {
     if (busy.has(id)) return
     markBusy(id, true)
     try {
       await invoke('plugin_uninstall', { pluginId: id })
       const info = installed.find((item) => item.id === id)
-      toast.success(t('market.online.uninstalled', { name: displayName(info?.names, id), id }))
+      if (!options.quiet) toast.success(t('market.online.uninstalled', { name: displayName(info?.names, id), id }))
       setInstalled(await invoke<InstallInfo[]>('plugin_installed'))
       setDetail(null)
     } catch (error) {
@@ -318,22 +361,56 @@ export function MarketOnline() {
       ) : index.length === 0 ? (
         <Empty className="py-12" icon={<CloudDownload />} title={t('market.online.empty')} />
       ) : (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-3">
-          {index.map((entry) => {
-            const current = installed.find((info) => info.id === entry.id)
-            const manifest = pluginById(plugins, entry.id)
-            const update = current && newer(entry.version, current.version)
-            const required = requiredFor(entry, current)
-            return (
-              <div key={entry.id} className="flex flex-col gap-3 rounded-card border border-border bg-surface p-4 shadow-card">
-                <div className="flex items-start gap-3">
-                  {entry.icon ? (
-                    <span aria-hidden className={cn(tileFor(manifest, entry.accent), 'inline-flex size-10 shrink-0 items-center justify-center rounded-[11px] text-on-tile shadow-tile [&>svg]:size-5')} dangerouslySetInnerHTML={{ __html: entry.icon }} />
-                  ) : (
-                    <span className={cn(tileFor(manifest, entry.accent), 'inline-flex size-10 shrink-0 items-center justify-center rounded-[11px] text-on-tile shadow-tile')}>
-                      <PackageCheck className="size-5" />
-                    </span>
-                  )}
+        <>
+          {selected.size > 0 && (
+            <div className="sticky top-0 z-dropdown flex flex-wrap items-center gap-2 rounded-card border border-border bg-elevated px-3 py-2 shadow-card">
+              <span className="text-[13px] text-fg">{t('market.online.selectedCount', { count: selected.size })}</span>
+              <Button size="sm" variant="ghost" disabled={installableIds.length === 0} onClick={() => setSelected(new Set(installableIds))}>
+                {t('market.online.selectInstallable')}
+              </Button>
+              <Button size="sm" variant="ghost" disabled={installedIds.length === 0} onClick={() => setSelected(new Set(installedIds))}>
+                {t('market.online.selectInstalled')}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setSelected(new Set())}>
+                {t('market.online.clearSelection')}
+              </Button>
+              <div className="ml-auto flex items-center gap-2">
+                <Button size="sm" variant="primary" disabled={![...selected].some((id) => installableIds.includes(id))} onClick={installSelected}>
+                  <CloudDownload />
+                  {t('market.online.installSelected', { count: [...selected].filter((id) => installableIds.includes(id)).length })}
+                </Button>
+                <Button size="sm" variant="danger" disabled={![...selected].some((id) => installedIds.includes(id))} onClick={() => setBulkUninstall([...selected].filter((id) => installedIds.includes(id)))}>
+                  <Trash2 />
+                  {t('market.online.uninstallSelected', { count: [...selected].filter((id) => installedIds.includes(id)).length })}
+                </Button>
+              </div>
+            </div>
+          )}
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-3">
+            {index.map((entry) => {
+              const current = installed.find((info) => info.id === entry.id)
+              const manifest = pluginById(plugins, entry.id)
+              const update = current && newer(entry.version, current.version)
+              const required = requiredFor(entry, current)
+              const selectable = installableIds.includes(entry.id) || (current !== undefined && !busy.has(entry.id))
+              return (
+                <div key={entry.id} className="flex flex-col gap-3 rounded-card border border-border bg-surface p-4 shadow-card">
+                  <div className="flex items-start gap-3">
+                    {selectable && (
+                      <Checkbox
+                        className="mt-1"
+                        checked={selected.has(entry.id)}
+                        onCheckedChange={(on) => toggleSelected(entry.id, on)}
+                        aria-label={t('market.online.selectItem', { name: manifest ? text(manifest, manifest.name) : localized(entry.names) })}
+                      />
+                    )}
+                    {entry.icon ? (
+                      <span aria-hidden className={cn(tileFor(manifest, entry.accent), 'inline-flex size-10 shrink-0 items-center justify-center rounded-[11px] text-on-tile shadow-tile [&>svg]:size-5')} dangerouslySetInnerHTML={{ __html: entry.icon }} />
+                    ) : (
+                      <span className={cn(tileFor(manifest, entry.accent), 'inline-flex size-10 shrink-0 items-center justify-center rounded-[11px] text-on-tile shadow-tile')}>
+                        <PackageCheck className="size-5" />
+                      </span>
+                    )}
                   <button
                     type="button"
                     onClick={() => setDetail({ kind: 'online', entry })}
@@ -375,7 +452,8 @@ export function MarketOnline() {
               </div>
             )
           })}
-        </div>
+          </div>
+        </>
       )}
 
       {local.length > 0 && (
@@ -387,6 +465,12 @@ export function MarketOnline() {
               const required = blockedBy(info)
               return (
                 <li key={info.id} className="flex items-center gap-3 rounded-card border border-border bg-surface p-3 shadow-card">
+                  <Checkbox
+                    checked={selected.has(info.id)}
+                    onCheckedChange={(on) => toggleSelected(info.id, on)}
+                    disabled={busy.has(info.id)}
+                    aria-label={t('market.online.selectItem', { name: manifest ? text(manifest, manifest.name) : info.id })}
+                  />
                   <button
                     type="button"
                     onClick={() => setDetail({ kind: 'local', info })}
@@ -489,6 +573,35 @@ export function MarketOnline() {
         extraRows={detailRows}
         onClose={() => setDetail(null)}
       />
+
+      <Modal
+        open={bulkUninstall !== null}
+        onOpenChange={(open) => !open && setBulkUninstall(null)}
+        title={t('market.online.bulkUninstallTitle', { count: bulkUninstall?.length ?? 0 })}
+        closeLabel={t('common:close')}
+        footer={
+          <>
+            <Button onClick={() => setBulkUninstall(null)}>{t('common:cancel')}</Button>
+            <Button variant="danger" onClick={() => bulkUninstall && void uninstallSelected(bulkUninstall)}>
+              <Trash2 />
+              {t('market.online.bulkUninstallConfirm', { count: bulkUninstall?.length ?? 0 })}
+            </Button>
+          </>
+        }
+      >
+        <ul className="space-y-1 px-5 pb-5 text-[13px] text-fg">
+          {(bulkUninstall ?? []).map((id) => {
+            const info = installed.find((item) => item.id === id)
+            const manifest = pluginById(plugins, id)
+            return (
+              <li key={id}>
+                {manifest ? text(manifest, manifest.name) : displayName(info?.names, id)}
+                <span className="ml-2 font-mono text-[11px] text-fg-subtle">{id}</span>
+              </li>
+            )
+          })}
+        </ul>
+      </Modal>
 
       {config.dialog}
       <Modal
