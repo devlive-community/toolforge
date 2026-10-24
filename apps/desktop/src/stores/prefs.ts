@@ -2,7 +2,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { create } from 'zustand'
 import type { Manifest } from '@toolforge/plugin-ui-sdk'
 import { i18n, resolveLocale, type Locale } from '../i18n'
-import { DEFAULT_SHORTCUT, boot, type Prefs, type ThemeMode } from '../lib/boot'
+import { DEFAULT_CONCURRENT_INSTALLS, DEFAULT_SHORTCUT, MAX_CONCURRENT_INSTALLS, boot, type Prefs, type ThemeMode } from '../lib/boot'
 
 interface PrefsState extends Prefs {
   systemDark: boolean
@@ -12,6 +12,7 @@ interface PrefsState extends Prefs {
   setAutoUpdate: (value: boolean) => void
   skipVersion: (version: string | null) => void
   setConfirmQuit: (value: boolean) => void
+  setMaxConcurrentInstalls: (value: number) => void
   setClipboardSuggest: (value: boolean) => void
   /** 注册失败时抛出错误并保留原快捷键 */
   setGlobalShortcut: (value: string | null) => Promise<void>
@@ -32,6 +33,12 @@ export function toolStatus(manifest: Manifest, seen: Record<string, string> | nu
 }
 
 const systemDark = matchMedia('(prefers-color-scheme: dark)')
+
+/** 并发数限制在 1–5 之间，非法值回落到默认值 */
+export function clampConcurrency(value: unknown): number {
+  const n = typeof value === 'number' && Number.isFinite(value) ? Math.round(value) : DEFAULT_CONCURRENT_INSTALLS
+  return Math.min(MAX_CONCURRENT_INSTALLS, Math.max(1, n))
+}
 
 export function applyTheme(theme: ThemeMode) {
   const dark = theme === 'dark' || (theme === 'system' && systemDark.matches)
@@ -60,6 +67,7 @@ const snapshot = (state: PrefsState): Prefs => ({
   runInBackground: state.runInBackground,
   hiddenTools: state.hiddenTools,
   seenVersions: state.seenVersions,
+  maxConcurrentInstalls: state.maxConcurrentInstalls,
 })
 
 export const usePrefs = create<PrefsState>((set, get) => ({
@@ -74,6 +82,7 @@ export const usePrefs = create<PrefsState>((set, get) => ({
   runInBackground: boot.prefs.runInBackground ?? false,
   hiddenTools: boot.prefs.hiddenTools ?? [],
   seenVersions: boot.prefs.seenVersions ?? null,
+  maxConcurrentInstalls: clampConcurrency(boot.prefs.maxConcurrentInstalls),
   systemDark: systemDark.matches,
   setTheme: (theme) => {
     applyTheme(theme)
@@ -133,6 +142,10 @@ export const usePrefs = create<PrefsState>((set, get) => ({
     }
     if (!changed && get().seenVersions) return
     set({ seenVersions })
+    persist(snapshot(get()))
+  },
+  setMaxConcurrentInstalls: (value) => {
+    set({ maxConcurrentInstalls: clampConcurrency(value) })
     persist(snapshot(get()))
   },
   setConfirmQuit: (confirmQuit) => {

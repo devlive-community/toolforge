@@ -115,6 +115,8 @@ export function Settings() {
   const setConfirmQuit = usePrefs((s) => s.setConfirmQuit)
   const clipboardSuggest = usePrefs((s) => s.clipboardSuggest)
   const setClipboardSuggest = usePrefs((s) => s.setClipboardSuggest)
+  const maxConcurrentInstalls = usePrefs((s) => s.maxConcurrentInstalls)
+  const setMaxConcurrentInstalls = usePrefs((s) => s.setMaxConcurrentInstalls)
   const globalShortcut = usePrefs((s) => s.globalShortcut)
   const setGlobalShortcut = usePrefs((s) => s.setGlobalShortcut)
   const runInBackground = usePrefs((s) => s.runInBackground)
@@ -202,6 +204,16 @@ export function Settings() {
           </Row>
           <Row label={t('settings.clipboardSuggest')} hint={t('settings.clipboardSuggestHint')}>
             <Switch checked={clipboardSuggest} onCheckedChange={setClipboardSuggest} aria-label={t('settings.clipboardSuggest')} />
+          </Row>
+          <Row label={t('settings.maxConcurrentInstalls')} hint={t('settings.maxConcurrentInstallsHint')}>
+            <Select<number>
+              size="sm"
+              className="w-24 shrink-0"
+              value={maxConcurrentInstalls}
+              aria-label={t('settings.maxConcurrentInstalls')}
+              options={[1, 2, 3, 4, 5].map((value) => ({ value, label: t('settings.concurrentCount', { count: value }) }))}
+              onValueChange={setMaxConcurrentInstalls}
+            />
           </Row>
         </div>
       </Section>

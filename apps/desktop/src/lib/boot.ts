@@ -26,7 +26,12 @@ export interface Prefs {
   hiddenTools: string[]
   /** 用户已看过的工具版本，用于在工具市场标出新增与更新；首次启动时为 null */
   seenVersions: Record<string, string> | null
+  /** 在线插件同时下载安装的最大数量（1–5，默认 3） */
+  maxConcurrentInstalls: number
 }
+
+export const DEFAULT_CONCURRENT_INSTALLS = 3
+export const MAX_CONCURRENT_INSTALLS = 5
 
 interface BootData {
   prefs?: Partial<Prefs> | null

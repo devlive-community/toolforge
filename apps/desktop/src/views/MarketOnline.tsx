@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { Badge, Button, Empty, Modal, Spinner, cn, toast } from '@toolforge/ui'
 import type { Manifest } from '@toolforge/plugin-ui-sdk'
@@ -14,6 +14,7 @@ import { useToolConfig } from './PluginConfig'
 import { PluginDetail, type PluginDetailInfo, type PluginDetailRow } from './PluginDetail'
 import { ToolActions } from './ToolActions'
 import { formatDownloadCount, loadDownloadStats, type PluginDownloadStats } from '../lib/pluginStats'
+import { createInstallQueue } from '../lib/installQueue'
 
 interface IndexEntry {
   id: string
@@ -102,7 +103,19 @@ export function MarketOnline() {
   const [indexError, setIndexError] = useState<AppError | null>(null)
   const [downloadStats, setDownloadStats] = useState<Map<string, PluginDownloadStats> | null>(null)
   const [installed, setInstalled] = useState<InstallInfo[]>([])
-  const [busy, setBusy] = useState<string | null>(null)
+  /** 正在处理（排队、下载、安装或卸载）的插件 ID；文件安装用路径作为键 */
+  const [busy, setBusy] = useState<ReadonlySet<string>>(() => new Set())
+  const markBusy = (key: string, on: boolean) =>
+    setBusy((current) => {
+      const next = new Set(current)
+      if (on) next.add(key)
+      else next.delete(key)
+      return next
+    })
+  const isBusy = (key: string) => busy.has(key)
+  /** 文件安装的键是用户选择的路径，无法预知，所以用一个固定标记表示「正在从文件安装」 */
+  const FILE_KEY = '\u0000file'
+  const installingFile = busy.has(FILE_KEY)
   const [confirm, setConfirm] = useState<{ pending: Pending; error: AppError } | null>(null)
   const [detail, setDetail] = useState<DetailTarget | null>(null)
 
@@ -156,23 +169,27 @@ export function MarketOnline() {
     void load()
   }
 
-  const run = async (pending: Pending, allowUnsigned: boolean) => {
-    const id = pending.kind === 'url' ? pending.entry.id : pending.path
-    setBusy(id)
-    try {
-      const info =
-        pending.kind === 'url'
-          ? await invoke<InstallInfo>('plugin_install_url', { url: pending.entry.url, sha256: pending.entry.sha256, pluginId: pending.entry.id, version: pending.entry.version, size: pending.entry.size, allowUnsigned })
-          : await invoke<InstallInfo>('plugin_install_file', { path: pending.path, allowUnsigned })
-      toast.success(t('market.online.installed', { name: displayName(info.names, info.id), id: info.id, version: info.version }))
-      setInstalled(await invoke<InstallInfo[]>('plugin_installed'))
-    } catch (error) {
-      const appError = error as AppError
-      if (appError.code === 'package.untrusted') setConfirm({ pending, error: withName(appError) })
-      else toast.error(errorMessage(withName(appError)))
-    } finally {
-      setBusy(null)
-    }
+  const queue = useMemo(() => createInstallQueue(() => usePrefs.getState().maxConcurrentInstalls), [])
+  const run = (pending: Pending, allowUnsigned: boolean) => {
+    const key = pending.kind === 'url' ? pending.entry.id : FILE_KEY
+    if (busy.has(key)) return Promise.resolve()
+    markBusy(key, true)
+    // 同一插件的下载/安装走队列，超过并发上限的任务等待
+    return queue
+      .run(async () => {
+        const info =
+          pending.kind === 'url'
+            ? await invoke<InstallInfo>('plugin_install_url', { url: pending.entry.url, sha256: pending.entry.sha256, pluginId: pending.entry.id, version: pending.entry.version, size: pending.entry.size, allowUnsigned })
+            : await invoke<InstallInfo>('plugin_install_file', { path: pending.path, allowUnsigned })
+        toast.success(t('market.online.installed', { name: displayName(info.names, info.id), id: info.id, version: info.version }))
+        setInstalled(await invoke<InstallInfo[]>('plugin_installed'))
+      })
+      .catch((error: unknown) => {
+        const appError = error as AppError
+        if (appError.code === 'package.untrusted') setConfirm({ pending, error: withName(appError) })
+        else toast.error(errorMessage(withName(appError)))
+      })
+      .finally(() => markBusy(key, false))
   }
 
   const installFile = async () => {
@@ -181,7 +198,8 @@ export function MarketOnline() {
   }
 
   const uninstall = async (id: string) => {
-    setBusy(id)
+    if (busy.has(id)) return
+    markBusy(id, true)
     try {
       await invoke('plugin_uninstall', { pluginId: id })
       const info = installed.find((item) => item.id === id)
@@ -191,7 +209,7 @@ export function MarketOnline() {
     } catch (error) {
       toast.error(errorMessage(error))
     } finally {
-      setBusy(null)
+      markBusy(id, false)
     }
   }
 
@@ -272,7 +290,7 @@ export function MarketOnline() {
       hidden={hiddenTools.includes(id)}
       onToggleHidden={() => setHidden(id, !hiddenTools.includes(id))}
       removable
-      busy={busy !== null}
+      busy={isBusy(id)}
       onUninstall={() => void uninstall(id)}
     />
   )
@@ -285,7 +303,7 @@ export function MarketOnline() {
           <RefreshCw />
           {t('market.online.refresh')}
         </Button>
-        <Button onClick={() => void installFile()} loading={busy !== null && !index?.some((e) => e.id === busy) && !installed.some((i) => i.id === busy)}>
+        <Button onClick={() => void installFile()} loading={installingFile}>
           <FileUp />
           {t('market.online.fromFile')}
         </Button>
@@ -347,7 +365,7 @@ export function MarketOnline() {
                     )}
                     {required && <UpdateAppButton size="sm" version={required} />}
                     {(!current || update) && !required && (
-                      <Button size="sm" variant="primary" loading={busy === entry.id} disabled={busy !== null} onClick={() => void run({ kind: 'url', entry }, false)}>
+                      <Button size="sm" variant="primary" loading={isBusy(entry.id)} disabled={isBusy(entry.id)} onClick={() => void run({ kind: 'url', entry }, false)}>
                         <CloudDownload />
                         {update ? t('market.online.update', { version: entry.version }) : t('market.online.install')}
                       </Button>
@@ -425,7 +443,7 @@ export function MarketOnline() {
                   <>
                     {required && <UpdateAppButton version={required} />}
                     {(!current || update) && !required && (
-                      <Button variant="primary" loading={busy === entry.id} disabled={busy !== null} onClick={() => void run({ kind: 'url', entry }, false)}>
+                      <Button variant="primary" loading={isBusy(entry.id)} disabled={isBusy(entry.id)} onClick={() => void run({ kind: 'url', entry }, false)}>
                         <CloudDownload />
                         {update ? t('market.online.update', { version: entry.version }) : t('market.online.install')}
                       </Button>
@@ -437,7 +455,7 @@ export function MarketOnline() {
                       </Button>
                     )}
                     {current && (
-                      <Button variant="ghost" disabled={busy !== null} onClick={() => void uninstall(entry.id)}>
+                      <Button variant="ghost" disabled={isBusy(entry.id)} onClick={() => void uninstall(entry.id)}>
                         <Trash2 />
                         {t('market.online.uninstall')}
                       </Button>
@@ -461,7 +479,7 @@ export function MarketOnline() {
                   {t('market.open')}
                 </Button>
               )}
-              <Button variant="ghost" disabled={busy !== null} onClick={() => void uninstall(detail.info.id)}>
+              <Button variant="ghost" disabled={isBusy(detail.info.id)} onClick={() => void uninstall(detail.info.id)}>
                 <Trash2 />
                 {t('market.online.uninstall')}
               </Button>
