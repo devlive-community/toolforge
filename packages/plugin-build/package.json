@@ -7,16 +7,16 @@
   "dependencies": {
     "@tailwindcss/vite": "4.3.3",
     "@toolforge/ui": "workspace:*",
-    "@vitejs/plugin-react": "6.1.1",
+    "@vitejs/plugin-react": "6.1.2",
     "tailwindcss": "4.3.3",
-    "vite": "8.3.0",
-    "react": "19.3.0",
-    "react-i18next": "17.0.15",
-    "i18next": "26.4.2",
+    "vite": "8.3.4",
+    "react": "19.3.1",
+    "react-i18next": "17.1.0",
+    "i18next": "26.5.3",
     "typescript": "5.9.3"
   },
   "devDependencies": {
-    "@types/node": "24.13.6",
+    "@types/node": "26.6.5",
     "typescript": "5.9.3"
   },
   "scripts": {
