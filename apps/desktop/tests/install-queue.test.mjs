@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { setImmediate as tick } from 'node:timers/promises'
 import { createInstallQueue } from '../src/lib/installQueue.ts'
 
 const deferred = () => {
@@ -7,7 +8,6 @@ const deferred = () => {
   const promise = new Promise((r) => (resolve = r))
   return { promise, resolve }
 }
-const tick = () => new Promise((r) => setTimeout(r, 0))
 
 test('runs at most `limit` tasks at once and starts queued tasks in order', async () => {
   let limit = 2
