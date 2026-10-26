@@ -5,7 +5,7 @@ import { useErrorMessage } from '@toolforge/plugin-ui-sdk'
 import { invoke } from '@tauri-apps/api/core'
 import { CloudDownload, LayoutGrid, PackageSearch, Search, SquareArrowOutUpRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { CATEGORIES } from '../lib/categories'
+import { CATEGORIES, KNOWN_CATEGORIES, normalizeCategory } from '../lib/categories'
 import { ToolTile } from '../plugins/ToolIcon'
 import { usePluginText } from '../plugins/usePluginText'
 import { useApp } from '../stores/app'
@@ -71,7 +71,8 @@ export function Market() {
   const list = useMemo(
     () =>
       plugins
-        .filter((p) => category === 'all' || p.category === category)
+        // 旧分类（life/graphics 等）在筛选「其他」时也要能看到
+        .filter((p) => category === 'all' || p.category === category || (category === 'other' && !KNOWN_CATEGORIES.has(p.category)))
         .filter((p) => filter !== 'changed' || toolStatus(p, seen) !== 'seen')
         .filter((p) => filter !== 'hidden' || hidden.includes(p.id))
         .filter((p) => matches(p, query.trim(), text))
@@ -146,7 +147,7 @@ export function Market() {
                 <div className="mt-auto flex items-center gap-2 text-[11px] text-fg-subtle">
                   <span>{t('market.version', { version: manifest.version })}</span>
                   <span>·</span>
-                  <span>{t(`category.${manifest.category}`, { defaultValue: manifest.category })}</span>
+                  <span>{t(`category.${normalizeCategory(manifest.category)}`, { defaultValue: manifest.category })}</span>
                   <div className="ml-auto">
                     <ToolActions
                       name={text(manifest, manifest.name)}

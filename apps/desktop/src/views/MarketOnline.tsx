@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { usePluginText } from '../plugins/usePluginText'
 import { ToolTile, accentTiles } from '../plugins/ToolIcon'
 import { pluginById, useApp } from '../stores/app'
+import { normalizeCategory } from '../lib/categories'
 import { usePrefs } from '../stores/prefs'
 import { useUpdate } from '../stores/update'
 import { useToolConfig } from './PluginConfig'
@@ -280,7 +281,7 @@ export function MarketOnline() {
         name: detailManifest ? text(detailManifest, detailManifest.name) : localized(entry.names),
         description: detailManifest ? text(detailManifest, detailManifest.description) : localized(entry.descriptions),
         version: detailManifest?.version ?? entry.version,
-        category: detailManifest?.category ?? entry.category,
+        category: normalizeCategory(detailManifest?.category ?? entry.category),
         keywords: detailManifest?.keywords,
         permissions: detailManifest?.permissions,
         functionsCount: detailManifest ? Object.keys(detailManifest.functions).length : undefined,
@@ -435,7 +436,7 @@ export function MarketOnline() {
                 <div className="mt-auto flex items-center gap-2 text-[11px] text-fg-subtle">
                   <span>{t('market.version', { version: entry.version })}</span>
                   <span>·</span>
-                  <span>{t(`category.${entry.category}`, { defaultValue: entry.category })}</span>
+                  <span>{t(`category.${normalizeCategory(entry.category)}`, { defaultValue: entry.category })}</span>
                   <div className="ml-auto flex items-center gap-1.5">
                     {current && (
                       <InstalledActions id={entry.id} name={manifest ? text(manifest, manifest.name) : localized(entry.names)} manifest={manifest} blocked={required} />

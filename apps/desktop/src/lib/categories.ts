@@ -25,3 +25,8 @@ export const CATEGORIES: { id: string; icon: LucideIcon }[] = [
 ]
 
 export const KNOWN_CATEGORIES = new Set(CATEGORIES.map((c) => c.id))
+
+/** 旧 manifest 的分类（life/graphics 等）已废弃：未知分类统一兜底到「其他」 */
+export function normalizeCategory(category: string): string {
+  return KNOWN_CATEGORIES.has(category) ? category : 'other'
+}
