@@ -342,7 +342,30 @@
         "statsBasis": "Counting method",
         "statsHint": "Successful downloads confirmed by clients after integrity checks, counted from the statistics launch.",
         "statsLoading": "Loading…",
-        "statsUnavailable": "Unavailable"
+        "statsUnavailable": "Unavailable",
+        "search": "Search plugin name, description or ID",
+        "sortLabel": "Sort",
+        "filterLabel": "Filter",
+        "emptyFiltered": "No plugins match the filters",
+        "publishedOn": "Released {{date}}",
+        "updatedOn": "Updated {{date}}",
+        "newBadge": "New",
+        "updatedBadge": "Updated",
+        "sort": {
+          "updated": "Recently updated",
+          "published": "Newest",
+          "name": "Name",
+          "downloads": "Downloads"
+        },
+        "filters": {
+          "all": "All",
+          "new": "New {{count}}",
+          "updated": "Updated {{count}}",
+          "updatable": "Updates {{count}}",
+          "installed": "Installed {{count}}",
+          "notInstalled": "Not installed {{count}}"
+        },
+        "recentHint": "\"New\" and \"Updated\" cover plugins and versions released in the last {{days}} days"
       },
       "interfaces": {
         "title": "Command line & AI Agent",

@@ -8,7 +8,7 @@
     "build": "pnpm typecheck && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
-    "test": "node --experimental-strip-types --experimental-test-module-mocks --test tests/update.test.mjs tests/task-errors.test.mjs tests/plugin-stats.test.mjs tests/install-queue.test.mjs",
+    "test": "node --experimental-strip-types --experimental-test-module-mocks --test tests/update.test.mjs tests/task-errors.test.mjs tests/plugin-stats.test.mjs tests/install-queue.test.mjs tests/market-filter.test.mjs",
     "tauri": "tauri"
   },
   "dependencies": {

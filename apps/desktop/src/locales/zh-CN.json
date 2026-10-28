@@ -340,7 +340,30 @@
         "statsBasis": "统计口径",
         "statsHint": "客户端完整下载并通过校验后确认的成功次数；从统计服务上线起累计。",
         "statsLoading": "加载中…",
-        "statsUnavailable": "暂不可用"
+        "statsUnavailable": "暂不可用",
+        "search": "搜索插件名称、说明或 ID",
+        "sortLabel": "排序",
+        "filterLabel": "筛选",
+        "emptyFiltered": "没有符合条件的插件",
+        "publishedOn": "发布于 {{date}}",
+        "updatedOn": "更新于 {{date}}",
+        "newBadge": "新上架",
+        "updatedBadge": "近期更新",
+        "sort": {
+          "updated": "最近更新",
+          "published": "最新发布",
+          "name": "名称",
+          "downloads": "下载量"
+        },
+        "filters": {
+          "all": "全部",
+          "new": "新上架 {{count}}",
+          "updated": "近期更新 {{count}}",
+          "updatable": "可更新 {{count}}",
+          "installed": "已安装 {{count}}",
+          "notInstalled": "未安装 {{count}}"
+        },
+        "recentHint": "「新上架」与「近期更新」指最近 {{days}} 天内发布的插件和版本"
       },
       "interfaces": {
         "title": "命令行与 AI Agent",

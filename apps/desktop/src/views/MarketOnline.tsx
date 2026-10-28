@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { invoke } from '@tauri-apps/api/core'
-import { Badge, Button, Checkbox, Empty, Modal, Spinner, cn, toast } from '@toolforge/ui'
+import { Badge, Button, Checkbox, Empty, Input, Modal, SegmentedControl, Select, Spinner, cn, toast } from '@toolforge/ui'
 import type { Manifest } from '@toolforge/plugin-ui-sdk'
 import { host, useErrorMessage, type AppError } from '@toolforge/plugin-ui-sdk'
-import { CloudDownload, FileUp, PackageCheck, RefreshCw, ShieldAlert, ShieldCheck, SquareArrowOutUpRight, Trash2 } from 'lucide-react'
+import { CloudDownload, FileUp, PackageCheck, PackageSearch, RefreshCw, Search, ShieldAlert, ShieldCheck, SquareArrowOutUpRight, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { usePluginText } from '../plugins/usePluginText'
 import { ToolTile, accentTiles } from '../plugins/ToolIcon'
 import { pluginById, useApp } from '../stores/app'
-import { normalizeCategory } from '../lib/categories'
+import { CATEGORIES, normalizeCategory } from '../lib/categories'
+import { RECENT_DAYS, compareItems, countFilters, isNew, isRecentlyUpdated, matchesFilter, matchesQuery, type MarketFilter, type MarketItem, type MarketSort } from '../lib/marketFilter'
 import { usePrefs } from '../stores/prefs'
 import { useUpdate } from '../stores/update'
 import { useToolConfig } from './PluginConfig'
@@ -32,6 +33,9 @@ interface IndexEntry {
   signed: boolean
   /** 插件需要的最低应用版本 */
   minAppVersion?: string | null
+  /** 首次发布与当前版本发布时间（UTC RFC 3339；旧索引没有） */
+  publishedAt?: string | null
+  updatedAt?: string | null
 }
 
 interface InstallInfo {
@@ -122,6 +126,12 @@ export function MarketOnline() {
   /** 多选的插件 ID（在线条目与本地已装插件共用） */
   const [selected, setSelected] = useState<ReadonlySet<string>>(() => new Set())
   const [bulkUninstall, setBulkUninstall] = useState<string[] | null>(null)
+  const [query, setQuery] = useState('')
+  const [category, setCategory] = useState('all')
+  const [filter, setFilter] = useState<MarketFilter>('all')
+  const [sort, setSort] = useState<MarketSort>('updated')
+  /** 判断「新上架 / 近期更新」的参考时间：打开页面或刷新索引时取一次，避免渲染中读时钟 */
+  const [now, setNow] = useState(() => Date.now())
 
   const localized = (values: Record<string, string>) => values[i18n.language] ?? values['en-US'] ?? Object.values(values)[0] ?? ''
   /** 插件显示名：按当前语言取包内名称，没有时用 id */
@@ -148,6 +158,7 @@ export function MarketOnline() {
         setInstalled(list)
         setIndex(result.plugins)
         setIndexError(result.error)
+        setNow(Date.now())
         setDownloadStats(null)
       }),
     [],
@@ -265,6 +276,36 @@ export function MarketOnline() {
     const update = current && newer(entry.version, current.version)
     if (!current || update) return entry.minAppVersion && newer(entry.minAppVersion, appVersion) ? entry.minAppVersion : null
     return blockedBy(current)
+  }
+
+  // ---- 在线条目的搜索、分类、状态筛选与排序 ----
+  const nameOf = (entry: IndexEntry) => {
+    const manifest = pluginById(plugins, entry.id)
+    return manifest ? text(manifest, manifest.name) : localized(entry.names)
+  }
+  const marketItems: (MarketItem & { entry: IndexEntry })[] = (index ?? []).map((entry) => {
+    const current = installed.find((info) => info.id === entry.id)
+    const total = downloadStats?.get(entry.id)?.totalDownloads
+    return {
+      entry,
+      id: entry.id,
+      name: nameOf(entry),
+      description: localized(entry.descriptions),
+      category: normalizeCategory(entry.category),
+      publishedAt: entry.publishedAt,
+      updatedAt: entry.updatedAt,
+      installed: current !== undefined,
+      updatable: current !== undefined && newer(entry.version, current.version),
+      downloads: total && /^[0-9]{1,20}$/.test(total) ? BigInt(total) : null,
+    }
+  })
+  const inCategory = marketItems.filter((item) => category === 'all' || item.category === category)
+  const searched = inCategory.filter((item) => matchesQuery(item, query))
+  const counts = countFilters(searched, now)
+  const visible = searched.filter((item) => matchesFilter(item, filter, now)).sort(compareItems(sort, i18n.language))
+  const formatDate = (value: string | null | undefined) => {
+    const ms = value ? Date.parse(value) : Number.NaN
+    return Number.isNaN(ms) ? null : new Date(ms).toLocaleDateString(i18n.language)
   }
 
   // ---- 详情抽屉：在线条目与本地已装插件都映射为同一组字段 ----
@@ -387,8 +428,42 @@ export function MarketOnline() {
               </div>
             </div>
           )}
+          <div className="space-y-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('market.online.search')} aria-label={t('market.online.search')} leading={<Search />} wrapperClassName="min-w-60 flex-1" />
+            <Select<string>
+              value={category}
+              onValueChange={setCategory}
+              className="w-36"
+              aria-label={t('market.category')}
+              options={[{ value: 'all', label: t('market.allCategories') }, ...CATEGORIES.map(({ id }) => ({ value: id, label: t(`category.${id}`) }))]}
+            />
+            <Select<MarketSort>
+              value={sort}
+              onValueChange={setSort}
+              className="w-32"
+              aria-label={t('market.online.sortLabel')}
+              options={(['updated', 'published', 'name', 'downloads'] as const).map((value) => ({ value, label: t(`market.online.sort.${value}`) }))}
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <SegmentedControl<MarketFilter>
+              value={filter}
+              onValueChange={setFilter}
+              aria-label={t('market.online.filterLabel')}
+              options={(['all', 'new', 'updated', 'updatable', 'installed', 'notInstalled'] as const).map((value) => ({
+                value,
+                label: value === 'all' ? t('market.online.filters.all') : t(`market.online.filters.${value}`, { count: counts[value] }),
+              }))}
+            />
+            <p className="text-[11px] text-fg-subtle">{t('market.online.recentHint', { days: RECENT_DAYS })}</p>
+          </div>
+          </div>
+          {visible.length === 0 ? (
+            <Empty className="py-16" icon={<PackageSearch />} title={t('market.online.emptyFiltered')} />
+          ) : (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-3">
-            {index.map((entry) => {
+            {visible.map(({ entry, ...item }) => {
               const current = installed.find((info) => info.id === entry.id)
               const manifest = pluginById(plugins, entry.id)
               const update = current && newer(entry.version, current.version)
@@ -425,6 +500,8 @@ export function MarketOnline() {
                           {t('market.online.official')}
                         </Badge>
                       )}
+                      {isNew(item, now) && <Badge variant="info">{t('market.online.newBadge')}</Badge>}
+                      {isRecentlyUpdated(item, now) && <Badge variant="info">{t('market.online.updatedBadge')}</Badge>}
                     </div>
                     <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-fg-muted">{localized(entry.descriptions)}</p>
                   </button>
@@ -436,7 +513,15 @@ export function MarketOnline() {
                 <div className="mt-auto flex items-center gap-2 text-[11px] text-fg-subtle">
                   <span>{t('market.version', { version: entry.version })}</span>
                   <span>·</span>
-                  <span>{t(`category.${normalizeCategory(entry.category)}`, { defaultValue: entry.category })}</span>
+                  <span>{t(`category.${item.category}`)}</span>
+                  {formatDate(entry.updatedAt) && (
+                    <>
+                      <span>·</span>
+                      <span title={formatDate(entry.publishedAt) ? t('market.online.publishedOn', { date: formatDate(entry.publishedAt) }) : undefined}>
+                        {t('market.online.updatedOn', { date: formatDate(entry.updatedAt) })}
+                      </span>
+                    </>
+                  )}
                   <div className="ml-auto flex items-center gap-1.5">
                     {current && (
                       <InstalledActions id={entry.id} name={manifest ? text(manifest, manifest.name) : localized(entry.names)} manifest={manifest} blocked={required} />
@@ -454,6 +539,7 @@ export function MarketOnline() {
             )
           })}
           </div>
+          )}
         </>
       )}
 
