@@ -1,11 +1,4 @@
-/** 与后端 score 函数返回结构一致（camelCase） */
-export interface Snapshot {
-  typed: string
-  added: number
-  wrongAdded: number
-  pasted: boolean
-}
-
+/** 与后端 score / prepare / settle 函数返回结构一致（camelCase） */
 export interface Session {
   attempts: number
   wrongAttempts: number
@@ -22,12 +15,34 @@ export interface Score {
   cpm: number | null
   wpm: number | null
   completed: boolean
+  /** 完成且准确率达到过关门槛 */
+  passed: boolean
   pasted: boolean
+  /** 每个已输入位置是否正确（按可见字符） */
+  marks: boolean[]
+  /** 本次新提交中打错的目标字符 */
+  missed: string[]
 }
 
 export interface ScoreOut {
   session: Session
   score: Score
+}
+
+/** prepare 的输出：可见字符切分、内容指纹与限制 */
+export interface Prepared {
+  fingerprint: string
+  total: number
+  graphemes: string[]
+  passAccuracy: number
+  maxText: number
+}
+
+export interface SettleOut {
+  bests: Record<string, Best>
+  recorded: boolean
+  newBest: boolean
+  cleared: boolean
 }
 
 export type Lang = 'zh' | 'en'

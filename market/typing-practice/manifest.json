@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.typing-practice",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "life",
@@ -55,17 +55,10 @@
               "description": "i18n:api.score.typed",
               "x-positional": 1
             },
-            "added": {
-              "type": "integer",
-              "description": "i18n:api.score.added",
-              "minimum": 0,
-              "default": 0
-            },
-            "wrongAdded": {
-              "type": "integer",
-              "description": "i18n:api.score.wrongAdded",
-              "minimum": 0,
-              "default": 0
+            "prev": {
+              "type": "string",
+              "description": "i18n:api.score.prev",
+              "default": ""
             },
             "elapsedMs": {
               "type": "integer",
@@ -85,7 +78,7 @@
           }
         },
         "examples": [
-          "tfp-typing-practice score abc abc --added 3 --elapsed-ms 60000"
+          "tfp-typing-practice score abc abc --elapsed-ms 60000"
         ]
       }
     },

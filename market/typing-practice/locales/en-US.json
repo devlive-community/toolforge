@@ -2,11 +2,13 @@
   "name": "Typing Practice",
   "description": "Type a passage for one minute: per-character feedback, accuracy and speed, with short unlockable stages and personal bests kept on this device",
   "help": [
-    "Practice with built-in passages or paste your own text; timing starts on input and stops when the window loses focus or you pause.",
-    "Each character is marked correct, wrong, or pending. Backspace corrects text, but wrong attempts stay counted, so accuracy uses all attempts.",
-    "Chinese IME composition is not counted until the text is committed.",
-    "Speed appears only after real input: CPM is correct characters per minute; English WPM uses five characters per word.",
-    "A round with pasted text is practice only and is not saved as a personal best. All data stays in ToolForge on this device."
+    "Practice with built-in passages or paste your own text; timing starts with the first committed character, stops when the window loses focus or you pause, and continues when you resume.",
+    "Each character is marked correct, wrong or pending. Backspace corrects text, but wrong attempts stay counted; uncorrected errors are shown separately.",
+    "Counting uses visible characters: an emoji or an accented letter is one character. Punctuation, spaces and line breaks are compared as-is; nothing is substituted.",
+    "Chinese IME composition is not counted until committed; committing several characters at once counts each one and is not treated as a paste.",
+    "Accuracy = (all attempts − wrong attempts) ÷ all attempts; CPM = correct characters ÷ active minutes; English WPM = CPM ÷ 5. No speed is shown without input or time.",
+    "Stage goal: finish the passage with at least 90% accuracy to unlock the next stage. Bests are kept per source + language + mode + text version.",
+    "A round with pasted or dropped text is practice only: no personal best and no stage unlock. All data stays in ToolForge on this device."
   ],
   "typing": {
     "langZh": "中文",
@@ -46,18 +48,29 @@
     "drillMistakes": "Drill frequent mistakes",
     "exportSummary": "Copy practice summary",
     "summaryTitle": "Typing practice summary",
-    "summaryCopied": "Practice summary copied"
+    "summaryCopied": "Practice summary copied",
+    "wrongAttemptsValue": "Wrong attempts: {{value}}",
+    "wrongNowValue": "Uncorrected: {{value}}",
+    "stageGoal": "Goal: finish with accuracy ≥ {{accuracy}}",
+    "stagePassed": "Stage cleared! Next stage unlocked",
+    "stageFailed": "Finished, but accuracy is below the goal. Try again",
+    "newBest": "New personal best!",
+    "timeUp": "Time's up",
+    "finished": "Round over. Press Restart to go again",
+    "preparing": "Preparing text…",
+    "customLimit": "{{count}} / {{max}} characters",
+    "clearConfirm": "Click again to clear bests, stage progress and mistakes (custom text is kept)",
+    "cleared": "Records cleared"
   },
   "api": {
     "score": {
       "summary": "Score one typing submission: per-character result, accuracy and speed",
       "target": "Target text to compare against (positional; may come from stdin)",
       "typed": "Full text currently in the practice area",
-      "added": "Number of characters added in this submission",
-      "wrongAdded": "Number of added characters that do not match the target position",
       "elapsedMs": "Active input time in milliseconds, excluding pauses",
       "pasted": "Whether this submission came from a paste (pasted rounds are not saved as records)",
-      "session": "Cumulative state from the previous call as a JSON string; may be omitted on the first call"
+      "session": "Cumulative state from the previous call as a JSON string; may be omitted on the first call",
+      "prev": "Previously submitted text, empty for a new round; new attempts are derived from the difference"
     },
     "drill": {
       "summary": "Generate reproducible drill text from frequently mistyped characters",
@@ -65,5 +78,8 @@
       "len": "Number of output characters, at most 2000",
       "seed": "Random seed; the same input and seed give the same text"
     }
+  },
+  "errors": {
+    "typing.text_too_long": "Text exceeds the {{max}}-character limit"
   }
 }

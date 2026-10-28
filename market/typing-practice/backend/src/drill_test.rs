@@ -38,3 +38,9 @@ fn multibyte_chars_are_handled_as_units() {
     assert_eq!(out.chars().count(), 12);
     assert!(out.chars().all(|c| "你好 ".contains(c)));
 }
+
+#[test]
+fn emoji_is_kept_whole() {
+    let out = build("👍🏽", 4, 1);
+    assert_eq!(out, "👍🏽👍🏽👍🏽👍🏽");
+}
