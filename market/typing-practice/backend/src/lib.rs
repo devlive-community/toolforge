@@ -2,6 +2,7 @@
 //! 个人纪录与关卡进度由前端通过 usePluginState 持久化到 ToolForge SQLite，
 //! 这里只做无状态计算；每次调用都把完整累计状态回传，宿主不保存任何会话。
 
+mod drill;
 mod score;
 
 use serde::Deserialize;
@@ -62,6 +63,27 @@ fn parse_session(raw: Option<Value>) -> PluginResult<score::Session> {
     }
 }
 
+/// 重练入参：易错字符、期望长度与随机种子（缺省时用固定种子，结果可复现）
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct DrillArgs {
+    chars: String,
+    #[serde(default = "default_drill_len")]
+    len: usize,
+    #[serde(default)]
+    seed: u64,
+}
+
+fn default_drill_len() -> usize {
+    200
+}
+
+fn drill_call(args: Value) -> PluginResult<Value> {
+    let args: DrillArgs = parse_args(args)?;
+    let text = drill::build(&args.chars, args.len, args.seed);
+    to_value(serde_json::json!({ "text": text, "length": text.chars().count() }))
+}
+
 fn score_call(args: Value) -> PluginResult<Value> {
     let args: ScoreArgs = parse_args(args)?;
     let session = parse_session(args.session)?;
@@ -83,6 +105,7 @@ impl ToolPlugin for TypingPractice {
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
         match function {
             "score" => score_call(args),
+            "drill" => drill_call(args),
             other => Err(unknown_function(other)),
         }
     }

@@ -38,7 +38,15 @@
     "wpmValue": "WPM: {{value}}",
     "timeValue": "Time: {{seconds}}s",
     "bestValue": "Personal best: CPM {{cpm}} · Accuracy {{accuracy}}",
-    "mistakesValue": "Frequent mistakes: {{list}}"
+    "mistakesValue": "Frequent mistakes: {{list}}",
+    "sourceTitle": "Practice text",
+    "sourceBuiltin": "Built-in stages",
+    "sourceCustom": "Custom text",
+    "customPlaceholder": "Paste or type the text you want to practice (kept on this device only)",
+    "drillMistakes": "Drill frequent mistakes",
+    "exportSummary": "Copy practice summary",
+    "summaryTitle": "Typing practice summary",
+    "summaryCopied": "Practice summary copied"
   },
   "api": {
     "score": {
@@ -50,6 +58,12 @@
       "elapsedMs": "Active input time in milliseconds, excluding pauses",
       "pasted": "Whether this submission came from a paste (pasted rounds are not saved as records)",
       "session": "Cumulative state from the previous call as a JSON string; may be omitted on the first call"
+    },
+    "drill": {
+      "summary": "Generate reproducible drill text from frequently mistyped characters",
+      "chars": "Characters to drill (positional; may come from stdin)",
+      "len": "Number of output characters, at most 2000",
+      "seed": "Random seed; the same input and seed give the same text"
     }
   }
 }

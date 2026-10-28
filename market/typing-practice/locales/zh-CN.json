@@ -38,7 +38,15 @@
     "wpmValue": "WPM：{{value}}",
     "timeValue": "用时：{{seconds}}s",
     "bestValue": "个人最好：CPM {{cpm}} · 准确率 {{accuracy}}",
-    "mistakesValue": "易错字符：{{list}}"
+    "mistakesValue": "易错字符：{{list}}",
+    "sourceTitle": "练习内容",
+    "sourceBuiltin": "内置关卡",
+    "sourceCustom": "自定义文本",
+    "customPlaceholder": "粘贴或输入你想练习的文字（只保存在本机）",
+    "drillMistakes": "重练易错字符",
+    "exportSummary": "复制练习摘要",
+    "summaryTitle": "打字练习摘要",
+    "summaryCopied": "已复制练习摘要"
   },
   "api": {
     "score": {
@@ -50,6 +58,12 @@
       "elapsedMs": "有效输入时长（毫秒），已扣除暂停时间",
       "pasted": "本次是否由粘贴产生（粘贴的局不计正式纪录）",
       "session": "上一次返回的累计状态 JSON 字符串，首次可省略"
+    },
+    "drill": {
+      "summary": "由易错字符生成可复现的重练文本",
+      "chars": "易错字符（位置参数，可从标准输入读取）",
+      "len": "输出字符数，最多 2000",
+      "seed": "随机种子，相同输入与种子结果一致"
     }
   }
 }

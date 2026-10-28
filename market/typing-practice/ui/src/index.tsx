@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Badge, Button, Empty, Panel, Progress, Tooltip, toast } from '@toolforge/ui'
-import { callPlugin, usePlugin, usePluginState } from '@toolforge/plugin-ui-sdk'
-import { Pause, Play, RotateCcw, Timer, Trash2, Trophy } from 'lucide-react'
+import { callPlugin, host, usePlugin, usePluginState } from '@toolforge/plugin-ui-sdk'
+import { Copy, Pause, Play, RotateCcw, Timer, Trash2, Trophy } from 'lucide-react'
 import { passagesFor } from './passages'
 import type { Best, Lang, Mode, Score, ScoreOut, Session, Snapshot, TypingState } from './types'
 
@@ -57,9 +57,14 @@ export default function TypingPractice() {
 
   const passages = useMemo(() => passagesFor(lang), [lang])
   const passage = passages[passageIndex % passages.length]
-  // 自由与挑战模式共用同一段内置文本，区别只在于是否限时
-  const target = passage.text
-  const bucket = `${lang}:${mode}:${passage.id}`
+  // 内容来源：内置关卡与自定义文本分开比较、分开解锁
+  const [source, setSource] = useState<'builtin' | 'custom'>('builtin')
+  const customText = state.custom.trim()
+  // 自由与挑战模式共用同一段文本，区别只在于是否限时
+  const target = source === 'custom' ? customText : passage.text
+  const bucket = `${source}:${lang}:${mode}:${source === 'custom' ? 'custom' : passage.id}`
+  // 开局时固定纪录桶：完成时即使用户已切换语言/模式，也写入开局的那一桶
+  const sessionBucket = useRef(bucket)
 
   // 计时：只有有效输入且未暂停时累加；挑战模式到时由计时器回调停止（不在 effect 内 setState）
   useEffect(() => {
@@ -136,15 +141,18 @@ export default function TypingPractice() {
   /** 完成一局：粘贴过的局只展示，不写入正式纪录 */
   const finish = (finalSession: Session, final: Score) => {
     setRunning(false)
+    const key = sessionBucket.current
+    const isBuiltin = key.startsWith('builtin:')
     setState((current) => {
-      const cleared = { ...current.cleared, [`${lang}:${passage.id}`]: true }
+      // 只有内置关卡参与解锁；自定义文本不影响关卡进度
+      const cleared = isBuiltin ? { ...current.cleared, [`${lang}:${passage.id}`]: true } : current.cleared
       if (final.pasted) return { ...current, cleared }
-      const prev = current.bests[bucket]
+      const prev = current.bests[key]
       const better = !prev || (final.cpm ?? 0) > (prev.cpm ?? 0)
       const best: Best | undefined = better
-        ? { bucket, cpm: final.cpm, wpm: final.wpm, accuracy: final.accuracy, activeMs: finalSession.activeMs, at: new Date().toISOString() }
+        ? { bucket: key, cpm: final.cpm, wpm: final.wpm, accuracy: final.accuracy, activeMs: finalSession.activeMs, at: new Date().toISOString() }
         : undefined
-      return { ...current, cleared, bests: best ? { ...current.bests, [bucket]: best } : current.bests }
+      return { ...current, cleared, bests: best ? { ...current.bests, [key]: best } : current.bests }
     })
     toast.success(t('typing.done'))
   }
@@ -155,10 +163,45 @@ export default function TypingPractice() {
       setTyped(next)
       return
     }
+    // 第一次输入时固定本局的纪录桶
+    if (lastTyped.current === '' && next.length > 0) sessionBucket.current = bucket
     setTyped(next)
     // 有输入即开始计时；暂停后的聚焦不会自动恢复，需用户点击继续
     if (!running && next.length > 0 && !score?.completed && !pausedByUser.current) setRunning(true)
     void submit(next, false)
+  }
+
+  /** 易错字符重练：由 Rust 生成只含这些字符的文本，切换为自定义来源开始练习 */
+  const drillMistakes = async () => {
+    const chars = Object.keys(state.mistakes).join('')
+    if (!chars) return
+    try {
+      const out = await callPlugin<{ text: string; length: number }>(manifest.id, 'drill', {
+        chars,
+        len: 200,
+        seed: Date.now() % 1_000_000,
+      })
+      setState((current) => ({ ...current, custom: out.text }))
+      setSource('custom')
+      reset()
+    } catch (error) {
+      toast.error(errorMessage(error))
+    }
+  }
+
+  /** 导出练习摘要（纯文本复制到剪贴板，不进入 Agent） */
+  const exportSummary = async () => {
+    const lines = [
+      `${t('typing.summaryTitle')}`,
+      ...Object.values(state.bests).map((b) => `${b.bucket}: CPM ${num(b.cpm)} · ${t('typing.accuracy')} ${pct(b.accuracy)}`),
+      topMistakes.length > 0 ? `${t('typing.mistakes')}: ${topMistakes.map(([ch, n]) => `${ch}×${n}`).join(' ')}` : '',
+    ].filter(Boolean)
+    try {
+      await host.clipboard.writeText(lines.join('\n'))
+      toast.success(t('typing.summaryCopied'))
+    } catch (error) {
+      toast.error(errorMessage(error))
+    }
   }
 
   const onPaste = () => {
@@ -199,6 +242,26 @@ export default function TypingPractice() {
         </div>
       </div>
 
+      <Panel title={t('typing.sourceTitle')} bodyClassName="space-y-2 p-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button size="sm" variant={source === 'builtin' ? 'primary' : 'secondary'} onClick={() => { setSource('builtin'); reset() }}>
+            {t('typing.sourceBuiltin')}
+          </Button>
+          <Button size="sm" variant={source === 'custom' ? 'primary' : 'secondary'} onClick={() => { setSource('custom'); reset() }}>
+            {t('typing.sourceCustom')}
+          </Button>
+        </div>
+        {source === 'custom' && (
+          <textarea
+            value={state.custom}
+            onChange={(event) => setState((current) => ({ ...current, custom: event.target.value }))}
+            placeholder={t('typing.customPlaceholder')}
+            rows={3}
+            className="w-full resize-none rounded-control border border-border bg-surface px-3 py-2 text-[14px] text-fg outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          />
+        )}
+      </Panel>
+
       <Panel title={t('typing.stageTitle')} bodyClassName="p-3">
         <div className="flex flex-wrap gap-2">
           {passages.map((p, index) => (
@@ -233,6 +296,7 @@ export default function TypingPractice() {
           ref={areaRef}
           value={typed}
           onChange={(event) => onChange(event.target.value)}
+          disabled={source === 'custom' && customText.length === 0}
           onPaste={onPaste}
           onCompositionStart={() => { composing.current = true }}
           onCompositionEnd={(event) => onCompositionEnd(event.currentTarget.value)}
@@ -279,11 +343,23 @@ export default function TypingPractice() {
       <Panel title={t('typing.recordTitle')} bodyClassName="space-y-2 p-3 text-[13px]">
         <p>{best ? t('typing.bestValue', { cpm: num(best.cpm), accuracy: pct(best.accuracy) }) : t('typing.noBest')}</p>
         {topMistakes.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2">
+            <Button size="sm" variant="secondary" onClick={drillMistakes}>
+              {t('typing.drillMistakes')}
+            </Button>
+          </div>
+        )}
+        {topMistakes.length > 0 && (
           <p>
             {t('typing.mistakesValue', { list: topMistakes.map(([ch, n]) => `${ch}×${n}`).join('  ') })}
           </p>
         )}
         <div className="flex items-center gap-2">
+          <Tooltip content={t('typing.exportSummary')}>
+            <Button size="icon-sm" variant="ghost" aria-label={t('typing.exportSummary')} onClick={exportSummary}>
+              <Copy />
+            </Button>
+          </Tooltip>
           <Tooltip content={t('typing.clearRecords')}>
             <Button
               size="icon-sm"
