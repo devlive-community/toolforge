@@ -196,8 +196,7 @@ pub fn restore(
     let mut report = Report::default();
     let mut next = current.clone();
     let mut remove_photos = Vec::new();
-    let added_items: BTreeSet<String>;
-    match mode {
+    let added_items: BTreeSet<String> = match mode {
         Mode::Replace => {
             report.items_removed = current.items.len();
             report.loans_removed = current.loans.len();
@@ -211,7 +210,7 @@ pub fn restore(
             next.loans = incoming.loans.clone();
             report.items_added = next.items.len();
             report.loans_added = next.loans.len();
-            added_items = next.items.iter().map(|i| i.id.clone()).collect();
+            next.items.iter().map(|i| i.id.clone()).collect()
         }
         Mode::Merge => {
             let existing: BTreeSet<String> = current
@@ -241,9 +240,9 @@ pub fn restore(
                     report.loans_added += 1;
                 }
             }
-            added_items = added;
+            added
         }
-    }
+    };
     // 照片：只写入新加入的藏品；没有照片数据的藏品去掉照片标记
     let mut photos = BTreeMap::new();
     for item in next

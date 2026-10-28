@@ -217,8 +217,7 @@ pub fn restore(
     let mut report = Report::default();
     let mut next = current.clone();
     let mut remove_covers = Vec::new();
-    let added: BTreeSet<String>;
-    match mode {
+    let added: BTreeSet<String> = match mode {
         Mode::Replace => {
             report.works_removed = current.works.len();
             report.sessions_removed = current.sessions.len();
@@ -232,7 +231,7 @@ pub fn restore(
             next.sessions = incoming.sessions.clone();
             report.works_added = next.works.len();
             report.sessions_added = next.sessions.len();
-            added = next.works.iter().map(|w| w.id.clone()).collect();
+            next.works.iter().map(|w| w.id.clone()).collect()
         }
         Mode::Merge => {
             let existing: BTreeSet<String> = current
@@ -260,9 +259,9 @@ pub fn restore(
                     report.sessions_added += 1;
                 }
             }
-            added = new_works;
+            new_works
         }
-    }
+    };
     let mut kept = BTreeMap::new();
     for work in next.works.iter_mut().filter(|w| added.contains(&w.id)) {
         match covers.get(&work.id) {
