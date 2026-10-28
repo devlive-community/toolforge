@@ -3,12 +3,17 @@
 
 mod date;
 mod model;
+mod rota;
 mod schedule;
 
 use serde_json::Value;
 use tf_plugin_api::{Manifest, PluginResult, ToolPlugin, parse_args, to_value, unknown_function};
 
 const MANIFEST: &str = include_str!("../../manifest.json");
+
+/// 后端分发的全部函数；宿主只放行 manifest 中声明过的函数，测试据此核对两边一致
+#[cfg(test)]
+const FUNCTIONS: [&str; 2] = ["plan", "rota"];
 
 pub struct Chores {
     manifest: Manifest,
@@ -36,6 +41,7 @@ impl ToolPlugin for Chores {
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
         match function {
             "plan" => plan_fn(args),
+            "rota" => to_value(rota::rota(parse_args(args)?)?),
             other => Err(unknown_function(other)),
         }
     }

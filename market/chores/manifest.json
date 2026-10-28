@@ -1,15 +1,39 @@
 {
   "id": "org.devlive.toolforge.chores",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
-  "category": "other",
+  "category": "life",
   "keywords": ["chore", "household", "rotation", "family", "家务", "轮值", "家庭", "值日"],
   "accent": "green",
   "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
   "permissions": ["fs:user-selected"],
   "functions": {
-    "plan": {}
+    "plan": { "interface": false },
+    "rota": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.rota.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["members", "start"],
+          "properties": {
+            "members": { "type": "array", "items": { "type": "string" }, "description": "i18n:api.rota.members", "x-positional": 0 },
+            "start": { "type": "string", "description": "i18n:api.rota.start" },
+            "rule": { "type": "string", "enum": ["daily", "weekly", "interval"], "default": "daily", "description": "i18n:api.rota.rule" },
+            "weekdays": { "type": "array", "items": { "type": "integer" }, "description": "i18n:api.rota.weekdays" },
+            "every": { "type": "integer", "minimum": 1, "maximum": 365, "default": 1, "description": "i18n:api.rota.every" },
+            "from": { "type": "string", "description": "i18n:api.rota.from" },
+            "days": { "type": "integer", "minimum": 1, "maximum": 121, "default": 14, "description": "i18n:api.rota.days" },
+            "name": { "type": "string", "default": "", "description": "i18n:api.rota.name" }
+          }
+        },
+        "output": { "table": "", "columns": [{ "key": "date", "label": "i18n:api.columns.date" }, { "key": "member", "label": "i18n:api.columns.member" }] },
+        "examples": ["tfp-chores rota Ann,Bo,Cy --start 2026-11-01 --days 7", "tfp-chores rota Ann,Bo --start 2026-11-01 --rule weekly --weekdays 1,4"]
+      }
+    }
   },
   "sensitive": false
 }

@@ -112,6 +112,24 @@
     "chore.bad_identity": "任务编号异常",
     "chore.member_required": "请选择固定负责人",
     "chore.rotation_required": "请至少选择一名轮换成员",
-    "chore.weekday_required": "请至少选择一个星期"
+    "chore.weekday_required": "请至少选择一个星期",
+    "chore.bad_rule": "未知的重复规则：{{value}}"
+  },
+  "api": {
+    "rota": {
+      "summary": "按轮换名单与重复规则排出一段日期内的值日表",
+      "members": "轮换名单，按顺序轮流（逗号分隔）",
+      "start": "第一次值日的日期（YYYY-MM-DD），轮换从这天开始",
+      "rule": "重复规则：daily 每天、weekly 每周指定星期、interval 每隔几天",
+      "weekdays": "weekly 规则的星期，0 = 周日 … 6 = 周六（逗号分隔）",
+      "every": "interval 规则的间隔天数",
+      "from": "从哪天开始列出，缺省为第一次值日的日期",
+      "days": "列出多少天（最多 121 天）",
+      "name": "家务名称（可选）"
+    },
+    "columns": {
+      "date": "日期",
+      "member": "负责人"
+    }
   }
 }

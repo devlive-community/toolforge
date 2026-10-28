@@ -112,6 +112,24 @@
     "chore.bad_identity": "Bad occurrence key",
     "chore.member_required": "Pick a fixed assignee",
     "chore.rotation_required": "Pick at least one rotating member",
-    "chore.weekday_required": "Pick at least one weekday"
+    "chore.weekday_required": "Pick at least one weekday",
+    "chore.bad_rule": "Unknown repeat rule: {{value}}"
+  },
+  "api": {
+    "rota": {
+      "summary": "List who is on duty for each date from a rotation and a repeat rule",
+      "members": "Rotation members in order (comma separated)",
+      "start": "Date of the first turn (YYYY-MM-DD); the rotation starts here",
+      "rule": "Repeat rule: daily, weekly on chosen weekdays, or interval every few days",
+      "weekdays": "Weekdays for the weekly rule, 0 = Sunday … 6 = Saturday (comma separated)",
+      "every": "Days between turns for the interval rule",
+      "from": "First date to list; defaults to the start date",
+      "days": "How many days to list (121 at most)",
+      "name": "Chore name (optional)"
+    },
+    "columns": {
+      "date": "Date",
+      "member": "On duty"
+    }
   }
 }
