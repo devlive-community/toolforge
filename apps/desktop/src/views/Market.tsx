@@ -5,7 +5,7 @@ import { useErrorMessage } from '@toolforge/plugin-ui-sdk'
 import { invoke } from '@tauri-apps/api/core'
 import { CloudDownload, LayoutGrid, PackageSearch, Search, SquareArrowOutUpRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { CATEGORIES, KNOWN_CATEGORIES, normalizeCategory } from '../lib/categories'
+import { CATEGORIES, normalizeCategory } from '../lib/categories'
 import { ToolTile } from '../plugins/ToolIcon'
 import { usePluginText } from '../plugins/usePluginText'
 import { useApp } from '../stores/app'
@@ -71,8 +71,8 @@ export function Market() {
   const list = useMemo(
     () =>
       plugins
-        // 旧分类（life/graphics 等）在筛选「其他」时也要能看到
-        .filter((p) => category === 'all' || p.category === category || (category === 'other' && !KNOWN_CATEGORIES.has(p.category)))
+        // 旧分类按别名归位，未知分类在筛选「其他」时也要能看到
+        .filter((p) => category === 'all' || normalizeCategory(p.category) === category)
         .filter((p) => filter !== 'changed' || toolStatus(p, seen) !== 'seen')
         .filter((p) => filter !== 'hidden' || hidden.includes(p.id))
         .filter((p) => matches(p, query.trim(), text))

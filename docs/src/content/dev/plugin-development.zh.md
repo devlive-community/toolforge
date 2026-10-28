@@ -55,7 +55,7 @@ market/my-tool/
 | `id` | 固定使用 `org.devlive.toolforge.<插件名>`，插件名用小写字母、数字和连字符 |
 | `version` | 每次发布递增一次；同一个发布周期内多次修改共用一次递增 |
 | `name` / `description` | 写成 `i18n:键名`，真实文案在 locales 中 |
-| `category` | `dev`、`text`、`encode`、`convert`、`image`、`network`、`system`、`calc`、`other` 之一 |
+| `category` | `dev`、`text`、`encode`、`convert`、`image`、`network`、`system`、`calc`、`life`、`other` 之一 |
 | `minAppVersion` | 插件需要的最低应用版本，新插件和修改过的插件必须填写 |
 | `permissions` | 插件代码需要的能力，由宿主强制检查，见下文 |
 | `functions` | 后端提供的函数；`task: true` 表示耗时任务，`history: true` 表示调用成功后记入历史 |

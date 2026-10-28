@@ -3,6 +3,7 @@ import { Button, DropdownMenu, Empty, Modal, Spinner, cn } from '@toolforge/ui'
 import { PluginProvider, type Manifest } from '@toolforge/plugin-ui-sdk'
 import { CircleHelp, Ellipsis, Info, PackageX, RotateCw, Star, TriangleAlert } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { normalizeCategory } from '../lib/categories'
 import { pluginComponent } from '../plugins/modules'
 import { ToolTile } from '../plugins/ToolIcon'
 import { usePluginText } from '../plugins/usePluginText'
@@ -90,7 +91,7 @@ function ToolHeader({ manifest, onReload }: { manifest: Manifest; onReload: () =
           <dt className="text-fg-muted">{t('tool.version')}</dt>
           <dd className="text-fg">{manifest.version}</dd>
           <dt className="text-fg-muted">{t('tool.category')}</dt>
-          <dd className="text-fg">{t(`category.${manifest.category}`)}</dd>
+          <dd className="text-fg">{t(`category.${normalizeCategory(manifest.category)}`)}</dd>
         </dl>
       </Modal>
     </header>

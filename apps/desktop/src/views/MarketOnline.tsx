@@ -296,7 +296,7 @@ export function MarketOnline() {
       name: manifest ? text(manifest, manifest.name) : detail.info.id,
       description: manifest ? text(manifest, manifest.description) : '',
       version: detail.info.version,
-      category: manifest?.category ?? 'other',
+      category: normalizeCategory(manifest?.category ?? 'other'),
       keywords: manifest?.keywords,
       permissions: manifest?.permissions,
       functionsCount: manifest ? Object.keys(manifest.functions).length : undefined,

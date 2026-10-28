@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { ToolTile } from '../plugins/ToolIcon'
 import { usePluginText } from '../plugins/usePluginText'
 import { isMac } from '../lib/boot'
+import { normalizeCategory } from '../lib/categories'
 import { useApp } from '../stores/app'
 import { useIsDark, usePrefs } from '../stores/prefs'
 
@@ -119,7 +120,7 @@ function PaletteContent() {
         icon: <ToolTile manifest={manifest} size="sm" />,
         title,
         subtitle,
-        terms: [title, subtitle, t(`category.${manifest.category}`), ...manifest.keywords].join(' '),
+        terms: [title, subtitle, t(`category.${normalizeCategory(manifest.category)}`), ...manifest.keywords].join(' '),
         run: () => openTool(manifest.id),
       }
     })

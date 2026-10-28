@@ -55,7 +55,7 @@ market/my-tool/
 | `id` | Always `org.devlive.toolforge.<plugin>`, using lowercase letters, digits and hyphens |
 | `version` | Bump once per release; several changes in one release cycle share one bump |
 | `name` / `description` | Written as `i18n:key`; the real text lives in the locales |
-| `category` | One of `dev`, `text`, `encode`, `convert`, `image`, `network`, `system`, `calc`, `other` |
+| `category` | One of `dev`, `text`, `encode`, `convert`, `image`, `network`, `system`, `calc`, `life`, `other` |
 | `minAppVersion` | The lowest app version the plugin needs; required for new and changed plugins |
 | `permissions` | Capabilities the plugin code needs, enforced by the host (see below) |
 | `functions` | Functions the backend provides; `task: true` marks long-running tasks, `history: true` records successful calls in history |

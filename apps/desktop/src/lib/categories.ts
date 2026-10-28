@@ -2,6 +2,7 @@ import {
   Binary,
   Braces,
   Calculator,
+  Coffee,
   FileText,
   Globe,
   Image,
@@ -21,12 +22,17 @@ export const CATEGORIES: { id: string; icon: LucideIcon }[] = [
   { id: 'network', icon: Globe },
   { id: 'system', icon: Monitor },
   { id: 'calc', icon: Calculator },
+  { id: 'life', icon: Coffee },
   { id: 'other', icon: LayoutGrid },
 ]
 
 export const KNOWN_CATEGORIES = new Set(CATEGORIES.map((c) => c.id))
 
-/** 旧 manifest 的分类（life/graphics 等）已废弃：未知分类统一兜底到「其他」 */
+/** 已废弃的分类名映射到现有分类（旧插件包仍然带着这些值） */
+const ALIASES: Record<string, string> = { graphics: 'image' }
+
+/** 插件声明的分类 → 宿主分类：别名换成对应分类，其余未知分类兜底到「其他」 */
 export function normalizeCategory(category: string): string {
-  return KNOWN_CATEGORIES.has(category) ? category : 'other'
+  const id = ALIASES[category] ?? category
+  return KNOWN_CATEGORIES.has(id) ? id : 'other'
 }
