@@ -1,18 +1,37 @@
 {
   "id": "org.devlive.toolforge.packing-list",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
-  "category": "other",
+  "category": "life",
   "keywords": ["packing", "travel", "trip", "luggage", "checklist", "template", "weight", "行李", "旅行", "清单", "打包", "装备"],
   "accent": "cyan",
   "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
   "permissions": ["clipboard:write"],
   "functions": {
-    "generate": {},
-    "summary": {},
-    "new_id": {},
-    "export": {}
+    "generate": { "interface": false },
+    "summary": { "interface": false },
+    "new_id": { "interface": false },
+    "export": { "interface": false },
+    "checklist": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.checklist.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["items"],
+          "properties": {
+            "items": { "type": "array", "items": { "type": "string" }, "description": "i18n:api.checklist.items", "x-positional": 0 },
+            "people": { "type": "integer", "minimum": 1, "maximum": 365, "default": 1, "description": "i18n:api.checklist.people" },
+            "days": { "type": "integer", "minimum": 1, "maximum": 365, "default": 1, "description": "i18n:api.checklist.days" }
+          }
+        },
+        "output": { "table": "/items", "columns": [{ "key": "name", "label": "i18n:api.columns.name" }, { "key": "quantity", "label": "i18n:api.columns.quantity" }, { "key": "weight", "label": "i18n:api.columns.weight" }] },
+        "examples": ["tfp-packing-list checklist Tent:1,Toothbrush:1:p,Socks:1:pd:50 --people 3 --days 4"]
+      }
+    }
   },
   "sensitive": false
 }

@@ -78,6 +78,20 @@
     "plc.unknown_bag": "Item references a missing bag: {{id}}",
     "plc.too_many_items": "At most {{max}} items",
     "plc.too_many_bags": "At most {{max}} bags",
-    "plc.serialize": "Failed to serialize the summary: {{detail}}"
+    "plc.serialize": "Failed to serialize the summary: {{detail}}",
+    "plc.bad_line": "Cannot read: {{value}}"
+  },
+  "api": {
+    "checklist": {
+      "summary": "Work out how many of each item to pack for the group and trip length, with an estimated weight",
+      "items": "Each item as \"name:quantity[:rule][:grams each]\"; empty rule = shared, p = per person, d = per day, pd = both",
+      "people": "Number of people",
+      "days": "Number of days"
+    },
+    "columns": {
+      "name": "Item",
+      "quantity": "Quantity",
+      "weight": "Weight"
+    }
   }
 }

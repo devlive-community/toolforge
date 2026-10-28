@@ -78,6 +78,20 @@
     "plc.unknown_bag": "物品引用了不存在的箱包:{{id}}",
     "plc.too_many_items": "物品最多 {{max}} 项",
     "plc.too_many_bags": "箱包最多 {{max}} 个",
-    "plc.serialize": "汇总序列化失败:{{detail}}"
+    "plc.serialize": "汇总序列化失败:{{detail}}",
+    "plc.bad_line": "无法识别：{{value}}"
+  },
+  "api": {
+    "checklist": {
+      "summary": "按人数和天数算出每件物品要带多少，并估算总重量",
+      "items": "每项写成「名称:数量[:规则][:单件克数]」；规则空表示共享，p 按人数、d 按天数、pd 两者都乘",
+      "people": "人数",
+      "days": "天数"
+    },
+    "columns": {
+      "name": "物品",
+      "quantity": "数量",
+      "weight": "重量"
+    }
   }
 }

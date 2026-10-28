@@ -2,6 +2,7 @@
 //! 全部在 Rust 侧以整数（克/件）计算；行程与模板由前端经 usePluginState
 //! 持久化到 ToolForge SQLite，后端只做无状态计算与导出。
 
+mod flat;
 mod packing;
 
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -15,6 +16,10 @@ use tf_plugin_api::{
 use packing::{Summary, Trip, grams};
 
 const MANIFEST: &str = include_str!("../../manifest.json");
+
+/// 后端分发的全部函数；宿主只放行 manifest 中声明过的函数，测试据此核对两边一致
+#[cfg(test)]
+const FUNCTIONS: [&str; 5] = ["new_id", "generate", "summary", "export", "checklist"];
 
 static ID_COUNTER: AtomicU64 = AtomicU64::new(0);
 
@@ -163,6 +168,7 @@ impl ToolPlugin for PackingList {
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
         match function {
             "new_id" => new_id(),
+            "checklist" => to_value(flat::checklist(parse_args(args)?)?),
             "generate" => {
                 let args: packing::GenerateArgs = parse_args(args)?;
                 to_value(packing::generate(args)?)
