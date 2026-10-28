@@ -2,6 +2,7 @@
 //! 最小单位整数计算。活动数据由前端经 usePluginState 持久化到 ToolForge SQLite，
 //! 后端只做无状态计算与报告导出。
 
+mod flat;
 mod ledger;
 
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -15,6 +16,10 @@ use tf_plugin_api::{
 use ledger::{Ledger, Member};
 
 const MANIFEST: &str = include_str!("../../manifest.json");
+
+/// 后端分发的全部函数；宿主只放行 manifest 中声明过的函数，测试据此核对两边一致
+#[cfg(test)]
+const FUNCTIONS: [&str; 4] = ["new_id", "settle", "export", "split"];
 
 static ID_COUNTER: AtomicU64 = AtomicU64::new(0);
 
@@ -196,6 +201,7 @@ impl ToolPlugin for ExpenseSplitter {
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
         match function {
             "new_id" => new_id(),
+            "split" => to_value(flat::split(parse_args(args)?)?),
             "settle" => {
                 let args: SettleArgs = parse_args(args)?;
                 to_value(ledger::settle(&args.ledger)?)

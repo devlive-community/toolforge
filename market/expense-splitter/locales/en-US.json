@@ -101,6 +101,21 @@
     "esp.remainder": "Internal allocation error: leftover cents",
     "esp.self_settlement": "The payer and payee of a settlement must differ",
     "esp.settlement_positive": "A settlement must be greater than zero",
-    "esp.serialize": "Failed to serialize the report: {{detail}}"
+    "esp.serialize": "Failed to serialize the report: {{detail}}",
+    "esp.bad_line": "Cannot read: {{value}}",
+    "esp.no_expenses": "At least one expense is required"
+  },
+  "api": {
+    "split": {
+      "summary": "Describe each expense as text and get balances and suggested transfers (computed exactly in cents)",
+      "expenses": "Each expense as \"payer:amount[:person|person*shares]\"; omit people to split among everyone; repeatable",
+      "members": "Everyone who shares costs, including people not named in any expense (comma separated)",
+      "settled": "Transfers already made, as \"from>to:amount\"; repeatable"
+    },
+    "columns": {
+      "from": "From",
+      "to": "To",
+      "amount": "Amount"
+    }
   }
 }

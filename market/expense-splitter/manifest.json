@@ -1,17 +1,36 @@
 {
   "id": "org.devlive.toolforge.expense-splitter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "name": "i18n:name",
   "description": "i18n:description",
-  "category": "other",
+  "category": "life",
   "keywords": ["expense", "split", "aa", "settle", "group", "trip", "dinner", "ledger", "balance", "分账", "AA", "聚餐", "旅行", "结算", "记账"],
   "accent": "orange",
   "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
   "permissions": ["clipboard:write"],
   "functions": {
-    "settle": {},
-    "new_id": {},
-    "export": {}
+    "settle": { "interface": false },
+    "new_id": { "interface": false },
+    "export": { "interface": false },
+    "split": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.split.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["expenses"],
+          "properties": {
+            "expenses": { "type": "array", "items": { "type": "string" }, "description": "i18n:api.split.expenses", "x-positional": 0 },
+            "members": { "type": "array", "items": { "type": "string" }, "description": "i18n:api.split.members" },
+            "settled": { "type": "array", "items": { "type": "string" }, "description": "i18n:api.split.settled" }
+          }
+        },
+        "output": { "table": "/transfers", "columns": [{ "key": "from", "label": "i18n:api.columns.from" }, { "key": "to", "label": "i18n:api.columns.to" }, { "key": "amount", "label": "i18n:api.columns.amount" }] },
+        "examples": ["tfp-expense-splitter split --expenses Ann:90 --expenses 'Bo:30:Bo|Cy' --members Ann,Bo,Cy", "tfp-expense-splitter split --expenses 'Ann:100:Ann|Bo*2' --settled 'Bo>Ann:10'"]
+      }
+    }
   },
   "sensitive": false
 }

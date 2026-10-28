@@ -101,6 +101,21 @@
     "esp.remainder": "内部分配错误,余分未能清零",
     "esp.self_settlement": "结算的付款人与收款人不能相同",
     "esp.settlement_positive": "结算金额必须大于零",
-    "esp.serialize": "报告序列化失败:{{detail}}"
+    "esp.serialize": "报告序列化失败:{{detail}}",
+    "esp.bad_line": "无法识别：{{value}}",
+    "esp.no_expenses": "至少需要一笔费用"
+  },
+  "api": {
+    "split": {
+      "summary": "用文字描述每笔费用，算出每人余额与最少的转账建议（金额按分精确计算）",
+      "expenses": "每笔费用写成「付款人:金额[:参与者|参与者*份数]」，省略参与者表示所有人均摊；可重复",
+      "members": "参与分摊的所有人（补充没有出现在费用里的人，逗号分隔）",
+      "settled": "已经转过的账，写成「付款方>收款方:金额」；可重复"
+    },
+    "columns": {
+      "from": "付款方",
+      "to": "收款方",
+      "amount": "金额"
+    }
   }
 }
