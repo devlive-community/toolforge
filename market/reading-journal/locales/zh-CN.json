@@ -1,0 +1,285 @@
+{
+  "name": "书影手账",
+  "description": "记下读过的书、看过的电影与感受：作品与每次经历分开记录，年底按实际完成日回顾书单影单",
+  "help": [
+    "作品资料（名称、作者/导演、年份、类型、标签、总页数或总分钟数）与每次阅读/观影经历分开保存；同名作品或不同版本各自保留，不会自动合并。",
+    "点「开始」新增一次经历；重读、重看再点一次即新增一条，旧的经历与短评原样保留。修改作品资料不会改动任何经历里的评价。",
+    "经历里记录开始日、已读页数/已看分钟数、评分与短评。总量未知时只显示当前进度，不显示百分比；进度不能超过已知总量。",
+    "进度与完成分开：进度到了最后一页也不会自动算完成，需要点「完成」。完成日可以先空着，之后在「待补」里补上；完成日不能早于开始日，也不能晚于今天。",
+    "可以筛选类型、状态、标签、评分，搜索也会查找自己的短评。年度回顾只按实际完成日统计：作品数与完成次数分开（同一年重读算 1 部、2 次），缺少完成日的不计入。",
+    "可撤销最近一步；删除作品前需要先删掉它的经历。封面只用自己的图片，没有封面时显示文字占位卡。",
+    "可导出 CSV 与完整 JSON 备份。恢复时「追加」按编号跳过已存在的作品与经历，同一份备份恢复两次也不会重复计数；「整体替换」需要确认。全部数据保存在 ToolForge 本地。"
+  ],
+  "actions": {
+    "cancel": "取消",
+    "close": "关闭",
+    "save": "保存"
+  },
+  "kind": {
+    "book": "书",
+    "film": "电影"
+  },
+  "verb": {
+    "book": "阅读",
+    "film": "观看"
+  },
+  "unit": {
+    "pages": "页",
+    "minutes": "分钟"
+  },
+  "progress": {
+    "known": "{{progress}} / {{total}} {{unit}}",
+    "unknown": "已到 {{progress}} {{unit}}"
+  },
+  "counts": {
+    "want": "想读想看 {{count}}",
+    "doing": "进行中 {{count}}",
+    "done": "已完成 {{count}}",
+    "paused": "暂时放下 {{count}}"
+  },
+  "tabs": {
+    "works": "作品",
+    "review": "年度回顾",
+    "pending": "待补 {{count}}"
+  },
+  "work": {
+    "new": "新增作品",
+    "newTitle": "新增作品",
+    "editTitle": "编辑作品资料",
+    "edit": "编辑资料",
+    "details": "详情",
+    "title": "名称",
+    "author": "作者",
+    "director": "导演",
+    "year": "年份",
+    "genre": "类型",
+    "totalPages": "总页数（可选）",
+    "totalMinutes": "总分钟数（可选）",
+    "totalHint": "不知道可以空着，只显示当前进度",
+    "tags": "标签",
+    "tagsHint": "用逗号分隔，最多 10 个",
+    "notes": "备注",
+    "status": "状态",
+    "numbersInvalid": "年份与总量需为整数，总量须大于 0",
+    "completions": "完成 {{count}} 次",
+    "totalLine": "共 {{total}} {{unit}}",
+    "delete": "删除作品",
+    "deleteHint": "删除「{{title}}」及其封面，无法撤销。"
+  },
+  "session": {
+    "begin": "开始{{verb}}",
+    "again": "再次{{verb}}",
+    "history": "经历（{{count}} 次）",
+    "none": "还没有阅读/观影经历",
+    "edit": "编辑",
+    "fillFinish": "补完成日",
+    "editTitle": "「{{title}}」的这次经历",
+    "start": "开始日期",
+    "finish": "完成日期",
+    "finishHint": "可以空着，之后在「待补」里补上",
+    "progress": "进度（{{unit}}）",
+    "progressOf": "共 {{total}} {{unit}}",
+    "progressUnknown": "总量未知，只记当前进度",
+    "rating": "评分",
+    "noRating": "不评分",
+    "review": "短评",
+    "reviewHint": "最多 2000 字，只保存在本机",
+    "notCompletedHint": "进度到最后也不会自动算完成，完成请点「完成」。",
+    "inProgress": "进行中",
+    "finishedOn": "{{date}} 完成",
+    "finishMissing": "已完成 · 缺完成日",
+    "startedOn": "{{date}} 开始",
+    "noStart": "未填开始日",
+    "delete": "删除这次经历",
+    "deleteHint": "删除这次经历及其短评。可以撤销这一步。"
+  },
+  "complete": {
+    "action": "完成",
+    "title": "完成「{{title}}」",
+    "confirm": "确认完成",
+    "hint": "默认今天；清空则先计为完成，日期之后再补",
+    "undo": "撤销完成",
+    "undoHint": "这次经历回到进行中，完成日会被清除，不再计入年度回顾。"
+  },
+  "cover": {
+    "add": "添加封面",
+    "replace": "更换封面",
+    "remove": "移除封面",
+    "images": "图片"
+  },
+  "filter": {
+    "search": "搜索名称、作者、标签或自己的短评",
+    "allKinds": "全部类型",
+    "allStatuses": "全部状态",
+    "allTags": "全部标签",
+    "anyRating": "任意评分",
+    "atLeast": "至少 {{stars}}",
+    "status": {
+      "want": "想读想看",
+      "doing": "进行中",
+      "done": "已完成",
+      "paused": "暂时放下"
+    }
+  },
+  "empty": {
+    "none": "还没有作品，先新增一部吧",
+    "filtered": "没有符合条件的作品"
+  },
+  "review": {
+    "hint": "按实际完成日统计；同一年重读算 1 部作品、多次完成",
+    "works": "作品",
+    "completions": "完成次数",
+    "books": "书",
+    "films": "电影",
+    "pages": "页数",
+    "minutes": "分钟",
+    "average": "平均评分",
+    "monthsLabel": "每月完成次数",
+    "pendingNote": "另有 {{count}} 次完成缺少完成日，未计入任何年份",
+    "empty": "{{year}} 年还没有完成记录"
+  },
+  "pending": {
+    "hint": "这些经历已经完成但还没有完成日，补上后才会计入年度回顾。",
+    "empty": "没有缺少完成日的记录"
+  },
+  "page": {
+    "prev": "上一页",
+    "next": "下一页",
+    "number": "第 {{page}} 页",
+    "total": "共 {{count}} 部"
+  },
+  "save": {
+    "failed": "保存失败：{{reason}}",
+    "pending": "上一步已核对但还没有保存成功，其他操作已暂停。请重试保存。",
+    "retry": "重试保存",
+    "retried": "已保存"
+  },
+  "export": {
+    "list": "导出 CSV",
+    "backup": "导出完整备份 JSON",
+    "saved": "已导出"
+  },
+  "undo": {
+    "hint": "把最近一步撤回。",
+    "confirm": "确认撤销",
+    "createWork": "撤销新增作品",
+    "editWork": "撤销资料修改",
+    "setStatus": "撤销状态修改",
+    "start": "撤销开始",
+    "update": "撤销经历修改",
+    "complete": "撤销完成",
+    "uncomplete": "撤销「撤销完成」",
+    "deleteSession": "恢复删除的经历"
+  },
+  "restore": {
+    "action": "从备份恢复",
+    "title": "从备份恢复",
+    "merge": "追加",
+    "replace": "整体替换",
+    "mergeHint": "只加入编号不存在的作品与经历；已存在的跳过，同一份备份恢复两次也不会重复计数。",
+    "replaceHint": "用备份替换当前全部作品、经历与封面，无法撤销。",
+    "added": "将加入 {{works}} 部作品、{{sessions}} 次经历、{{covers}} 张封面",
+    "skipped": "跳过已存在的 {{works}} 部作品、{{sessions}} 次经历",
+    "removed": "将移除当前 {{works}} 部作品、{{sessions}} 次经历",
+    "confirmMerge": "追加记录",
+    "confirmReplace": "确认替换",
+    "done": "已从备份恢复"
+  },
+  "status": {
+    "want": {
+      "book": "想读",
+      "film": "想看"
+    },
+    "doing": {
+      "book": "在读",
+      "film": "在看"
+    },
+    "done": {
+      "book": "读过",
+      "film": "看过"
+    },
+    "paused": {
+      "book": "暂时放下",
+      "film": "暂时放下"
+    }
+  },
+  "done": {
+    "createWork": "已新增作品",
+    "editWork": "已保存资料",
+    "setStatus": "已更新状态",
+    "deleteWork": "已删除作品",
+    "start": "已开始一次新的经历",
+    "update": "已保存经历",
+    "complete": "已标记完成",
+    "uncomplete": "已撤销完成",
+    "deleteSession": "已删除经历",
+    "setCover": "已更新封面",
+    "undo": "已撤销"
+  },
+  "csv": {
+    "kind": "类型",
+    "title": "名称",
+    "creator": "作者/导演",
+    "year": "年份",
+    "genre": "类型",
+    "tags": "标签",
+    "status": "状态",
+    "total": "总量",
+    "start": "开始日期",
+    "finish": "完成日期",
+    "progress": "进度",
+    "completed": "已完成",
+    "rating": "评分（1–10）",
+    "review": "短评"
+  },
+  "api": {
+    "recap": {
+      "summary": "读取书影手账导出的备份文件，给出某一年按实际完成日统计的回顾与完成清单",
+      "path": "书影手账导出的 JSON 备份文件",
+      "year": "年份，缺省为今年"
+    },
+    "columns": {
+      "finish": "完成日",
+      "title": "名称",
+      "creator": "作者/导演",
+      "kind": "类型",
+      "stars": "评分"
+    }
+  },
+  "errors": {
+    "journal.work_not_found": "找不到这部作品",
+    "journal.session_not_found": "找不到这次经历",
+    "journal.bad_work": "作品数据无效",
+    "journal.bad_title": "名称不能为空，且不超过 120 字",
+    "journal.text_too_long": "文字过长",
+    "journal.bad_year": "年份无效",
+    "journal.bad_total": "总量需为 1–{{max}} 的整数",
+    "journal.bad_tags": "标签最多 {{max}} 个，每个不超过 30 字且不能重复",
+    "journal.bad_session": "经历数据无效",
+    "journal.bad_date": "日期格式应为 YYYY-MM-DD",
+    "journal.finish_before_start": "完成日不能早于开始日",
+    "journal.finish_without_complete": "还没完成的经历不能填写完成日，请先点「完成」",
+    "journal.over_total": "进度不能超过总量 {{total}}",
+    "journal.bad_rating": "评分需为 1–10",
+    "journal.review_too_long": "短评最多 {{max}} 字",
+    "journal.bad_schema": "手账版本不受支持",
+    "journal.too_many": "记录数量已达上限",
+    "journal.duplicate_id": "记录编号重复",
+    "journal.broken_link": "经历指向不存在的作品",
+    "journal.bad_journal": "手账数据无效",
+    "journal.journal_full": "手账已满，请导出备份后删除不需要的记录",
+    "journal.bad_op": "操作无效",
+    "journal.stale": "数据已更新，请重新操作",
+    "journal.future_date": "日期不能晚于今天",
+    "journal.delete_with_sessions": "请先删除这部作品的全部经历",
+    "journal.already_completed": "这次经历已经完成",
+    "journal.not_completed": "这次经历还没有完成",
+    "journal.nothing_to_undo": "没有可撤销的操作",
+    "journal.cover_too_large": "图片过大",
+    "journal.bad_cover": "无法读取这张图片",
+    "journal.bad_headers": "导出表头无效",
+    "journal.backup_too_large": "备份文件过大（最多 16 MB）",
+    "journal.bad_backup": "不是有效的书影手账备份",
+    "journal.bad_path": "没有选择文件"
+  }
+}

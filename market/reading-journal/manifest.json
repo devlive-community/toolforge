@@ -1,0 +1,42 @@
+{
+  "id": "org.devlive.toolforge.reading-journal",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": ["reading", "books", "films", "movies", "journal", "review", "watchlist", "reading list", "读书", "观影", "书单", "片单", "手账", "年度回顾", "电影", "书籍"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "empty": { "interface": false },
+    "view": { "interface": false },
+    "history": { "interface": false },
+    "review": { "interface": false },
+    "apply": { "interface": false },
+    "cover": { "interface": false },
+    "exportList": { "interface": false },
+    "exportBackup": { "interface": false },
+    "restore": { "interface": false },
+    "recap": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.recap.summary",
+        "effect": "read",
+        "uses": ["fs:user-selected"],
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "format": "path", "x-access": "read", "description": "i18n:api.recap.path", "x-positional": 0 },
+            "year": { "type": "integer", "minimum": 1900, "maximum": 9999, "description": "i18n:api.recap.year" }
+          }
+        },
+        "output": { "table": "/items", "columns": [{ "key": "finish", "label": "i18n:api.columns.finish" }, { "key": "title", "label": "i18n:api.columns.title" }, { "key": "creator", "label": "i18n:api.columns.creator" }, { "key": "kind", "label": "i18n:api.columns.kind" }, { "key": "stars", "label": "i18n:api.columns.stars" }] },
+        "examples": ["tfp-reading-journal recap ~/journal-backup.json --year 2026"]
+      }
+    }
+  },
+  "sensitive": true
+}

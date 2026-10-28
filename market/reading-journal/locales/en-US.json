@@ -1,0 +1,285 @@
+{
+  "name": "Reading & Film Journal",
+  "description": "Log the books you read and films you watch: works and each experience are kept apart, with a yearly review by actual finish date",
+  "help": [
+    "Work details (title, author or director, year, genre, tags, total pages or minutes) are kept apart from each reading or viewing. Same-name works and editions stay separate and are never merged automatically.",
+    "Press Start to add an experience; rereading or rewatching adds another one, keeping earlier experiences and reviews. Editing a work never changes any review.",
+    "An experience records the start date, pages read or minutes watched, a rating and a short review. With an unknown total only the current progress is shown, never a percentage; progress cannot exceed a known total.",
+    "Progress and completion are separate: reaching the last page does not mark it finished; press Finish. The finish date may be left empty and filled in later under Missing dates; it cannot be before the start date or after today.",
+    "Filter by type, status, tag and rating; search also looks through your reviews. The yearly review counts only actual finish dates, with works and completions counted separately (a reread in the same year is 1 work, 2 completions); entries without a finish date are left out.",
+    "Undo reverts the latest step. Delete a work's experiences before deleting the work. Covers are your own pictures only; otherwise a text card is shown.",
+    "Export CSV or a full JSON backup. Restoring with Append skips works and experiences whose ids already exist, so restoring the same backup twice never double counts; Replace all asks for confirmation. All data stays in ToolForge on this device."
+  ],
+  "actions": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save"
+  },
+  "kind": {
+    "book": "Book",
+    "film": "Film"
+  },
+  "verb": {
+    "book": "reading",
+    "film": "watching"
+  },
+  "unit": {
+    "pages": "pages",
+    "minutes": "min"
+  },
+  "progress": {
+    "known": "{{progress}} / {{total}} {{unit}}",
+    "unknown": "At {{progress}} {{unit}}"
+  },
+  "counts": {
+    "want": "Want {{count}}",
+    "doing": "In progress {{count}}",
+    "done": "Finished {{count}}",
+    "paused": "Paused {{count}}"
+  },
+  "tabs": {
+    "works": "Works",
+    "review": "Year in review",
+    "pending": "Missing dates {{count}}"
+  },
+  "work": {
+    "new": "Add work",
+    "newTitle": "Add work",
+    "editTitle": "Edit work",
+    "edit": "Edit",
+    "details": "Details",
+    "title": "Title",
+    "author": "Author",
+    "director": "Director",
+    "year": "Year",
+    "genre": "Genre",
+    "totalPages": "Total pages (optional)",
+    "totalMinutes": "Total minutes (optional)",
+    "totalHint": "Leave empty if unknown; only the current progress is shown",
+    "tags": "Tags",
+    "tagsHint": "Comma separated, up to 10",
+    "notes": "Notes",
+    "status": "Status",
+    "numbersInvalid": "Year and total must be whole numbers; total must be above 0",
+    "completions": "Finished {{count}}×",
+    "totalLine": "{{total}} {{unit}} in total",
+    "delete": "Delete work",
+    "deleteHint": "Delete \"{{title}}\" and its cover. This cannot be undone."
+  },
+  "session": {
+    "begin": "Start {{verb}}",
+    "again": "{{verb}} again",
+    "history": "Experiences ({{count}})",
+    "none": "No experiences yet",
+    "edit": "Edit",
+    "fillFinish": "Add finish date",
+    "editTitle": "This experience of \"{{title}}\"",
+    "start": "Start date",
+    "finish": "Finish date",
+    "finishHint": "May be empty; fill it in later under Missing dates",
+    "progress": "Progress ({{unit}})",
+    "progressOf": "{{total}} {{unit}} in total",
+    "progressUnknown": "Total unknown; only progress is kept",
+    "rating": "Rating",
+    "noRating": "No rating",
+    "review": "Review",
+    "reviewHint": "Up to 2000 characters, kept on this device",
+    "notCompletedHint": "Reaching the end does not finish it; press Finish.",
+    "inProgress": "In progress",
+    "finishedOn": "Finished {{date}}",
+    "finishMissing": "Finished · no date",
+    "startedOn": "Started {{date}}",
+    "noStart": "No start date",
+    "delete": "Delete experience",
+    "deleteHint": "Delete this experience and its review. This step can be undone."
+  },
+  "complete": {
+    "action": "Finish",
+    "title": "Finish \"{{title}}\"",
+    "confirm": "Mark finished",
+    "hint": "Defaults to today; clear it to finish now and add the date later",
+    "undo": "Unfinish",
+    "undoHint": "This experience returns to in progress; its finish date is cleared and it leaves the yearly review."
+  },
+  "cover": {
+    "add": "Add cover",
+    "replace": "Replace cover",
+    "remove": "Remove cover",
+    "images": "Images"
+  },
+  "filter": {
+    "search": "Search title, creator, tags or your reviews",
+    "allKinds": "All types",
+    "allStatuses": "All statuses",
+    "allTags": "All tags",
+    "anyRating": "Any rating",
+    "atLeast": "At least {{stars}}",
+    "status": {
+      "want": "Want",
+      "doing": "In progress",
+      "done": "Finished",
+      "paused": "Paused"
+    }
+  },
+  "empty": {
+    "none": "No works yet. Add your first one",
+    "filtered": "No works match the filters"
+  },
+  "review": {
+    "hint": "Counted by actual finish date; a reread in the same year is 1 work with several completions",
+    "works": "Works",
+    "completions": "Completions",
+    "books": "Books",
+    "films": "Films",
+    "pages": "Pages",
+    "minutes": "Minutes",
+    "average": "Average rating",
+    "monthsLabel": "Completions per month",
+    "pendingNote": "{{count}} more completions have no finish date and are not counted in any year",
+    "empty": "Nothing finished in {{year}} yet"
+  },
+  "pending": {
+    "hint": "These are finished but have no finish date; add one to count them in the yearly review.",
+    "empty": "Nothing is missing a finish date"
+  },
+  "page": {
+    "prev": "Previous",
+    "next": "Next",
+    "number": "Page {{page}}",
+    "total": "{{count}} works"
+  },
+  "save": {
+    "failed": "Saving failed: {{reason}}",
+    "pending": "The last step was checked but not saved yet; other actions are paused. Please retry saving.",
+    "retry": "Retry saving",
+    "retried": "Saved"
+  },
+  "export": {
+    "list": "Export CSV",
+    "backup": "Export full JSON backup",
+    "saved": "Exported"
+  },
+  "undo": {
+    "hint": "Revert the latest step.",
+    "confirm": "Undo",
+    "createWork": "Undo add",
+    "editWork": "Undo edit",
+    "setStatus": "Undo status change",
+    "start": "Undo start",
+    "update": "Undo experience edit",
+    "complete": "Undo finish",
+    "uncomplete": "Undo unfinish",
+    "deleteSession": "Restore deleted experience"
+  },
+  "restore": {
+    "action": "Restore from backup",
+    "title": "Restore from backup",
+    "merge": "Append",
+    "replace": "Replace all",
+    "mergeHint": "Only works and experiences with new ids are added; existing ones are skipped, so restoring twice never double counts.",
+    "replaceHint": "Replaces all current works, experiences and covers with the backup. This cannot be undone.",
+    "added": "Adds {{works}} works, {{sessions}} experiences and {{covers}} covers",
+    "skipped": "Skips {{works}} existing works and {{sessions}} experiences",
+    "removed": "Removes the current {{works}} works and {{sessions}} experiences",
+    "confirmMerge": "Append",
+    "confirmReplace": "Replace",
+    "done": "Restored from backup"
+  },
+  "status": {
+    "want": {
+      "book": "Want to read",
+      "film": "Want to watch"
+    },
+    "doing": {
+      "book": "Reading",
+      "film": "Watching"
+    },
+    "done": {
+      "book": "Read",
+      "film": "Watched"
+    },
+    "paused": {
+      "book": "Paused",
+      "film": "Paused"
+    }
+  },
+  "done": {
+    "createWork": "Work added",
+    "editWork": "Details saved",
+    "setStatus": "Status updated",
+    "deleteWork": "Work deleted",
+    "start": "New experience started",
+    "update": "Experience saved",
+    "complete": "Marked finished",
+    "uncomplete": "Unfinished",
+    "deleteSession": "Experience deleted",
+    "setCover": "Cover updated",
+    "undo": "Undone"
+  },
+  "csv": {
+    "kind": "Type",
+    "title": "Title",
+    "creator": "Author/Director",
+    "year": "Year",
+    "genre": "Genre",
+    "tags": "Tags",
+    "status": "Status",
+    "total": "Total",
+    "start": "Start",
+    "finish": "Finish",
+    "progress": "Progress",
+    "completed": "Finished",
+    "rating": "Rating (1–10)",
+    "review": "Review"
+  },
+  "api": {
+    "recap": {
+      "summary": "Read an exported journal backup and summarize a year by actual finish dates, with the list of finished works",
+      "path": "JSON backup exported from the journal",
+      "year": "Year; defaults to the current year"
+    },
+    "columns": {
+      "finish": "Finished",
+      "title": "Title",
+      "creator": "Author/Director",
+      "kind": "Type",
+      "stars": "Rating"
+    }
+  },
+  "errors": {
+    "journal.work_not_found": "Work not found",
+    "journal.session_not_found": "Experience not found",
+    "journal.bad_work": "Invalid work data",
+    "journal.bad_title": "Title must not be empty and at most 120 characters",
+    "journal.text_too_long": "Text is too long",
+    "journal.bad_year": "Invalid year",
+    "journal.bad_total": "Total must be a whole number from 1 to {{max}}",
+    "journal.bad_tags": "Up to {{max}} tags, each at most 30 characters and not repeated",
+    "journal.bad_session": "Invalid experience data",
+    "journal.bad_date": "Dates must be YYYY-MM-DD",
+    "journal.finish_before_start": "The finish date cannot be before the start date",
+    "journal.finish_without_complete": "Only finished experiences can have a finish date; press Finish first",
+    "journal.over_total": "Progress cannot exceed the total of {{total}}",
+    "journal.bad_rating": "Ratings must be 1–10",
+    "journal.review_too_long": "Reviews are limited to {{max}} characters",
+    "journal.bad_schema": "Unsupported journal version",
+    "journal.too_many": "Record limit reached",
+    "journal.duplicate_id": "Duplicate record id",
+    "journal.broken_link": "An experience points to a missing work",
+    "journal.bad_journal": "Invalid journal data",
+    "journal.journal_full": "The journal is full; export a backup and delete what you no longer need",
+    "journal.bad_op": "Invalid action",
+    "journal.stale": "Data changed; please try again",
+    "journal.future_date": "The date cannot be after today",
+    "journal.delete_with_sessions": "Delete this work's experiences first",
+    "journal.already_completed": "This experience is already finished",
+    "journal.not_completed": "This experience is not finished",
+    "journal.nothing_to_undo": "Nothing to undo",
+    "journal.cover_too_large": "The picture is too large",
+    "journal.bad_cover": "The picture could not be read",
+    "journal.bad_headers": "Invalid export headers",
+    "journal.backup_too_large": "The backup is too large (16 MB max)",
+    "journal.bad_backup": "Not a valid reading journal backup",
+    "journal.bad_path": "No file was chosen"
+  }
+}
