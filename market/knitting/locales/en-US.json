@@ -247,5 +247,18 @@
     "knitting.file": "Could not read or save the selected file.",
     "knitting.format": "Only JSON and Markdown exports are supported.",
     "knitting.stale_state": "The workshop changed while this result was being prepared. Reload and try again."
+  },
+  "api": {
+    "shaping": {
+      "summary": "From a starting stitch count and shaping rules, list each row or round with increases or decreases and the stitch count after it",
+      "stitches": "Starting stitch count",
+      "rules": "Each rule as \"name:start row:every:times:change\", e.g. Sleeve:7:6:8:2; use a negative change to decrease; comma separated or repeated"
+    },
+    "columns": {
+      "line": "Row",
+      "changes": "Rules due",
+      "delta": "Change",
+      "stitches": "Stitches"
+    }
   }
 }

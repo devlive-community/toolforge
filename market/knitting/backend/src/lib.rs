@@ -1,6 +1,7 @@
 //! Knitting progress is validated and advanced in Rust. The UI persists the
 //! returned workshop through the existing host SQLite plugin-state API.
 mod export;
+mod flat;
 mod model;
 mod ops;
 mod view;
@@ -15,6 +16,10 @@ use tf_plugin_api::{
 use view::Pages;
 
 const MANIFEST: &str = include_str!("../../manifest.json");
+
+/// 后端分发的全部函数；宿主只放行 manifest 中声明过的函数，测试据此核对两边一致
+#[cfg(test)]
+const FUNCTIONS: [&str; 5] = ["inspect", "apply", "restore", "export", "shaping"];
 pub struct Knitting {
     manifest: Manifest,
 }
@@ -68,8 +73,10 @@ impl ToolPlugin for Knitting {
         &self.manifest
     }
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
-        let _ = args;
-        Err(unknown_function(function))
+        match function {
+            "shaping" => to_value(flat::shaping(parse_args(args)?)?),
+            other => Err(unknown_function(other)),
+        }
     }
     fn run_task(&self, function: &str, args: Value, ctx: &dyn TaskContext) -> PluginResult<Value> {
         if function == "export" {

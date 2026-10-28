@@ -247,5 +247,18 @@
     "knitting.file": "无法读取或保存所选文件。",
     "knitting.format": "仅支持 JSON 或 Markdown 导出。",
     "knitting.stale_state": "整理结果期间作品已改变，请重新读取后重试。"
+  },
+  "api": {
+    "shaping": {
+      "summary": "按起针数与加减针规则，列出每次加减针所在的行／圈与之后的针数",
+      "stitches": "起针数（当前针数）",
+      "rules": "每条规则写成「名称:起始行:间隔:次数:增减针」，如 袖下加针:7:6:8:2；减针用负数；逗号分隔或重复传入"
+    },
+    "columns": {
+      "line": "行／圈",
+      "changes": "到期规则",
+      "delta": "增减",
+      "stitches": "针数"
+    }
   }
 }

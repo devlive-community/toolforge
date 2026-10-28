@@ -1,19 +1,36 @@
 {
   "id": "org.devlive.toolforge.knitting",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
-  "category": "other",
+  "category": "life",
   "keywords": ["knitting", "row", "round", "stitch", "repeat", "craft", "编织", "行数", "圈数", "加针", "减针", "花样"],
   "accent": "pink",
   "locales": ["zh-CN", "en-US"],
   "minAppVersion": "0.2.0",
   "permissions": ["fs:user-selected", "clipboard:write"],
   "functions": {
-    "inspect": { "task": true },
-    "apply": { "task": true },
-    "restore": { "task": true },
-    "export": { "task": true }
+    "inspect": { "task": true, "interface": false },
+    "apply": { "task": true, "interface": false },
+    "restore": { "task": true, "interface": false },
+    "export": { "task": true, "interface": false },
+    "shaping": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.shaping.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["stitches", "rules"],
+          "properties": {
+            "stitches": { "type": "integer", "minimum": 0, "maximum": 1000000, "description": "i18n:api.shaping.stitches", "x-positional": 0 },
+            "rules": { "type": "array", "items": { "type": "string" }, "description": "i18n:api.shaping.rules", "x-positional": 1 }
+          }
+        },
+        "output": { "table": "/lines", "columns": [{ "key": "line", "label": "i18n:api.columns.line" }, { "key": "changes", "label": "i18n:api.columns.changes" }, { "key": "delta", "label": "i18n:api.columns.delta" }, { "key": "stitches", "label": "i18n:api.columns.stitches" }] },
+        "examples": ["tfp-knitting shaping 60 Sleeve:7:6:8:2", "tfp-knitting shaping 40 Left:4:4:3:-1,Right:4:4:3:-1"]
+      }
+    }
   },
   "sensitive": false
 }
