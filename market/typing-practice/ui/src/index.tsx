@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Badge, Button, Empty, Panel, Progress, Tooltip, toast } from '@toolforge/ui'
 import { callPlugin, host, usePlugin, usePluginState } from '@toolforge/plugin-ui-sdk'
-import { Copy, Pause, Play, RotateCcw, Timer, Trash2, Trophy } from 'lucide-react'
+import { Copy, Download, Pause, Play, RotateCcw, Timer, Trash2, Trophy } from 'lucide-react'
 import { passagesFor } from './passages'
 import { createQueue, createSettler, mergeMistakes, pasteFlag, type Settlement } from './settle'
-import type { Lang, Mode, Prepared, Score, ScoreOut, Session, SettleOut, TypingState } from './types'
+import type { Best, Lang, Mode, Prepared, Score, ScoreOut, Session, SettleOut, Source, TypingState } from './types'
 
 const CHALLENGE_MS = 60_000
 /** 计时器两次触发之间最多计入的时长：系统休眠或节流后的长间隔不算有效输入时间 */
 const MAX_TICK_MS = 1_000
 
-const initialState = (): TypingState => ({ cleared: {}, bests: {}, mistakes: {}, custom: '' })
+const initialState = (): TypingState => ({ cleared: {}, bests: {}, mistakes: {}, custom: '', drill: '' })
 
 const emptySession = (): Session => ({ attempts: 0, wrongAttempts: 0, pasted: false, activeMs: 0 })
 
@@ -66,10 +66,11 @@ export default function TypingPractice() {
   const passages = useMemo(() => passagesFor(lang), [lang])
   const passage = passages[passageIndex % passages.length]
   // 内容来源：内置关卡与自定义文本分开比较、分开解锁
-  const [source, setSource] = useState<'builtin' | 'custom'>('builtin')
+  const [source, setSource] = useState<Source>('builtin')
   const customText = state.custom.trim()
+  const drillText = (state.drill ?? '').trim()
   // 自由与挑战模式共用同一段文本，区别只在于是否限时
-  const target = source === 'custom' ? customText : passage.text
+  const target = source === 'custom' ? customText : source === 'drill' ? drillText : passage.text
 
   /** 当前文本的准备结果（Rust 切分可见字符、计算指纹并检查长度）；文本变了就重新准备 */
   const [preparedFor, setPreparedFor] = useState<{ text: string; value: Prepared | null; error: string | null } | null>(null)
@@ -92,7 +93,7 @@ export default function TypingPractice() {
 
   // 纪录桶：来源 + 语言 + 模式 + 内容 + 内容指纹，文本改动后旧纪录不再比较
   const bucket = prepared
-    ? `${source}:${lang}:${mode}:${source === 'custom' ? 'custom' : passage.id}:${prepared.fingerprint}`
+    ? `${source}:${lang}:${mode}:${source === 'builtin' ? passage.id : source}:${prepared.fingerprint}`
     : null
   const stageKey = source === 'builtin' ? `${lang}:${passage.id}` : null
   // 开局时固定纪录桶与关卡：完成时写入开局的那一桶
@@ -250,7 +251,7 @@ export default function TypingPractice() {
     submit(next, pasted)
   }
 
-  /** 易错字符重练：由 Rust 生成只含这些字符的文本，切换为自定义来源开始练习 */
+  /** 易错字符重练：由 Rust 生成只含这些字符的文本，单独保存（不覆盖自定义文本）并切到重练来源 */
   const drillMistakes = async () => {
     const chars = Object.keys(state.mistakes).join('')
     if (!chars) return
@@ -260,37 +261,84 @@ export default function TypingPractice() {
         len: 200,
         seed: Date.now() % 1_000_000,
       })
-      setState((current) => ({ ...current, custom: out.text }))
-      setSource('custom')
+      setState((current) => ({ ...current, drill: out.text }))
+      setSource('drill')
       reset()
     } catch (error) {
       toast.error(errorMessage(error))
     }
   }
 
-  /** 导出练习摘要（纯文本复制到剪贴板，不进入 Agent） */
-  const exportSummary = async () => {
-    const lines = [
-      `${t('typing.summaryTitle')}`,
-      ...Object.values(state.bests).map((b) => `${b.bucket}: CPM ${num(b.cpm)} · ${t('typing.accuracy')} ${pct(b.accuracy)}`),
-      topMistakes.length > 0 ? `${t('typing.mistakes')}: ${topMistakes.map(([ch, n]) => `${ch}×${n}`).join(' ')}` : '',
-    ].filter(Boolean)
+  /** 纪录桶 → 可读名称：来源 · 语言 · 模式 · 关卡（桶格式见 bucket） */
+  const bucketLabel = (key: string) => {
+    const [src, lng, md, id] = key.split(':')
+    const sourceName =
+      src === 'builtin' ? t('typing.sourceBuiltin') : src === 'drill' ? t('typing.sourceDrill') : t('typing.sourceCustom')
+    const stageIndex = src === 'builtin' ? passagesFor(lng === 'zh' ? 'zh' : 'en').findIndex((p) => p.id === id) : -1
+    return [
+      sourceName,
+      lng === 'zh' ? t('typing.langZh') : t('typing.langEn'),
+      md === 'challenge' ? t('typing.modeChallenge') : t('typing.modeFree'),
+      stageIndex >= 0 ? t('typing.stage', { index: stageIndex + 1 }) : '',
+    ]
+      .filter(Boolean)
+      .join(' · ')
+  }
+
+  /** 练习摘要纯文本：个人纪录（可读名称）、关卡进度与易错字符；只在界面导出，不进入 Agent */
+  const summaryText = () => {
+    const bests = Object.values(state.bests).sort((a: Best, b: Best) => b.at.localeCompare(a.at))
+    const stages = (['en', 'zh'] as const).map(
+      (l) =>
+        `${l === 'zh' ? t('typing.langZh') : t('typing.langEn')}: ${passagesFor(l).filter((p) => state.cleared[`${l}:${p.id}`]).length}/${passagesFor(l).length}`,
+    )
+    return [
+      t('typing.summaryTitle'),
+      '',
+      `${t('typing.summaryBests')}:`,
+      ...(bests.length > 0
+        ? bests.map(
+            (b) =>
+              `- ${bucketLabel(b.bucket)}: CPM ${num(b.cpm)}${b.bucket.split(':')[1] === 'en' ? ` · WPM ${num(b.wpm)}` : ''} · ${t('typing.accuracy')} ${pct(b.accuracy)} · ${(b.activeMs / 1000).toFixed(1)}s · ${b.at.slice(0, 10)}`,
+          )
+        : [`- ${t('typing.noBest')}`]),
+      '',
+      `${t('typing.summaryStages')}: ${stages.join(' · ')}`,
+      `${t('typing.mistakes')}: ${topMistakes.length > 0 ? topMistakes.map(([ch, n]) => `${ch}×${n}`).join(' ') : '—'}`,
+    ].join('\n')
+  }
+
+  const copySummary = async () => {
     try {
-      await host.clipboard.writeText(lines.join('\n'))
+      await host.clipboard.writeText(summaryText())
       toast.success(t('typing.summaryCopied'))
     } catch (error) {
       toast.error(errorMessage(error))
     }
   }
 
-  /** 清空纪录：第一次点击进入确认，再点一次才清空；自定义文本保留 */
+  /** 另存为文本文件：路径由用户在保存对话框中选择，取消则不写入 */
+  const saveSummary = async () => {
+    try {
+      const path = await host.dialog.saveFile(`typing-summary-${new Date().toISOString().slice(0, 10)}.txt`, [
+        { name: 'TXT', extensions: ['txt'] },
+      ])
+      if (!path) return
+      await host.fs.writeText(path, summaryText())
+      toast.success(t('typing.summarySaved'))
+    } catch (error) {
+      toast.error(errorMessage(error))
+    }
+  }
+
+  /** 清空纪录：第一次点击进入确认，再点一次才清空；自定义文本与重练文本保留 */
   const clearRecords = () => {
     if (!confirmClear) {
       setConfirmClear(true)
       return
     }
     setConfirmClear(false)
-    setState((current) => ({ ...initialState(), custom: current.custom }))
+    setState((current) => ({ ...initialState(), custom: current.custom, drill: current.drill ?? '' }))
     toast.success(t('typing.cleared'))
   }
 
@@ -345,7 +393,13 @@ export default function TypingPractice() {
           <Button size="sm" variant={source === 'custom' ? 'primary' : 'secondary'} onClick={() => { setSource('custom'); reset() }}>
             {t('typing.sourceCustom')}
           </Button>
+          {drillText && (
+            <Button size="sm" variant={source === 'drill' ? 'primary' : 'secondary'} onClick={() => { setSource('drill'); reset() }}>
+              {t('typing.sourceDrill')}
+            </Button>
+          )}
         </div>
+        {source === 'drill' && <p className="text-[12px] text-fg-muted">{t('typing.drillHint')}</p>}
         {source === 'custom' && (
           <>
             <textarea
@@ -463,6 +517,7 @@ export default function TypingPractice() {
           </div>
         </div>
         <Progress value={(score?.progress ?? 0) * 100} />
+        <p className="text-[12px] text-fg-muted">{lang === 'en' ? t('typing.formulaEn') : t('typing.formula')}</p>
       </Panel>
 
       <Panel title={t('typing.recordTitle')} bodyClassName="space-y-2 p-3 text-[13px]">
@@ -479,8 +534,13 @@ export default function TypingPractice() {
         )}
         <div className="flex items-center gap-2">
           <Tooltip content={t('typing.exportSummary')}>
-            <Button size="icon-sm" variant="ghost" aria-label={t('typing.exportSummary')} onClick={exportSummary}>
+            <Button size="icon-sm" variant="ghost" aria-label={t('typing.exportSummary')} onClick={copySummary}>
               <Copy />
+            </Button>
+          </Tooltip>
+          <Tooltip content={t('typing.saveSummary')}>
+            <Button size="icon-sm" variant="ghost" aria-label={t('typing.saveSummary')} onClick={saveSummary}>
+              <Download />
             </Button>
           </Tooltip>
           <Tooltip content={confirmClear ? t('typing.clearConfirm') : t('typing.clearRecords')}>

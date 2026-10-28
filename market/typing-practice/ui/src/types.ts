@@ -67,4 +67,9 @@ export interface TypingState {
   mistakes: Record<string, number>
   /** 用户自定义练习文本（只保存在本设备） */
   custom: string
+  /** 易错字符重练文本，与自定义文本分开保存，互不覆盖（旧存档可能没有该字段） */
+  drill?: string
 }
+
+/** 练习内容来源：内置关卡、自定义文本、易错字符重练 */
+export type Source = 'builtin' | 'custom' | 'drill'

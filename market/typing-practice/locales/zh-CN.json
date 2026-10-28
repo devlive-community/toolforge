@@ -59,8 +59,16 @@
     "finished": "本局已结束，点「重新开始」再来一局",
     "preparing": "正在准备文本…",
     "customLimit": "{{count}} / {{max}} 字",
-    "clearConfirm": "再次点击确认清空纪录、关卡进度与易错字符（自定义文本保留）",
-    "cleared": "已清空纪录"
+    "clearConfirm": "再次点击确认清空纪录、关卡进度与易错字符（自定义文本与重练文本保留）",
+    "cleared": "已清空纪录",
+    "sourceDrill": "易错重练",
+    "drillHint": "由易错字符生成，单独保存，不会覆盖自定义文本",
+    "formula": "准确率 =（全部尝试 − 错误尝试）÷ 全部尝试，纠正后错误仍计入；CPM = 正确字符 ÷ 有效分钟；按可见字符计数",
+    "formulaEn": "准确率 =（全部尝试 − 错误尝试）÷ 全部尝试，纠正后错误仍计入；CPM = 正确字符 ÷ 有效分钟；WPM = CPM ÷ 5",
+    "saveSummary": "将练习摘要另存为文件",
+    "summarySaved": "已保存练习摘要",
+    "summaryBests": "个人纪录",
+    "summaryStages": "关卡进度"
   },
   "api": {
     "score": {

@@ -59,8 +59,16 @@
     "finished": "Round over. Press Restart to go again",
     "preparing": "Preparing text…",
     "customLimit": "{{count}} / {{max}} characters",
-    "clearConfirm": "Click again to clear bests, stage progress and mistakes (custom text is kept)",
-    "cleared": "Records cleared"
+    "clearConfirm": "Click again to clear bests, stage progress and mistakes (custom and drill texts are kept)",
+    "cleared": "Records cleared",
+    "sourceDrill": "Mistake drill",
+    "drillHint": "Generated from your frequent mistakes and kept separately from your custom text",
+    "formula": "Accuracy = (attempts − wrong attempts) ÷ attempts, corrected errors still count; CPM = correct characters ÷ active minutes; visible characters are counted",
+    "formulaEn": "Accuracy = (attempts − wrong attempts) ÷ attempts, corrected errors still count; CPM = correct characters ÷ active minutes; WPM = CPM ÷ 5",
+    "saveSummary": "Save practice summary to a file",
+    "summarySaved": "Practice summary saved",
+    "summaryBests": "Personal bests",
+    "summaryStages": "Stage progress"
   },
   "api": {
     "score": {
