@@ -8680,6 +8680,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-collection-ledger"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "image",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-color"
 version = "0.1.0"
 dependencies = [

@@ -1,0 +1,236 @@
+{
+  "name": "收藏品与借还台账",
+  "description": "记录模型、卡牌、桌游等藏品的位置与份数，借出与归还按单登记，在手量与未还量始终守恒",
+  "help": [
+    "藏品资料：名称、系列/版次、自定义编号、类别、位置、品相与备注；同名不同版本靠系列、版次或编号区分。保有量 = 在手 + 借出未还。",
+    "借出：选择份数、借用人昵称、借出日期与可选的预计归还日。不能借出超过在手的份数；只记昵称，不读取通讯录、不自动催还。",
+    "归还：从具体借出单登记全部或部分归还，不能超过这张单尚未归还的份数。借出单与归还明细会一直保留，构成完整往来历史。",
+    "每次操作前都会显示受影响的数量（保有、在手、借出、这张单未还），确认并保存成功后才算完成；保存失败可以重试，不会重复登记。",
+    "撤销：可撤销最近一步（新增、编辑、调整数量、借出、归还、归档）。删除藏品与更换照片不可撤销。",
+    "调整保有量不能低于尚未归还的份数；借出过的藏品不能删除，可以归档，归档前需全部归还，往来历史保留。",
+    "待归还视图按逾期、即将到期（3 天内）、未设预计归还日排序；到期只是本地标记，不会提醒。",
+    "可导出藏品清单 CSV 与完整 JSON 备份（含照片）。恢复时可选择「追加」（只加入新记录，编号已存在的跳过，不覆盖现有记录）或「整体替换」（需确认）。全部数据保存在 ToolForge 本地。"
+  ],
+  "actions": {
+    "cancel": "取消",
+    "close": "关闭",
+    "save": "保存"
+  },
+  "tabs": {
+    "items": "藏品",
+    "pending": "待归还 {{count}}"
+  },
+  "summary": {
+    "items": "藏品 {{count}}",
+    "owned": "保有 {{count}}",
+    "available": "在手 {{count}}",
+    "outstanding": "借出 {{count}}",
+    "overdue": "逾期 {{count}} 单"
+  },
+  "counts": {
+    "owned": "保有量",
+    "available": "在手",
+    "outstanding": "借出未还",
+    "line": "保有 {{owned}} · 在手 {{available}} · 借出 {{outstanding}}"
+  },
+  "item": {
+    "new": "新增藏品",
+    "newTitle": "新增藏品",
+    "editTitle": "编辑藏品资料",
+    "edit": "编辑",
+    "details": "详情",
+    "archived": "已归档",
+    "name": "名称",
+    "series": "系列",
+    "edition": "版次",
+    "code": "自定义编号",
+    "category": "类别",
+    "location": "存放位置",
+    "condition": "品相",
+    "notes": "备注",
+    "created": "登记日期"
+  },
+  "owned": {
+    "action": "调整数量",
+    "title": "调整「{{name}}」的保有量",
+    "hint": "不能低于尚未归还的 {{outstanding}} 份"
+  },
+  "lend": {
+    "action": "借出",
+    "title": "借出「{{name}}」",
+    "confirm": "确认借出",
+    "borrower": "借用人昵称",
+    "borrowerHint": "只记录昵称，不读取通讯录",
+    "qty": "份数",
+    "qtyHint": "当前在手 {{available}} 份",
+    "date": "借出日期",
+    "due": "预计归还日（可选）",
+    "dueHint": "只用于本地列表标记",
+    "note": "备注"
+  },
+  "return": {
+    "action": "登记归还",
+    "title": "「{{name}}」归还（{{borrower}}）",
+    "confirm": "确认归还",
+    "summary": "这张单借出 {{qty}} 份，已还 {{returned}} 份，还欠 {{outstanding}} 份（{{date}} 借出）",
+    "qty": "归还份数",
+    "date": "归还日期",
+    "note": "备注"
+  },
+  "loan": {
+    "borrower": "借给 {{name}}",
+    "closed": "已全部归还",
+    "line": "借出 {{qty}} · 已还 {{returned}} · 未还 {{outstanding}} · {{date}}",
+    "due": "预计 {{date}} 归还",
+    "returnLine": "{{date}} 归还 {{qty}} 份{{note}}"
+  },
+  "due": {
+    "overdue": "逾期 {{days}} 天",
+    "soon": "{{days}} 天内到期",
+    "ok": "还有 {{days}} 天"
+  },
+  "impact": {
+    "title": "「{{name}}」数量变化",
+    "loan": "这张单未还（{{borrower}}）",
+    "checking": "正在核对数量…"
+  },
+  "archive": {
+    "action": "归档",
+    "restore": "取消归档",
+    "hint": "归档后不在默认列表中显示，也不能再借出；往来历史保留。需要先全部归还。",
+    "restoreHint": "取消归档后藏品回到默认列表，可以继续借出。"
+  },
+  "delete": {
+    "action": "删除",
+    "confirm": "确认删除",
+    "hint": "删除「{{name}}」及其照片，无法撤销。借出过的藏品只能归档。"
+  },
+  "undo": {
+    "hint": "把最近一步操作撤回，数量回到操作前。",
+    "confirm": "确认撤销",
+    "create": "撤销新增",
+    "edit": "撤销编辑",
+    "setOwned": "撤销数量调整",
+    "lend": "撤销借出",
+    "return": "撤销归还",
+    "archive": "撤销归档变更"
+  },
+  "photo": {
+    "add": "添加照片",
+    "replace": "更换照片",
+    "remove": "移除照片",
+    "images": "图片"
+  },
+  "filter": {
+    "search": "搜索名称、系列、编号、位置或备注",
+    "allLocations": "全部位置",
+    "allCategories": "全部类别",
+    "all": "全部",
+    "inHand": "在手",
+    "lent": "借出中",
+    "archived": "已归档"
+  },
+  "empty": {
+    "none": "还没有藏品，先新增一件吧",
+    "filtered": "没有符合条件的藏品"
+  },
+  "pending": {
+    "hint": "逾期在前，其次是即将到期（3 天内），没有预计归还日的在最后；到期只是本地标记。",
+    "empty": "没有待归还的借出单"
+  },
+  "history": {
+    "title": "往来历史（{{count}} 单）",
+    "empty": "还没有借出记录"
+  },
+  "page": {
+    "prev": "上一页",
+    "next": "下一页",
+    "number": "第 {{page}} 页",
+    "total": "共 {{count}} 条"
+  },
+  "save": {
+    "failed": "保存失败：{{reason}}",
+    "pending": "上一步已核对但还没有保存成功，其他操作已暂停。请重试保存。",
+    "retry": "重试保存",
+    "retried": "已保存"
+  },
+  "export": {
+    "list": "导出清单 CSV",
+    "backup": "导出完整备份 JSON",
+    "saved": "已导出"
+  },
+  "restore": {
+    "action": "从备份恢复",
+    "title": "从备份恢复",
+    "merge": "追加",
+    "replace": "整体替换",
+    "mergeHint": "只加入编号不存在的藏品及其借出单；编号已存在的记录会跳过，不会覆盖现有记录。",
+    "replaceHint": "用备份替换当前全部藏品、借出单与照片，无法撤销。",
+    "added": "将加入 {{items}} 件藏品、{{loans}} 张借出单、{{photos}} 张照片",
+    "skipped": "跳过已存在的 {{items}} 件藏品、{{loans}} 张借出单",
+    "removed": "将移除当前 {{items}} 件藏品、{{loans}} 张借出单",
+    "confirmMerge": "追加记录",
+    "confirmReplace": "确认替换",
+    "done": "已从备份恢复"
+  },
+  "done": {
+    "create": "已新增藏品",
+    "edit": "已保存资料",
+    "setOwned": "已调整数量",
+    "lend": "已登记借出",
+    "return": "已登记归还",
+    "archive": "已更新归档状态",
+    "delete": "已删除",
+    "setPhoto": "已更新照片",
+    "undo": "已撤销"
+  },
+  "csv": {
+    "name": "名称",
+    "series": "系列",
+    "edition": "版次",
+    "code": "编号",
+    "category": "类别",
+    "location": "位置",
+    "condition": "品相",
+    "owned": "保有",
+    "available": "在手",
+    "outstanding": "借出",
+    "archived": "已归档",
+    "notes": "备注"
+  },
+  "errors": {
+    "ledger.item_not_found": "找不到这件藏品",
+    "ledger.loan_not_found": "找不到这张借出单",
+    "ledger.bad_item": "藏品数据无效",
+    "ledger.bad_name": "名称不能为空，且不超过 80 字",
+    "ledger.text_too_long": "文字过长",
+    "ledger.bad_qty": "数量无效（1–{{max}}）",
+    "ledger.bad_schema": "台账版本不受支持",
+    "ledger.too_many": "记录数量已达上限",
+    "ledger.duplicate_id": "记录编号重复",
+    "ledger.broken_link": "借出单指向不存在的藏品",
+    "ledger.bad_date": "日期格式应为 YYYY-MM-DD",
+    "ledger.due_before_loan": "预计归还日不能早于借出日",
+    "ledger.bad_loan": "借出单数据无效（需要借用人与份数）",
+    "ledger.bad_return": "归还明细数据无效",
+    "ledger.over_return": "归还份数不能超过这张单尚未归还的 {{outstanding}} 份",
+    "ledger.conservation": "数量不守恒：借出未还超过保有量",
+    "ledger.bad_ledger": "台账数据无效",
+    "ledger.ledger_full": "台账已满，请归档或导出后清理",
+    "ledger.bad_op": "操作无效",
+    "ledger.stale": "数据已更新，请重新操作",
+    "ledger.below_outstanding": "保有量不能低于尚未归还的 {{outstanding}} 份",
+    "ledger.archived": "已归档的藏品不能借出",
+    "ledger.over_available": "借出份数需在 1 到在手的 {{available}} 份之间",
+    "ledger.future_date": "日期不能晚于今天",
+    "ledger.return_before_loan": "归还日期不能早于借出日期",
+    "ledger.archive_lent": "还有借出未还，不能归档",
+    "ledger.delete_with_loans": "借出过的藏品不能删除，可以归档",
+    "ledger.nothing_to_undo": "没有可撤销的操作",
+    "ledger.photo_too_large": "图片过大",
+    "ledger.bad_photo": "无法读取这张图片",
+    "ledger.bad_headers": "导出表头无效",
+    "ledger.backup_too_large": "备份文件过大（最多 16 MB）",
+    "ledger.bad_backup": "不是有效的藏品台账备份"
+  }
+}

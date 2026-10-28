@@ -1,0 +1,236 @@
+{
+  "name": "Collection & Lending Ledger",
+  "description": "Track where your models, cards and board games are and how many you have; lend and return per slip with counts that always add up",
+  "help": [
+    "Item details: name, series/edition, your own code, category, location, condition and notes. Same-name versions are told apart by series, edition or code. Owned = in hand + lent out.",
+    "Lend: choose the quantity, a borrower nickname, the date and an optional due date. You cannot lend more than you have in hand. Only a nickname is stored; contacts are never read and nothing is sent as a reminder.",
+    "Return: record a full or partial return against a specific loan slip, never more than that slip still owes. Slips and returns are kept as a complete history.",
+    "Before each action you see the quantities it changes (owned, in hand, lent, owed on the slip); it only counts once confirmed and saved. If saving fails you can retry without recording twice.",
+    "Undo reverts the latest step (add, edit, quantity change, lend, return, archive). Deleting an item and changing photos cannot be undone.",
+    "Owned cannot go below what is still lent. Items that were ever lent cannot be deleted; archive them instead once everything is returned, keeping their history.",
+    "The to-return view lists overdue first, then due within 3 days, then slips without a due date. Due dates are local markers only.",
+    "Export the item list as CSV or a full JSON backup with photos. Restoring can append (only new records; existing ids are skipped, never overwritten) or replace everything (with confirmation). All data stays in ToolForge on this device."
+  ],
+  "actions": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save"
+  },
+  "tabs": {
+    "items": "Items",
+    "pending": "To return {{count}}"
+  },
+  "summary": {
+    "items": "{{count}} items",
+    "owned": "{{count}} owned",
+    "available": "{{count}} in hand",
+    "outstanding": "{{count}} lent",
+    "overdue": "{{count}} overdue"
+  },
+  "counts": {
+    "owned": "Owned",
+    "available": "In hand",
+    "outstanding": "Lent out",
+    "line": "Owned {{owned}} · In hand {{available}} · Lent {{outstanding}}"
+  },
+  "item": {
+    "new": "Add item",
+    "newTitle": "Add item",
+    "editTitle": "Edit item",
+    "edit": "Edit",
+    "details": "Details",
+    "archived": "Archived",
+    "name": "Name",
+    "series": "Series",
+    "edition": "Edition",
+    "code": "Code",
+    "category": "Category",
+    "location": "Location",
+    "condition": "Condition",
+    "notes": "Notes",
+    "created": "Added"
+  },
+  "owned": {
+    "action": "Adjust quantity",
+    "title": "Adjust quantity of \"{{name}}\"",
+    "hint": "Cannot go below the {{outstanding}} still lent"
+  },
+  "lend": {
+    "action": "Lend",
+    "title": "Lend \"{{name}}\"",
+    "confirm": "Confirm loan",
+    "borrower": "Borrower nickname",
+    "borrowerHint": "Only a nickname is stored; contacts are never read",
+    "qty": "Quantity",
+    "qtyHint": "{{available}} in hand",
+    "date": "Loan date",
+    "due": "Due date (optional)",
+    "dueHint": "Only used as a local marker",
+    "note": "Note"
+  },
+  "return": {
+    "action": "Record return",
+    "title": "Return of \"{{name}}\" ({{borrower}})",
+    "confirm": "Confirm return",
+    "summary": "This slip lent {{qty}}, {{returned}} returned, {{outstanding}} still owed (lent {{date}})",
+    "qty": "Quantity returned",
+    "date": "Return date",
+    "note": "Note"
+  },
+  "loan": {
+    "borrower": "Lent to {{name}}",
+    "closed": "Fully returned",
+    "line": "Lent {{qty}} · Returned {{returned}} · Owed {{outstanding}} · {{date}}",
+    "due": "Due {{date}}",
+    "returnLine": "{{date}} returned {{qty}}{{note}}"
+  },
+  "due": {
+    "overdue": "{{days}} days overdue",
+    "soon": "Due in {{days}} days",
+    "ok": "{{days}} days left"
+  },
+  "impact": {
+    "title": "Quantity changes for \"{{name}}\"",
+    "loan": "Owed on this slip ({{borrower}})",
+    "checking": "Checking quantities…"
+  },
+  "archive": {
+    "action": "Archive",
+    "restore": "Unarchive",
+    "hint": "Archived items leave the default list and cannot be lent; their history is kept. Everything must be returned first.",
+    "restoreHint": "The item returns to the default list and can be lent again."
+  },
+  "delete": {
+    "action": "Delete",
+    "confirm": "Delete",
+    "hint": "Delete \"{{name}}\" and its photo. This cannot be undone. Items that were ever lent can only be archived."
+  },
+  "undo": {
+    "hint": "Revert the latest step; quantities go back to what they were.",
+    "confirm": "Undo",
+    "create": "Undo add",
+    "edit": "Undo edit",
+    "setOwned": "Undo quantity change",
+    "lend": "Undo loan",
+    "return": "Undo return",
+    "archive": "Undo archive change"
+  },
+  "photo": {
+    "add": "Add photo",
+    "replace": "Replace photo",
+    "remove": "Remove photo",
+    "images": "Images"
+  },
+  "filter": {
+    "search": "Search name, series, code, location or notes",
+    "allLocations": "All locations",
+    "allCategories": "All categories",
+    "all": "All",
+    "inHand": "In hand",
+    "lent": "Lent",
+    "archived": "Archived"
+  },
+  "empty": {
+    "none": "No items yet. Add your first one",
+    "filtered": "No items match the filters"
+  },
+  "pending": {
+    "hint": "Overdue first, then due within 3 days, then slips without a due date. Due dates are local markers only.",
+    "empty": "Nothing is out on loan"
+  },
+  "history": {
+    "title": "History ({{count}} slips)",
+    "empty": "No loans yet"
+  },
+  "page": {
+    "prev": "Previous",
+    "next": "Next",
+    "number": "Page {{page}}",
+    "total": "{{count}} in total"
+  },
+  "save": {
+    "failed": "Saving failed: {{reason}}",
+    "pending": "The last step was checked but not saved yet; other actions are paused. Please retry saving.",
+    "retry": "Retry saving",
+    "retried": "Saved"
+  },
+  "export": {
+    "list": "Export list as CSV",
+    "backup": "Export full JSON backup",
+    "saved": "Exported"
+  },
+  "restore": {
+    "action": "Restore from backup",
+    "title": "Restore from backup",
+    "merge": "Append",
+    "replace": "Replace all",
+    "mergeHint": "Only items whose ids are new are added, with their loans; records with existing ids are skipped and never overwritten.",
+    "replaceHint": "Replaces all current items, loans and photos with the backup. This cannot be undone.",
+    "added": "Adds {{items}} items, {{loans}} loan slips and {{photos}} photos",
+    "skipped": "Skips {{items}} existing items and {{loans}} loan slips",
+    "removed": "Removes the current {{items}} items and {{loans}} loan slips",
+    "confirmMerge": "Append",
+    "confirmReplace": "Replace",
+    "done": "Restored from backup"
+  },
+  "done": {
+    "create": "Item added",
+    "edit": "Details saved",
+    "setOwned": "Quantity adjusted",
+    "lend": "Loan recorded",
+    "return": "Return recorded",
+    "archive": "Archive status updated",
+    "delete": "Deleted",
+    "setPhoto": "Photo updated",
+    "undo": "Undone"
+  },
+  "csv": {
+    "name": "Name",
+    "series": "Series",
+    "edition": "Edition",
+    "code": "Code",
+    "category": "Category",
+    "location": "Location",
+    "condition": "Condition",
+    "owned": "Owned",
+    "available": "In hand",
+    "outstanding": "Lent",
+    "archived": "Archived",
+    "notes": "Notes"
+  },
+  "errors": {
+    "ledger.item_not_found": "Item not found",
+    "ledger.loan_not_found": "Loan slip not found",
+    "ledger.bad_item": "Invalid item data",
+    "ledger.bad_name": "Name must not be empty and at most 80 characters",
+    "ledger.text_too_long": "Text is too long",
+    "ledger.bad_qty": "Invalid quantity (1–{{max}})",
+    "ledger.bad_schema": "Unsupported ledger version",
+    "ledger.too_many": "Record limit reached",
+    "ledger.duplicate_id": "Duplicate record id",
+    "ledger.broken_link": "A loan slip points to a missing item",
+    "ledger.bad_date": "Dates must be YYYY-MM-DD",
+    "ledger.due_before_loan": "The due date cannot be before the loan date",
+    "ledger.bad_loan": "Invalid loan (borrower and quantity required)",
+    "ledger.bad_return": "Invalid return entry",
+    "ledger.over_return": "Cannot return more than the {{outstanding}} still owed on this slip",
+    "ledger.conservation": "Counts do not add up: more lent than owned",
+    "ledger.bad_ledger": "Invalid ledger data",
+    "ledger.ledger_full": "The ledger is full; archive or export and clean up",
+    "ledger.bad_op": "Invalid action",
+    "ledger.stale": "Data changed; please try again",
+    "ledger.below_outstanding": "Owned cannot go below the {{outstanding}} still lent",
+    "ledger.archived": "Archived items cannot be lent",
+    "ledger.over_available": "Quantity must be between 1 and the {{available}} in hand",
+    "ledger.future_date": "The date cannot be after today",
+    "ledger.return_before_loan": "The return date cannot be before the loan date",
+    "ledger.archive_lent": "Items still lent cannot be archived",
+    "ledger.delete_with_loans": "Items that were lent cannot be deleted; archive them instead",
+    "ledger.nothing_to_undo": "Nothing to undo",
+    "ledger.photo_too_large": "The picture is too large",
+    "ledger.bad_photo": "The picture could not be read",
+    "ledger.bad_headers": "Invalid export headers",
+    "ledger.backup_too_large": "The backup is too large (16 MB max)",
+    "ledger.bad_backup": "Not a valid collection ledger backup"
+  }
+}

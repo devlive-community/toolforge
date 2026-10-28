@@ -1,0 +1,23 @@
+{
+  "id": "org.devlive.toolforge.collection-ledger",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": ["collection", "inventory", "lending", "loan", "return", "board game", "cards", "models", "收藏", "藏品", "借出", "归还", "台账", "桌游", "卡牌", "模型"],
+  "accent": "amber",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "empty": { "interface": false },
+    "view": { "interface": false },
+    "history": { "interface": false },
+    "apply": { "interface": false },
+    "photo": { "interface": false },
+    "exportList": { "interface": false },
+    "exportBackup": { "interface": false },
+    "restore": { "interface": false }
+  },
+  "sensitive": true
+}
