@@ -7,7 +7,8 @@
     ".": "./src/index.tsx"
   },
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "node --experimental-strip-types --test tests/settle.test.mjs"
   },
   "peerDependencies": {
     "react": "^19"

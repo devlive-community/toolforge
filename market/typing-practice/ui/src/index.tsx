@@ -3,6 +3,7 @@ import { Badge, Button, Empty, Panel, Progress, Tooltip, toast } from '@toolforg
 import { callPlugin, host, usePlugin, usePluginState } from '@toolforge/plugin-ui-sdk'
 import { Copy, Pause, Play, RotateCcw, Timer, Trash2, Trophy } from 'lucide-react'
 import { passagesFor } from './passages'
+import { createSettler, pasteFlag, type Settlement } from './settle'
 import type { Best, Lang, Mode, Score, ScoreOut, Session, Snapshot, TypingState } from './types'
 
 const CHALLENGE_MS = 60_000
@@ -30,6 +31,9 @@ function diffInput(target: string, prev: string, next: string): { added: number;
   return { added, wrongAdded }
 }
 
+/** 一局的完整结果：后端成绩 + 用时 + 是否粘贴（结算器据此决定是否记录） */
+type RoundResult = Score & { activeMs: number; pasted: boolean }
+
 export default function TypingPractice() {
   const { t, manifest, errorMessage } = usePlugin()
   const [state, setState] = usePluginState<TypingState>('state', initialState())
@@ -47,6 +51,10 @@ export default function TypingPractice() {
   const pausedByUser = useRef(false)
   // 连续输入时读取最新累计状态，避免闭包读到旧 session 导致尝试次数漏计
   const sessionRef = useRef<Session>(emptySession())
+  /** 粘贴事件先于 onChange 发生：粘贴后置位，由下一次提交消费并计入本局 */
+  const pendingPaste = useRef(false)
+  /** 一局只结算一次（规则与测试见 settle.ts）；处理函数在 complete 时传入，始终是当前渲染的 finish */
+  const [settler] = useState(() => createSettler())
   // 计时以 ref 为准（计时器只写 ref 并同步到 state），避免闭包读到旧时间
   const elapsedRef = useRef(0)
   const modeRef = useRef<Mode>('free')
@@ -92,6 +100,8 @@ export default function TypingPractice() {
     elapsedRef.current = 0
     setRunning(false)
     pausedByUser.current = false
+    pendingPaste.current = false
+    settler.reset()
   }
 
   /** 把一次提交交给后端计分；组合输入（IME）期间不结算 */
@@ -110,12 +120,17 @@ export default function TypingPractice() {
         elapsedMs: elapsedRef.current,
         session: sessionRef.current,
       })
-      sessionRef.current = out.session
-      setSession(out.session)
+      // 本局一旦出现过粘贴，即使后续继续手打，也保持练习标记
+      const carried = { ...out.session, pasted: pasteFlag(sessionRef.current.pasted, out.session.pasted) }
+      sessionRef.current = carried
+      setSession(carried)
       setScore(out.score)
       if (pasted) toast.info(t('typing.pasteNotice'))
       if (added > 0 && wrongAdded > 0) recordMistakes(prev, next)
-      if (out.score.completed) finish(out.session, out.score)
+      if (out.score.completed) {
+        const round: RoundResult = { ...out.score, activeMs: carried.activeMs, pasted: carried.pasted }
+        settler.complete(round, finish)
+      }
     } catch (error) {
       toast.error(errorMessage(error))
     }
@@ -138,19 +153,19 @@ export default function TypingPractice() {
     })
   }
 
-  /** 完成一局：粘贴过的局只展示，不写入正式纪录 */
-  const finish = (finalSession: Session, final: Score) => {
+  /** 完成一局：粘贴过的局只展示，不写入正式纪录（record 由结算器给出） */
+  const finish = (result: Settlement<RoundResult>) => {
     setRunning(false)
     const key = sessionBucket.current
     const isBuiltin = key.startsWith('builtin:')
     setState((current) => {
       // 只有内置关卡参与解锁；自定义文本不影响关卡进度
       const cleared = isBuiltin ? { ...current.cleared, [`${lang}:${passage.id}`]: true } : current.cleared
-      if (final.pasted) return { ...current, cleared }
+      if (!result.record) return { ...current, cleared }
       const prev = current.bests[key]
-      const better = !prev || (final.cpm ?? 0) > (prev.cpm ?? 0)
+      const better = !prev || (result.cpm ?? 0) > (prev.cpm ?? 0)
       const best: Best | undefined = better
-        ? { bucket: key, cpm: final.cpm, wpm: final.wpm, accuracy: final.accuracy, activeMs: finalSession.activeMs, at: new Date().toISOString() }
+        ? { bucket: key, cpm: result.cpm, wpm: result.wpm, accuracy: result.accuracy, activeMs: result.activeMs, at: new Date().toISOString() }
         : undefined
       return { ...current, cleared, bests: best ? { ...current.bests, [key]: best } : current.bests }
     })
@@ -168,7 +183,9 @@ export default function TypingPractice() {
     setTyped(next)
     // 有输入即开始计时；暂停后的聚焦不会自动恢复，需用户点击继续
     if (!running && next.length > 0 && !score?.completed && !pausedByUser.current) setRunning(true)
-    void submit(next, false)
+    const pasted = pendingPaste.current
+    pendingPaste.current = false
+    void submit(next, pasted)
   }
 
   /** 易错字符重练：由 Rust 生成只含这些字符的文本，切换为自定义来源开始练习 */
@@ -205,7 +222,9 @@ export default function TypingPractice() {
   }
 
   const onPaste = () => {
-    // 粘贴动作标记为练习模式；内容随后由 onChange 计入
+    // 粘贴动作标记为练习模式；内容随后由 onChange 计入本局
+    pendingPaste.current = true
+    sessionRef.current = { ...sessionRef.current, pasted: true }
     setSession((s) => ({ ...s, pasted: true }))
   }
 
