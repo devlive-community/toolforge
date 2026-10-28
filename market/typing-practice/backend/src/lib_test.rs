@@ -121,3 +121,25 @@ fn settle_records_a_clean_round_and_rejects_a_pasted_one() {
         json!(120.0)
     );
 }
+
+#[test]
+fn every_dispatched_function_is_declared_in_manifest() {
+    // 宿主按 manifest.functions 放行调用，漏声明会在界面报「插件不支持该操作」
+    let plugin = TypingPractice::default();
+    let declared = &plugin.manifest().functions;
+    for name in FUNCTIONS {
+        assert!(declared.contains_key(name), "{name} 未在 manifest 中声明");
+    }
+    assert_eq!(
+        declared.len(),
+        FUNCTIONS.len(),
+        "manifest 声明了后端不处理的函数"
+    );
+    for name in FUNCTIONS {
+        let err = plugin.call(name, json!({})).err();
+        assert!(
+            err.is_none_or(|e| e.code != "plugin.function_not_found"),
+            "{name} 未在后端分发"
+        );
+    }
+}

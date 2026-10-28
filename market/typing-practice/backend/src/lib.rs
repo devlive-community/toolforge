@@ -154,6 +154,10 @@ fn settle_call(args: Value) -> PluginResult<Value> {
     to_value(outcome)
 }
 
+/// 后端分发的全部函数；宿主只允许调用 manifest 中声明过的函数，测试据此核对两边一致
+#[cfg(test)]
+const FUNCTIONS: [&str; 4] = ["score", "drill", "prepare", "settle"];
+
 impl ToolPlugin for TypingPractice {
     fn manifest(&self) -> &Manifest {
         &self.manifest

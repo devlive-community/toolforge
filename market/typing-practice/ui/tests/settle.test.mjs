@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { setTimeout as sleep } from 'node:timers/promises'
 import { createQueue, createSettler, mergeMistakes, pasteFlag } from '../src/settle.ts'
 
 const outcome = (overrides = {}) => ({ cpm: 120, pasted: false, activeMs: 1000, ...overrides })
@@ -59,8 +60,7 @@ test('mistakes accumulate per character and keep only the most frequent kinds', 
 test('queued submissions run strictly in order even when an earlier one is slower', async () => {
   const queue = createQueue()
   const order = []
-  const wait = (ms) => new Promise((r) => setTimeout(r, ms))
-  queue.push(async () => { await wait(20); order.push(1) })
+  queue.push(async () => { await sleep(20); order.push(1) })
   queue.push(async () => { order.push(2) })
   await queue.push(async () => { order.push(3) })
   assert.deepEqual(order, [1, 2, 3])

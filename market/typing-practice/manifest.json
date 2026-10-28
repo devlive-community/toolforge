@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.typing-practice",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "life",
@@ -122,6 +122,12 @@
           "tfp-typing-practice drill ilo --len 80 --seed 7"
         ]
       }
+    },
+    "prepare": {
+      "interface": false
+    },
+    "settle": {
+      "interface": false
     }
   },
   "sensitive": false
