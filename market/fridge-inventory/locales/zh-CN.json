@@ -131,6 +131,28 @@
     "fridge.too_many_batches": "批次最多 {{limit}} 条",
     "fridge.too_many_movements": "变动记录数已达上限",
     "fridge.name_required": "请填写食材名称",
-    "fridge.location_in_use": "该位置还有批次使用，先移动或删除批次"
+    "fridge.location_in_use": "该位置还有批次使用，先移动或删除批次",
+    "fridge.bad_item": "无法识别：{{value}}（应为「名称:YYYY-MM-DD」）",
+    "fridge.bad_items": "需要 1–{{limit}} 项"
+  },
+  "api": {
+    "expiry": {
+      "summary": "按标签日期把食材分成逾期、临近和正常，临期的排在前面",
+      "items": "每项写成「名称:YYYY-MM-DD」，逗号分隔或重复传入",
+      "today": "今天的日期（YYYY-MM-DD），缺省取本机日期",
+      "soonDays": "距标签日期不超过多少天算临近"
+    },
+    "convert": {
+      "summary": "换算食材数量单位（克/千克、毫升/升；包、个等计数单位不互相换算）",
+      "amount": "数量",
+      "from": "原单位",
+      "to": "目标单位"
+    },
+    "columns": {
+      "name": "名称",
+      "date": "标签日期",
+      "state": "状态",
+      "days": "剩余天数"
+    }
   }
 }

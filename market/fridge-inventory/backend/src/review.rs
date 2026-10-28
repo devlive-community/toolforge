@@ -67,7 +67,7 @@ pub fn remaining_base(batch: &Batch, movements: &[Movement]) -> f64 {
         })
 }
 
-fn date_state(day: i64, today: i64, soon_days: u32) -> String {
+pub fn date_state(day: i64, today: i64, soon_days: u32) -> String {
     if day < today {
         "overdue".to_owned()
     } else if day <= today + i64::from(soon_days) {

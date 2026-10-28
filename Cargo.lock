@@ -8909,6 +8909,7 @@ dependencies = [
 name = "tfm-fridge-inventory"
 version = "0.1.0"
 dependencies = [
+ "jiff",
  "serde",
  "serde_json",
  "tf-plugin-api",

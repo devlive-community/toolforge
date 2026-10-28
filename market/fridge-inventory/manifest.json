@@ -1,16 +1,53 @@
 {
   "id": "org.devlive.toolforge.fridge-inventory",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
-  "category": "other",
+  "category": "life",
   "keywords": ["fridge", "food", "expiry", "inventory", "batch", "冰箱", "食材", "到期", "库存", "批次"],
   "accent": "cyan",
   "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
   "permissions": ["fs:user-selected"],
   "functions": {
-    "review": {},
-    "apply": {}
+    "review": { "interface": false },
+    "apply": { "interface": false },
+    "expiry": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.expiry.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["items"],
+          "properties": {
+            "items": { "type": "array", "items": { "type": "string" }, "description": "i18n:api.expiry.items", "x-positional": 0 },
+            "today": { "type": "string", "description": "i18n:api.expiry.today" },
+            "soonDays": { "type": "integer", "minimum": 0, "maximum": 365, "default": 3, "description": "i18n:api.expiry.soonDays" }
+          }
+        },
+        "output": { "table": "", "columns": [{ "key": "name", "label": "i18n:api.columns.name" }, { "key": "date", "label": "i18n:api.columns.date" }, { "key": "state", "label": "i18n:api.columns.state" }, { "key": "days", "label": "i18n:api.columns.days" }] },
+        "examples": ["tfp-fridge-inventory expiry Milk:2026-11-02,Eggs:2026-11-20 --soon-days 3"]
+      }
+    },
+    "convert": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.convert.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["amount", "from", "to"],
+          "properties": {
+            "amount": { "type": "number", "minimum": 0, "description": "i18n:api.convert.amount", "x-positional": 0 },
+            "from": { "type": "string", "enum": ["g", "kg", "ml", "l", "piece", "pack", "bag", "box", "bottle", "can"], "description": "i18n:api.convert.from", "x-positional": 1 },
+            "to": { "type": "string", "enum": ["g", "kg", "ml", "l", "piece", "pack", "bag", "box", "bottle", "can"], "description": "i18n:api.convert.to", "x-positional": 2 }
+          }
+        },
+        "output": { "text": "/text" },
+        "examples": ["tfp-fridge-inventory convert 1.5 kg g"]
+      }
+    }
   },
   "sensitive": false
 }

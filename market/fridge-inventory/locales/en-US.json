@@ -131,6 +131,28 @@
     "fridge.too_many_batches": "At most {{limit}} batches",
     "fridge.too_many_movements": "Movement record limit reached",
     "fridge.name_required": "Enter a food name",
-    "fridge.location_in_use": "Batches still use this location; move or delete them first"
+    "fridge.location_in_use": "Batches still use this location; move or delete them first",
+    "fridge.bad_item": "Cannot read: {{value}} (expected \"name:YYYY-MM-DD\")",
+    "fridge.bad_items": "Between 1 and {{limit}} items are required"
+  },
+  "api": {
+    "expiry": {
+      "summary": "Sort food by label date into overdue, due soon and fine, soonest first",
+      "items": "Each item as \"name:YYYY-MM-DD\", comma separated or repeated",
+      "today": "Today's date (YYYY-MM-DD); defaults to this computer's date",
+      "soonDays": "How many days before the label date count as due soon"
+    },
+    "convert": {
+      "summary": "Convert food quantities (g/kg, ml/l; count units such as packs and pieces are never converted)",
+      "amount": "Amount",
+      "from": "From unit",
+      "to": "To unit"
+    },
+    "columns": {
+      "name": "Name",
+      "date": "Label date",
+      "state": "State",
+      "days": "Days left"
+    }
   }
 }
