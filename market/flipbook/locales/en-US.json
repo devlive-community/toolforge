@@ -1,0 +1,101 @@
+{
+  "name": "Flipbook Studio",
+  "description": "Draw frame by frame with onion skin, preview the loop, and export a GIF or PNG frame sequence; works stay on this device",
+  "help": [
+    "Pick a fixed canvas size when creating a work; every frame keeps that size. Works and each frame are saved separately in ToolForge on this device, offline.",
+    "Draw on the current frame with the brush or eraser. You can import your own picture into the current frame; it is fitted inside the canvas, centered, and placed over what is already there.",
+    "In the timeline you can add blank frames, duplicate, delete, and drag thumbnails to reorder. A work always keeps at least one frame, and a duplicated frame is independent from the original.",
+    "Onion skin shows the previous frame semi-transparently as a drawing guide. It never appears in exports.",
+    "Undo/redo covers drawing, imports, adding, deleting and reordering frames, even after switching frames (⌘/Ctrl+Z, ⇧⌘/Ctrl+Shift+Z).",
+    "Each frame stays 20–2000 ms in 10 ms steps. Playback loops with this timing, the same as the export. Switching tools, editing, or leaving the tool stops playback.",
+    "GIF export composites each frame on the chosen background and loops forever. A PNG sequence keeps transparency and is written to the folder you choose. Exports can be cancelled and never change the work.",
+    "Limits: up to 120 frames and 40 MB of frame data per work, up to 20 works; imported pictures up to 20 MB and 24 megapixels."
+  ],
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "work": {
+    "choose": "Choose a work",
+    "new": "New work",
+    "newTitle": "New work",
+    "name": "Name",
+    "size": "Canvas size",
+    "sizeHint": "The canvas size cannot be changed later.",
+    "create": "Create",
+    "untitled": "Untitled animation",
+    "rename": "Rename work",
+    "delete": "Delete work",
+    "deleteConfirm": "Click again to delete the whole work (cannot be undone)",
+    "empty": "No works yet. Create one to start drawing"
+  },
+  "tool": {
+    "brush": "Brush",
+    "eraser": "Eraser",
+    "color": "Color",
+    "size": "Size",
+    "onion": "Onion skin (previous frame)"
+  },
+  "history": {
+    "undo": "Undo",
+    "redo": "Redo"
+  },
+  "stage": {
+    "label": "Canvas of frame {{index}}"
+  },
+  "play": {
+    "play": "Play",
+    "pause": "Pause",
+    "prev": "Previous frame",
+    "next": "Next frame",
+    "position": "Frame {{index}} / {{count}}",
+    "delay": "Per frame (ms)",
+    "speed": "About {{fps}} fps, {{seconds}} s per loop"
+  },
+  "frames": {
+    "title": "Frames",
+    "add": "Add a blank frame after this one",
+    "duplicate": "Duplicate current frame",
+    "delete": "Delete current frame",
+    "import": "Import a picture into the current frame",
+    "label": "Frame {{index}}",
+    "count": "{{count}} / {{max}} frames",
+    "hint": "Click a thumbnail to switch frames, drag it to reorder, press Esc to cancel dragging."
+  },
+  "import": {
+    "images": "Images"
+  },
+  "export": {
+    "title": "Export",
+    "gif": "Looping GIF",
+    "png": "PNG sequence",
+    "background": "Background",
+    "start": "Export…",
+    "cancel": "Cancel export",
+    "done": "Exported {{count}} file(s)",
+    "cancelled": "Export cancelled",
+    "gifHint": "Each GIF frame is composited on the chosen background and loops forever, with the same order and timing as the preview.",
+    "pngHint": "Choose a folder; frames are written as name-001.png and so on, keeping transparency."
+  },
+  "errors": {
+    "missingWork": "The work's data is missing; it may have been deleted",
+    "tooManyWorks": "Up to {{max}} works can be kept. Delete one you no longer need first",
+    "flipbook.bad_size": "Unsupported canvas size: {{width}} × {{height}}",
+    "flipbook.frame_too_large": "This frame is too large to save",
+    "flipbook.bad_frame": "Frame data is damaged or has the wrong size",
+    "flipbook.encode": "Image encoding failed",
+    "flipbook.bad_color": "Invalid color: {{color}}",
+    "flipbook.bad_stroke": "Invalid stroke data",
+    "flipbook.bad_image": "This picture could not be read",
+    "flipbook.image_too_large": "The picture is too large (24 megapixels at most)",
+    "flipbook.bad_name": "The name must not be empty and at most 60 characters",
+    "flipbook.bad_project": "Invalid work data",
+    "flipbook.bad_index": "Invalid frame position",
+    "flipbook.history_full": "Too many edits are kept; reopen the work to continue",
+    "flipbook.too_many_frames": "A work can have at most {{max}} frames",
+    "flipbook.last_frame": "A work must keep at least one frame",
+    "flipbook.project_full": "The work is full ({{mb}} MB of frame data in total)",
+    "flipbook.bad_delay": "Frame time must be 20–2000 ms in steps of 10",
+    "flipbook.bad_path": "No location was chosen"
+  }
+}

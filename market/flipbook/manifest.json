@@ -1,0 +1,22 @@
+{
+  "id": "org.devlive.toolforge.flipbook",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": ["flipbook", "animation", "frame by frame", "onion skin", "gif", "drawing", "翻页动画", "逐帧动画", "动画", "洋葱皮", "动图", "画画"],
+  "accent": "violet",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "limits": { "interface": false },
+    "create": { "interface": false },
+    "edit": { "interface": false },
+    "collect": { "interface": false },
+    "stroke": { "interface": false },
+    "import": { "interface": false },
+    "export": { "task": true, "interface": false }
+  },
+  "sensitive": false
+}

@@ -1,0 +1,101 @@
+{
+  "name": "翻页动画小工坊",
+  "description": "逐帧画画、洋葱皮辅助、循环预览，导出 GIF 或 PNG 帧序列，作品保存在本机",
+  "help": [
+    "新建作品时选择固定画布尺寸，之后每帧都保持这个尺寸。作品与每一帧分别保存在 ToolForge 本地，不联网。",
+    "用画笔或橡皮在当前帧上画；可以导入自己的图片到当前帧（按画布等比缩放居中，叠在已有内容上）。",
+    "时间线里可以新增空白帧、复制、删除，按住缩略图拖动可以调整顺序；作品至少保留一帧。复制出的帧与原帧互不影响。",
+    "洋葱皮会半透明显示前一帧，只用于对照着画，不会出现在导出里。",
+    "撤销/重做覆盖画画、导入、增删帧和排序，切换帧后也能撤销（⌘/Ctrl+Z，⇧⌘/Ctrl+Shift+Z）。",
+    "每帧停留 20–2000 毫秒，步长 10 毫秒；播放会按这个时长循环，与导出一致。切换工具、修改作品或离开工具都会停止播放。",
+    "导出 GIF 时每帧合成到所选底色上并无限循环；PNG 帧序列保留透明，写入你选择的文件夹。导出可取消，不会改动作品。",
+    "上限：每个作品最多 120 帧、全部帧合计 40 MB，最多 20 个作品；导入图片不超过 20 MB、2400 万像素。"
+  ],
+  "actions": {
+    "save": "保存",
+    "cancel": "取消"
+  },
+  "work": {
+    "choose": "选择作品",
+    "new": "新建作品",
+    "newTitle": "新建作品",
+    "name": "名称",
+    "size": "画布尺寸",
+    "sizeHint": "画布尺寸创建后不能修改。",
+    "create": "创建",
+    "untitled": "未命名动画",
+    "rename": "重命名作品",
+    "delete": "删除作品",
+    "deleteConfirm": "再次点击确认删除整个作品（无法恢复）",
+    "empty": "还没有作品，新建一个开始画吧"
+  },
+  "tool": {
+    "brush": "画笔",
+    "eraser": "橡皮",
+    "color": "颜色",
+    "size": "粗细",
+    "onion": "洋葱皮（显示前一帧）"
+  },
+  "history": {
+    "undo": "撤销",
+    "redo": "重做"
+  },
+  "stage": {
+    "label": "第 {{index}} 帧画布"
+  },
+  "play": {
+    "play": "播放",
+    "pause": "暂停",
+    "prev": "上一帧",
+    "next": "下一帧",
+    "position": "第 {{index}} / {{count}} 帧",
+    "delay": "每帧停留（毫秒）",
+    "speed": "约 {{fps}} 帧/秒，循环一次 {{seconds}} 秒"
+  },
+  "frames": {
+    "title": "帧",
+    "add": "在后面新增空白帧",
+    "duplicate": "复制当前帧",
+    "delete": "删除当前帧",
+    "import": "导入图片到当前帧",
+    "label": "第 {{index}} 帧",
+    "count": "{{count}} / {{max}} 帧",
+    "hint": "点击缩略图切换帧，按住拖动调整顺序，Esc 取消拖动。"
+  },
+  "import": {
+    "images": "图片"
+  },
+  "export": {
+    "title": "导出",
+    "gif": "循环 GIF",
+    "png": "PNG 帧序列",
+    "background": "底色",
+    "start": "导出…",
+    "cancel": "取消导出",
+    "done": "已导出 {{count}} 个文件",
+    "cancelled": "已取消导出",
+    "gifHint": "GIF 每帧合成到所选底色上，无限循环，帧顺序和停留时长与预览一致。",
+    "pngHint": "选择一个文件夹，按 名称-001.png 依次写入，保留透明背景。"
+  },
+  "errors": {
+    "missingWork": "作品数据不存在，可能已被删除",
+    "tooManyWorks": "最多保存 {{max}} 个作品，请先删除不需要的作品",
+    "flipbook.bad_size": "不支持的画布尺寸：{{width}} × {{height}}",
+    "flipbook.frame_too_large": "这一帧内容太大，无法保存",
+    "flipbook.bad_frame": "帧数据损坏或尺寸不符",
+    "flipbook.encode": "图像编码失败",
+    "flipbook.bad_color": "颜色格式无效：{{color}}",
+    "flipbook.bad_stroke": "笔画数据无效",
+    "flipbook.bad_image": "无法识别这张图片",
+    "flipbook.image_too_large": "图片尺寸过大（最多 2400 万像素）",
+    "flipbook.bad_name": "名称不能为空，且不超过 60 字",
+    "flipbook.bad_project": "作品数据无效",
+    "flipbook.bad_index": "帧位置无效",
+    "flipbook.history_full": "修改记录过多，请重新打开作品后继续",
+    "flipbook.too_many_frames": "每个作品最多 {{max}} 帧",
+    "flipbook.last_frame": "作品至少保留一帧",
+    "flipbook.project_full": "作品容量已满（全部帧合计 {{mb}} MB）",
+    "flipbook.bad_delay": "停留时长需在 20–2000 毫秒之间且为 10 的倍数",
+    "flipbook.bad_path": "没有选择保存位置"
+  }
+}

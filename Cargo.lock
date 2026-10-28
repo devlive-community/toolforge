@@ -8854,6 +8854,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-flipbook"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "gif 0.14.2",
+ "image",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-format-converter"
 version = "0.1.0"
 dependencies = [
