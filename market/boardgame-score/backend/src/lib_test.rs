@@ -410,3 +410,21 @@ fn fixed_round_target_and_host_sqlite_size_are_enforced_before_persistence() {
     );
     assert_eq!(MAX_STATE, 2 * 1024 * 1024);
 }
+
+#[test]
+fn every_dispatched_function_is_declared_in_manifest() {
+    let plugin = BoardgameScore::default();
+    let declared = &plugin.manifest().functions;
+    for name in FUNCTIONS {
+        assert!(declared.contains_key(name), "{name} 未在 manifest 中声明");
+    }
+    assert_eq!(declared.len(), FUNCTIONS.len());
+}
+
+#[test]
+fn declared_interfaces_are_accepted_by_backend() {
+    let plugin = BoardgameScore::default();
+    let checked = tf_plugin_api::interface::check_declared_interfaces(&plugin)
+        .expect("declared interfaces must match the backend");
+    assert!(checked >= 1);
+}

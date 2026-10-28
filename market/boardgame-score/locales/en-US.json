@@ -183,5 +183,17 @@
       "format": "Unsupported export format.",
       "target": "Complete the fixed round target before settlement."
     }
+  },
+  "api": {
+    "rank": {
+      "summary": "From each player's round scores, get totals and shared ranks (ties share a place, e.g. 1, 1, 3)",
+      "players": "Each player as \"name:score/score/score\" with rounds separated by /, same number of rounds each; 2–12 players; comma separated or repeated",
+      "direction": "Highest score wins (high) or lowest wins (low)"
+    },
+    "columns": {
+      "rank": "Rank",
+      "name": "Player",
+      "total": "Total"
+    }
   }
 }

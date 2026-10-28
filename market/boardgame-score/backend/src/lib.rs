@@ -1,6 +1,7 @@
 //! All scoring rules and rankings run in Rust. Returned states are committed
 //! through the host's existing SQLite plugin-state API before UI publication.
 mod export;
+mod flat;
 mod model;
 mod ops;
 mod view;
@@ -10,6 +11,10 @@ use serde_json::{Value, json};
 use tf_plugin_api::{
     Manifest, PluginResult, TaskContext, ToolPlugin, parse_args, unknown_function,
 };
+
+/// 后端分发的全部函数；宿主只放行 manifest 中声明过的函数，测试据此核对两边一致
+#[cfg(test)]
+const FUNCTIONS: [&str; 4] = ["inspect", "apply", "export", "rank"];
 
 pub struct BoardgameScore {
     manifest: Manifest,
@@ -36,8 +41,11 @@ impl ToolPlugin for BoardgameScore {
     fn manifest(&self) -> &Manifest {
         &self.manifest
     }
-    fn call(&self, function: &str, _: Value) -> PluginResult<Value> {
-        Err(unknown_function(function))
+    fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
+        match function {
+            "rank" => tf_plugin_api::to_value(flat::rank(parse_args(args)?)?),
+            other => Err(unknown_function(other)),
+        }
     }
     fn run_task(&self, function: &str, args: Value, ctx: &dyn TaskContext) -> PluginResult<Value> {
         if function == "export" {

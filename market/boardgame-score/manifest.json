@@ -1,18 +1,35 @@
 {
   "id": "org.devlive.toolforge.boardgame-score",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
-  "category": "other",
+  "category": "life",
   "keywords": ["boardgame", "score", "round", "leaderboard", "桌游", "计分", "聚会", "排名"],
   "accent": "violet",
   "locales": ["zh-CN", "en-US"],
   "minAppVersion": "0.2.0",
   "permissions": ["fs:user-selected", "clipboard:write"],
   "functions": {
-    "inspect": { "task": true },
-    "apply": { "task": true },
-    "export": { "task": true }
+    "inspect": { "task": true, "interface": false },
+    "apply": { "task": true, "interface": false },
+    "export": { "task": true, "interface": false },
+    "rank": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.rank.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["players"],
+          "properties": {
+            "players": { "type": "array", "items": { "type": "string" }, "description": "i18n:api.rank.players", "x-positional": 0 },
+            "direction": { "type": "string", "enum": ["high", "low"], "default": "high", "description": "i18n:api.rank.direction" }
+          }
+        },
+        "output": { "table": "", "columns": [{ "key": "rank", "label": "i18n:api.columns.rank" }, { "key": "name", "label": "i18n:api.columns.name" }, { "key": "total", "label": "i18n:api.columns.total" }] },
+        "examples": ["tfp-boardgame-score rank Ann:10/5,Bo:15/0,Cy:-2/-3", "tfp-boardgame-score rank Ann:3,Bo:1 --direction low"]
+      }
+    }
   },
   "sensitive": true
 }
