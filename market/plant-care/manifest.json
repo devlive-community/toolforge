@@ -1,9 +1,9 @@
 {
   "id": "org.devlive.toolforge.plant-care",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
-  "category": "other",
+  "category": "life",
   "keywords": [
     "plant",
     "care",
@@ -26,25 +26,30 @@
     "clipboard:write"
   ],
   "functions": {
-    "bootstrap": {},
-    "today": {},
-    "inspect": {
-      "task": true
-    },
-    "apply": {
-      "task": true
-    },
-    "preview": {
-      "task": true
-    },
-    "photos": {
-      "task": true
-    },
-    "export": {
-      "task": true
-    },
-    "restore": {
-      "task": true
+    "bootstrap": { "interface": false },
+    "today": { "interface": false },
+    "inspect": { "task": true, "interface": false },
+    "apply": { "task": true, "interface": false },
+    "preview": { "task": true, "interface": false },
+    "photos": { "task": true, "interface": false },
+    "export": { "task": true, "interface": false },
+    "restore": { "task": true, "interface": false },
+    "due": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.due.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["items"],
+          "properties": {
+            "items": { "type": "array", "items": { "type": "string" }, "description": "i18n:api.due.items", "x-positional": 0 },
+            "today": { "type": "string", "description": "i18n:api.due.today" }
+          }
+        },
+        "output": { "table": "", "columns": [{ "key": "name", "label": "i18n:api.columns.name" }, { "key": "last", "label": "i18n:api.columns.last" }, { "key": "next", "label": "i18n:api.columns.next" }, { "key": "days", "label": "i18n:api.columns.days" }, { "key": "state", "label": "i18n:api.columns.state" }] },
+        "examples": ["tfp-plant-care due Fern:7:2026-10-25,Cactus:30:2026-09-01"]
+      }
     }
   },
   "sensitive": true

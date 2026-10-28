@@ -1,5 +1,6 @@
 //! Personal calendar-day plans. Actual completion is separate from postponement.
 mod date;
+mod flat;
 mod model;
 mod ops;
 mod photos;
@@ -11,6 +12,19 @@ use std::io::Read;
 use tf_plugin_api::{
     Manifest, PluginResult, TaskContext, ToolPlugin, parse_args, unknown_function,
 };
+/// 后端分发的全部函数；宿主只放行 manifest 中声明过的函数，测试据此核对两边一致
+#[cfg(test)]
+const FUNCTIONS: [&str; 9] = [
+    "bootstrap",
+    "today",
+    "due",
+    "inspect",
+    "apply",
+    "preview",
+    "photos",
+    "export",
+    "restore",
+];
 pub struct PlantCare {
     manifest: Manifest,
 }
@@ -43,10 +57,11 @@ impl ToolPlugin for PlantCare {
     fn manifest(&self) -> &Manifest {
         &self.manifest
     }
-    fn call(&self, function: &str, _: Value) -> PluginResult<Value> {
+    fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
         match function {
             "bootstrap" => Ok(json!({"session":id(),"today":today()})),
             "today" => Ok(json!({"today":today()})),
+            "due" => tf_plugin_api::to_value(flat::due(parse_args(args)?, &today())?),
             _ => Err(unknown_function(function)),
         }
     }

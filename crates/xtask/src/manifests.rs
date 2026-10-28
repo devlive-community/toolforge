@@ -18,7 +18,6 @@ const MANIFEST_ROOTS: &[&str] = &["plugins", "market"];
 const UNDECLARED_ALLOWED: &[(&str, &str)] = &[
     ("market/electricity-cost", "0.1.0"),
     ("market/http-cache", "0.1.0"),
-    ("market/plant-care", "0.1.0"),
 ];
 
 /// 与基准相比插件的状态

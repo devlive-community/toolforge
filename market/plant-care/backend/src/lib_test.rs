@@ -489,3 +489,21 @@ fn photo_cancel_and_malformed_restores_never_produce_a_candidate_state() {
     );
     std::fs::remove_dir_all(dir).unwrap();
 }
+
+#[test]
+fn every_dispatched_function_is_declared_in_manifest() {
+    let plugin = PlantCare::default();
+    let declared = &plugin.manifest().functions;
+    for name in FUNCTIONS {
+        assert!(declared.contains_key(name), "{name} 未在 manifest 中声明");
+    }
+    assert_eq!(declared.len(), FUNCTIONS.len());
+}
+
+#[test]
+fn declared_interfaces_are_accepted_by_backend() {
+    let plugin = PlantCare::default();
+    let checked = tf_plugin_api::interface::check_declared_interfaces(&plugin)
+        .expect("declared interfaces must match the backend");
+    assert!(checked >= 1);
+}

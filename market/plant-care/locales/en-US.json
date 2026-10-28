@@ -182,7 +182,8 @@
       "query": "Invalid filter or pagination parameters.",
       "file": "File could not be read or exported.",
       "copy": "Copy is limited to 64 KiB. Save a file instead.",
-      "stale": "Garden state changed. Reload before continuing."
+      "stale": "Garden state changed. Reload before continuing.",
+      "format": "Cannot read; use \"name:interval days[:last date]\"."
     }
   },
   "functions": {
@@ -212,5 +213,19 @@
     "Rust imports selected files, applies orientation, composites transparency on white and re-encodes JPEG without EXIF. Stored photos permit up to 48 KiB and 960px per edge; thumbnails up to 96px. These are compressed copies, independent of original files.",
     "Plants, plans, records, compressed photos and thumbnails share the existing ToolForge SQLite plugin state. No separate database is created. Results become visible only after acknowledged writes; failed saves retry the same candidate.",
     "Limits: 100 plants, 12 plans each, 5000 actual entries and 40 photos garden-wide, also constrained by a shared 2 MiB budget. Storage can fill before count limits. History is never silently trimmed. JSON includes photos and can restore the garden; Markdown is readable text only. Back up before irreversible deletion."
-  ]
+  ],
+  "api": {
+    "due": {
+      "summary": "From each care interval and the last actual date, work out the next date and days left, overdue first",
+      "items": "Each item as \"name:interval days[:last date]\"; without a last date it is due today; comma separated or repeated",
+      "today": "Today's date (YYYY-MM-DD); defaults to this computer's date"
+    },
+    "columns": {
+      "name": "Item",
+      "last": "Last",
+      "next": "Next",
+      "days": "Days left",
+      "state": "State"
+    }
+  }
 }
