@@ -15,5 +15,6 @@ serde_json.workspace = true
 tf-plugin-api.workspace = true
 tf-plugin-guest = { path = "../../../crates/tf-plugin-guest" }
 sha2 = "0.10"
+jiff = "0.2"
 image = { version = "0.25", default-features = false, features = ["png"] }
 lopdf = "0.45"

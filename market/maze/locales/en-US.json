@@ -176,5 +176,16 @@
     "maze.operation": "Could not start the action. Retry.",
     "maze.busy": "Wait for the current action to finish.",
     "maze.stale": "Progress changed. The stale result was not saved. Reload to continue."
+  },
+  "api": {
+    "draw": {
+      "summary": "Generate a maze as text art plus a code you can import in the app; the same settings and seed always give the same maze",
+      "rows": "Rows (2–40)",
+      "cols": "Columns (2–40)",
+      "seed": "Seed; defaults to one based on the current time",
+      "entrance": "Side of the entrance (its first cell)",
+      "exit": "Side of the exit (its last cell)",
+      "answer": "Also draw the solution path"
+    }
   }
 }

@@ -1,9 +1,9 @@
 {
   "id": "org.devlive.toolforge.maze",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
-  "category": "other",
+  "category": "life",
   "keywords": [
     "maze",
     "puzzle",
@@ -23,17 +23,30 @@
     "clipboard:write"
   ],
   "functions": {
-    "inspect": {
-      "task": true
-    },
-    "apply": {
-      "task": true
-    },
-    "preview": {
-      "task": true
-    },
-    "export": {
-      "task": true
+    "inspect": { "task": true, "interface": false },
+    "apply": { "task": true, "interface": false },
+    "preview": { "task": true, "interface": false },
+    "export": { "task": true, "interface": false },
+    "draw": {
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.draw.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "properties": {
+            "rows": { "type": "integer", "minimum": 2, "maximum": 40, "default": 10, "description": "i18n:api.draw.rows" },
+            "cols": { "type": "integer", "minimum": 2, "maximum": 40, "default": 10, "description": "i18n:api.draw.cols" },
+            "seed": { "type": "string", "description": "i18n:api.draw.seed" },
+            "entrance": { "type": "string", "enum": ["top", "right", "bottom", "left"], "default": "left", "description": "i18n:api.draw.entrance" },
+            "exit": { "type": "string", "enum": ["top", "right", "bottom", "left"], "default": "right", "description": "i18n:api.draw.exit" },
+            "answer": { "type": "boolean", "default": false, "description": "i18n:api.draw.answer" }
+          }
+        },
+        "output": { "text": "/text" },
+        "examples": ["tfp-maze draw --rows 8 --cols 12 --seed picnic", "tfp-maze draw --rows 6 --cols 6 --seed picnic --answer"]
+      }
     }
   },
   "sensitive": true

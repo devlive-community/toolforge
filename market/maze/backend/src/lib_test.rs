@@ -196,3 +196,13 @@ fn empty_state_unknown_functions_versions_and_parameters_fail_clearly() {
             .is_err()
     );
 }
+
+#[test]
+fn every_dispatched_function_is_declared_in_manifest() {
+    let plugin = MazeMaker::default();
+    let declared = &plugin.manifest().functions;
+    for name in FUNCTIONS {
+        assert!(declared.contains_key(name), "{name} 未在 manifest 中声明");
+    }
+    assert_eq!(declared.len(), FUNCTIONS.len());
+}

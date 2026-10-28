@@ -1,6 +1,7 @@
 //! Maze generation, legal play, and print geometry stay in Rust. The UI saves
 //! acknowledged state through ToolForge's existing SQLite plugin-state API.
 mod drawing;
+mod flat;
 mod game;
 mod maze;
 mod paper;
@@ -11,6 +12,10 @@ use serde_json::{Value, json};
 use tf_plugin_api::{
     Manifest, PluginResult, TaskContext, ToolPlugin, parse_args, unknown_function,
 };
+
+/// 后端分发的全部函数；宿主只放行 manifest 中声明过的函数，测试据此核对两边一致
+#[cfg(test)]
+const FUNCTIONS: [&str; 5] = ["inspect", "apply", "preview", "export", "draw"];
 
 pub struct MazeMaker {
     manifest: Manifest,
@@ -111,6 +116,9 @@ impl ToolPlugin for MazeMaker {
     }
     fn run_task(&self, function: &str, args: Value, ctx: &dyn TaskContext) -> PluginResult<Value> {
         check(ctx)?;
+        if function == "draw" {
+            return tf_plugin_api::to_value(flat::draw(parse_args(args)?, ctx)?);
+        }
         if ["preview", "export"].contains(&function) {
             return self.paper(function, parse_args(args)?, ctx);
         }
@@ -157,4 +165,4 @@ impl ToolPlugin for MazeMaker {
 tf_plugin_guest::export_plugin!(MazeMaker);
 #[cfg(test)]
 #[path = "lib_test.rs"]
-mod tests;
+pub(crate) mod tests;
