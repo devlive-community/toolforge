@@ -1,0 +1,55 @@
+{
+  "name": "Typing Practice",
+  "description": "Type a passage for one minute: per-character feedback, accuracy and speed, with short unlockable stages and personal bests kept on this device",
+  "help": [
+    "Practice with built-in passages or paste your own text; timing starts on input and stops when the window loses focus or you pause.",
+    "Each character is marked correct, wrong, or pending. Backspace corrects text, but wrong attempts stay counted, so accuracy uses all attempts.",
+    "Chinese IME composition is not counted until the text is committed.",
+    "Speed appears only after real input: CPM is correct characters per minute; English WPM uses five characters per word.",
+    "A round with pasted text is practice only and is not saved as a personal best. All data stays in ToolForge on this device."
+  ],
+  "typing": {
+    "langZh": "中文",
+    "langEn": "English",
+    "modeFree": "Free practice",
+    "modeChallenge": "60-second challenge",
+    "challenge": "Challenge",
+    "practiceOnly": "Practice only (pasted, not saved)",
+    "stageTitle": "Stages",
+    "stage": "Stage {{index}}",
+    "practiceTitle": "Practice",
+    "placeholder": "Start typing here…",
+    "accuracy": "Accuracy",
+    "time": "Time",
+    "remaining": "{{seconds}}s left",
+    "pause": "Pause",
+    "resume": "Resume",
+    "restart": "Restart",
+    "recordTitle": "Personal best and frequent mistakes",
+    "best": "Personal best",
+    "noBest": "No record yet. Finish a round to save one.",
+    "mistakes": "Frequent mistakes",
+    "clearRecords": "Clear records",
+    "empty": "No practice content",
+    "pasteNotice": "Paste detected: this round is practice only and won't be saved",
+    "done": "Passage complete",
+    "accuracyValue": "Accuracy: {{value}}",
+    "cpmValue": "CPM: {{value}}",
+    "wpmValue": "WPM: {{value}}",
+    "timeValue": "Time: {{seconds}}s",
+    "bestValue": "Personal best: CPM {{cpm}} · Accuracy {{accuracy}}",
+    "mistakesValue": "Frequent mistakes: {{list}}"
+  },
+  "api": {
+    "score": {
+      "summary": "Score one typing submission: per-character result, accuracy and speed",
+      "target": "Target text to compare against (positional; may come from stdin)",
+      "typed": "Full text currently in the practice area",
+      "added": "Number of characters added in this submission",
+      "wrongAdded": "Number of added characters that do not match the target position",
+      "elapsedMs": "Active input time in milliseconds, excluding pauses",
+      "pasted": "Whether this submission came from a paste (pasted rounds are not saved as records)",
+      "session": "Cumulative state from the previous call as a JSON string; may be omitted on the first call"
+    }
+  }
+}

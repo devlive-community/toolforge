@@ -9473,6 +9473,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-typing-practice"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-unicode"
 version = "0.1.0"
 dependencies = [

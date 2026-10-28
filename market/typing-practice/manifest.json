@@ -1,0 +1,36 @@
+{
+  "id": "org.devlive.toolforge.typing-practice",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": ["typing", "typing practice", "wpm", "accuracy", "challenge", "practice", "打字", "打字练习", "速度", "准确率", "闯关", "练习", "中文输入"],
+  "accent": "teal",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["clipboard:write"],
+  "functions": {
+    "score": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.score.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["target", "typed"],
+          "properties": {
+            "target": { "type": "string", "description": "i18n:api.score.target", "x-positional": 0, "x-stdin": true },
+            "typed": { "type": "string", "description": "i18n:api.score.typed", "x-positional": 1 },
+            "added": { "type": "integer", "description": "i18n:api.score.added", "minimum": 0, "default": 0 },
+            "wrongAdded": { "type": "integer", "description": "i18n:api.score.wrongAdded", "minimum": 0, "default": 0 },
+            "elapsedMs": { "type": "integer", "description": "i18n:api.score.elapsedMs", "minimum": 0, "default": 0 },
+            "pasted": { "type": "boolean", "description": "i18n:api.score.pasted", "default": false },
+            "session": { "type": "string", "description": "i18n:api.score.session" }
+          }
+        },
+        "examples": ["tfp-typing-practice score abc abc --added 3 --elapsed-ms 60000"]
+      }
+    }
+  },
+  "sensitive": false
+}
