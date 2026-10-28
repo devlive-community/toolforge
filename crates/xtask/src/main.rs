@@ -7,6 +7,7 @@ mod interfaces;
 mod manifests;
 mod notes;
 mod plugin;
+mod release_dates;
 mod rules;
 mod sidecar;
 mod version;
@@ -107,6 +108,8 @@ fn main() -> ExitCode {
                         let generation = flag("--generation")
                             .and_then(|v| v.parse().ok())
                             .unwrap_or(0);
+                        // 各版本发布时间从仓库历史推断（失败时为空，不阻止发布）
+                        let dates = release_dates::from_git(&check::workspace_root(), &source);
                         plugin::index(
                             std::path::Path::new(dir),
                             base,
@@ -114,6 +117,7 @@ fn main() -> ExitCode {
                             previous.as_deref(),
                             &source,
                             generation,
+                            &dates,
                         )
                         .map(|_| ())
                     }

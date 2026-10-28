@@ -292,6 +292,7 @@ pub fn index(
     merge_catalog: Option<&Path>,
     source_commit: &str,
     generation: u64,
+    dates: &crate::release_dates::ReleaseDates,
 ) -> Result<PathBuf, String> {
     if !stats_base.starts_with("https://") || stats_base.contains(['?', '#']) {
         return Err("stats base URL must use HTTPS without a query or fragment".into());
@@ -387,6 +388,12 @@ pub fn index(
                 item["publishedAt"] = published.clone();
             }
         }
+        // 旧目录没有记录发布时间时，按 git 历史补上；本次新增的版本用发布源提交的时间
+        if item.get("publishedAt").is_none_or(|v| v.is_null())
+            && let Some(at) = dates.versions.get(&key).or(dates.now.as_ref())
+        {
+            item["publishedAt"] = at.clone().into();
+        }
         if let Some(seen) = catalog.insert(key, item.clone())
             && seen != item
         {
@@ -424,6 +431,35 @@ pub fn index(
                 "published package missing from complete inventory: {} {}",
                 key.0, key.1
             ));
+        }
+    }
+    // 发布时间：首次发布取该插件所有版本中最早的时间，更新时间取市场当前版本的时间
+    let mut first: BTreeMap<&str, &str> = BTreeMap::new();
+    let catalog_dates = catalog
+        .iter()
+        .filter_map(|((id, _), item)| Some((id.as_str(), item["publishedAt"].as_str()?)));
+    // git 历史里更早的版本（安装包已不在本次清单中）也算首次发布
+    let history_dates = dates
+        .versions
+        .iter()
+        .map(|((id, _), at)| (id.as_str(), at.as_str()));
+    for (id, at) in catalog_dates.chain(history_dates) {
+        let slot = first.entry(id).or_insert(at);
+        if at < *slot {
+            *slot = at;
+        }
+    }
+    for (_, entry) in best.values_mut() {
+        let id = entry["id"].as_str().unwrap_or_default().to_owned();
+        let version = entry["version"].as_str().unwrap_or_default().to_owned();
+        if let Some(at) = first.get(id.as_str()) {
+            entry["publishedAt"] = (*at).into();
+        }
+        if let Some(at) = catalog
+            .get(&(id, version))
+            .and_then(|i| i["publishedAt"].as_str())
+        {
+            entry["updatedAt"] = at.into();
         }
     }
     // 即使使用旧索引合并，也统一改写到统计 API，绝不保留旧的文件直链。

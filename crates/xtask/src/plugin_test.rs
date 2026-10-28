@@ -65,7 +65,16 @@ fn index_keeps_only_the_highest_version_per_plugin() {
     )
     .unwrap();
 
-    let out = index(&root, "https://example.com", None, None, &"a".repeat(40), 1).unwrap();
+    let out = index(
+        &root,
+        "https://example.com",
+        None,
+        None,
+        &"a".repeat(40),
+        1,
+        &Default::default(),
+    )
+    .unwrap();
     let data: serde_json::Value = serde_json::from_slice(&std::fs::read(&out).unwrap()).unwrap();
     let plugins = data["plugins"].as_array().unwrap();
     assert_eq!(plugins.len(), 2);
@@ -120,9 +129,17 @@ fn index_rejects_same_version_with_different_bytes() {
     )
     .unwrap();
     assert!(
-        index(&root, "https://example.com", None, None, &"a".repeat(40), 1)
-            .unwrap_err()
-            .contains("conflicting")
+        index(
+            &root,
+            "https://example.com",
+            None,
+            None,
+            &"a".repeat(40),
+            1,
+            &Default::default()
+        )
+        .unwrap_err()
+        .contains("conflicting")
     );
     std::fs::remove_dir_all(root).unwrap();
 }
@@ -133,7 +150,16 @@ fn index_preserves_revocation_and_requires_complete_inventory() {
     std::fs::create_dir_all(&root).unwrap();
     let package = root.join("a.tfp");
     std::fs::write(&package, pack_bytes("org.toolforge.test.a", "1.0.0", "red")).unwrap();
-    index(&root, "https://example.com", None, None, &"a".repeat(40), 1).unwrap();
+    index(
+        &root,
+        "https://example.com",
+        None,
+        None,
+        &"a".repeat(40),
+        1,
+        &Default::default(),
+    )
+    .unwrap();
     let previous = root.join("old-catalog.json");
     let mut catalog: serde_json::Value =
         serde_json::from_slice(&std::fs::read(root.join("release-catalog.json")).unwrap()).unwrap();
@@ -146,6 +172,7 @@ fn index_preserves_revocation_and_requires_complete_inventory() {
         Some(&previous),
         &"b".repeat(40),
         2,
+        &Default::default(),
     )
     .unwrap();
     let registry: serde_json::Value =
@@ -159,7 +186,8 @@ fn index_preserves_revocation_and_requires_complete_inventory() {
             None,
             Some(&previous),
             &"c".repeat(40),
-            3
+            3,
+            &Default::default()
         )
         .unwrap_err()
         .contains("missing")
@@ -176,7 +204,16 @@ fn index_allows_only_identical_same_generation_retry() {
         pack_bytes("org.toolforge.test.a", "1.0.0", "red"),
     )
     .unwrap();
-    index(&root, "https://example.com", None, None, &"a".repeat(40), 7).unwrap();
+    index(
+        &root,
+        "https://example.com",
+        None,
+        None,
+        &"a".repeat(40),
+        7,
+        &Default::default(),
+    )
+    .unwrap();
     let previous = root.join("old-catalog.json");
     std::fs::copy(root.join("release-catalog.json"), &previous).unwrap();
     index(
@@ -186,6 +223,7 @@ fn index_allows_only_identical_same_generation_retry() {
         Some(&previous),
         &"a".repeat(40),
         7,
+        &Default::default(),
     )
     .unwrap();
     assert!(
@@ -195,7 +233,8 @@ fn index_allows_only_identical_same_generation_retry() {
             None,
             Some(&previous),
             &"b".repeat(40),
-            7
+            7,
+            &Default::default()
         )
         .unwrap_err()
         .contains("different content")
@@ -207,7 +246,8 @@ fn index_allows_only_identical_same_generation_retry() {
             None,
             Some(&previous),
             &"a".repeat(40),
-            6
+            6,
+            &Default::default()
         )
         .unwrap_err()
         .contains("backwards")
@@ -239,4 +279,64 @@ fn cargo_pins_rustc_from_the_same_toolchain() {
     if let Some(rustc) = rustc {
         assert_eq!(Path::new(rustc).parent(), Path::new(env!("CARGO")).parent());
     }
+}
+
+#[test]
+fn index_records_first_release_and_update_times() {
+    let root = std::env::temp_dir().join(format!("xtask-plugin-dates-{}", std::process::id()));
+    std::fs::create_dir_all(&root).unwrap();
+    for version in ["0.1.0", "0.1.1"] {
+        std::fs::write(
+            root.join(format!("a-{version}.tfp")),
+            pack_bytes("org.toolforge.test.a", version, "red"),
+        )
+        .unwrap();
+    }
+    let mut dates = crate::release_dates::ReleaseDates::default();
+    dates.versions.insert(
+        ("org.toolforge.test.a".into(), "0.1.0".into()),
+        "2026-10-01T00:00:00Z".into(),
+    );
+    // 0.1.1 没有历史记录，使用本次发布时间
+    dates.now = Some("2026-10-20T00:00:00Z".into());
+    let out = index(
+        &root,
+        "https://example.com",
+        None,
+        None,
+        &"a".repeat(40),
+        1,
+        &dates,
+    )
+    .unwrap();
+    let registry: serde_json::Value = serde_json::from_slice(&std::fs::read(out).unwrap()).unwrap();
+    let entry = &registry["plugins"][0];
+    assert_eq!(entry["version"], "0.1.1");
+    assert_eq!(entry["publishedAt"], "2026-10-01T00:00:00Z");
+    assert_eq!(entry["updatedAt"], "2026-10-20T00:00:00Z");
+
+    // 再次发布时以旧目录中的时间为准，不被新的发布时间改写
+    let previous = root.join("old-catalog.json");
+    std::fs::copy(root.join("release-catalog.json"), &previous).unwrap();
+    let later = crate::release_dates::ReleaseDates {
+        versions: Default::default(),
+        now: Some("2026-12-01T00:00:00Z".into()),
+    };
+    let out = index(
+        &root,
+        "https://example.com",
+        None,
+        Some(&previous),
+        &"b".repeat(40),
+        2,
+        &later,
+    )
+    .unwrap();
+    let registry: serde_json::Value = serde_json::from_slice(&std::fs::read(out).unwrap()).unwrap();
+    assert_eq!(registry["plugins"][0]["updatedAt"], "2026-10-20T00:00:00Z");
+    assert_eq!(
+        registry["plugins"][0]["publishedAt"],
+        "2026-10-01T00:00:00Z"
+    );
+    std::fs::remove_dir_all(root).unwrap();
 }
