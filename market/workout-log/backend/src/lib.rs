@@ -1,5 +1,6 @@
 //! Local training records with recoverable, sharded shared-database storage.
 mod engine;
+mod flat;
 mod model;
 mod transfer;
 
@@ -7,6 +8,10 @@ use serde_json::{Value, json};
 use tf_plugin_api::{Manifest, PluginResult, ToolPlugin, parse_args, to_value, unknown_function};
 
 const MANIFEST: &str = include_str!("../../manifest.json");
+
+/// 后端分发的全部函数；宿主只放行 manifest 中声明过的函数，测试据此核对两边一致
+#[cfg(test)]
+const FUNCTIONS: [&str; 6] = ["plan", "export", "import", "recover", "clock", "volume"];
 pub struct WorkoutLog {
     manifest: Manifest,
 }
@@ -24,6 +29,7 @@ impl ToolPlugin for WorkoutLog {
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
         match function {
             "plan" => to_value(engine::plan(parse_args(args)?)?),
+            "volume" => to_value(flat::volume(parse_args(args)?)?),
             "export" => transfer::export(parse_args(args)?),
             "import" => to_value(transfer::import(parse_args(args)?)?),
             "recover" => transfer::recover(parse_args(args)?),

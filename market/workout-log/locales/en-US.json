@@ -168,5 +168,18 @@
     "workout.noUndo": "There is no set action to undo.",
     "workout.importConflict": "This backup belongs to another journal. Existing data has been kept.",
     "workout.readLimit": "Related records could not be loaded. Retry; existing data is unchanged."
+  },
+  "api": {
+    "volume": {
+      "summary": "List completed sets as text and get the set count, total reps, volume (kg) and heaviest load",
+      "sets": "Each set as \"repsxweight[kg|lb]\", e.g. 8x60kg; reps alone for bodyweight; comma separated or repeated",
+      "unit": "Weight unit used when a set has none"
+    },
+    "columns": {
+      "sets": "Sets",
+      "reps": "Reps",
+      "volumeKg": "Volume (kg)",
+      "heaviestKg": "Heaviest (kg)"
+    }
   }
 }

@@ -1,14 +1,37 @@
 {
   "id": "org.devlive.toolforge.workout-log",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "minAppVersion": "0.2.0",
   "name": "i18n:name",
   "description": "i18n:description",
-  "category": "other",
+  "category": "life",
   "keywords": ["workout", "strength", "exercise", "sets", "reps", "gym", "训练", "健身", "力量", "组数", "负重"],
   "accent": "orange",
   "locales": ["zh-CN", "en-US"],
   "permissions": ["fs:user-selected"],
-  "functions": {"plan": {}, "export": {}, "import": {}, "clock": {}, "recover": {}},
+  "functions": {
+    "plan": { "interface": false },
+    "export": { "interface": false },
+    "import": { "interface": false },
+    "clock": { "interface": false },
+    "recover": { "interface": false },
+    "volume": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.volume.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["sets"],
+          "properties": {
+            "sets": { "type": "array", "items": { "type": "string" }, "description": "i18n:api.volume.sets", "x-positional": 0 },
+            "unit": { "type": "string", "enum": ["kg", "lb"], "default": "kg", "description": "i18n:api.volume.unit" }
+          }
+        },
+        "output": { "table": "/summary", "columns": [{ "key": "sets", "label": "i18n:api.columns.sets" }, { "key": "reps", "label": "i18n:api.columns.reps" }, { "key": "volumeKg", "label": "i18n:api.columns.volumeKg" }, { "key": "heaviestKg", "label": "i18n:api.columns.heaviestKg" }] },
+        "examples": ["tfp-workout-log volume 8x60kg,8x60kg,6x70kg", "tfp-workout-log volume 5x135,5x135 --unit lb"]
+      }
+    }
+  },
   "sensitive": true
 }

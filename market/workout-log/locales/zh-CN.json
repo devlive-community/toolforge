@@ -168,5 +168,18 @@
     "workout.noUndo": "没有可撤销的组操作。",
     "workout.importConflict": "现有资料与备份不是同一批，已停止恢复并保留现有记录。",
     "workout.readLimit": "资料关联读取未完成，请重试；原资料保持不变。"
+  },
+  "api": {
+    "volume": {
+      "summary": "按文字列出完成的组，计算组数、总次数、总训练量（千克）与最大重量",
+      "sets": "每组写成「次数x重量[kg|lb]」，如 8x60kg；只写次数表示自重动作；逗号分隔或重复传入",
+      "unit": "没有写单位时使用的重量单位"
+    },
+    "columns": {
+      "sets": "组数",
+      "reps": "总次数",
+      "volumeKg": "训练量（kg）",
+      "heaviestKg": "最大重量（kg）"
+    }
   }
 }
