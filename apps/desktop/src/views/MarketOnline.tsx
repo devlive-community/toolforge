@@ -511,25 +511,28 @@ export function MarketOnline() {
                   {t('market.online.totalDownloads', { value: downloadCount(downloadStats?.get(entry.id)?.totalDownloads) })}
                 </p>
                 {required && <p className="text-[11px] text-warning">{t('market.online.needsApp', { version: required })}</p>}
-                <div className="mt-auto flex items-center gap-2 text-[11px] text-fg-subtle">
-                  <span>{t('market.version', { version: entry.version })}</span>
-                  <span>·</span>
-                  <span>{t(`category.${item.category}`)}</span>
-                  {formatDate(entry.updatedAt) && (
-                    <>
-                      <span>·</span>
-                      <span title={formatDate(entry.publishedAt) ? t('market.online.publishedOn', { date: formatDate(entry.publishedAt) }) : undefined}>
-                        {t('market.online.updatedOn', { date: formatDate(entry.updatedAt) })}
-                      </span>
-                    </>
-                  )}
-                  <div className="ml-auto flex items-center gap-1.5">
+                <div className="mt-auto space-y-2">
+                  {/* 版本 · 分类 · 更新日期单独一行，每段不折行；卡片窄时整段换行，不挤压操作按钮 */}
+                  <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] text-fg-subtle">
+                    <span className="whitespace-nowrap">{t('market.version', { version: entry.version })}</span>
+                    <span aria-hidden>·</span>
+                    <span className="whitespace-nowrap">{t(`category.${item.category}`)}</span>
+                    {formatDate(entry.updatedAt) && (
+                      <>
+                        <span aria-hidden>·</span>
+                        <span className="whitespace-nowrap" title={formatDate(entry.publishedAt) ? t('market.online.publishedOn', { date: formatDate(entry.publishedAt) }) : undefined}>
+                          {t('market.online.updatedOn', { date: formatDate(entry.updatedAt) })}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap items-center justify-end gap-1.5">
                     {current && (
                       <InstalledActions id={entry.id} name={manifest ? text(manifest, manifest.name) : localized(entry.names)} manifest={manifest} blocked={required} />
                     )}
                     {required && <UpdateAppButton size="sm" version={required} />}
                     {(!current || update) && !required && (
-                      <Button size="sm" variant="primary" loading={isBusy(entry.id)} disabled={isBusy(entry.id)} onClick={() => void run({ kind: 'url', entry }, false)}>
+                      <Button size="sm" variant="primary" className="whitespace-nowrap" loading={isBusy(entry.id)} disabled={isBusy(entry.id)} onClick={() => void run({ kind: 'url', entry }, false)}>
                         <CloudDownload />
                         {update ? t('market.online.update', { version: entry.version }) : t('market.online.install')}
                       </Button>
