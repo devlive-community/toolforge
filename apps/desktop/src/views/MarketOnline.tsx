@@ -193,6 +193,15 @@ export function MarketOnline() {
       return next
     })
 
+  // 渲染期就会调用（installableIds），必须定义在使用之前，否则 const 处于暂时性死区
+  /** 已装插件要求的应用版本高于当前版本时返回该版本（插件不会被加载） */
+  const blockedBy = (info: InstallInfo | undefined) => (info?.minAppVersion && newer(info.minAppVersion, appVersion) ? info.minAppVersion : null)
+  /** 在线条目因应用版本过低而不能安装、更新或使用时，返回需要的应用版本 */
+  const requiredFor = (entry: IndexEntry, current: InstallInfo | undefined) => {
+    const update = current && newer(entry.version, current.version)
+    if (!current || update) return entry.minAppVersion && newer(entry.minAppVersion, appVersion) ? entry.minAppVersion : null
+    return blockedBy(current)
+  }
   /** 选中的在线条目：可安装或可更新，且当前没有被其他原因阻止 */
   const installableIds = (index ?? [])
     .filter((entry) => {
@@ -269,14 +278,6 @@ export function MarketOnline() {
   }
 
   const local = installed.filter((info) => !index?.some((entry) => entry.id === info.id))
-  /** 已装插件要求的应用版本高于当前版本时返回该版本（插件不会被加载） */
-  const blockedBy = (info: InstallInfo | undefined) => (info?.minAppVersion && newer(info.minAppVersion, appVersion) ? info.minAppVersion : null)
-  /** 在线条目因应用版本过低而不能安装、更新或使用时，返回需要的应用版本 */
-  const requiredFor = (entry: IndexEntry, current: InstallInfo | undefined) => {
-    const update = current && newer(entry.version, current.version)
-    if (!current || update) return entry.minAppVersion && newer(entry.minAppVersion, appVersion) ? entry.minAppVersion : null
-    return blockedBy(current)
-  }
 
   // ---- 在线条目的搜索、分类、状态筛选与排序 ----
   const nameOf = (entry: IndexEntry) => {
