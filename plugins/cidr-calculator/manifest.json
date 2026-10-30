@@ -1,0 +1,32 @@
+{
+  "id": "org.devlive.toolforge.cidr-calculator",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "network",
+  "keywords": [
+    "cidr",
+    "subnet",
+    "ipv4",
+    "ipv6",
+    "ip",
+    "netmask",
+    "network",
+    "网段",
+    "子网",
+    "掩码"
+  ],
+  "accent": "cyan",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "permissions": [
+    "clipboard:write"
+  ],
+  "functions": {
+    "calculate": {},
+    "split": {}
+  },
+  "sensitive": false
+}

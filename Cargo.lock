@@ -9725,6 +9725,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfp-cidr-calculator"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+]
+
+[[package]]
 name = "tfp-context-menu"
 version = "0.1.0"
 dependencies = [
@@ -10335,6 +10344,7 @@ dependencies = [
  "tfp-barcode",
  "tfp-batch-rename",
  "tfp-certificate",
+ "tfp-cidr-calculator",
  "tfp-context-menu",
  "tfp-disk-usage",
  "tfp-dns-lookup",

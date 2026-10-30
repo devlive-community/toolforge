@@ -40,6 +40,7 @@ tfp-archive.workspace = true
 tfp-background-remover.workspace = true
 tfp-barcode.workspace = true
 tfp-batch-rename.workspace = true
+tfp-cidr-calculator.workspace = true
 tfp-certificate.workspace = true
 tfp-dns-lookup.workspace = true
 tfp-disk-usage.workspace = true
