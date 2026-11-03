@@ -1,0 +1,41 @@
+{
+  "name": "Packet Capture Viewer",
+  "description": "Parse PCAP captures offline: Ethernet/IP/TCP/UDP/ICMP fields and per-conversation summaries.",
+  "api": {
+    "parse": {
+      "summary": "Parse a PCAP file",
+      "path": "pcap file path",
+      "limit": "Max packets"
+    }
+  },
+  "table": {
+    "index": "#",
+    "time": "Time",
+    "src": "Source",
+    "dst": "Destination",
+    "protocol": "Protocol",
+    "flags": "TCP flags",
+    "len": "Length"
+  },
+  "conversations": {
+    "title": "Conversations",
+    "packets": "Packets",
+    "bytes": "Bytes",
+    "first": "First",
+    "last": "Last"
+  },
+  "ui": {
+    "pick": "Choose a pcap file",
+    "truncated": "{{count}} truncated packets",
+    "link": "Link type",
+    "pick_file": "Choose file…"
+  },
+  "errors": {
+    "pcap.too_large": "File over 32MB",
+    "pcap.too_small": "Too small to be a PCAP",
+    "pcap.bad_magic": "Not a PCAP file (bad magic): {{magic}}",
+    "pcap.bad_link_type": "Unsupported link type: {{linkType}}",
+    "pcap.corrupt_length": "Corrupt packet length",
+    "pcap.read_failed": "Read failed: {{detail}}"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": "org.devlive.toolforge.pcap-viewer",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "network",
+  "keywords": [
+    "pcap",
+    "network",
+    "packets",
+    "抓包",
+    "报文",
+    "网络"
+  ],
+  "accent": "blue",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [
+    "fs:user-selected"
+  ],
+  "functions": {
+    "parse": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.parse.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "i18n:api.parse.path",
+              "x-positional": 0
+            },
+            "limit": {
+              "type": "integer",
+              "description": "i18n:api.parse.limit"
+            }
+          }
+        },
+        "examples": [
+          "tfp-pcap-viewer parse capture.pcap --limit 500"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

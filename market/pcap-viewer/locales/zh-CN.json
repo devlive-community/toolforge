@@ -1,0 +1,41 @@
+{
+  "name": "PCAP 查看器",
+  "description": "离线解析 PCAP 抓包：以太网/IP/TCP/UDP/ICMP 字段、双向会话汇总与流量统计。",
+  "api": {
+    "parse": {
+      "summary": "解析 PCAP 文件",
+      "path": "pcap 文件路径",
+      "limit": "最多解析报文数"
+    }
+  },
+  "table": {
+    "index": "#",
+    "time": "时间",
+    "src": "源",
+    "dst": "目标",
+    "protocol": "协议",
+    "flags": "TCP 标志",
+    "len": "长度"
+  },
+  "conversations": {
+    "title": "会话汇总",
+    "packets": "报文",
+    "bytes": "字节",
+    "first": "开始",
+    "last": "结束"
+  },
+  "ui": {
+    "pick": "选择 pcap 文件",
+    "truncated": "截断报文 {{count}}",
+    "link": "链路类型",
+    "pick_file": "选择文件…"
+  },
+  "errors": {
+    "pcap.too_large": "文件超过 32MB",
+    "pcap.too_small": "文件太小，不是 PCAP",
+    "pcap.bad_magic": "不是 PCAP 文件（魔数不匹配）：{{magic}}",
+    "pcap.bad_link_type": "不支持的链路类型：{{linkType}}",
+    "pcap.corrupt_length": "报文长度损坏",
+    "pcap.read_failed": "读取失败：{{detail}}"
+  }
+}
