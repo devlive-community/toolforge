@@ -1,0 +1,57 @@
+{
+  "name": "Bingo Activity Cards",
+  "description": "Generate 3x3/5x5 bingo cards from your own word pool, then call items, undo and verify lines.",
+  "api": {
+    "generate": {
+      "summary": "Generate bingo cards with unique layouts",
+      "items": "Word pool (array)",
+      "size": "3 or 5",
+      "cards": "Card count (1-50)",
+      "freeCenter": "5x5 free center",
+      "seed": "Random seed"
+    },
+    "draw": {
+      "summary": "Draw one item without replacement",
+      "remaining": "Remaining items",
+      "seed": "Random seed"
+    },
+    "check": {
+      "summary": "Verify lines (rows/columns/diagonals, FREE counts)",
+      "size": "3 or 5",
+      "cells": "Card cells",
+      "freeCenter": "Free center",
+      "called": "Called items"
+    }
+  },
+  "line": {
+    "row": "Row {{index}}",
+    "column": "Column {{index}}",
+    "diagonal": "Diagonal {{index}}"
+  },
+  "ui": {
+    "pool": "Word pool (comma separated)",
+    "size": "Size",
+    "count": "Cards",
+    "free": "Free center",
+    "gen": "Generate",
+    "card": "Card",
+    "call": "Call next",
+    "called": "Called",
+    "undo": "Undo call",
+    "checkLine": "Check lines",
+    "noLine": "No line yet",
+    "poolEmpty": "All called",
+    "add": "Use this card",
+    "delete": "Delete"
+  },
+  "errors": {
+    "bingo.bad_size": "Only size 3 or 5",
+    "bingo.bad_card_count": "1-50 cards",
+    "bingo.not_enough_items": "Not enough items: {{have}}/{{need}}",
+    "bingo.empty_item": "Items cannot be empty",
+    "bingo.too_many_items": "Over 200 items",
+    "bingo.layout_exhausted": "No more unique layouts",
+    "bingo.pool_exhausted": "All items called",
+    "bingo.invalid_grid": "Invalid card data"
+  }
+}

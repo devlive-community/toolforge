@@ -1,0 +1,173 @@
+{
+  "id": "org.devlive.toolforge.bingo-cards",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": [
+    "bingo",
+    "party",
+    "cards",
+    "宾果",
+    "活动卡",
+    "打印"
+  ],
+  "accent": "orange",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "generate": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.generate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "items",
+            "size",
+            "cards",
+            "seed"
+          ],
+          "properties": {
+            "items": {
+              "type": "array",
+              "description": "i18n:api.generate.items",
+              "default": [
+                "a",
+                "b",
+                "c",
+                "d",
+                "e",
+                "f",
+                "g",
+                "h",
+                "i"
+              ]
+            },
+            "size": {
+              "type": "integer",
+              "description": "i18n:api.generate.size"
+            },
+            "cards": {
+              "type": "integer",
+              "description": "i18n:api.generate.cards"
+            },
+            "freeCenter": {
+              "type": "boolean",
+              "description": "i18n:api.generate.freeCenter"
+            },
+            "seed": {
+              "type": "integer",
+              "description": "i18n:api.generate.seed"
+            }
+          }
+        },
+        "examples": [
+          "tfp-bingo-cards generate --items a,b,c,d,e,f,g,h,i --size 3 --cards 2 --seed 1"
+        ]
+      }
+    },
+    "draw": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.draw.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "remaining",
+            "seed"
+          ],
+          "properties": {
+            "remaining": {
+              "type": "array",
+              "description": "i18n:api.draw.remaining",
+              "default": [
+                "a",
+                "b",
+                "c"
+              ]
+            },
+            "seed": {
+              "type": "integer",
+              "description": "i18n:api.draw.seed"
+            }
+          }
+        },
+        "examples": [
+          "tfp-bingo-cards draw --remaining a,b,c --seed 7"
+        ]
+      }
+    },
+    "check": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.check.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "size",
+            "cells",
+            "called"
+          ],
+          "properties": {
+            "size": {
+              "type": "integer",
+              "description": "i18n:api.check.size"
+            },
+            "cells": {
+              "type": "array",
+              "description": "i18n:api.check.cells",
+              "default": [
+                "a",
+                "b",
+                "c",
+                "d",
+                "e",
+                "f",
+                "g",
+                "h",
+                "i"
+              ]
+            },
+            "freeCenter": {
+              "type": "boolean",
+              "description": "i18n:api.check.freeCenter"
+            },
+            "called": {
+              "type": "array",
+              "description": "i18n:api.check.called",
+              "default": [
+                "a",
+                "b",
+                "c"
+              ]
+            }
+          }
+        },
+        "examples": [
+          "tfp-bingo-cards check --size 3 --cells a,b,c,d,e,f,g,h,i --called a,b,c"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

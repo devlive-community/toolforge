@@ -1,0 +1,57 @@
+{
+  "name": "宾果活动卡",
+  "description": "用自定义词条生成 3×3/5×5 宾果卡，主持逐项叫号、撤销与连线核对。",
+  "api": {
+    "generate": {
+      "summary": "生成宾果卡（唯一布局校验）",
+      "items": "词条池（数组）",
+      "size": "3 或 5",
+      "cards": "卡片数量（1–50）",
+      "freeCenter": "5×5 中央免叫格",
+      "seed": "随机种子"
+    },
+    "draw": {
+      "summary": "不放回抽取一个词条",
+      "remaining": "未叫词条",
+      "seed": "随机种子"
+    },
+    "check": {
+      "summary": "核对连线（横/竖/对角，FREE 自动命中）",
+      "size": "3 或 5",
+      "cells": "卡面",
+      "freeCenter": "中央免叫格",
+      "called": "已叫词条"
+    }
+  },
+  "line": {
+    "row": "第 {{index}} 行",
+    "column": "第 {{index}} 列",
+    "diagonal": "对角线 {{index}}"
+  },
+  "ui": {
+    "pool": "词条池（逗号分隔）",
+    "size": "规格",
+    "count": "卡片数",
+    "free": "中央免叫格",
+    "gen": "生成卡片",
+    "card": "卡号",
+    "call": "叫下一个",
+    "called": "已叫",
+    "undo": "撤销叫号",
+    "checkLine": "核对连线",
+    "noLine": "还没有连线",
+    "poolEmpty": "全部叫完",
+    "add": "加入本轮",
+    "delete": "删除"
+  },
+  "errors": {
+    "bingo.bad_size": "规格只支持 3 或 5",
+    "bingo.bad_card_count": "卡片数量 1–50",
+    "bingo.not_enough_items": "词条不足：{{have}}/{{need}}",
+    "bingo.empty_item": "词条不能为空",
+    "bingo.too_many_items": "词条超过 200",
+    "bingo.layout_exhausted": "无法再生成不同布局",
+    "bingo.pool_exhausted": "词条已全部叫完",
+    "bingo.invalid_grid": "卡面数据无效"
+  }
+}
