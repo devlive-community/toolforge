@@ -1,0 +1,117 @@
+{
+  "id": "org.devlive.toolforge.weekly-menu",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": [
+    "recipe",
+    "menu",
+    "shopping",
+    "菜谱",
+    "菜单",
+    "购物清单"
+  ],
+  "accent": "orange",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "scale": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.scale.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "baseServings",
+            "servings",
+            "ingredients"
+          ],
+          "properties": {
+            "baseServings": {
+              "type": "number",
+              "description": "i18n:api.scale.baseServings"
+            },
+            "servings": {
+              "type": "number",
+              "description": "i18n:api.scale.servings"
+            },
+            "ingredients": {
+              "type": "array",
+              "description": "i18n:api.scale.ingredients",
+              "default": [
+                {
+                  "name": "米",
+                  "amount": 200,
+                  "unit": "g"
+                }
+              ]
+            }
+          }
+        },
+        "examples": [
+          "tfp-weekly-menu scale --baseServings 2 --servings 6 --ingredients '米:200:g'"
+        ]
+      }
+    },
+    "shopping": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.shopping.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "menu",
+            "recipes"
+          ],
+          "properties": {
+            "menu": {
+              "type": "array",
+              "description": "i18n:api.shopping.menu",
+              "default": [
+                {
+                  "recipeId": "r1",
+                  "servings": 2
+                }
+              ]
+            },
+            "recipes": {
+              "type": "array",
+              "description": "i18n:api.shopping.recipes",
+              "default": [
+                {
+                  "id": "r1",
+                  "name": "番茄炒蛋",
+                  "baseServings": 2,
+                  "ingredients": [
+                    {
+                      "name": "西红柿",
+                      "amount": 300,
+                      "unit": "g"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "examples": []
+      }
+    }
+  },
+  "sensitive": false
+}

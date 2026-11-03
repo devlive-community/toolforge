@@ -1,0 +1,49 @@
+{
+  "name": "菜谱与一周菜单",
+  "description": "家常菜谱卡、按份数缩放用量、一周菜单与购物清单合并。",
+  "api": {
+    "scale": {
+      "summary": "按份数缩放食材用量",
+      "baseServings": "基础份数",
+      "servings": "目标份数",
+      "ingredients": "食材 [{name, amount, unit}]"
+    },
+    "shopping": {
+      "summary": "由一周菜单生成购物清单",
+      "menu": "菜单槽位数组",
+      "recipes": "菜谱数组"
+    }
+  },
+  "days": {
+    "mon": "周一",
+    "tue": "周二",
+    "wed": "周三",
+    "thu": "周四",
+    "fri": "周五",
+    "sat": "周六",
+    "sun": "周日"
+  },
+  "meals": {
+    "breakfast": "早",
+    "lunch": "午",
+    "dinner": "晚"
+  },
+  "ui": {
+    "recipes": "菜谱",
+    "recipe": "菜名",
+    "addRecipe": "添加菜谱",
+    "servings": "份数",
+    "scale": "按份数缩放",
+    "shopping": "购物清单",
+    "from": "来源",
+    "asIs": "适量",
+    "empty": "菜单还是空的",
+    "ingredients": "食材（名称:数量:单位，逗号分隔）"
+  },
+  "errors": {
+    "menu.bad_servings": "份数必须为正数",
+    "menu.bad_ingredient": "食材名称不能为空",
+    "menu.unknown_recipe": "菜单引用了未知菜谱：{{id}}",
+    "menu.too_many_slots": "菜单槽位超过 21"
+  }
+}

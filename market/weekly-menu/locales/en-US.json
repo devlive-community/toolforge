@@ -1,0 +1,49 @@
+{
+  "name": "Recipes & Weekly Meals",
+  "description": "Recipe cards, serving-scaled amounts, a weekly meal grid and a merged shopping list.",
+  "api": {
+    "scale": {
+      "summary": "Scale ingredient amounts by servings",
+      "baseServings": "Base servings",
+      "servings": "Target servings",
+      "ingredients": "Ingredients [{name, amount, unit}]"
+    },
+    "shopping": {
+      "summary": "Build a shopping list from the weekly menu",
+      "menu": "Menu slots array",
+      "recipes": "Recipes array"
+    }
+  },
+  "days": {
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat",
+    "sun": "Sun"
+  },
+  "meals": {
+    "breakfast": "B",
+    "lunch": "L",
+    "dinner": "D"
+  },
+  "ui": {
+    "recipes": "Recipes",
+    "recipe": "Recipe",
+    "addRecipe": "Add recipe",
+    "servings": "Servings",
+    "scale": "Scale by servings",
+    "shopping": "Shopping list",
+    "from": "From",
+    "asIs": "as needed",
+    "empty": "The menu is empty",
+    "ingredients": "Ingredients (name:amount:unit, comma separated)"
+  },
+  "errors": {
+    "menu.bad_servings": "Servings must be positive",
+    "menu.bad_ingredient": "Ingredient name cannot be empty",
+    "menu.unknown_recipe": "Menu references an unknown recipe: {{id}}",
+    "menu.too_many_slots": "Over 21 menu slots"
+  }
+}
