@@ -1,0 +1,58 @@
+{
+  "name": "反应与序列挑战",
+  "description": "两个离线小游戏：抢按即判的反应挑战与顺序复现的序列记忆，本地纪录分类保存。",
+  "api": {
+    "reaction_round": {
+      "summary": "生成随机等待时长",
+      "seed": "随机种子",
+      "minMs": "下限毫秒",
+      "maxMs": "上限毫秒"
+    },
+    "reaction_score": {
+      "summary": "反应成绩结算（有效轮中位数）",
+      "timesMs": "各轮毫秒，抢跑为 0"
+    },
+    "sequence": {
+      "summary": "生成亮起顺序",
+      "seed": "随机种子",
+      "length": "序列长度",
+      "pads": "格子数"
+    },
+    "sequence_judge": {
+      "summary": "判定复现结果",
+      "expected": "正确序列",
+      "entered": "玩家输入"
+    }
+  },
+  "mode": {
+    "reaction": "反应挑战",
+    "sequence": "序列记忆",
+    "label": "模式"
+  },
+  "ui": {
+    "start": "开始",
+    "wait": "等待提示…",
+    "now": "现在按！",
+    "falseStart": "抢跑",
+    "round": "第 {{index}} 轮",
+    "median": "中位数",
+    "official": "正式成绩（≥3 有效轮）",
+    "best": "最好",
+    "playAgain": "再来一组",
+    "watch": "记住亮起的顺序",
+    "yourTurn": "轮到你复现",
+    "level": "长度 {{count}}",
+    "failedAt": "在第 {{index}} 项出错",
+    "records": "本地纪录",
+    "clear": "清空纪录",
+    "hint": "失焦会使本轮作废；成绩仅供同机娱乐比较",
+    "delete": "删除"
+  },
+  "errors": {
+    "reaction.bad_wait": "等待范围无效",
+    "reaction.bad_rounds": "轮数 1–10",
+    "reaction.bad_time": "反应时间超出可接受范围",
+    "reaction.bad_pads": "格子数 2–8",
+    "reaction.bad_length": "序列长度 1–32"
+  }
+}

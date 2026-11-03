@@ -1,0 +1,177 @@
+{
+  "id": "org.devlive.toolforge.reaction-challenge",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": [
+    "reaction",
+    "memory",
+    "game",
+    "反应",
+    "记忆",
+    "小游戏"
+  ],
+  "accent": "cyan",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "reaction_round": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.reaction_round.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "seed"
+          ],
+          "properties": {
+            "seed": {
+              "type": "integer",
+              "description": "i18n:api.reaction_round.seed"
+            },
+            "minMs": {
+              "type": "integer",
+              "description": "i18n:api.reaction_round.minMs"
+            },
+            "maxMs": {
+              "type": "integer",
+              "description": "i18n:api.reaction_round.maxMs"
+            }
+          }
+        },
+        "examples": [
+          "tfp-reaction-challenge reaction-round 42"
+        ]
+      }
+    },
+    "reaction_score": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.reaction_score.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "timesMs"
+          ],
+          "properties": {
+            "timesMs": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "description": "i18n:api.reaction_score.timesMs",
+              "default": [
+                250,
+                300,
+                280,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "examples": [
+          "tfp-reaction-challenge reaction-score --timesMs 250,300,280,0,0"
+        ]
+      }
+    },
+    "sequence": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.sequence.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "seed",
+            "length"
+          ],
+          "properties": {
+            "seed": {
+              "type": "integer",
+              "description": "i18n:api.sequence.seed"
+            },
+            "length": {
+              "type": "integer",
+              "description": "i18n:api.sequence.length"
+            },
+            "pads": {
+              "type": "integer",
+              "description": "i18n:api.sequence.pads"
+            }
+          }
+        },
+        "examples": [
+          "tfp-reaction-challenge sequence 9 --length 6"
+        ]
+      }
+    },
+    "sequence_judge": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.sequence_judge.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "expected",
+            "entered"
+          ],
+          "properties": {
+            "expected": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "description": "i18n:api.sequence_judge.expected",
+              "default": [
+                0,
+                1,
+                2
+              ]
+            },
+            "entered": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "description": "i18n:api.sequence_judge.entered",
+              "default": [
+                0,
+                1,
+                2
+              ]
+            }
+          }
+        },
+        "examples": [
+          "tfp-reaction-challenge sequence-judge --expected 0,1,2 --entered 0,1,2"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

@@ -1,0 +1,58 @@
+{
+  "name": "Reaction & Sequence Challenge",
+  "description": "Two offline mini games: a reaction test with false-start detection and a sequence memory board.",
+  "api": {
+    "reaction_round": {
+      "summary": "Random wait before the go signal",
+      "seed": "Random seed",
+      "minMs": "Min ms",
+      "maxMs": "Max ms"
+    },
+    "reaction_score": {
+      "summary": "Score rounds with the valid median",
+      "timesMs": "Per-round ms, 0 for false starts"
+    },
+    "sequence": {
+      "summary": "Generate the light-up order",
+      "seed": "Random seed",
+      "length": "Sequence length",
+      "pads": "Pad count"
+    },
+    "sequence_judge": {
+      "summary": "Judge the reproduction",
+      "expected": "Expected order",
+      "entered": "Player input"
+    }
+  },
+  "mode": {
+    "reaction": "Reaction",
+    "sequence": "Sequence memory",
+    "label": "Mode"
+  },
+  "ui": {
+    "start": "Start",
+    "wait": "Wait for it…",
+    "now": "NOW!",
+    "falseStart": "False start",
+    "round": "Round {{index}}",
+    "median": "Median",
+    "official": "Official (≥3 valid)",
+    "best": "Best",
+    "playAgain": "Play again",
+    "watch": "Memorize the order",
+    "yourTurn": "Your turn",
+    "level": "Length {{count}}",
+    "failedAt": "Wrong at item {{index}}",
+    "records": "Local records",
+    "clear": "Clear records",
+    "hint": "Blur voids the round; scores are for same-device fun only",
+    "delete": "Delete"
+  },
+  "errors": {
+    "reaction.bad_wait": "Invalid wait range",
+    "reaction.bad_rounds": "1-10 rounds",
+    "reaction.bad_time": "Reaction time out of range",
+    "reaction.bad_pads": "2-8 pads",
+    "reaction.bad_length": "Length 1-32"
+  }
+}
