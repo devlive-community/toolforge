@@ -1,0 +1,34 @@
+{
+  "name": "星空小向导",
+  "description": "离线亮星星图：按地点与时间计算方位高度，认识亮星与常见星座。",
+  "api": {
+    "sky": {
+      "summary": "按地点与时间计算亮星方位高度",
+      "latitude": "纬度（度）",
+      "longitude": "经度（度）",
+      "timestampMs": "UTC 时间戳（毫秒）",
+      "minAltitude": "最低高度角"
+    }
+  },
+  "ui": {
+    "lat": "纬度",
+    "lon": "经度",
+    "time": "时间",
+    "chart": "星图",
+    "alt": "高度",
+    "az": "方位",
+    "above": "地平线上方 {{count}} 颗亮星",
+    "below": "低于地平线（未显示）",
+    "north": "北",
+    "east": "东",
+    "south": "南",
+    "west": "西",
+    "mag": "星等",
+    "lineNote": "连线仅为辨认辅助",
+    "search": "搜索星名"
+  },
+  "errors": {
+    "sky.bad_location": "纬度/经度无效",
+    "sky.bad_time": "时间戳超出支持范围"
+  }
+}

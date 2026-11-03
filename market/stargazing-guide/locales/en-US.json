@@ -1,0 +1,34 @@
+{
+  "name": "Stargazing Guide",
+  "description": "Offline bright-star sky chart: azimuth and altitude for your place and time, with common constellations.",
+  "api": {
+    "sky": {
+      "summary": "Compute bright-star azimuth/altitude for place and time",
+      "latitude": "Latitude (deg)",
+      "longitude": "Longitude (deg)",
+      "timestampMs": "UTC timestamp (ms)",
+      "minAltitude": "Min altitude"
+    }
+  },
+  "ui": {
+    "lat": "Latitude",
+    "lon": "Longitude",
+    "time": "Time",
+    "chart": "Sky chart",
+    "alt": "Alt",
+    "az": "Az",
+    "above": "{{count}} bright stars above horizon",
+    "below": "Below horizon (hidden)",
+    "north": "N",
+    "east": "E",
+    "south": "S",
+    "west": "W",
+    "mag": "Mag",
+    "lineNote": "Lines are identification aids",
+    "search": "Search stars"
+  },
+  "errors": {
+    "sky.bad_location": "Invalid latitude/longitude",
+    "sky.bad_time": "Timestamp out of supported range"
+  }
+}
