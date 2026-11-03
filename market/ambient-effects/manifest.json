@@ -1,0 +1,90 @@
+{
+  "id": "org.devlive.toolforge.ambient-effects",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": [
+    "particles",
+    "snow",
+    "rain",
+    "ambient",
+    "氛围",
+    "下雪",
+    "白噪音"
+  ],
+  "accent": "yellow",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "preset": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.preset.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "key"
+          ],
+          "properties": {
+            "key": {
+              "type": "string",
+              "description": "i18n:api.preset.key"
+            },
+            "density": {
+              "type": "number",
+              "description": "i18n:api.preset.density"
+            },
+            "lowPower": {
+              "type": "boolean",
+              "description": "i18n:api.preset.lowPower"
+            }
+          }
+        },
+        "examples": [
+          "tfp-ambient-effects preset snow --density 60"
+        ]
+      }
+    },
+    "noise": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.noise.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "description": "i18n:api.noise.kind"
+            },
+            "volume": {
+              "type": "number",
+              "description": "i18n:api.noise.volume"
+            }
+          }
+        },
+        "examples": [
+          "tfp-ambient-effects noise rain --volume 60"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

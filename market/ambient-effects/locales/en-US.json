@@ -1,0 +1,43 @@
+{
+  "name": "Ambient Effects",
+  "description": "Fullscreen ambient particles (snow, rain, fireflies, bubbles) with synthesized rain and campfire noise.",
+  "api": {
+    "preset": {
+      "summary": "Particle preset parameters",
+      "key": "snow / rain / fireflies / bubbles",
+      "density": "Density 0-100",
+      "lowPower": "Reduce particles"
+    },
+    "noise": {
+      "summary": "Noise synthesis parameters",
+      "kind": "rain / campfire",
+      "volume": "Volume 0-100"
+    }
+  },
+  "presets": {
+    "snow": "Snow",
+    "rain": "Rain",
+    "fireflies": "Fireflies",
+    "bubbles": "Bubbles"
+  },
+  "noise": {
+    "rain": "Rain",
+    "campfire": "Campfire"
+  },
+  "ui": {
+    "fullscreen": "Fullscreen",
+    "exit": "Esc exits fullscreen",
+    "density": "Density",
+    "wind": "Wind",
+    "volume": "Volume",
+    "sound": "Sound",
+    "start": "Start",
+    "stop": "Stop"
+  },
+  "errors": {
+    "ambient.unknown_preset": "Unknown preset: {{key}}",
+    "ambient.bad_density": "Density 0-100",
+    "ambient.unknown_noise": "Unknown noise: {{kind}}",
+    "ambient.bad_volume": "Volume 0-100"
+  }
+}

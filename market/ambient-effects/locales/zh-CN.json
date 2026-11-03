@@ -1,0 +1,43 @@
+{
+  "name": "氛围效果模拟器",
+  "description": "全屏氛围粒子（雪/雨/萤火虫/气泡）与可调密度风力，配合成雨声篝火白噪音。",
+  "api": {
+    "preset": {
+      "summary": "粒子预设参数（密度与性能模式）",
+      "key": "snow / rain / fireflies / bubbles",
+      "density": "密度 0–100",
+      "lowPower": "低配降粒子"
+    },
+    "noise": {
+      "summary": "白噪音合成参数",
+      "kind": "rain / campfire",
+      "volume": "音量 0–100"
+    }
+  },
+  "presets": {
+    "snow": "下雪",
+    "rain": "下雨",
+    "fireflies": "萤火虫",
+    "bubbles": "气泡"
+  },
+  "noise": {
+    "rain": "雨声",
+    "campfire": "篝火"
+  },
+  "ui": {
+    "fullscreen": "全屏",
+    "exit": "按 Esc 退出全屏",
+    "density": "密度",
+    "wind": "风力",
+    "volume": "音量",
+    "sound": "环境音",
+    "start": "开始",
+    "stop": "停止"
+  },
+  "errors": {
+    "ambient.unknown_preset": "未知预设：{{key}}",
+    "ambient.bad_density": "密度 0–100",
+    "ambient.unknown_noise": "未知环境音：{{kind}}",
+    "ambient.bad_volume": "音量 0–100"
+  }
+}
