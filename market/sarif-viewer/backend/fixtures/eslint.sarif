@@ -1,0 +1,129 @@
+{
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "eslint",
+          "version": "8.57.0",
+          "informationUri": "https://eslint.org",
+          "rules": [
+            {
+              "id": "no-unused-vars",
+              "name": "NoUnusedVariables",
+              "shortDescription": { "text": "disallow unused variables" },
+              "defaultConfiguration": { "level": "warning" },
+              "helpUri": "https://eslint.org/rules/no-unused-vars",
+              "messageStrings": { "default": { "text": "'{0}' is defined but never used." } }
+            },
+            {
+              "id": "no-flow",
+              "shortDescription": { "text": "report control flow" }
+            }
+          ]
+        }
+      },
+      "columnKind": "utf16CodeUnits",
+      "artifacts": [
+        { "location": { "uri": "src/app.ts", "uriBaseId": "SRCROOT" }, "sourceLanguage": "ts" },
+        { "location": { "uri": "src/lib/util.ts", "uriBaseId": "SRCROOT" }, "roles": ["analysisTarget"] }
+      ],
+      "originalUriBaseIds": {
+        "SRCROOT": { "uri": "file:///home/dev/project/" }
+      },
+      "results": [
+        {
+          "ruleId": "no-unused-vars",
+          "level": "error",
+          "message": { "text": "'alpha' is defined but never used." },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": { "uri": "src/app.ts", "uriBaseId": "SRCROOT", "index": 0 },
+                "region": { "startLine": 10, "startColumn": 7, "endLine": 10, "endColumn": 12, "snippet": { "text": "const alpha = 1;" } }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "no-unused-vars",
+          "message": { "id": "default", "arguments": ["beta"] },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": { "uri": "src/lib/util.ts", "uriBaseId": "SRCROOT", "index": 1 },
+                "region": { "startLine": 42 }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "no-flow",
+          "ruleIndex": 1,
+          "message": { "text": "control flow reaches sink" },
+          "baselineState": "new",
+          "rank": 88.5,
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": { "uri": "src/app.ts", "uriBaseId": "SRCROOT", "index": 0 },
+                "region": { "startLine": 3, "snippet": { "text": "let x = sink();" } }
+              }
+            },
+            {
+              "physicalLocation": {
+                "artifactLocation": { "uri": "src/lib/util.ts", "uriBaseId": "SRCROOT", "index": 1 },
+                "region": { "startLine": 9 }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 0,
+              "message": { "text": "declaration" },
+              "physicalLocation": {
+                "artifactLocation": { "uri": "src/app.ts", "uriBaseId": "SRCROOT", "index": 0 },
+                "region": { "startLine": 1 }
+              }
+            }
+          ],
+          "codeFlows": [
+            {
+              "message": { "text": "path" },
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": { "uri": "src/app.ts", "uriBaseId": "SRCROOT", "index": 0 },
+                          "region": { "startLine": 3 }
+                        }
+                      },
+                      "executionOrder": 1,
+                      "nestingLevel": 0
+                    },
+                    {
+                      "message": { "text": "assigned" },
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": { "uri": "src/lib/util.ts", "uriBaseId": "SRCROOT", "index": 1 },
+                          "region": { "startLine": 9 }
+                        }
+                      },
+                      "executionOrder": 2,
+                      "nestingLevel": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "suppressions": [
+            { "kind": "inSource", "status": "accepted", "justification": "false positive" }
+          ]
+        }
+      ]
+    }
+  ]
+}

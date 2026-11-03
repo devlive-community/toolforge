@@ -1,0 +1,204 @@
+{
+  "name": "SARIF Static Analysis Reports",
+  "description": "Browse SARIF 2.1.0 static analysis reports offline: filter findings by tool, rule, file and severity, inspect locations, code flows and suppressions, and optionally link a local source root.",
+  "loading": "Reading…",
+  "cancel": "Cancel task",
+  "privacy": "Offline analysis · messages render as plain text · reports and source are never written to history",
+  "limits": "Up to 32 reports per run; 16 MiB per file, 32 MiB total; JSON depth 64; results, locations and rules together capped at 50,000 entries. UTF-8 and SARIF 2.x only.",
+  "open": {
+    "title": "Open report",
+    "add": "Add report",
+    "filter": "SARIF report"
+  },
+  "empty": {
+    "title": "Make scanner output useful",
+    "hint": "Open or drop a SARIF 2.1.0 report (.sarif / .json) to browse findings by tool, rule, file and severity, with locations and analysis paths."
+  },
+  "counts": {
+    "results": "Results",
+    "errors": "Errors",
+    "warnings": "Warnings",
+    "notes": "Notes",
+    "none": "No level",
+    "suppressed": "Suppressed"
+  },
+  "level": {
+    "all": "All levels",
+    "error": "Error",
+    "warning": "Warning",
+    "note": "Note",
+    "none": "No level"
+  },
+  "summary": {
+    "runs": "{{count}} runs",
+    "files": "{{count}} reports",
+    "tables": "{{rules}} rules · {{artifacts}} artifacts"
+  },
+  "list": {
+    "tab": "Browse"
+  },
+  "runs": {
+    "title": "Tool runs"
+  },
+  "run": {
+    "identity": "run #{{id}} · {{count}} results"
+  },
+  "rules": {
+    "title": "Rules"
+  },
+  "rule": {
+    "noDescription": "No rule description"
+  },
+  "artifacts": {
+    "title": "Artifacts"
+  },
+  "artifact": {
+    "noUri": "No URI",
+    "identity": "artifact #{{id}} · {{count}} roles"
+  },
+  "results": {
+    "title": "Results",
+    "total": "{{count}} matching results",
+    "noMessage": "No message text",
+    "identity": "run #{{run}} · result #{{id}} · {{kind}}",
+    "empty": "No matching results",
+    "emptyHint": "Adjust the filters or add more reports.",
+    "search": "Search message, ruleId or file",
+    "level": "Filter level",
+    "suppressed": "Suppression filter"
+  },
+  "suppressed": {
+    "all": "All results",
+    "only": "Suppressed only",
+    "excluded": "Unsuppressed only"
+  },
+  "suppression": {
+    "badge": "Suppressed",
+    "entry": "Suppression · {{kind}} · status {{status}}{{justification}}"
+  },
+  "baseline": {
+    "new": "Baseline: new",
+    "unchanged": "Baseline: unchanged",
+    "updated": "Baseline: updated"
+  },
+  "location": {
+    "physical": "Location",
+    "related": "Related",
+    "step": "Flow step"
+  },
+  "detail": {
+    "title": "Result detail",
+    "empty": "Select a result",
+    "hint": "Inspect message, rule info, locations and code flows; link a source root to read local context.",
+    "view": "Results or detail view",
+    "kind": "kind",
+    "baseline": "baselineState",
+    "missing": "—",
+    "rank": "rank",
+    "suppressed": "Suppressed",
+    "no": "No",
+    "occurrences": "{{count}} occurrences",
+    "locations": "Locations",
+    "related": "Related locations",
+    "flows": "Analysis paths (codeFlows)",
+    "diagnostics": "Diagnostics for this result"
+  },
+  "source": {
+    "hint": "ToolForge reads local files only after you link the source root matching the report; resolved paths must stay inside it.",
+    "link": "Link source root",
+    "show": "View source",
+    "hide": "Hide source",
+    "truncated": "Content truncated; only lines inside the limit are shown.",
+    "columns": "Column counting: {{kind}}",
+    "note.percent": "URI percent-decoding applied",
+    "note.baseNotLocal": "uriBaseId base is not a local file; using root",
+    "note.baseUnknown": "Unknown uriBaseId; using root",
+    "note.lineTruncated": "Line exceeded length limit"
+  },
+  "diagnostic": {
+    "version": "Version field",
+    "external": "External property files",
+    "extensions": "Extension components",
+    "mismatch": "ruleId disagrees with ruleIndex",
+    "ruleIndex": "ruleIndex out of range",
+    "artifact": "artifact index out of range",
+    "message": "Message reference unresolved",
+    "level": "Unknown level value",
+    "kind": "Unknown kind value",
+    "columnKind": "Unknown columnKind",
+    "region": "Invalid region coordinates",
+    "locations": "Too many locations, truncated",
+    "related": "Too many related locations, truncated",
+    "codeFlows": "Too many code flows, truncated",
+    "threads": "Too many thread flows, truncated",
+    "ruleId": "Empty ruleId"
+  },
+  "diagnostics": {
+    "count": "{{count}} report diagnostics",
+    "none": "No format or reference diagnostics found.",
+    "identity": "run #{{run}} · result #{{result}}"
+  },
+  "page": {
+    "previous": "Previous",
+    "next": "Next",
+    "label": "Page {{value}}",
+    "title": "Pagination"
+  },
+  "export": {
+    "csv": "CSV",
+    "json": "JSON",
+    "markdown": "Markdown",
+    "hint": "Exports the current run, level, rule, artifact and search scope; code flow steps and full snippets are excluded.",
+    "saved": "Report saved"
+  },
+  "logs": {
+    "title": "Task log",
+    "empty": "No log entries",
+    "latest": "Latest log"
+  },
+  "stages": {
+    "reading": "Reading report",
+    "parsing": "Parsing report",
+    "sourcing": "Reading source context",
+    "exporting": "Exporting report"
+  },
+  "errors": {
+    "sarif.size": "Report too large (16 MiB per file, 32 MiB total).",
+    "sarif.entries": "Report exceeds the entry budget; nothing was truncated or partially imported.",
+    "sarif.depth": "JSON nesting exceeds 64 levels.",
+    "sarif.json": "Broken or unsupported JSON: {{detail}}",
+    "sarif.version": "Only SARIF 2.x is supported, found {{found}}.",
+    "sarif.runs": "Report has no runs array, or exceeds the 64-run limit.",
+    "sarif.root": "Root element must be a JSON object.",
+    "sarif.string": "A single string exceeds the length limit (4096 bytes; snippets 8192).",
+    "sarif.files": "Select 1 to 32 report files.",
+    "sarif.read": "Unable to read the report file.",
+    "sarif.encoding": "Only UTF-8 reports are supported.",
+    "sarif.expired": "Report cache expired; reopen the file.",
+    "sarif.page": "Pagination range or filter parameters invalid.",
+    "sarif.region": "This location has no usable line/column range; guessing is refused.",
+    "sarif.noUri": "This location has no file URI.",
+    "sarif.escape": "Path contains traversal, backslashes, NUL or invalid encoding; refused.",
+    "sarif.outside": "Resolved path is outside the authorized source root; read refused.",
+    "sarif.missing": "Source file does not exist or cannot be resolved.",
+    "sarif.sourceroot": "Source root directory is invalid.",
+    "sarif.format": "Unsupported export format.",
+    "sarif.output": "Export exceeds 64 MiB; narrow the filter.",
+    "sarif.export": "Failed to export the report."
+  },
+  "help": [
+    "Open or drop one or more UTF-8 SARIF 2.1.0 reports (.sarif / .json). Multiple runs are listed per tool, keeping tool name, version and column counting kind.",
+    "Level resolution follows the spec: explicit result.level first, then the rule's default level, then kind (fail → error, everything else → none). A missing level is never silently treated as an error.",
+    "ruleId/ruleIndex mismatches, out-of-range indexes and unresolved message templates keep their raw values and land in diagnostics; external property files and extension components are flagged only, never fetched.",
+    "Suppressed results are never deleted; suppression records and baselineState are displayed independently. Selecting a result reveals locations, snippets, related locations and inlined code flow steps.",
+    "Local files are read only after you link a source root: URIs are percent-decoded first, traversal, backslashes and NUL are rejected, and the final path must stay inside the root (symlinks included). Without a line range the tool refuses to guess.",
+    "Up to 32 files, 16 MiB per file, 32 MiB total; depth 64; results, locations and rules together capped at 50,000 entries. Exports follow the current filter, max 64 MiB; over-limit inputs are rejected, never trimmed. Only the most recent parse cache is kept; no database is created."
+  ],
+  "functions": {
+    "parse": "Parse SARIF report",
+    "browse": "Filter and paginate",
+    "detail": "Read full result detail",
+    "readSource": "Read authorized source context",
+    "export": "Export filtered results"
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "name": "SARIF 静态检查报告",
+  "description": "离线浏览 SARIF 2.1.0 静态分析报告：按工具、规则、文件与级别筛选结果，查看位置、代码流与抑制记录，可选关联本地源码。",
+  "loading": "正在读取…",
+  "cancel": "取消任务",
+  "privacy": "离线分析 · 消息按纯文本展示 · 报告与源码不写入历史",
+  "limits": "每次最多 32 个报告；单文件 16 MiB，合计 32 MiB；JSON 深度 64 层，结果/位置/规则等共 50,000 项。仅支持 UTF-8 与 SARIF 2.x。",
+  "open": {
+    "title": "打开报告",
+    "add": "追加报告",
+    "filter": "SARIF 报告"
+  },
+  "empty": {
+    "title": "把扫描报告读出价值",
+    "hint": "打开或拖入 SARIF 2.1.0 报告（.sarif / .json），按工具、规则、文件与级别浏览结果，定位问题位置与分析路径。"
+  },
+  "counts": {
+    "results": "结果",
+    "errors": "错误",
+    "warnings": "警告",
+    "notes": "提示",
+    "none": "无级别",
+    "suppressed": "已抑制"
+  },
+  "level": {
+    "all": "全部级别",
+    "error": "错误",
+    "warning": "警告",
+    "note": "提示",
+    "none": "无级别"
+  },
+  "summary": {
+    "runs": "{{count}} 个 run",
+    "files": "{{count}} 个报告",
+    "tables": "{{rules}} 条规则 · {{artifacts}} 个文件条目"
+  },
+  "list": {
+    "tab": "浏览维度"
+  },
+  "runs": {
+    "title": "工具 Run"
+  },
+  "run": {
+    "identity": "run #{{id}} · {{count}} 个结果"
+  },
+  "rules": {
+    "title": "规则"
+  },
+  "rule": {
+    "noDescription": "无规则描述"
+  },
+  "artifacts": {
+    "title": "文件"
+  },
+  "artifact": {
+    "noUri": "无 URI",
+    "identity": "artifact #{{id}} · {{count}} 个角色"
+  },
+  "results": {
+    "title": "结果",
+    "total": "匹配 {{count}} 个结果",
+    "noMessage": "无消息文本",
+    "identity": "run #{{run}} · 结果 #{{id}} · {{kind}}",
+    "empty": "没有匹配的结果",
+    "emptyHint": "调整筛选条件，或追加更多报告。",
+    "search": "搜索消息、ruleId 或文件",
+    "level": "筛选级别",
+    "suppressed": "抑制筛选"
+  },
+  "suppressed": {
+    "all": "全部结果",
+    "only": "仅被抑制",
+    "excluded": "仅未抑制"
+  },
+  "suppression": {
+    "badge": "已抑制",
+    "entry": "抑制 · {{kind}} · 状态 {{status}}{{justification}}"
+  },
+  "baseline": {
+    "new": "基线：新增",
+    "unchanged": "基线：未变化",
+    "updated": "基线：有更新"
+  },
+  "location": {
+    "physical": "位置",
+    "related": "相关位置",
+    "step": "分析步骤"
+  },
+  "detail": {
+    "title": "结果详情",
+    "empty": "选择一个结果",
+    "hint": "查看消息、规则信息、位置与代码流；关联源码根目录后可读取本地上下文。",
+    "view": "结果或详情视图",
+    "kind": "kind",
+    "baseline": "baselineState",
+    "missing": "—",
+    "rank": "rank",
+    "suppressed": "抑制",
+    "no": "否",
+    "occurrences": "{{count}} 次出现",
+    "locations": "位置",
+    "related": "相关位置",
+    "flows": "分析路径（codeFlows）",
+    "diagnostics": "该结果的诊断"
+  },
+  "source": {
+    "hint": "选择报告对应的源码根目录后，ToolForge 才会读取本地文件；解析出的路径必须位于该目录内。",
+    "link": "关联源码根目录",
+    "show": "查看源码",
+    "hide": "收起源码",
+    "truncated": "内容被截断，仅展示限定范围内的行。",
+    "columns": "列计数口径：{{kind}}",
+    "note.percent": "URI 已做百分号解码",
+    "note.baseNotLocal": "uriBaseId 基址不是本地文件，已改用根目录",
+    "note.baseUnknown": "未知 uriBaseId，已改用根目录",
+    "note.lineTruncated": "行超出长度上限"
+  },
+  "diagnostic": {
+    "version": "版本字段",
+    "external": "外置 property 文件",
+    "extensions": "扩展组件",
+    "mismatch": "ruleId 与 ruleIndex 不一致",
+    "ruleIndex": "ruleIndex 越界",
+    "artifact": "artifact 索引越界",
+    "message": "消息引用无法解析",
+    "level": "未知级别值",
+    "kind": "未知 kind 值",
+    "columnKind": "未知列计数口径",
+    "region": "region 坐标无效",
+    "locations": "位置过多已截断",
+    "related": "相关位置过多已截断",
+    "codeFlows": "代码流过多已截断",
+    "threads": "线程流过多已截断",
+    "ruleId": "ruleId 为空"
+  },
+  "diagnostics": {
+    "count": "报告诊断 {{count}} 项",
+    "none": "没有发现格式或引用诊断。",
+    "identity": "run #{{run}} · 结果 #{{result}}"
+  },
+  "page": {
+    "previous": "上一页",
+    "next": "下一页",
+    "label": "第 {{value}} 页",
+    "title": "分页"
+  },
+  "export": {
+    "csv": "CSV",
+    "json": "JSON",
+    "markdown": "Markdown",
+    "hint": "导出当前 run、级别、规则、文件与搜索范围；不包含代码流步骤与片段全文。",
+    "saved": "报告已保存"
+  },
+  "logs": {
+    "title": "任务日志",
+    "empty": "暂无日志",
+    "latest": "最新日志"
+  },
+  "stages": {
+    "reading": "读取报告",
+    "parsing": "解析报告",
+    "sourcing": "读取源码上下文",
+    "exporting": "导出报告"
+  },
+  "errors": {
+    "sarif.size": "报告过大（单文件 16 MiB，合计 32 MiB）。",
+    "sarif.entries": "报告超过条目预算，未截断或导入部分结果。",
+    "sarif.depth": "JSON 嵌套超过 64 层。",
+    "sarif.json": "JSON 损坏或不受支持：{{detail}}",
+    "sarif.version": "仅支持 SARIF 2.x，当前版本：{{found}}。",
+    "sarif.runs": "报告缺少 runs 数组，或 run 数量超出上限（64）。",
+    "sarif.root": "根元素必须是 JSON 对象。",
+    "sarif.string": "单个字符串超过长度上限（4096 字节，片段 8192）。",
+    "sarif.files": "请选择 1 至 32 个报告文件。",
+    "sarif.read": "无法读取报告文件。",
+    "sarif.encoding": "仅支持 UTF-8 报告。",
+    "sarif.expired": "报告缓存已失效，请重新打开文件。",
+    "sarif.page": "分页范围或筛选参数无效。",
+    "sarif.region": "该位置缺少可用的行列范围，不猜测精确范围。",
+    "sarif.noUri": "该位置没有关联文件 URI。",
+    "sarif.escape": "路径包含穿越、反斜杠、NUL 或非法编码，已拒绝。",
+    "sarif.outside": "解析出的路径位于授权源码根目录之外，已拒绝读取。",
+    "sarif.missing": "源码文件不存在或无法解析。",
+    "sarif.sourceroot": "源码根目录无效。",
+    "sarif.format": "不支持此导出格式。",
+    "sarif.output": "导出超过 64 MiB，请缩小筛选范围。",
+    "sarif.export": "导出报告失败。"
+  },
+  "help": [
+    "打开或拖入一个或多个 UTF-8 SARIF 2.1.0 报告（.sarif / .json）。多个 run 会按工具分别列出，每个 run 保留工具名、版本与列计数口径。",
+    "结果级别遵循规范：result.level 优先，其次规则默认级别，最后按 kind 推断（fail → error，其他 → none）。缺失级别不会被一律算作错误。",
+    "ruleIndex 与 ruleId 不一致、索引越界、无法解析的消息模板都会保留原值并记入诊断；外置 property 文件与扩展组件只标注，不联网补齐。",
+    "被抑制的结果不会被删除，抑制记录与 baselineState 独立展示。选择结果后可查看位置、片段、相关位置与内联代码流步骤。",
+    "关联源码根目录后才会读取本地文件：URI 先做百分号解码，再拒绝穿越、反斜杠与 NUL，最终路径必须位于根目录内（含符号链接检查）。缺少行列范围时不猜测精确范围。",
+    "最多 32 个文件、单文件 16 MiB、合计 32 MiB；深度 64，结果/位置/规则等共 50,000 项。导出遵循当前筛选，最多 64 MiB，超限明确拒绝。报告仅保留最近一次的临时解析缓存，不创建数据库。"
+  ],
+  "functions": {
+    "parse": "读取 SARIF 报告",
+    "browse": "筛选与分页浏览",
+    "detail": "读取结果完整详情",
+    "readSource": "读取授权源码上下文",
+    "export": "导出筛选结果"
+  }
+}

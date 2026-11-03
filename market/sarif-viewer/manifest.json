@@ -1,0 +1,44 @@
+{
+  "id": "org.devlive.toolforge.sarif-viewer",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": [
+    "sarif",
+    "static analysis",
+    "code scanning",
+    "linter",
+    "security",
+    "静态分析",
+    "扫描报告",
+    "代码检查"
+  ],
+  "accent": "violet",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [
+    "fs:user-selected"
+  ],
+  "functions": {
+    "parse": {
+      "task": true
+    },
+    "browse": {
+      "task": true
+    },
+    "detail": {
+      "task": true
+    },
+    "readSource": {
+      "task": true
+    },
+    "export": {
+      "task": true
+    }
+  },
+  "sensitive": true
+}
