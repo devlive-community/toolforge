@@ -181,6 +181,37 @@ importers:
         specifier: 8.3.0
         version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
 
+  market/bead-pattern/ui:
+    dependencies:
+      '@toolforge/plugin-ui-sdk':
+        specifier: workspace:*
+        version: link:../../../packages/plugin-ui-sdk
+      '@toolforge/ui':
+        specifier: workspace:*
+        version: link:../../../packages/ui
+      lucide-react:
+        specifier: 1.47.0
+        version: 1.47.0(react@19.3.0)
+      react-i18next:
+        specifier: 17.0.15
+        version: 17.0.15(i18next@26.4.2(typescript@5.9.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.3)
+    devDependencies:
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
+      react:
+        specifier: 19.3.0
+        version: 19.3.0
+      tailwindcss:
+        specifier: 4.3.3
+        version: 4.3.3
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vite:
+        specifier: 8.3.0
+        version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
+
   market/bingo-cards/ui:
     dependencies:
       '@toolforge/plugin-ui-sdk':
@@ -1988,6 +2019,37 @@ importers:
         specifier: 8.3.0
         version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
 
+  market/meme-composer/ui:
+    dependencies:
+      '@toolforge/plugin-ui-sdk':
+        specifier: workspace:*
+        version: link:../../../packages/plugin-ui-sdk
+      '@toolforge/ui':
+        specifier: workspace:*
+        version: link:../../../packages/ui
+      lucide-react:
+        specifier: 1.47.0
+        version: 1.47.0(react@19.3.0)
+      react-i18next:
+        specifier: 17.0.15
+        version: 17.0.15(i18next@26.4.2(typescript@5.9.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.3)
+    devDependencies:
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
+      react:
+        specifier: 19.3.0
+        version: 19.3.0
+      tailwindcss:
+        specifier: 4.3.3
+        version: 4.3.3
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vite:
+        specifier: 8.3.0
+        version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
+
   market/metronome/ui:
     dependencies:
       '@toolforge/plugin-ui-sdk':
@@ -2299,6 +2361,37 @@ importers:
         version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
 
   market/password/ui:
+    dependencies:
+      '@toolforge/plugin-ui-sdk':
+        specifier: workspace:*
+        version: link:../../../packages/plugin-ui-sdk
+      '@toolforge/ui':
+        specifier: workspace:*
+        version: link:../../../packages/ui
+      lucide-react:
+        specifier: 1.47.0
+        version: 1.47.0(react@19.3.0)
+      react-i18next:
+        specifier: 17.0.15
+        version: 17.0.15(i18next@26.4.2(typescript@5.9.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.3)
+    devDependencies:
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
+      react:
+        specifier: 19.3.0
+        version: 19.3.0
+      tailwindcss:
+        specifier: 4.3.3
+        version: 4.3.3
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vite:
+        specifier: 8.3.0
+        version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
+
+  market/pcap-viewer/ui:
     dependencies:
       '@toolforge/plugin-ui-sdk':
         specifier: workspace:*
@@ -2763,6 +2856,37 @@ importers:
         specifier: 8.3.0
         version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
 
+  market/seal-designer/ui:
+    dependencies:
+      '@toolforge/plugin-ui-sdk':
+        specifier: workspace:*
+        version: link:../../../packages/plugin-ui-sdk
+      '@toolforge/ui':
+        specifier: workspace:*
+        version: link:../../../packages/ui
+      lucide-react:
+        specifier: 1.47.0
+        version: 1.47.0(react@19.3.0)
+      react-i18next:
+        specifier: 17.0.15
+        version: 17.0.15(i18next@26.4.2(typescript@5.9.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.3)
+    devDependencies:
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
+      react:
+        specifier: 19.3.0
+        version: 19.3.0
+      tailwindcss:
+        specifier: 4.3.3
+        version: 4.3.3
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vite:
+        specifier: 8.3.0
+        version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
+
   market/semver/ui:
     dependencies:
       '@toolforge/plugin-ui-sdk':
@@ -3042,6 +3166,37 @@ importers:
         specifier: 8.3.0
         version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
 
+  market/tangram-studio/ui:
+    dependencies:
+      '@toolforge/plugin-ui-sdk':
+        specifier: workspace:*
+        version: link:../../../packages/plugin-ui-sdk
+      '@toolforge/ui':
+        specifier: workspace:*
+        version: link:../../../packages/ui
+      lucide-react:
+        specifier: 1.47.0
+        version: 1.47.0(react@19.3.0)
+      react-i18next:
+        specifier: 17.0.15
+        version: 17.0.15(i18next@26.4.2(typescript@5.9.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.3)
+    devDependencies:
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
+      react:
+        specifier: 19.3.0
+        version: 19.3.0
+      tailwindcss:
+        specifier: 4.3.3
+        version: 4.3.3
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vite:
+        specifier: 8.3.0
+        version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
+
   market/test-card/ui:
     dependencies:
       '@toolforge/plugin-ui-sdk':
@@ -3170,6 +3325,37 @@ importers:
         version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
 
   market/token-counter/ui:
+    dependencies:
+      '@toolforge/plugin-ui-sdk':
+        specifier: workspace:*
+        version: link:../../../packages/plugin-ui-sdk
+      '@toolforge/ui':
+        specifier: workspace:*
+        version: link:../../../packages/ui
+      lucide-react:
+        specifier: 1.47.0
+        version: 1.47.0(react@19.3.0)
+      react-i18next:
+        specifier: 17.0.15
+        version: 17.0.15(i18next@26.4.2(typescript@5.9.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.3)
+    devDependencies:
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
+      react:
+        specifier: 19.3.0
+        version: 19.3.0
+      tailwindcss:
+        specifier: 4.3.3
+        version: 4.3.3
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vite:
+        specifier: 8.3.0
+        version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
+
+  market/trace-viewer/ui:
     dependencies:
       '@toolforge/plugin-ui-sdk':
         specifier: workspace:*
@@ -3451,7 +3637,100 @@ importers:
         specifier: 8.3.0
         version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
 
+  market/vertical-stationery/ui:
+    dependencies:
+      '@toolforge/plugin-ui-sdk':
+        specifier: workspace:*
+        version: link:../../../packages/plugin-ui-sdk
+      '@toolforge/ui':
+        specifier: workspace:*
+        version: link:../../../packages/ui
+      lucide-react:
+        specifier: 1.47.0
+        version: 1.47.0(react@19.3.0)
+      react-i18next:
+        specifier: 17.0.15
+        version: 17.0.15(i18next@26.4.2(typescript@5.9.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.3)
+    devDependencies:
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
+      react:
+        specifier: 19.3.0
+        version: 19.3.0
+      tailwindcss:
+        specifier: 4.3.3
+        version: 4.3.3
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vite:
+        specifier: 8.3.0
+        version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
+
+  market/wardrobe-journal/ui:
+    dependencies:
+      '@toolforge/plugin-ui-sdk':
+        specifier: workspace:*
+        version: link:../../../packages/plugin-ui-sdk
+      '@toolforge/ui':
+        specifier: workspace:*
+        version: link:../../../packages/ui
+      lucide-react:
+        specifier: 1.47.0
+        version: 1.47.0(react@19.3.0)
+      react-i18next:
+        specifier: 17.0.15
+        version: 17.0.15(i18next@26.4.2(typescript@5.9.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.3)
+    devDependencies:
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
+      react:
+        specifier: 19.3.0
+        version: 19.3.0
+      tailwindcss:
+        specifier: 4.3.3
+        version: 4.3.3
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vite:
+        specifier: 8.3.0
+        version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
+
   market/wasm-inspector/ui:
+    dependencies:
+      '@toolforge/plugin-ui-sdk':
+        specifier: workspace:*
+        version: link:../../../packages/plugin-ui-sdk
+      '@toolforge/ui':
+        specifier: workspace:*
+        version: link:../../../packages/ui
+      lucide-react:
+        specifier: 1.47.0
+        version: 1.47.0(react@19.3.0)
+      react-i18next:
+        specifier: 17.0.15
+        version: 17.0.15(i18next@26.4.2(typescript@5.9.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.3)
+    devDependencies:
+      '@types/react':
+        specifier: 19.3.0
+        version: 19.3.0
+      react:
+        specifier: 19.3.0
+        version: 19.3.0
+      tailwindcss:
+        specifier: 4.3.3
+        version: 4.3.3
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vite:
+        specifier: 8.3.0
+        version: 8.3.0(@types/node@24.13.6)(jiti@2.7.0)
+
+  market/weekly-menu/ui:
     dependencies:
       '@toolforge/plugin-ui-sdk':
         specifier: workspace:*

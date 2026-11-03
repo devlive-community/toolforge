@@ -171,6 +171,13 @@ export function MarkdownEditor() {
       toast.success(t('file.exported', { name: baseName(path) }))
     })
 
+  const copyStyled = () =>
+    run(async () => {
+      const { html } = await call<{ html: string }>('export_styled', { source: draft.text })
+      await navigator.clipboard.writeText(html)
+      toast.success(t('styled.copied'))
+    })
+
   const onDrop = useEffectEvent((paths: string[]) => {
     const files = paths.filter(isMarkdown)
     files.forEach((path) => void loadPath(path))
@@ -303,6 +310,7 @@ export function MarkdownEditor() {
           items={[
             { key: 'saveAs', label: t('file.saveAs'), icon: <Save />, onSelect: saveAs },
             { key: 'export', label: t('file.export'), icon: <FileDown />, onSelect: exportHtml },
+            { key: 'styled', label: t('styled.copy'), icon: <FileDown />, onSelect: copyStyled },
             { key: 'copy', label: t('file.copyHtml'), icon: <Code />, disabled: !result, onSelect: () => result && copy(result.html) },
             ...(draft.path
               ? [{ key: 'reveal', label: t('file.reveal'), icon: <FolderSearch />, onSelect: () => host.revealPath(draft.path!).catch((e) => toast.error(errorMessage(e))) }]

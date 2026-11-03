@@ -2,6 +2,7 @@
 
 mod export;
 mod render;
+mod styled;
 
 use serde_json::Value;
 use tf_plugin_api::{Manifest, PluginResult, ToolPlugin, parse_args, to_value, unknown_function};
@@ -29,6 +30,7 @@ impl ToolPlugin for MarkdownEditor {
         match function {
             "render" => to_value(render::render(parse_args(args)?)?),
             "export_html" => to_value(export::export_html(parse_args(args)?)?),
+            "export_styled" => to_value(styled::styled_html(parse_args(args)?)?),
             other => Err(unknown_function(other)),
         }
     }

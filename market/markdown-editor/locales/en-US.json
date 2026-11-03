@@ -99,6 +99,18 @@
       "summary": "Export Markdown as a standalone HTML document",
       "source": "Markdown text",
       "title": "Document title; the first heading when omitted"
+    },
+    "export_styled": {
+      "summary": "Export HTML with fully inline styles for platform paste",
+      "source": "Markdown source",
+      "accent": "Accent color (default #07c160)",
+      "fontSize": "Body font px (14-20)"
     }
+  },
+  "styled": {
+    "title": "Platform paste",
+    "copy": "Copy HTML",
+    "copied": "Copied — paste into the platform editor",
+    "hint": "All styles are inlined so formatting survives pasting into WeChat/Zhihu editors."
   }
 }

@@ -17,5 +17,38 @@ fn dispatches_functions() {
 fn declared_interfaces_match_backend_args() {
     let checked =
         tf_plugin_api::interface::check_declared_interfaces(&MarkdownEditor::default()).unwrap();
-    assert_eq!(checked, 2);
+    assert_eq!(checked, 3);
+}
+
+#[test]
+fn export_styled_inlines_everything() {
+    let out = MarkdownEditor::default()
+        .call(
+            "export_styled",
+            json!({"source": "# 标题\n\n正文 **加粗** 与 `代码`\n\n- 列表项"}),
+        )
+        .unwrap();
+    let html = out["html"].as_str().unwrap();
+    assert!(
+        html.contains("style="),
+        "styles are injected inline: {html}"
+    );
+    assert!(
+        html.contains("<strong style=\""),
+        "strong gets inline style"
+    );
+    assert!(html.contains("<code style=\""), "code gets inline style");
+    assert!(html.contains("<li style=\""), "li gets inline style");
+    assert!(!html.contains("<style"), "no style blocks remain");
+}
+
+#[test]
+fn export_styled_validates_color() {
+    let err = MarkdownEditor::default()
+        .call(
+            "export_styled",
+            json!({"source": "# x", "accent": "javascript:alert(1)"}),
+        )
+        .unwrap_err();
+    assert_eq!(err.code, "styled.bad_color");
 }

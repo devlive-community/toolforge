@@ -8663,6 +8663,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-bead-pattern"
+version = "0.1.0"
+dependencies = [
+ "image",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-bingo-cards"
 version = "0.1.0"
 dependencies = [
@@ -9359,6 +9370,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-meme-composer"
+version = "0.1.0"
+dependencies = [
+ "image",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-metronome"
 version = "0.1.0"
 dependencies = [
@@ -9466,6 +9488,16 @@ name = "tfm-password"
 version = "0.1.0"
 dependencies = [
  "rand 0.10.3",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-pcap-viewer"
+version = "0.1.0"
+dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -9630,6 +9662,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-seal-designer"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-semver"
 version = "0.1.0"
 dependencies = [
@@ -9726,6 +9768,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-tangram-studio"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-test-card"
 version = "0.1.0"
 dependencies = [
@@ -9777,6 +9829,16 @@ dependencies = [
 
 [[package]]
 name = "tfm-token-counter"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-trace-viewer"
 version = "0.1.0"
 dependencies = [
  "serde",
@@ -9883,6 +9945,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-vertical-stationery"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-wardrobe-journal"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-wasm-inspector"
 version = "0.1.0"
 dependencies = [
@@ -9893,6 +9975,16 @@ dependencies = [
  "wasm-encoder 0.258.3",
  "wasmparser 0.258.3",
  "wasmprinter",
+]
+
+[[package]]
+name = "tfm-weekly-menu"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
 ]
 
 [[package]]
