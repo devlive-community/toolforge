@@ -1,0 +1,83 @@
+{
+  "id": "org.devlive.toolforge.world-geography",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "other",
+  "keywords": [
+    "country",
+    "capital",
+    "geography",
+    "国家",
+    "首都",
+    "地理",
+    "区号"
+  ],
+  "accent": "orange",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "list": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.list.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "i18n:api.list.query",
+              "x-positional": 0
+            },
+            "continent": {
+              "type": "string",
+              "description": "i18n:api.list.continent"
+            }
+          }
+        },
+        "examples": [
+          "tfp-world-geography list",
+          "tfp-world-geography list 日本",
+          "tfp-world-geography list --continent europe"
+        ]
+      }
+    },
+    "by_capital": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.by_capital.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "capital"
+          ],
+          "properties": {
+            "capital": {
+              "type": "string",
+              "description": "i18n:api.by_capital.capital",
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "tfp-world-geography by-capital 巴黎"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

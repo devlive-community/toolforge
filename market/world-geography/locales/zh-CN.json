@@ -1,0 +1,36 @@
+{
+  "name": "世界地理速查",
+  "description": "世界国家速查：首都、大洲、货币、电话区号与人口概数，支持双向查询。",
+  "api": {
+    "list": {
+      "summary": "列出国家概要，支持中英文/首都/代码/区号搜索",
+      "query": "关键词（可选）",
+      "continent": "大洲过滤"
+    },
+    "by_capital": {
+      "summary": "按首都反查国家（中英文均可）",
+      "capital": "首都名"
+    }
+  },
+  "continents": {
+    "asia": "亚洲",
+    "europe": "欧洲",
+    "north-america": "北美洲",
+    "south-america": "南美洲",
+    "africa": "非洲",
+    "oceania": "大洋洲"
+  },
+  "table": {
+    "country": "国家",
+    "capital": "首都",
+    "continent": "大洲",
+    "currency": "货币",
+    "callingCode": "区号",
+    "population": "人口（约）"
+  },
+  "population": "约 {{value}} 百万",
+  "errors": {
+    "geo.not_found": "没有匹配的国家",
+    "geo.capital_not_found": "没有匹配的首都"
+  }
+}

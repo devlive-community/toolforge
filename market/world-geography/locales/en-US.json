@@ -1,0 +1,36 @@
+{
+  "name": "World Geography Reference",
+  "description": "Country reference: capitals, continents, currencies, calling codes and population, searchable both ways.",
+  "api": {
+    "list": {
+      "summary": "List country profiles, searchable by name/capital/code/calling code",
+      "query": "Keyword (optional)",
+      "continent": "Continent filter"
+    },
+    "by_capital": {
+      "summary": "Reverse lookup by capital (both languages)",
+      "capital": "Capital name"
+    }
+  },
+  "continents": {
+    "asia": "Asia",
+    "europe": "Europe",
+    "north-america": "North America",
+    "south-america": "South America",
+    "africa": "Africa",
+    "oceania": "Oceania"
+  },
+  "table": {
+    "country": "Country",
+    "capital": "Capital",
+    "continent": "Continent",
+    "currency": "Currency",
+    "callingCode": "Calling code",
+    "population": "Population (approx)"
+  },
+  "population": "≈ {{value}}M",
+  "errors": {
+    "geo.not_found": "No matching countries",
+    "geo.capital_not_found": "No matching capital"
+  }
+}
