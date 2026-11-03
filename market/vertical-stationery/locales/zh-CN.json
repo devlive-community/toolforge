@@ -1,0 +1,33 @@
+{
+  "name": "竖排笺纸",
+  "description": "把短文诗句排成竖排笺纸与书签：分栏、标题落款、分页预览与 SVG 导出。",
+  "api": {
+    "layout": {
+      "summary": "竖排笺纸布局",
+      "text": "正文",
+      "title": "标题",
+      "signature": "落款",
+      "paperWidth": "纸宽 mm",
+      "paperHeight": "纸高 mm",
+      "fontMm": "字号 mm",
+      "perColumn": "每列字数"
+    }
+  },
+  "ui": {
+    "text": "正文",
+    "title": "标题",
+    "signature": "落款",
+    "font": "字号 mm",
+    "perColumn": "每列字数",
+    "pages": "{{count}} 页",
+    "export": "导出 SVG",
+    "print": "打印"
+  },
+  "errors": {
+    "stationery.bad_paper": "纸张尺寸无效（80–500 × 100–700mm）",
+    "stationery.bad_font": "字号 3–20mm",
+    "stationery.bad_per_column": "每列字数 5–30",
+    "stationery.empty_text": "请输入正文",
+    "stationery.too_many_pages": "页数超过 {{max}}"
+  }
+}

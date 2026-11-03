@@ -1,0 +1,33 @@
+{
+  "name": "Chinese Vertical Stationery",
+  "description": "Lay text into vertical stationery and bookmarks with columns, titles and SVG export.",
+  "api": {
+    "layout": {
+      "summary": "Vertical stationery layout",
+      "text": "Body text",
+      "title": "Title",
+      "signature": "Signature",
+      "paperWidth": "Paper width mm",
+      "paperHeight": "Paper height mm",
+      "fontMm": "Font size mm",
+      "perColumn": "Chars per column"
+    }
+  },
+  "ui": {
+    "text": "Body",
+    "title": "Title",
+    "signature": "Signature",
+    "font": "Font mm",
+    "perColumn": "Chars/column",
+    "pages": "{{count}} pages",
+    "export": "Export SVG",
+    "print": "Print"
+  },
+  "errors": {
+    "stationery.bad_paper": "Invalid paper (80-500 × 100-700mm)",
+    "stationery.bad_font": "Font 3-20mm",
+    "stationery.bad_per_column": "5-30 chars per column",
+    "stationery.empty_text": "Enter body text",
+    "stationery.too_many_pages": "Over {{max}} pages"
+  }
+}

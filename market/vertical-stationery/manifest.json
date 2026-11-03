@@ -1,0 +1,75 @@
+{
+  "id": "org.devlive.toolforge.vertical-stationery",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": [
+    "stationery",
+    "vertical",
+    "bookmark",
+    "竖排",
+    "笺纸",
+    "书签"
+  ],
+  "accent": "brown",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "layout": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.layout.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "i18n:api.layout.text"
+            },
+            "title": {
+              "type": "string",
+              "description": "i18n:api.layout.title"
+            },
+            "signature": {
+              "type": "string",
+              "description": "i18n:api.layout.signature"
+            },
+            "paperWidth": {
+              "type": "number",
+              "description": "i18n:api.layout.paperWidth"
+            },
+            "paperHeight": {
+              "type": "number",
+              "description": "i18n:api.layout.paperHeight"
+            },
+            "fontMm": {
+              "type": "number",
+              "description": "i18n:api.layout.fontMm"
+            },
+            "perColumn": {
+              "type": "integer",
+              "description": "i18n:api.layout.perColumn"
+            }
+          }
+        },
+        "examples": [
+          "tfp-vertical-stationery layout 春眠不觉晓 --title 春晓"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}
