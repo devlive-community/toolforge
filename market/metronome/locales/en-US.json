@@ -1,0 +1,58 @@
+{
+  "name": "Metronome",
+  "description": "30-240 BPM metronome with time signatures, accents and subdivisions, tap tempo and progressive practice.",
+  "api": {
+    "schedule": {
+      "summary": "Build a beat schedule (ms times + accent levels)",
+      "bpm": "Tempo 30-240",
+      "signature": "2/4, 3/4, 4/4 or 6/8",
+      "subdivision": "Subdivisions 1-4",
+      "bars": "Bars 1-64",
+      "accents": "Per-beat level 0 mute/1 soft/2 accent",
+      "countIn": "Count-in bars 0-4"
+    },
+    "practice_plan": {
+      "summary": "Progressive practice stages",
+      "startBpm": "Start BPM",
+      "targetBpm": "Target BPM",
+      "everyBars": "Bars between steps",
+      "step": "Step size (BPM)"
+    }
+  },
+  "levels": {
+    "0": "Mute",
+    "1": "Soft",
+    "2": "Accent"
+  },
+  "ui": {
+    "bpm": "BPM",
+    "tap": "Tap tempo",
+    "signature": "Signature",
+    "subdivision": "Subdivide",
+    "bars": "Bars",
+    "countIn": "Count-in",
+    "start": "Start",
+    "stop": "Stop",
+    "bar": "Bar",
+    "practice": "Practice",
+    "target": "Target",
+    "everyBars": "+{{step}} every {{count}} bars",
+    "apply": "Apply plan",
+    "volume": "Volume",
+    "mute": "Mute",
+    "tapHint": "Tap two or more times to estimate",
+    "all": "All"
+  },
+  "errors": {
+    "metronome.bad_bpm": "BPM must be 30-240",
+    "metronome.bad_signature": "Only 2/4, 3/4, 4/4, 6/8",
+    "metronome.bad_subdivision": "Subdivisions 1-4",
+    "metronome.bad_bars": "Bars 1-64",
+    "metronome.bad_count_in": "Count-in 0-4",
+    "metronome.bad_every_bars": "Interval 1-32 bars",
+    "metronome.bad_step": "Step 0-60 BPM",
+    "metronome.start_above_target": "Start BPM is above the target",
+    "metronome.too_many_stages": "Too many stages, use a bigger step"
+  },
+  "apps": {}
+}

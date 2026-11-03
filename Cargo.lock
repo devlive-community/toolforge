@@ -8629,6 +8629,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-ambient-effects"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-ascii-art"
 version = "0.1.0"
 dependencies = [
@@ -8646,6 +8656,16 @@ version = "0.1.0"
 dependencies = [
  "num-bigint",
  "num-traits",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-bingo-cards"
+version = "0.1.0"
+dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -9032,6 +9052,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-hanzi-copybook"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-health-calculator"
 version = "0.1.0"
 dependencies = [
@@ -9329,6 +9359,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-metronome"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-mini-instrument"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-mock-data"
 version = "0.1.0"
 dependencies = [
@@ -9383,6 +9433,16 @@ dependencies = [
 
 [[package]]
 name = "tfm-pairwise"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-paper-box-templates"
 version = "0.1.0"
 dependencies = [
  "serde",
@@ -9506,6 +9566,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-reaction-challenge"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-reading-journal"
 version = "0.1.0"
 dependencies = [
@@ -9601,6 +9671,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-stargazing-guide"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-sudoku"
 version = "0.1.0"
 dependencies = [
@@ -9617,6 +9697,16 @@ dependencies = [
  "data-encoding",
  "image",
  "resvg",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-symmetry-drawing"
+version = "0.1.0"
+dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -9704,6 +9794,16 @@ dependencies = [
  "tf-plugin-api",
  "tf-plugin-guest",
  "unicode-segmentation",
+]
+
+[[package]]
+name = "tfm-undercover-host"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
 ]
 
 [[package]]

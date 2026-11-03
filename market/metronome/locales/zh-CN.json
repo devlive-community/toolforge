@@ -1,0 +1,58 @@
+{
+  "name": "节拍器",
+  "description": "30–240 BPM 节拍器：多种拍号、重音/分拍、轻点测拍与递增练习方案，视觉拍点与合成点击音。",
+  "api": {
+    "schedule": {
+      "summary": "生成节拍时间表（毫秒时刻 + 重音级别）",
+      "bpm": "拍速 30–240",
+      "signature": "拍号 2/4、3/4、4/4、6/8",
+      "subdivision": "每拍等分 1–4",
+      "bars": "小节数 1–64",
+      "accents": "每拍级别 0 静音/1 弱/2 重",
+      "countIn": "预备小节数 0–4"
+    },
+    "practice_plan": {
+      "summary": "递增练习方案分段",
+      "startBpm": "起始 BPM",
+      "targetBpm": "目标 BPM",
+      "everyBars": "每隔几小节升速",
+      "step": "每次升幅（BPM）"
+    }
+  },
+  "levels": {
+    "0": "静音",
+    "1": "弱音",
+    "2": "重音"
+  },
+  "ui": {
+    "bpm": "拍速",
+    "tap": "轻点测速",
+    "signature": "拍号",
+    "subdivision": "分拍",
+    "bars": "小节",
+    "countIn": "预备小节",
+    "start": "开始",
+    "stop": "停止",
+    "bar": "小节",
+    "practice": "递增练习",
+    "target": "目标",
+    "everyBars": "每 {{count}} 小节 +{{step}}",
+    "apply": "套用方案",
+    "volume": "音量",
+    "mute": "静音",
+    "tapHint": "连续点击两下以上估算拍速",
+    "all": "全部"
+  },
+  "errors": {
+    "metronome.bad_bpm": "拍速需在 30–240",
+    "metronome.bad_signature": "拍号只支持 2/4、3/4、4/4、6/8",
+    "metronome.bad_subdivision": "分拍 1–4",
+    "metronome.bad_bars": "小节数 1–64",
+    "metronome.bad_count_in": "预备小节 0–4",
+    "metronome.bad_every_bars": "升速间隔 1–32 小节",
+    "metronome.bad_step": "升幅 0–60 BPM",
+    "metronome.start_above_target": "起始拍速高于目标",
+    "metronome.too_many_stages": "分段过多，请增大步幅"
+  },
+  "apps": {}
+}

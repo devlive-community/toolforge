@@ -1,0 +1,121 @@
+{
+  "id": "org.devlive.toolforge.metronome",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": [
+    "metronome",
+    "bpm",
+    "tempo",
+    "rhythm",
+    "节拍器",
+    "节奏",
+    "练习"
+  ],
+  "accent": "blue",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "schedule": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.schedule.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "bpm",
+            "signature"
+          ],
+          "properties": {
+            "bpm": {
+              "type": "number",
+              "description": "i18n:api.schedule.bpm"
+            },
+            "signature": {
+              "type": "string",
+              "description": "i18n:api.schedule.signature"
+            },
+            "subdivision": {
+              "type": "integer",
+              "description": "i18n:api.schedule.subdivision"
+            },
+            "bars": {
+              "type": "integer",
+              "description": "i18n:api.schedule.bars"
+            },
+            "accents": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "description": "i18n:api.schedule.accents",
+              "default": [
+                2,
+                1,
+                1,
+                1
+              ]
+            },
+            "countIn": {
+              "type": "integer",
+              "description": "i18n:api.schedule.countIn"
+            }
+          }
+        },
+        "examples": [
+          "tfp-metronome schedule 120 4/4 --bars 2 --subdivision 2"
+        ]
+      }
+    },
+    "practice_plan": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.practice_plan.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "startBpm",
+            "targetBpm"
+          ],
+          "properties": {
+            "startBpm": {
+              "type": "number",
+              "description": "i18n:api.practice_plan.startBpm"
+            },
+            "targetBpm": {
+              "type": "number",
+              "description": "i18n:api.practice_plan.targetBpm"
+            },
+            "everyBars": {
+              "type": "integer",
+              "description": "i18n:api.practice_plan.everyBars"
+            },
+            "step": {
+              "type": "number",
+              "description": "i18n:api.practice_plan.step"
+            }
+          }
+        },
+        "examples": [
+          "tfp-metronome practice-plan 60 72 --step 4"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}
