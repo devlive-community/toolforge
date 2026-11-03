@@ -1,0 +1,157 @@
+{
+  "id": "org.devlive.toolforge.invoice-assistant",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "calc",
+  "keywords": [
+    "invoice",
+    "tax",
+    "reimburse",
+    "发票",
+    "价税分离",
+    "大写金额",
+    "报销"
+  ],
+  "accent": "red",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "tax_split": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.tax_split.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "amount",
+            "rate"
+          ],
+          "properties": {
+            "amount": {
+              "type": "number",
+              "description": "i18n:api.tax_split.amount",
+              "x-positional": 0
+            },
+            "rate": {
+              "type": "number",
+              "description": "i18n:api.tax_split.rate",
+              "x-positional": 1
+            },
+            "taxIncluded": {
+              "type": "boolean",
+              "description": "i18n:api.tax_split.taxIncluded"
+            }
+          }
+        },
+        "examples": [
+          "tfp-invoice-assistant tax-split 113 13",
+          "tfp-invoice-assistant tax-split 100 6 --taxIncluded false"
+        ]
+      }
+    },
+    "uppercase": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.uppercase.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "amount"
+          ],
+          "properties": {
+            "amount": {
+              "type": "number",
+              "description": "i18n:api.uppercase.amount",
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "tfp-invoice-assistant uppercase 1234.56"
+        ]
+      }
+    },
+    "reimbursement": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.reimbursement.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "title",
+            "person",
+            "items"
+          ],
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "i18n:api.reimbursement.title",
+              "x-positional": 0
+            },
+            "person": {
+              "type": "string",
+              "description": "i18n:api.reimbursement.person",
+              "x-positional": 1
+            },
+            "items": {
+              "type": "array",
+              "description": "i18n:api.reimbursement.items",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "i18n:reimb.item"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "description": "i18n:reimb.amount"
+                  },
+                  "rate": {
+                    "type": "number",
+                    "description": "i18n:api.tax_split.rate"
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "i18n:reimb.category"
+                  }
+                }
+              },
+              "default": [
+                {
+                  "name": "demo",
+                  "amount": 113,
+                  "rate": 13
+                }
+              ]
+            }
+          }
+        },
+        "examples": [
+          "tfp-invoice-assistant reimbursement 差旅 张三 --items '[{\"name\":\"火车票\",\"amount\":113,\"rate\":9}]'"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

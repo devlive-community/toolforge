@@ -1,0 +1,47 @@
+{
+  "name": "Invoice Assistant",
+  "description": "Tax-inclusive/exclusive conversion, Chinese uppercase amounts and reimbursement list generation.",
+  "api": {
+    "tax_split": {
+      "summary": "Tax-inclusive/exclusive conversion",
+      "amount": "Amount (CNY)",
+      "rate": "Rate (%, one of 13/9/6/3/1/0)",
+      "taxIncluded": "Is the input tax-inclusive (default true)"
+    },
+    "uppercase": {
+      "summary": "Chinese uppercase amount (accounting style)",
+      "amount": "Amount (CNY, ≤2 decimals)"
+    },
+    "reimbursement": {
+      "summary": "Generate a reimbursement list in Markdown with tax details and totals",
+      "title": "List title",
+      "person": "Requester",
+      "items": "Items [{name, amount, rate, category}]"
+    }
+  },
+  "split": {
+    "gross": "Gross",
+    "net": "Net",
+    "tax": "Tax",
+    "included": "Input includes tax",
+    "excluded": "Input excludes tax"
+  },
+  "rates": "Common rates",
+  "reimb": {
+    "title": "Reimbursement list",
+    "person": "Requester",
+    "add": "Add item",
+    "item": "Item",
+    "amount": "Gross amount",
+    "category": "Category",
+    "generate": "Generate list",
+    "copy": "Copy Markdown",
+    "empty": "Add at least one item"
+  },
+  "errors": {
+    "invoice.bad_amount": "Invalid amount: {{amount}}",
+    "invoice.bad_rate": "Rate not supported (13/9/6/3/1/0): {{rate}}",
+    "invoice.empty_items": "At least one item required",
+    "invoice.bad_item": "Item {{index}} has an empty name"
+  }
+}

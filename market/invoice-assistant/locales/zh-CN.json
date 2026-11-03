@@ -1,0 +1,47 @@
+{
+  "name": "发票价税助手",
+  "description": "价税分离计算、中文大写金额转换与报销清单 Markdown 生成。",
+  "api": {
+    "tax_split": {
+      "summary": "价税分离/合并计算",
+      "amount": "金额（元）",
+      "rate": "税率（%，支持 13/9/6/3/1/0）",
+      "taxIncluded": "输入是否含税（默认 true）"
+    },
+    "uppercase": {
+      "summary": "金额转中文大写（财务规范）",
+      "amount": "金额（元，最多两位小数）"
+    },
+    "reimbursement": {
+      "summary": "生成报销清单 Markdown（含价税明细与合计大写）",
+      "title": "清单标题",
+      "person": "报销人",
+      "items": "明细 [{name, amount, rate, category}]"
+    }
+  },
+  "split": {
+    "gross": "含税金额",
+    "net": "不含税金额",
+    "tax": "税额",
+    "included": "输入含税",
+    "excluded": "输入不含税"
+  },
+  "rates": "常用税率",
+  "reimb": {
+    "title": "报销清单",
+    "person": "报销人",
+    "add": "添加明细",
+    "item": "项目",
+    "amount": "含税金额",
+    "category": "类别",
+    "generate": "生成清单",
+    "copy": "复制 Markdown",
+    "empty": "添加至少一条明细"
+  },
+  "errors": {
+    "invoice.bad_amount": "金额无效：{{amount}}",
+    "invoice.bad_rate": "税率不在支持列表（13/9/6/3/1/0）：{{rate}}",
+    "invoice.empty_items": "至少需要一条明细",
+    "invoice.bad_item": "第 {{index}} 条明细名称为空"
+  }
+}
