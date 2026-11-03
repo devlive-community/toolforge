@@ -1,0 +1,80 @@
+{
+  "id": "org.devlive.toolforge.symmetry-drawing",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": [
+    "drawing",
+    "symmetry",
+    "doodle",
+    "涂鸦",
+    "对称",
+    "画板"
+  ],
+  "accent": "pink",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "export_svg": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.export_svg.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "strokes",
+            "width",
+            "height"
+          ],
+          "properties": {
+            "strokes": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "description": "i18n:api.export_svg.strokes",
+              "default": [
+                {
+                  "points": [
+                    100,
+                    10,
+                    110,
+                    20
+                  ],
+                  "mode": "none",
+                  "folds": 1
+                }
+              ]
+            },
+            "width": {
+              "type": "number",
+              "description": "i18n:api.export_svg.width"
+            },
+            "height": {
+              "type": "number",
+              "description": "i18n:api.export_svg.height"
+            },
+            "background": {
+              "type": "string",
+              "description": "i18n:api.export_svg.background"
+            }
+          }
+        },
+        "examples": [
+          "tfp-symmetry-drawing export-svg --width 200 --height 200"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

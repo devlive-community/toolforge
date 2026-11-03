@@ -1,0 +1,47 @@
+{
+  "name": "Symmetry Drawing Pad",
+  "description": "Draw snowflake and mandala patterns with mirror and rotational symmetry, undo and PNG/SVG export.",
+  "api": {
+    "export_svg": {
+      "summary": "Expand strokes into a symmetric SVG",
+      "strokes": "Stroke array",
+      "width": "Canvas width",
+      "height": "Canvas height",
+      "background": "Background (transparent ok)"
+    }
+  },
+  "modes": {
+    "none": "Off",
+    "mirror_x": "Mirror ↕",
+    "mirror_y": "Mirror ↔",
+    "mirror_xy": "Mirror both",
+    "rotate": "Rotational"
+  },
+  "ui": {
+    "color": "Color",
+    "width": "Width",
+    "opacity": "Opacity",
+    "undo": "Undo",
+    "redo": "Redo",
+    "clear": "Clear",
+    "save": "Save",
+    "exportPng": "Export PNG",
+    "exportSvg": "Export SVG",
+    "guides": "Guides",
+    "folds": "Folds",
+    "center": "Center",
+    "strokes": "{{count}} strokes",
+    "empty": "Draw your first stroke"
+  },
+  "errors": {
+    "symmetry.bad_canvas": "Invalid canvas size",
+    "symmetry.too_many_strokes": "Over {{max}} strokes",
+    "symmetry.too_many_points": "Over {{max}} points",
+    "symmetry.bad_stroke": "Invalid stroke data",
+    "symmetry.bad_width": "Width 0.1-60",
+    "symmetry.bad_opacity": "Opacity 0-1",
+    "symmetry.bad_folds": "Folds 2-16",
+    "symmetry.bad_mode": "Unknown mode: {{mode}}",
+    "symmetry.bad_color": "Invalid color: {{color}}"
+  }
+}

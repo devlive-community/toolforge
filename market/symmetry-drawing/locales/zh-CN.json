@@ -1,0 +1,47 @@
+{
+  "name": "对称涂鸦画板",
+  "description": "随手画出雪花/曼陀罗图案：镜像与旋转对称、撤销重做、导出 PNG/SVG。",
+  "api": {
+    "export_svg": {
+      "summary": "把笔画按对称参数展开为 SVG",
+      "strokes": "笔画数组",
+      "width": "画布宽",
+      "height": "画布高",
+      "background": "背景色（transparent 透明）"
+    }
+  },
+  "modes": {
+    "none": "无",
+    "mirror_x": "上下镜像",
+    "mirror_y": "左右镜像",
+    "mirror_xy": "四向镜像",
+    "rotate": "旋转对称"
+  },
+  "ui": {
+    "color": "颜色",
+    "width": "粗细",
+    "opacity": "透明度",
+    "undo": "撤销",
+    "redo": "重做",
+    "clear": "清空",
+    "save": "保存",
+    "exportPng": "导出 PNG",
+    "exportSvg": "导出 SVG",
+    "guides": "辅助线",
+    "folds": "份数",
+    "center": "中心",
+    "strokes": "{{count}} 笔画",
+    "empty": "在画布上画第一笔"
+  },
+  "errors": {
+    "symmetry.bad_canvas": "画布尺寸无效",
+    "symmetry.too_many_strokes": "笔画超过 {{max}}",
+    "symmetry.too_many_points": "点数超过 {{max}}",
+    "symmetry.bad_stroke": "笔画数据无效",
+    "symmetry.bad_width": "笔宽 0.1–60",
+    "symmetry.bad_opacity": "透明度 0–1",
+    "symmetry.bad_folds": "旋转份数 2–16",
+    "symmetry.bad_mode": "未知对称模式：{{mode}}",
+    "symmetry.bad_color": "颜色无效：{{color}}"
+  }
+}
