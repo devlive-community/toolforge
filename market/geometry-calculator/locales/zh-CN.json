@@ -1,0 +1,100 @@
+{
+  "name": "几何计算器",
+  "description": "常用平面与立体几何形状求解，附公式与代入过程；墙面漆量与地砖块数等用料估算。",
+  "api": {
+    "solve": {
+      "summary": "按形状计算周长/面积/体积/表面积，附公式与代入过程",
+      "shape": "形状",
+      "r": "半径",
+      "a": "边 a / 上底",
+      "b": "边 b / 下底",
+      "c": "边 c",
+      "w": "宽",
+      "l": "长",
+      "h": "高"
+    },
+    "materials": {
+      "summary": "估算墙面漆量或地砖块数（含损耗）",
+      "kind": "用料类型：paint 或 tiles",
+      "length": "房间长（米）",
+      "width": "房间宽（米）",
+      "height": "房间高（米，paint 需要）",
+      "openings": "门窗等不涂刷面积（平方米）",
+      "coverage": "每升漆覆盖面积（平方米/升，默认 10）",
+      "coats": "涂刷遍数（默认 2）",
+      "tileLength": "地砖长（米）",
+      "tileWidth": "地砖宽（米）",
+      "waste": "损耗百分比（默认 10）"
+    }
+  },
+  "shape": {
+    "label": "形状",
+    "circle": "圆",
+    "triangle": "三角形",
+    "rectangle": "矩形",
+    "trapezoid": "梯形",
+    "sphere": "球",
+    "cylinder": "圆柱",
+    "cone": "圆锥",
+    "cuboid": "长方体"
+  },
+  "field": {
+    "r": "半径 r",
+    "a": "边 a",
+    "b": "边 b",
+    "c": "边 c",
+    "w": "宽 w",
+    "l": "长 l",
+    "h": "高 h",
+    "length": "房间长",
+    "width": "房间宽",
+    "height": "房间高",
+    "openings": "不涂刷面积",
+    "coverage": "覆盖率 (m²/L)",
+    "coats": "涂刷遍数",
+    "tileLength": "砖长",
+    "tileWidth": "砖宽",
+    "waste": "损耗 %"
+  },
+  "rows": {
+    "perimeter": "周长",
+    "area": "面积",
+    "sideArea": "侧面积",
+    "volume": "体积",
+    "wallArea": "墙面面积",
+    "paintLiters": "需要漆量",
+    "floorArea": "地面面积",
+    "tilesNeeded": "需要砖数"
+  },
+  "unit": {
+    "liters": "升",
+    "pieces": "块"
+  },
+  "errors": {
+    "geometry.missing_param": "缺少参数：{{name}}",
+    "geometry.positive_required": "参数必须为正数：{{name}}",
+    "geometry.unknown_shape": "未知形状：{{shape}}",
+    "geometry.bad_triangle": "三条边不能构成三角形",
+    "geometry.unknown_material": "未知用料类型：{{kind}}",
+    "geometry.bad_args": "参数无效"
+  },
+  "help": "所有结果附公式与代入过程；用料估算为参考值，实际采购请结合现场情况。",
+  "tab": {
+    "label": "模式",
+    "solve": "形状求解",
+    "materials": "用料估算"
+  },
+  "material": {
+    "paint": "墙面漆",
+    "tiles": "地砖"
+  },
+  "panel": {
+    "input": "参数",
+    "results": "结果"
+  },
+  "results": {
+    "title": "结果",
+    "empty": "填写完整参数后显示结果",
+    "buy": "建议采购：{{value}} {{unit}}"
+  }
+}

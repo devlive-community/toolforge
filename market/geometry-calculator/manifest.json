@@ -1,0 +1,169 @@
+{
+  "id": "org.devlive.toolforge.geometry-calculator",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "calc",
+  "keywords": [
+    "geometry",
+    "area",
+    "perimeter",
+    "volume",
+    "circle",
+    "triangle",
+    "cylinder",
+    "几何",
+    "面积",
+    "周长",
+    "体积",
+    "圆形",
+    "三角形",
+    "圆柱"
+  ],
+  "accent": "blue",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "solve": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.solve.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "shape"
+          ],
+          "properties": {
+            "shape": {
+              "type": "string",
+              "enum": [
+                "circle",
+                "triangle",
+                "rectangle",
+                "trapezoid",
+                "sphere",
+                "cylinder",
+                "cone",
+                "cuboid"
+              ],
+              "description": "i18n:api.solve.shape",
+              "x-positional": 0
+            },
+            "r": {
+              "type": "number",
+              "description": "i18n:api.solve.r"
+            },
+            "a": {
+              "type": "number",
+              "description": "i18n:api.solve.a"
+            },
+            "b": {
+              "type": "number",
+              "description": "i18n:api.solve.b"
+            },
+            "c": {
+              "type": "number",
+              "description": "i18n:api.solve.c"
+            },
+            "w": {
+              "type": "number",
+              "description": "i18n:api.solve.w"
+            },
+            "l": {
+              "type": "number",
+              "description": "i18n:api.solve.l"
+            },
+            "h": {
+              "type": "number",
+              "description": "i18n:api.solve.h"
+            }
+          }
+        },
+        "examples": [
+          "tfp-geometry-calculator solve circle --r 3",
+          "tfp-geometry-calculator solve cuboid --w 2 --l 3 --h 4"
+        ]
+      }
+    },
+    "materials": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.materials.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "kind",
+            "length",
+            "width"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "paint",
+                "tiles"
+              ],
+              "description": "i18n:api.materials.kind",
+              "x-positional": 0
+            },
+            "length": {
+              "type": "number",
+              "description": "i18n:api.materials.length"
+            },
+            "width": {
+              "type": "number",
+              "description": "i18n:api.materials.width"
+            },
+            "height": {
+              "type": "number",
+              "description": "i18n:api.materials.height"
+            },
+            "openings": {
+              "type": "number",
+              "description": "i18n:api.materials.openings"
+            },
+            "coverage": {
+              "type": "number",
+              "description": "i18n:api.materials.coverage"
+            },
+            "coats": {
+              "type": "number",
+              "description": "i18n:api.materials.coats"
+            },
+            "tileLength": {
+              "type": "number",
+              "description": "i18n:api.materials.tileLength"
+            },
+            "tileWidth": {
+              "type": "number",
+              "description": "i18n:api.materials.tileWidth"
+            },
+            "waste": {
+              "type": "number",
+              "description": "i18n:api.materials.waste"
+            }
+          }
+        },
+        "examples": [
+          "tfp-geometry-calculator materials paint --length 4 --width 5 --height 2.8",
+          "tfp-geometry-calculator materials tiles --length 5 --width 4 --tileLength 0.8 --tileWidth 0.8"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

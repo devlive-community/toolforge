@@ -8811,6 +8811,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-dynasty-timeline"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-editorconfig"
 version = "0.1.0"
 dependencies = [
@@ -8859,6 +8869,16 @@ dependencies = [
 
 [[package]]
 name = "tfm-expense-splitter"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-file-extension"
 version = "0.1.0"
 dependencies = [
  "serde",
@@ -8940,6 +8960,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-geometry-calculator"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-gitignore"
 version = "0.1.0"
 dependencies = [
@@ -8969,6 +8999,16 @@ dependencies = [
  "tf-plugin-guest",
  "tokio",
  "url",
+]
+
+[[package]]
+name = "tfm-health-calculator"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
 ]
 
 [[package]]
@@ -9302,6 +9342,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-paper-size"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-password"
 version = "0.1.0"
 dependencies = [
@@ -9539,6 +9589,16 @@ version = "0.1.0"
 dependencies = [
  "jiff",
  "regex",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-token-counter"
+version = "0.1.0"
+dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",

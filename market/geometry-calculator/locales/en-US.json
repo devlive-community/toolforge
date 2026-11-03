@@ -1,0 +1,100 @@
+{
+  "name": "Geometry Calculator",
+  "description": "Solve common plane and solid shapes with formulas and substitution steps; estimate paint and tile quantities.",
+  "api": {
+    "solve": {
+      "summary": "Compute perimeter/area/volume/surface area per shape with formula and substitution",
+      "shape": "Shape",
+      "r": "Radius",
+      "a": "Side a / top edge",
+      "b": "Side b / bottom edge",
+      "c": "Side c",
+      "w": "Width",
+      "l": "Length",
+      "h": "Height"
+    },
+    "materials": {
+      "summary": "Estimate paint liters or tile pieces including waste",
+      "kind": "Material kind: paint or tiles",
+      "length": "Room length (m)",
+      "width": "Room width (m)",
+      "height": "Room height (m, paint only)",
+      "openings": "Area not to paint (m²)",
+      "coverage": "Coverage per liter (m²/L, default 10)",
+      "coats": "Coats (default 2)",
+      "tileLength": "Tile length (m)",
+      "tileWidth": "Tile width (m)",
+      "waste": "Waste percent (default 10)"
+    }
+  },
+  "shape": {
+    "label": "Shape",
+    "circle": "Circle",
+    "triangle": "Triangle",
+    "rectangle": "Rectangle",
+    "trapezoid": "Trapezoid",
+    "sphere": "Sphere",
+    "cylinder": "Cylinder",
+    "cone": "Cone",
+    "cuboid": "Cuboid"
+  },
+  "field": {
+    "r": "Radius r",
+    "a": "Side a",
+    "b": "Side b",
+    "c": "Side c",
+    "w": "Width w",
+    "l": "Length l",
+    "h": "Height h",
+    "length": "Room length",
+    "width": "Room width",
+    "height": "Room height",
+    "openings": "Excluded area",
+    "coverage": "Coverage (m²/L)",
+    "coats": "Coats",
+    "tileLength": "Tile length",
+    "tileWidth": "Tile width",
+    "waste": "Waste %"
+  },
+  "rows": {
+    "perimeter": "Perimeter",
+    "area": "Area",
+    "sideArea": "Side area",
+    "volume": "Volume",
+    "wallArea": "Wall area",
+    "paintLiters": "Paint needed",
+    "floorArea": "Floor area",
+    "tilesNeeded": "Tiles needed"
+  },
+  "unit": {
+    "liters": "liters",
+    "pieces": "pieces"
+  },
+  "errors": {
+    "geometry.missing_param": "Missing parameter: {{name}}",
+    "geometry.positive_required": "Parameter must be positive: {{name}}",
+    "geometry.unknown_shape": "Unknown shape: {{shape}}",
+    "geometry.bad_triangle": "The three sides do not form a triangle",
+    "geometry.unknown_material": "Unknown material kind: {{kind}}",
+    "geometry.bad_args": "Invalid arguments"
+  },
+  "help": "Every result shows the formula and substitution; estimates are for reference only.",
+  "tab": {
+    "label": "Mode",
+    "solve": "Shapes",
+    "materials": "Materials"
+  },
+  "material": {
+    "paint": "Paint",
+    "tiles": "Tiles"
+  },
+  "panel": {
+    "input": "Parameters",
+    "results": "Results"
+  },
+  "results": {
+    "title": "Results",
+    "empty": "Fill in all parameters to see results",
+    "buy": "Suggested purchase: {{value}} {{unit}}"
+  }
+}
