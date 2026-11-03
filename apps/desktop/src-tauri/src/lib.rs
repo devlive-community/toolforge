@@ -17,7 +17,7 @@ mod updater;
 mod window;
 
 use std::collections::HashSet;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 use tauri::{Manager, RunEvent};
 use tf_core::{AppLog, PluginRegistry, Resources, Store, TaskManager};
@@ -37,6 +37,8 @@ pub struct AppState {
     pub installed: Arc<installed::Installed>,
     /// 内置插件 id：在线插件不能与之重名
     pub builtin: Arc<HashSet<String>>,
+    /// 启动时在线插件的后台加载进度
+    pub load_progress: Arc<Mutex<market::LoadProgress>>,
 }
 
 /// 停止插件后台服务；重启前也要调用，因为重启不会触发 RunEvent::Exit
@@ -103,12 +105,14 @@ pub fn run() {
                 data_dir.join("installed"),
                 app.package_info().version.to_string(),
             ));
+            let load_progress = Arc::new(Mutex::new(market::LoadProgress::default()));
             market::load_installed(
                 app.handle(),
                 installed.clone(),
                 plugins.clone(),
                 builtin.clone(),
                 store.clone(),
+                load_progress.clone(),
             );
             plugin_stats::init(store.clone());
             app.manage(AppState {
@@ -119,6 +123,7 @@ pub fn run() {
                 log,
                 installed,
                 builtin,
+                load_progress,
             });
             // Windows / Linux 在运行时注册 toolforge:// scheme（macOS 由构建时 Info.plist 声明）
             #[cfg(any(windows, target_os = "linux"))]
@@ -186,6 +191,7 @@ pub fn run() {
             market::plugin_install_url,
             market::plugin_uninstall,
             market::plugin_assets,
+            market::plugin_load_progress,
             market::market_index,
             plugin_stats::plugin_download_stats,
             resources::resource_list,

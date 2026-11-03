@@ -1,4 +1,4 @@
-import { cn } from '@toolforge/ui'
+import { cn, Spinner } from '@toolforge/ui'
 import { ChevronDown, Clock3, House, Star, Store } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -51,6 +51,7 @@ export function Sidebar() {
   const { t } = useTranslation()
   const text = usePluginText()
   const all = useApp((s) => s.plugins)
+  const progress = useApp((s) => s.pluginProgress)
   const hidden = usePrefs((s) => s.hiddenTools)
   const seen = usePrefs((s) => s.seenVersions)
   const plugins = all.filter((p) => !hidden.includes(p.id))
@@ -134,20 +135,30 @@ export function Sidebar() {
         />
       </nav>
 
-      <footer className="flex h-14 shrink-0 items-center border-t border-border px-3">
-        <button
-          type="button"
-          onClick={() => navigate({ view: 'about' })}
-          aria-current={is('about') ? 'page' : undefined}
-          className={cn(
-            'flex h-10 w-full items-center gap-2.5 rounded-control px-2 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring',
-            is('about') ? 'bg-hover' : 'hover:bg-hover',
-          )}
-        >
-          <Logo className="size-6" />
-          <span className="text-[13px] text-fg">ToolForge</span>
-          <span className="ml-auto text-xs text-fg-subtle">v{info?.version}</span>
-        </button>
+      <footer className="shrink-0 border-t border-border">
+        {progress && (
+          <div className="flex items-center gap-2 px-3 py-2.5 text-xs text-fg-muted">
+            <Spinner className="size-3.5 shrink-0" />
+            <span className="truncate">
+              {t('app.sidebar.loadingPlugins', { done: progress.done, total: progress.total })}
+            </span>
+          </div>
+        )}
+        <div className="flex h-14 items-center border-t border-border px-3">
+          <button
+            type="button"
+            onClick={() => navigate({ view: 'about' })}
+            aria-current={is('about') ? 'page' : undefined}
+            className={cn(
+              'flex h-10 w-full items-center gap-2.5 rounded-control px-2 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring',
+              is('about') ? 'bg-hover' : 'hover:bg-hover',
+            )}
+          >
+            <Logo className="size-6" />
+            <span className="text-[13px] text-fg">ToolForge</span>
+            <span className="ml-auto text-xs text-fg-subtle">v{info?.version}</span>
+          </button>
+        </div>
       </footer>
     </aside>
   )

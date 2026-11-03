@@ -24,10 +24,19 @@ export interface AppInfo {
   logDir: string | null
 }
 
+/// 在线插件后台加载进度（Rust 启动线程逐个编译，逐个推送）
+export interface LoadProgress {
+  total: number
+  done: number
+  finished: boolean
+}
+
 interface AppState {
   ready: boolean
   info: AppInfo | null
   plugins: Manifest[]
+  /** 在线插件后台加载进度；null 表示没有在加载 */
+  pluginProgress: LoadProgress | null
   favorites: string[]
   recent: string[]
   route: Route
@@ -40,6 +49,7 @@ interface AppState {
   load: () => Promise<void>
   /** 在线插件安装、更新或卸载后重新读取插件列表 */
   reloadPlugins: () => Promise<void>
+  setPluginProgress: (progress: LoadProgress | null) => void
   navigate: (route: Route) => void
   openTool: (pluginId: string) => void
   openToolWith: (pluginId: string, text: string, label?: string) => void
@@ -52,6 +62,7 @@ export const useApp = create<AppState>((set, get) => ({
   ready: false,
   info: null,
   plugins: [],
+  pluginProgress: null,
   favorites: [],
   recent: [],
   route: { view: 'home' },
@@ -69,6 +80,13 @@ export const useApp = create<AppState>((set, get) => ({
     ])
     await registerInstalled(plugins).catch(() => {})
     set({ info, plugins, favorites, recent, ready: true })
+    // 后台线程可能在界面监听进度事件前就开始了，主动查询一次兜底
+    try {
+      const progress = await invoke<LoadProgress>('plugin_load_progress')
+      if (!progress.finished) set({ pluginProgress: progress })
+    } catch {
+      // 旧版本宿主没有这个命令，忽略
+    }
     // 首次启动时把现有工具记为已看过，之后新增或更新的工具在工具市场中标出
     const prefs = usePrefs.getState()
     if (!prefs.seenVersions) prefs.markToolsSeen(plugins)
@@ -80,8 +98,10 @@ export const useApp = create<AppState>((set, get) => ({
     const route = get().route
     // 当前打开的插件被卸载时回到首页
     const gone = route.view === 'tool' && !plugins.some((p) => p.id === route.pluginId)
-    set({ plugins, ...(gone ? { route: { view: 'home' } as Route } : {}) })
+    set({ plugins, pluginProgress: null, ...(gone ? { route: { view: 'home' } as Route } : {}) })
   },
+
+  setPluginProgress: (pluginProgress) => set({ pluginProgress }),
 
   navigate: (route) => set({ route, paletteOpen: false }),
 

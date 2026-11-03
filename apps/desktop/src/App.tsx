@@ -10,7 +10,7 @@ import { TaskCenter } from './layout/TaskCenter'
 import { TitleBar } from './layout/TitleBar'
 import { QuitDialog } from './layout/QuitDialog'
 import { UpdateDialog } from './layout/UpdateDialog'
-import { useApp, pluginById } from './stores/app'
+import { useApp, pluginById, type LoadProgress } from './stores/app'
 import { usePrefs } from './stores/prefs'
 import { subscribeTasks, useTasks } from './stores/tasks'
 import { useUpdate } from './stores/update'
@@ -65,9 +65,12 @@ export function App() {
       invoke('app_close_ack', { seq: payload }).catch(() => {})
       useApp.getState().setQuitRequest(payload)
     })
-    // 在线插件加载完成、安装或卸载后刷新插件列表
+    // 在线插件加载完成、安装或卸载后刷新插件列表；进度事件驱动侧边栏的加载提示
     const offPlugins = listen('plugins://changed', () => {
       void useApp.getState().reloadPlugins()
+    })
+    const offLoading = listen<LoadProgress>('plugins://loading', ({ payload }) => {
+      useApp.getState().setPluginProgress(payload)
     })
     // 官网 toolforge:// 一键安装完成后的结果提示；名称优先用索引里的本地化名称，
     // 内置工具回退到插件列表中的名称
@@ -102,6 +105,7 @@ export function App() {
     return () => {
       offQuit.then((off) => off())
       offPlugins.then((off) => off())
+      offLoading.then((off) => off())
       offNavigate.then((off) => off())
       offPalette.then((off) => off())
       offInstall.then((off) => off())

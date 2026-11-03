@@ -31,7 +31,8 @@
       "other": "其他工具"
     },
     "sidebar": {
-      "emptyCategory": "暂无工具"
+      "emptyCategory": "暂无工具",
+      "loadingPlugins": "正在加载在线插件（{{done}}/{{total}}）…"
     },
     "palette": {
       "placeholder": "搜索工具或命令…",

@@ -1,8 +1,9 @@
 //! 插件市场命令：安装、更新、卸载在线插件，读取插件索引，并通过 tfplugin:// 提供插件界面文件。
 
 use std::collections::HashSet;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
+use serde::Serialize;
 use serde_json::Value;
 use tauri::http::{Request, Response, StatusCode};
 use tauri::{AppHandle, Emitter, Manager, State, UriSchemeContext, Wry};
@@ -13,31 +14,69 @@ use crate::installed::{Assets, InstallInfo, Installed};
 
 /// 插件列表变化（安装、卸载、启动时加载完成），前端据此刷新
 pub const PLUGINS_CHANGED: &str = "plugins://changed";
+/// 在线插件后台加载进度（启动时每个插件处理完推送一次）
+pub const PLUGINS_LOADING: &str = "plugins://loading";
+/// 插件加载进度；前端启动时也可能错过事件，可经 plugin_load_progress 主动查询
+#[derive(Debug, Clone, Serialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct LoadProgress {
+    pub total: usize,
+    pub done: usize,
+    pub finished: bool,
+}
+
+impl Default for LoadProgress {
+    fn default() -> Self {
+        Self {
+            total: 0,
+            done: 0,
+            finished: true,
+        }
+    }
+}
 /// 官方插件索引由 plugins.yml 发布到 COS，插件发布独立于应用版本；
 /// 可用 TOOLFORGE_PLUGIN_INDEX 覆盖（调试用）
 const INDEX_URL: &str = "https://plugins.toolforge.devlive.org/registry.json";
 const MAX_INDEX: u64 = 2 * 1024 * 1024;
 const MAX_PACKAGE: u64 = tf_package::MAX_PACKAGE as u64;
 
-/// 启动后在后台加载已安装的插件，避免组件编译拖慢窗口出现
+/// 启动后在后台加载已安装的插件，避免组件编译拖慢窗口出现。
+/// 每处理完一个插件就推送加载进度（前端显示「正在加载在线插件」），全部完成后刷新插件列表
 pub fn load_installed(
     app: &AppHandle,
     installed: Arc<Installed>,
     registry: Arc<PluginRegistry>,
     builtin: Arc<HashSet<String>>,
     store: Arc<tf_core::Store>,
+    progress: Arc<Mutex<LoadProgress>>,
 ) {
     let app = app.clone();
     std::thread::spawn(move || {
+        let pending: Vec<InstallInfo> = installed
+            .list()
+            .into_iter()
+            .filter(|info| {
+                if builtin.contains(&info.id) {
+                    log::warn!(
+                        "installed plugin {} shadows a built-in plugin; skipped",
+                        info.id
+                    );
+                    false
+                } else {
+                    true
+                }
+            })
+            .collect();
+        {
+            let mut state = progress.lock().unwrap_or_else(|e| e.into_inner());
+            *state = LoadProgress {
+                total: pending.len(),
+                done: 0,
+                finished: false,
+            };
+        }
         let mut loaded = 0;
-        for info in installed.list() {
-            if builtin.contains(&info.id) {
-                log::warn!(
-                    "installed plugin {} shadows a built-in plugin; skipped",
-                    info.id
-                );
-                continue;
-            }
+        for info in &pending {
             match installed.load(&info.id) {
                 Ok(plugin) => {
                     registry.register(plugin);
@@ -45,13 +84,27 @@ pub fn load_installed(
                 }
                 Err(err) => log::warn!("installed plugin {} failed to load: {}", info.id, err.code),
             }
+            let mut state = progress.lock().unwrap_or_else(|e| e.into_inner());
+            state.done += 1;
+            let _ = app.emit(PLUGINS_LOADING, state.clone());
         }
         // 应用升级后内置插件可能变化，已生成的命令行入口随之刷新
         crate::cli_tools::refresh(&registry, &store);
+        progress.lock().unwrap_or_else(|e| e.into_inner()).finished = true;
         if loaded > 0 {
             let _ = app.emit(PLUGINS_CHANGED, ());
         }
     });
+}
+
+/// 读取在线插件的后台加载进度（前端错过进度事件时兜底查询）
+#[tauri::command]
+pub fn plugin_load_progress(state: State<'_, AppState>) -> LoadProgress {
+    state
+        .load_progress
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .clone()
 }
 
 /// 安装并立即启用；加载失败时撤销安装（market 命令与一键安装共用）

@@ -31,7 +31,8 @@
       "other": "Others"
     },
     "sidebar": {
-      "emptyCategory": "No tools yet"
+      "emptyCategory": "No tools yet",
+      "loadingPlugins": "Loading installed plugins ({{done}}/{{total}})…"
     },
     "palette": {
       "placeholder": "Search tools or commands…",
