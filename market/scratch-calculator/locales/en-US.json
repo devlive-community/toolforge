@@ -1,0 +1,41 @@
+{
+  "name": "Scratch Calculator",
+  "description": "Line-by-line expression scratchpad: arithmetic and powers, variable assignment, previous-result reference and common length/mass/time units. A failing line does not stop later lines.",
+  "api": {
+    "evaluate": {
+      "summary": "Evaluate multi-line expressions line by line, returning each line's value or error code",
+      "input": "Multi-line expressions; blank lines and # comments are skipped"
+    }
+  },
+  "input": {
+    "label": "Expressions",
+    "placeholder": "One expression per line, e.g.\nx = 6\nx * 7\n1m + 10cm"
+  },
+  "results": {
+    "title": "Results",
+    "empty": "Enter expressions on the left and results appear here line by line",
+    "assigned": "assigned",
+    "line": "Line {{line}}"
+  },
+  "errors": {
+    "eval.empty_input": "No expressions to evaluate",
+    "eval.invalid_number": "Invalid number: {{text}}",
+    "eval.unexpected_char": "Unexpected character: {{char}}",
+    "eval.unexpected_end": "Incomplete expression",
+    "eval.expected_rparen": "Missing closing parenthesis",
+    "eval.divide_by_zero": "Division by zero",
+    "eval.dimension_mismatch": "Units of different dimensions cannot be added or subtracted",
+    "eval.unknown_name": "Unknown name: {{name}}",
+    "eval.trailing_input": "Unexpected content after the expression",
+    "eval.not_finite": "Result is not a finite number"
+  },
+  "help": {
+    "syntax": [
+      "Arithmetic and powers: + - * / ^, parentheses change precedence",
+      "Percent: 50% means 0.5; modulo: 10 % 3",
+      "Variables: x = 6 then reference x; prev is the last expression line's result",
+      "Units: 1km + 10cm, 2kg, 3min; addition and subtraction require the same dimension",
+      "Lines starting with # are comments; blank lines are skipped; a failing line does not stop later lines"
+    ]
+  }
+}

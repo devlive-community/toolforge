@@ -1,0 +1,31 @@
+{
+  "id": "org.devlive.toolforge.scratch-calculator",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "calc",
+  "keywords": ["calculator", "arithmetic", "expression", "variables", "units", "计算", "计算器", "表达式", "单位", "变量"],
+  "accent": "blue",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "evaluate": {
+      "history": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.evaluate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["input"],
+          "properties": {
+            "input": { "type": "string", "description": "i18n:api.evaluate.input", "x-positional": 0, "x-stdin": true }
+          }
+        },
+        "examples": ["tfp-scratch-calculator evaluate 'x = 6\\nx * 7'", "echo '2 + 3 * 4' | tfp-scratch-calculator evaluate"]
+      }
+    }
+  },
+  "sensitive": false
+}
