@@ -1,0 +1,29 @@
+{
+  "name": "Chrome Trace Viewer",
+  "description": "Parse Chrome Trace Event JSON offline: per-process/thread tracks, nesting diagnostics and duration summaries.",
+  "api": {
+    "parse": {
+      "summary": "Parse Chrome Trace Event JSON",
+      "json": "Trace JSON text"
+    }
+  },
+  "ui": {
+    "tracks": "Processes & threads",
+    "events": "{{count}} events",
+    "summaries": "Duration summary",
+    "name": "Name",
+    "count": "Count",
+    "total": "Total",
+    "max": "Max",
+    "diagnostics": "Diagnostics",
+    "unsupported": "Unsupported phases",
+    "nested": "has nesting",
+    "input": "Paste trace JSON"
+  },
+  "errors": {
+    "trace.bad_json": "Invalid JSON: {{detail}}",
+    "trace.no_events": "Missing traceEvents or event array",
+    "trace.too_large": "JSON over 8MB",
+    "trace.too_many_events": "Over 20000 events"
+  }
+}

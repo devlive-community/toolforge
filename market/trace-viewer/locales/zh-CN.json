@@ -1,0 +1,29 @@
+{
+  "name": "Chrome Trace 查看器",
+  "description": "离线解析 Chrome Trace Event JSON：进程线程分轨、区间嵌套诊断与时长汇总。",
+  "api": {
+    "parse": {
+      "summary": "解析 Chrome Trace Event JSON",
+      "json": "Trace JSON 文本"
+    }
+  },
+  "ui": {
+    "tracks": "进程与线程",
+    "events": "事件 {{count}}",
+    "summaries": "耗时汇总",
+    "name": "名称",
+    "count": "次数",
+    "total": "总时长",
+    "max": "最长",
+    "diagnostics": "诊断",
+    "unsupported": "未支持的 phase",
+    "nested": "含嵌套",
+    "input": "粘贴 Trace JSON"
+  },
+  "errors": {
+    "trace.bad_json": "不是合法 JSON：{{detail}}",
+    "trace.no_events": "缺少 traceEvents 或事件数组",
+    "trace.too_large": "JSON 超过 8MB",
+    "trace.too_many_events": "事件数超过 20000"
+  }
+}

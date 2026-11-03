@@ -1,0 +1,53 @@
+{
+  "id": "org.devlive.toolforge.trace-viewer",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": [
+    "trace",
+    "performance",
+    "profiling",
+    "性能",
+    "追踪",
+    "时间线"
+  ],
+  "accent": "cyan",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "parse": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.parse.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "json"
+          ],
+          "properties": {
+            "json": {
+              "type": "string",
+              "description": "i18n:api.parse.json",
+              "x-positional": 0,
+              "x-stdin": true
+            }
+          }
+        },
+        "examples": [
+          "cat trace.json | tfp-trace-viewer parse"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}
