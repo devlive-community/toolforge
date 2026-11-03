@@ -1,0 +1,52 @@
+{
+  "name": "Node 包入口解析器",
+  "description": "离线解释 package.json 的 exports：条件命中过程、子路径与 pattern 解析、null 禁止与清单核对。",
+  "api": {
+    "resolve": {
+      "summary": "离线解析 package.json 的 exports 入口（保留键序，Node 16+ 规范）",
+      "packageJson": "package.json 内容（JSON 文本）",
+      "subpath": "包内子路径（. 或 ./xxx）",
+      "conditions": "启用条件（如 import,node）",
+      "listing": "包内相对路径清单（可选，用于核对目标）"
+    }
+  },
+  "status": {
+    "resolved": "解析成功",
+    "blocked": "该入口被显式禁止（null）",
+    "no_match": "没有匹配的导出",
+    "invalid_target": "目标非法（未以 ./ 开头或越界）",
+    "invalid_config": "配置非法",
+    "not_in_listing": "解析目标不在清单中"
+  },
+  "outcomes": {
+    "condition_hit": "条件命中",
+    "condition_skipped": "条件未启用，跳过",
+    "target_ok": "目标合法",
+    "target_invalid": "目标非法（未以 ./ 开头）",
+    "blocked": "显式禁止",
+    "no_export_key": "exports 中没有匹配该子路径的键"
+  },
+  "step": {
+    "kind": "步骤",
+    "condition": "条件",
+    "array_item": "数组项",
+    "target": "目标",
+    "blocked": "禁止"
+  },
+  "result": {
+    "target": "解析目标",
+    "listed": "清单核对",
+    "listedYes": "目标在清单中",
+    "listedNo": "目标不在清单中（可能未打包）",
+    "noListing": "未提供清单，存在性未检查",
+    "conditions": "启用条件",
+    "node": "规范版本"
+  },
+  "errors": {
+    "resolver.bad_json": "package.json 不是合法 JSON：{{detail}}",
+    "resolver.no_exports": "该包没有 exports 字段",
+    "resolver.bad_subpath": "子路径必须以 . 或 ./ 开头：{{subpath}}",
+    "resolver.too_large": "JSON 超过 {{max}} 字节",
+    "resolver.too_many_keys": "键数量超过 {{max}}"
+  }
+}

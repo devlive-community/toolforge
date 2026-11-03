@@ -1,0 +1,52 @@
+{
+  "name": "Package Entry Resolver",
+  "description": "Explain package.json exports offline: condition matching, subpath patterns, null blocking and listing checks.",
+  "api": {
+    "resolve": {
+      "summary": "Resolve package.json exports offline (key order preserved, Node 16+ rules)",
+      "packageJson": "package.json content (JSON text)",
+      "subpath": "In-package subpath (. or ./xxx)",
+      "conditions": "Enabled conditions (e.g. import,node)",
+      "listing": "Optional in-package relative path listing to check targets"
+    }
+  },
+  "status": {
+    "resolved": "Resolved",
+    "blocked": "Entry explicitly blocked (null)",
+    "no_match": "No matching export",
+    "invalid_target": "Invalid target (must start with ./ or escapes the package)",
+    "invalid_config": "Invalid config",
+    "not_in_listing": "Target missing from the listing"
+  },
+  "outcomes": {
+    "condition_hit": "Condition enabled",
+    "condition_skipped": "Condition not enabled, skipped",
+    "target_ok": "Valid target",
+    "target_invalid": "Invalid target (must start with ./)",
+    "blocked": "Explicitly blocked",
+    "no_export_key": "No export key matches this subpath"
+  },
+  "step": {
+    "kind": "Step",
+    "condition": "Condition",
+    "array_item": "Array item",
+    "target": "Target",
+    "blocked": "Blocked"
+  },
+  "result": {
+    "target": "Resolved target",
+    "listed": "Listing check",
+    "listedYes": "Target is in the listing",
+    "listedNo": "Target is not in the listing (possibly not packaged)",
+    "noListing": "No listing provided; existence unchecked",
+    "conditions": "Enabled conditions",
+    "node": "Spec version"
+  },
+  "errors": {
+    "resolver.bad_json": "package.json is not valid JSON: {{detail}}",
+    "resolver.no_exports": "Package has no exports field",
+    "resolver.bad_subpath": "Subpath must start with . or ./: {{subpath}}",
+    "resolver.too_large": "JSON exceeds {{max}} bytes",
+    "resolver.too_many_keys": "More than {{max}} keys"
+  }
+}
