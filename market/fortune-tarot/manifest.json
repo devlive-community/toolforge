@@ -1,0 +1,115 @@
+{
+  "id": "org.devlive.toolforge.fortune-tarot",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": [
+    "tarot",
+    "fortune",
+    "daily",
+    "塔罗",
+    "求签",
+    "运势",
+    "娱乐"
+  ],
+  "accent": "purple",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "stick": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.stick.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "seed"
+          ],
+          "properties": {
+            "seed": {
+              "type": "integer",
+              "description": "i18n:api.stick.seed",
+              "x-positional": 0
+            },
+            "category": {
+              "type": "string",
+              "description": "i18n:api.stick.category"
+            }
+          }
+        },
+        "examples": [
+          "tfp-fortune-tarot stick 20261103"
+        ]
+      }
+    },
+    "tarot": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.tarot.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "seed"
+          ],
+          "properties": {
+            "seed": {
+              "type": "integer",
+              "description": "i18n:api.tarot.seed",
+              "x-positional": 0
+            },
+            "spread": {
+              "type": "string",
+              "description": "i18n:api.tarot.spread"
+            }
+          }
+        },
+        "examples": [
+          "tfp-fortune-tarot tarot 7 --spread three"
+        ]
+      }
+    },
+    "daily": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.daily.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "date"
+          ],
+          "properties": {
+            "date": {
+              "type": "integer",
+              "description": "i18n:api.daily.date",
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "tfp-fortune-tarot daily 20261103"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

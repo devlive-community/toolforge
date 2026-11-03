@@ -1,0 +1,57 @@
+{
+  "name": "求签与塔罗",
+  "description": "求签解签、塔罗牌阵与每日运势卡（日期种子可复现），仅供娱乐与民俗参考。",
+  "api": {
+    "stick": {
+      "summary": "抽一签（同种子同结果，可复现验证）",
+      "seed": "随机种子",
+      "category": "问事分类（career/love/study，可选）"
+    },
+    "tarot": {
+      "summary": "塔罗牌阵：单张或过去现在未来三张",
+      "seed": "随机种子",
+      "spread": "牌阵 single / three"
+    },
+    "daily": {
+      "summary": "按日期生成当日运势卡（同一天结果一致）",
+      "date": "日期数字（如 20261103）"
+    }
+  },
+  "levels": {
+    "upper": "上签",
+    "mid": "中签",
+    "lower": "下签"
+  },
+  "positions": {
+    "single": "单张",
+    "past": "过去",
+    "present": "现在",
+    "future": "未来",
+    "daily": "今日"
+  },
+  "upright": "正位",
+  "reversed": "逆位",
+  "tarotTitle": {
+    "single": "单张牌",
+    "three": "时间之流（三张）"
+  },
+  "disclaimer": "仅供娱乐与民俗参考，不构成任何医疗、投资或人生决策建议。",
+  "seedHint": "种子 {{seed}} · 结果可复现",
+  "errors": {
+    "fortune.bad_category": "问事分类无效：{{category}}",
+    "fortune.bad_spread": "牌阵无效：{{spread}}",
+    "fortune.bad_date": "日期无效（19700101–99991231）：{{date}}"
+  },
+  "tab": {
+    "label": "玩法",
+    "stick": "求签",
+    "tarot": "塔罗",
+    "daily": "每日运势"
+  },
+  "stick": {
+    "draw": "摇签"
+  },
+  "tarot": {
+    "draw": "抽牌"
+  }
+}

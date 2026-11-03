@@ -1,0 +1,57 @@
+{
+  "name": "Fortune & Tarot",
+  "description": "Fortune sticks, tarot spreads and a daily card seeded by the date. For entertainment and folklore reference only.",
+  "api": {
+    "stick": {
+      "summary": "Draw a fortune stick (same seed reproduces)",
+      "seed": "Random seed",
+      "category": "Topic (career/love/study, optional)"
+    },
+    "tarot": {
+      "summary": "Tarot spread: single or past/present/future",
+      "seed": "Random seed",
+      "spread": "Spread: single / three"
+    },
+    "daily": {
+      "summary": "Daily card generated from the date (stable per day)",
+      "date": "Date number (e.g. 20261103)"
+    }
+  },
+  "levels": {
+    "upper": "Blessing",
+    "mid": "Neutral",
+    "lower": "Caution"
+  },
+  "positions": {
+    "single": "Single",
+    "past": "Past",
+    "present": "Present",
+    "future": "Future",
+    "daily": "Today"
+  },
+  "upright": "Upright",
+  "reversed": "Reversed",
+  "tarotTitle": {
+    "single": "Single card",
+    "three": "Past / Present / Future"
+  },
+  "disclaimer": "For entertainment and folklore reference only; not medical, financial or life advice.",
+  "seedHint": "Seed {{seed}} · reproducible",
+  "errors": {
+    "fortune.bad_category": "Invalid topic: {{category}}",
+    "fortune.bad_spread": "Invalid spread: {{spread}}",
+    "fortune.bad_date": "Invalid date (19700101–99991231): {{date}}"
+  },
+  "tab": {
+    "label": "Play",
+    "stick": "Fortune sticks",
+    "tarot": "Tarot",
+    "daily": "Daily"
+  },
+  "stick": {
+    "draw": "Shake & draw"
+  },
+  "tarot": {
+    "draw": "Draw cards"
+  }
+}
