@@ -1,0 +1,42 @@
+{
+  "name": "文人印章设计器",
+  "description": "把姓名或闲章文字排成方形/圆形印面：朱文白文、镜像预览与透明 PNG/SVG 导出。",
+  "api": {
+    "render": {
+      "summary": "渲染印面 SVG",
+      "text": "印面文字（2–4 字）",
+      "shape": "square / rect / round",
+      "style": "zhuwen（朱文）/ baiwen（白文）",
+      "sizeMm": "印面边长 mm（20–120）",
+      "borderMm": "边框粗细 mm",
+      "mirror": "镜像（刻印预览）",
+      "transparent": "透明背景"
+    }
+  },
+  "ui": {
+    "text": "印文（2–4 字）",
+    "shape": "形状",
+    "shapes": {
+      "square": "方形",
+      "rect": "长方",
+      "round": "圆形"
+    },
+    "style": "样式",
+    "styles": {
+      "zhuwen": "朱文",
+      "baiwen": "白文"
+    },
+    "mirror": "镜像预览",
+    "size": "边长 mm",
+    "border": "边框 mm",
+    "export": "导出 SVG",
+    "download": "下载"
+  },
+  "errors": {
+    "seal.bad_char_count": "印文需要 2–4 字",
+    "seal.bad_shape": "未知形状：{{shape}}",
+    "seal.bad_style": "未知样式：{{style}}",
+    "seal.bad_size": "边长需在 20–120mm",
+    "seal.bad_border": "边框需在 0.5–5mm"
+  }
+}

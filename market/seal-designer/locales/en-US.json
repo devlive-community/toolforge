@@ -1,0 +1,42 @@
+{
+  "name": "Literati Seal Designer",
+  "description": "Compose seal-face layouts for names or leisure phrases with red/white styles and transparent export.",
+  "api": {
+    "render": {
+      "summary": "Render the seal face SVG",
+      "text": "Seal text (2-4 chars)",
+      "shape": "square / rect / round",
+      "style": "zhuwen (red) / baiwen (white)",
+      "sizeMm": "Face size mm (20-120)",
+      "borderMm": "Border width mm",
+      "mirror": "Mirror for carving",
+      "transparent": "Transparent background"
+    }
+  },
+  "ui": {
+    "text": "Seal text (2-4 chars)",
+    "shape": "Shape",
+    "shapes": {
+      "square": "Square",
+      "rect": "Rect",
+      "round": "Round"
+    },
+    "style": "Style",
+    "styles": {
+      "zhuwen": "Red",
+      "baiwen": "White"
+    },
+    "mirror": "Mirror",
+    "size": "Size mm",
+    "border": "Border mm",
+    "export": "Export SVG",
+    "download": "Download"
+  },
+  "errors": {
+    "seal.bad_char_count": "2-4 characters required",
+    "seal.bad_shape": "Unknown shape: {{shape}}",
+    "seal.bad_style": "Unknown style: {{style}}",
+    "seal.bad_size": "Size must be 20-120mm",
+    "seal.bad_border": "Border must be 0.5-5mm"
+  }
+}

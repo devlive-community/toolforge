@@ -1,0 +1,75 @@
+{
+  "id": "org.devlive.toolforge.seal-designer",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": [
+    "seal",
+    "stamp",
+    "calligraphy",
+    "印章",
+    "篆刻",
+    "闲章"
+  ],
+  "accent": "red",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "render": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.render.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "i18n:api.render.text"
+            },
+            "shape": {
+              "type": "string",
+              "description": "i18n:api.render.shape"
+            },
+            "style": {
+              "type": "string",
+              "description": "i18n:api.render.style"
+            },
+            "sizeMm": {
+              "type": "number",
+              "description": "i18n:api.render.sizeMm"
+            },
+            "borderMm": {
+              "type": "number",
+              "description": "i18n:api.render.borderMm"
+            },
+            "mirror": {
+              "type": "boolean",
+              "description": "i18n:api.render.mirror"
+            },
+            "transparent": {
+              "type": "boolean",
+              "description": "i18n:api.render.transparent"
+            }
+          }
+        },
+        "examples": [
+          "tfp-seal-designer render 平安喜乐 --style baiwen"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}
