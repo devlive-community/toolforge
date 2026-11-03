@@ -1,0 +1,36 @@
+{
+  "name": "七巧板拼图",
+  "description": "经典七块七巧板：拖动旋转翻面、重叠检测与内置可解轮廓题。",
+  "api": {
+    "pieces": {
+      "summary": "七块标准几何"
+    },
+    "validate": {
+      "summary": "校验摆放（全覆盖/无重叠/在轮廓内）",
+      "outline": "轮廓顶点",
+      "placements": "摆放数组"
+    },
+    "puzzles": {
+      "summary": "内置题目"
+    }
+  },
+  "status": {
+    "complete": "完成！",
+    "overlap": "有拼块重叠",
+    "outside": "有拼块超出轮廓",
+    "area_mismatch": "拼块未全部使用或面积不符"
+  },
+  "ui": {
+    "rotate": "旋转 45°",
+    "flip": "翻面",
+    "reset": "重新摆放",
+    "puzzle": "题目",
+    "free": "自由拼",
+    "check": "检查",
+    "svg": "拼块区域"
+  },
+  "errors": {
+    "tangram.wrong_piece_count": "必须使用全部 7 块",
+    "tangram.unknown_piece": "未知拼块：{{kind}}"
+  }
+}

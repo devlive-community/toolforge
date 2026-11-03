@@ -1,0 +1,173 @@
+{
+  "id": "org.devlive.toolforge.tangram-studio",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": [
+    "tangram",
+    "puzzle",
+    "game",
+    "七巧板",
+    "拼图",
+    "益智"
+  ],
+  "accent": "purple",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "pieces": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.pieces.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "properties": {}
+        },
+        "examples": []
+      }
+    },
+    "validate": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.validate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "outline",
+            "placements"
+          ],
+          "properties": {
+            "outline": {
+              "type": "array",
+              "description": "i18n:api.validate.outline",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "default": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  4,
+                  0
+                ],
+                [
+                  4,
+                  4
+                ],
+                [
+                  0,
+                  4
+                ]
+              ]
+            },
+            "placements": {
+              "type": "array",
+              "description": "i18n:api.validate.placements",
+              "items": {
+                "type": "object"
+              },
+              "default": [
+                {
+                  "kind": "large",
+                  "index": 0,
+                  "x": 0,
+                  "y": 0,
+                  "rotation": 0,
+                  "flipped": false
+                },
+                {
+                  "kind": "large",
+                  "index": 1,
+                  "x": 0,
+                  "y": 0,
+                  "rotation": 0,
+                  "flipped": false
+                },
+                {
+                  "kind": "medium",
+                  "index": 2,
+                  "x": 0,
+                  "y": 0,
+                  "rotation": 0,
+                  "flipped": false
+                },
+                {
+                  "kind": "small",
+                  "index": 3,
+                  "x": 0,
+                  "y": 0,
+                  "rotation": 0,
+                  "flipped": false
+                },
+                {
+                  "kind": "small",
+                  "index": 4,
+                  "x": 0,
+                  "y": 0,
+                  "rotation": 0,
+                  "flipped": false
+                },
+                {
+                  "kind": "square",
+                  "index": 5,
+                  "x": 0,
+                  "y": 0,
+                  "rotation": 0,
+                  "flipped": false
+                },
+                {
+                  "kind": "parallelogram",
+                  "index": 6,
+                  "x": 0,
+                  "y": 0,
+                  "rotation": 0,
+                  "flipped": false
+                }
+              ]
+            }
+          }
+        },
+        "examples": [
+          "tfp-tangram-studio validate --outline 0,0,8,0,8,8,0,8 --placements '...'"
+        ]
+      }
+    },
+    "puzzles": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.puzzles.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "properties": {}
+        },
+        "examples": []
+      }
+    }
+  },
+  "sensitive": false
+}

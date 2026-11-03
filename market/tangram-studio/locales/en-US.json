@@ -1,0 +1,36 @@
+{
+  "name": "Tangram Studio",
+  "description": "Classic seven-piece tangram with drag, rotate, flip, overlap checks and built-in solvable outlines.",
+  "api": {
+    "pieces": {
+      "summary": "Seven standard pieces"
+    },
+    "validate": {
+      "summary": "Validate placement (full cover, no overlap, inside outline)",
+      "outline": "Outline vertices",
+      "placements": "Placements array"
+    },
+    "puzzles": {
+      "summary": "Built-in puzzles"
+    }
+  },
+  "status": {
+    "complete": "Complete!",
+    "overlap": "Pieces overlap",
+    "outside": "Pieces outside the outline",
+    "area_mismatch": "Not all pieces used or area mismatch"
+  },
+  "ui": {
+    "rotate": "Rotate 45°",
+    "flip": "Flip",
+    "reset": "Reset",
+    "puzzle": "Puzzle",
+    "free": "Free play",
+    "check": "Check",
+    "svg": "Play area"
+  },
+  "errors": {
+    "tangram.wrong_piece_count": "All 7 pieces must be used",
+    "tangram.unknown_piece": "Unknown piece: {{kind}}"
+  }
+}
