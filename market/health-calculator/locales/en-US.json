@@ -1,0 +1,103 @@
+{
+  "name": "Health Calculators",
+  "description": "Common health metrics: BMI, waist-hip ratio, BMR and TDEE, body surface area, ideal weight, heart-rate zones and hydration or protein references. Formulas shown; for reference only.",
+  "api": {
+    "bmi": {
+      "summary": "Compute BMI and healthy weight range (Chinese standard with WHO reference), optional waist-hip ratio",
+      "height": "Height (cm)",
+      "weight": "Weight (kg)",
+      "waist": "Waist (cm)",
+      "hip": "Hip (cm)"
+    },
+    "energy": {
+      "summary": "Mifflin-St Jeor BMR and daily expenditure with cut/bulk targets",
+      "age": "Age (years)",
+      "sex": "male or female",
+      "activity": "Activity factor (1.2 sedentary – 1.9 intense, default 1.55)"
+    },
+    "heart_rate": {
+      "summary": "Five Karvonen heart-rate zones",
+      "resting": "Resting heart rate (default 60)"
+    },
+    "body": {
+      "summary": "Body surface area (Du Bois), ideal weight (Devine), water and protein references",
+      "sex": "male or female"
+    }
+  },
+  "bmi": {
+    "bmi": "BMI",
+    "cn": "Chinese standard",
+    "who": "WHO standard",
+    "healthyRange": "Healthy weight range"
+  },
+  "category": {
+    "underweight": "Underweight",
+    "normal": "Normal",
+    "overweight": "Overweight",
+    "obese": "Obese"
+  },
+  "energy": {
+    "bmr": "BMR",
+    "tdee": "Daily expenditure",
+    "cut": "Cut target",
+    "bulk": "Bulk target"
+  },
+  "zones": {
+    "max": "Max heart rate",
+    "resting": "Resting",
+    "warmup": "Warm-up",
+    "fat": "Fat burn",
+    "aerobic": "Aerobic",
+    "anaerobic": "Anaerobic",
+    "peak": "Peak"
+  },
+  "body": {
+    "bsa": "Body surface area",
+    "ideal": "Ideal weight",
+    "idealRange": "Ideal range",
+    "water": "Water reference",
+    "protein": "Protein reference",
+    "whr": "Waist-hip ratio",
+    "central": "Central obesity risk"
+  },
+  "errors": {
+    "health.positive_required": "Parameter must be positive: {{name}}",
+    "health.bad_sex": "sex must be male or female",
+    "health.bad_activity": "Activity factor must be within 1.0–2.5",
+    "health.bad_age": "Invalid age"
+  },
+  "disclaimer": "For reference only, not medical advice. Consult your doctor.",
+  "units": {
+    "kg": "kg",
+    "l": "L",
+    "g": "g",
+    "bpm": "bpm",
+    "m2": "m²",
+    "kcal": "kcal"
+  },
+  "tool": {
+    "label": "Metric",
+    "bmi": "BMI & WHR",
+    "energy": "Metabolism",
+    "heart_rate": "Heart rate",
+    "body": "Body reference"
+  },
+  "field": {
+    "height": "Height (cm)",
+    "weight": "Weight (kg)",
+    "age": "Age",
+    "sex": "Sex",
+    "activity": "Activity factor",
+    "waist": "Waist (cm)",
+    "hip": "Hip (cm)",
+    "resting": "Resting HR"
+  },
+  "sex": {
+    "male": "Male",
+    "female": "Female"
+  },
+  "results": {
+    "title": "Results",
+    "empty": "Fill in parameters to see results"
+  }
+}

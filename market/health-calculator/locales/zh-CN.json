@@ -1,0 +1,103 @@
+{
+  "name": "健康计算器",
+  "description": "BMI、腰臀比、基础代谢与每日消耗、体表面积、理想体重、运动心率区间与饮水蛋白质参考等常用健康指标，公式透明仅供参考。",
+  "api": {
+    "bmi": {
+      "summary": "计算 BMI 与健康体重区间（中国标准 + WHO 对照），可附腰臀比",
+      "height": "身高（厘米）",
+      "weight": "体重（公斤）",
+      "waist": "腰围（厘米）",
+      "hip": "臀围（厘米）"
+    },
+    "energy": {
+      "summary": "Mifflin-St Jeor 基础代谢与每日总消耗，附减脂/增重热量目标",
+      "age": "年龄（岁）",
+      "sex": "male 或 female",
+      "activity": "活动系数（1.2 久坐 – 1.9 高强度，默认 1.55）"
+    },
+    "heart_rate": {
+      "summary": "Karvonen 法运动心率五区间",
+      "resting": "静息心率（默认 60）"
+    },
+    "body": {
+      "summary": "体表面积（Du Bois）、理想体重（Devine）、饮水与蛋白质参考",
+      "sex": "male 或 female"
+    }
+  },
+  "bmi": {
+    "bmi": "BMI",
+    "cn": "中国标准",
+    "who": "WHO 标准",
+    "healthyRange": "健康体重区间"
+  },
+  "category": {
+    "underweight": "偏瘦",
+    "normal": "正常",
+    "overweight": "超重",
+    "obese": "肥胖"
+  },
+  "energy": {
+    "bmr": "基础代谢",
+    "tdee": "每日消耗",
+    "cut": "减脂目标",
+    "bulk": "增重目标"
+  },
+  "zones": {
+    "max": "最大心率",
+    "resting": "静息心率",
+    "warmup": "暖身",
+    "fat": "燃脂",
+    "aerobic": "有氧",
+    "anaerobic": "无氧",
+    "peak": "极限"
+  },
+  "body": {
+    "bsa": "体表面积",
+    "ideal": "理想体重",
+    "idealRange": "理想区间",
+    "water": "饮水参考",
+    "protein": "蛋白质参考",
+    "whr": "腰臀比",
+    "central": "中央型肥胖风险"
+  },
+  "errors": {
+    "health.positive_required": "参数必须为正数：{{name}}",
+    "health.bad_sex": "sex 只支持 male 或 female",
+    "health.bad_activity": "活动系数应在 1.0–2.5 之间",
+    "health.bad_age": "年龄无效"
+  },
+  "disclaimer": "仅供参考，不构成医疗建议；具体请遵医嘱。",
+  "units": {
+    "kg": "公斤",
+    "l": "升",
+    "g": "克",
+    "bpm": "次/分",
+    "m2": "m²",
+    "kcal": "千卡"
+  },
+  "tool": {
+    "label": "指标",
+    "bmi": "BMI 与腰臀比",
+    "energy": "代谢与热量",
+    "heart_rate": "运动心率",
+    "body": "体成分参考"
+  },
+  "field": {
+    "height": "身高 (cm)",
+    "weight": "体重 (kg)",
+    "age": "年龄",
+    "sex": "性别",
+    "activity": "活动系数",
+    "waist": "腰围 (cm)",
+    "hip": "臀围 (cm)",
+    "resting": "静息心率"
+  },
+  "sex": {
+    "male": "男",
+    "female": "女"
+  },
+  "results": {
+    "title": "结果",
+    "empty": "填写参数后显示结果"
+  }
+}

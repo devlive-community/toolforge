@@ -1,0 +1,208 @@
+{
+  "id": "org.devlive.toolforge.health-calculator",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "calc",
+  "keywords": [
+    "bmi",
+    "bmr",
+    "tdee",
+    "health",
+    "calories",
+    "heart rate",
+    "健康",
+    "体重",
+    "代谢",
+    "心率",
+    "卡路里"
+  ],
+  "accent": "green",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "bmi": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.bmi.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "height",
+            "weight"
+          ],
+          "properties": {
+            "height": {
+              "type": "number",
+              "description": "i18n:api.bmi.height",
+              "x-positional": 0
+            },
+            "weight": {
+              "type": "number",
+              "description": "i18n:api.bmi.weight",
+              "x-positional": 1
+            },
+            "waist": {
+              "type": "number",
+              "description": "i18n:api.bmi.waist"
+            },
+            "hip": {
+              "type": "number",
+              "description": "i18n:api.bmi.hip"
+            }
+          }
+        },
+        "examples": [
+          "tfp-health-calculator bmi 170 70",
+          "tfp-health-calculator bmi --height 170 --weight 70 --waist 85 --hip 95"
+        ]
+      }
+    },
+    "energy": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.energy.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "height",
+            "weight",
+            "age",
+            "sex"
+          ],
+          "properties": {
+            "height": {
+              "type": "number",
+              "description": "i18n:api.bmi.height",
+              "x-positional": 0
+            },
+            "weight": {
+              "type": "number",
+              "description": "i18n:api.bmi.weight",
+              "x-positional": 1
+            },
+            "age": {
+              "type": "number",
+              "description": "i18n:api.energy.age",
+              "x-positional": 2
+            },
+            "sex": {
+              "type": "string",
+              "enum": [
+                "male",
+                "female"
+              ],
+              "description": "i18n:api.energy.sex",
+              "x-positional": 3
+            },
+            "activity": {
+              "type": "number",
+              "description": "i18n:api.energy.activity"
+            }
+          }
+        },
+        "examples": [
+          "tfp-health-calculator energy 175 75 30 male --activity 1.55"
+        ]
+      }
+    },
+    "heart_rate": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.heart_rate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "age"
+          ],
+          "properties": {
+            "age": {
+              "type": "number",
+              "description": "i18n:api.energy.age",
+              "x-positional": 0
+            },
+            "resting": {
+              "type": "number",
+              "description": "i18n:api.heart_rate.resting"
+            }
+          }
+        },
+        "examples": [
+          "tfp-health-calculator heart-rate 40 --resting 60"
+        ]
+      }
+    },
+    "body": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.body.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "height",
+            "weight",
+            "sex"
+          ],
+          "properties": {
+            "height": {
+              "type": "number",
+              "description": "i18n:api.bmi.height",
+              "x-positional": 0
+            },
+            "weight": {
+              "type": "number",
+              "description": "i18n:api.bmi.weight",
+              "x-positional": 1
+            },
+            "sex": {
+              "type": "string",
+              "enum": [
+                "male",
+                "female"
+              ],
+              "description": "i18n:api.energy.sex",
+              "x-positional": 2
+            },
+            "waist": {
+              "type": "number",
+              "description": "i18n:api.bmi.waist"
+            },
+            "hip": {
+              "type": "number",
+              "description": "i18n:api.bmi.hip"
+            }
+          }
+        },
+        "examples": [
+          "tfp-health-calculator body 175 72 male",
+          "tfp-health-calculator body --height 175 --weight 72 --sex female --waist 75 --hip 95"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}
