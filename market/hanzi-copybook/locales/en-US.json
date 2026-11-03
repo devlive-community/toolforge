@@ -1,0 +1,39 @@
+{
+  "name": "Hanzi Copybook Generator",
+  "description": "Lay out practice text on tian/mi grid copybook sheets with tracing opacity and pagination.",
+  "api": {
+    "layout": {
+      "summary": "Lay out text into paginated copybook data",
+      "text": "Practice text",
+      "gridType": "grid / tian / mi",
+      "perRow": "Cells per row 4-16",
+      "rowsPerPage": "Rows per page 2-20",
+      "repeat": "Repeats 1-10",
+      "mode": "empty / trace"
+    }
+  },
+  "grids": {
+    "grid": "Square",
+    "tian": "Tian grid",
+    "mi": "Mi grid"
+  },
+  "ui": {
+    "text": "Practice text",
+    "repeat": "Repeats",
+    "pages": "{{count}} pages",
+    "title": "Title",
+    "name": "Name",
+    "print": "Print (100% scale)",
+    "trace": "Tracing",
+    "skipped": "{{count}} control chars skipped"
+  },
+  "errors": {
+    "copybook.bad_grid": "Invalid grid type",
+    "copybook.bad_per_row": "Per row 4-16",
+    "copybook.bad_rows": "Rows per page 2-20",
+    "copybook.bad_repeat": "Repeats 1-10",
+    "copybook.bad_mode": "Invalid mode",
+    "copybook.empty_text": "Enter practice text first",
+    "copybook.too_many_pages": "Over {{max}} pages, shorten the text"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "汉字字帖生成器",
+  "description": "把练字内容排成田字格/米字格字帖：描红浓度、重复次数与分页预览，全本地。",
+  "api": {
+    "layout": {
+      "summary": "把文本排成分页字帖数据",
+      "text": "练字文本",
+      "gridType": "grid / tian / mi",
+      "perRow": "每行字数 4–16",
+      "rowsPerPage": "每页行数 2–20",
+      "repeat": "每字重复 1–10",
+      "mode": "empty / trace"
+    }
+  },
+  "grids": {
+    "grid": "方格",
+    "tian": "田字格",
+    "mi": "米字格"
+  },
+  "ui": {
+    "text": "练字内容",
+    "repeat": "每字重复",
+    "pages": "共 {{count}} 页",
+    "title": "标题",
+    "name": "姓名",
+    "print": "打印（100% 实际大小）",
+    "trace": "描红",
+    "skipped": "{{count}} 个控制字符已跳过"
+  },
+  "errors": {
+    "copybook.bad_grid": "网格类型无效",
+    "copybook.bad_per_row": "每行字数 4–16",
+    "copybook.bad_rows": "每页行数 2–20",
+    "copybook.bad_repeat": "重复次数 1–10",
+    "copybook.bad_mode": "模式无效",
+    "copybook.empty_text": "请输入练字内容",
+    "copybook.too_many_pages": "页数超过 {{max}}，请精简文本"
+  }
+}

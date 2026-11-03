@@ -1,0 +1,73 @@
+{
+  "id": "org.devlive.toolforge.hanzi-copybook",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "other",
+  "keywords": [
+    "copybook",
+    "hanzi",
+    "practice",
+    "字帖",
+    "田字格",
+    "练字"
+  ],
+  "accent": "red",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "layout": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.layout.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "i18n:api.layout.text",
+              "x-positional": 0,
+              "x-stdin": true
+            },
+            "gridType": {
+              "type": "string",
+              "description": "i18n:api.layout.gridType"
+            },
+            "perRow": {
+              "type": "integer",
+              "description": "i18n:api.layout.perRow"
+            },
+            "rowsPerPage": {
+              "type": "integer",
+              "description": "i18n:api.layout.rowsPerPage"
+            },
+            "repeat": {
+              "type": "integer",
+              "description": "i18n:api.layout.repeat"
+            },
+            "mode": {
+              "type": "string",
+              "description": "i18n:api.layout.mode"
+            }
+          }
+        },
+        "examples": [
+          "cat text.txt | tfp-hanzi-copybook layout --perRow 10 --mode trace"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}
