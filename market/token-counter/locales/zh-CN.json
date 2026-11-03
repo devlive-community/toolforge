@@ -1,0 +1,61 @@
+{
+  "name": "Token 计算器",
+  "description": "按模型估算文本 token 数与调用成本：字符数对照、单价配置本地保存、上下文窗口占用比例。",
+  "api": {
+    "count": {
+      "summary": "按所选模型估算文本 token 数、窗口占用与调用成本（启发式近似）",
+      "text": "要计量的文本",
+      "model": "模型 id（未知模型按通用系数）",
+      "inputPrice": "输入单价（每百万 token）",
+      "outputPrice": "输出单价（每百万 token）",
+      "expectedOutput": "预计输出 token 数"
+    }
+  },
+  "models": {
+    "gpt-4o": "GPT-4o",
+    "gpt-4o-mini": "GPT-4o mini",
+    "gpt-4.1": "GPT-4.1",
+    "o3": "o3",
+    "claude-sonnet": "Claude Sonnet",
+    "claude-haiku": "Claude Haiku",
+    "gemini-pro": "Gemini Pro",
+    "deepseek-chat": "DeepSeek Chat",
+    "qwen-max": "Qwen Max",
+    "generic": "通用估算"
+  },
+  "method": {
+    "approxGpt": "GPT 系启发式近似（约 4 字符/token，非精确分词器）",
+    "approxClaude": "Claude 系启发式近似（非精确分词器）",
+    "approxGemini": "Gemini 启发式近似（非精确分词器）",
+    "approxGeneric": "通用启发式近似（非精确分词器）"
+  },
+  "results": {
+    "title": "估算结果",
+    "empty": "输入文本后显示估算",
+    "tokens": "Token 数（近似）",
+    "characters": "字符数",
+    "charsNoSpaces": "字符数（不含空格）",
+    "cjk": "CJK 字符",
+    "latinWords": "拉丁词",
+    "digitGroups": "数字组",
+    "window": "上下文窗口",
+    "usage": "窗口占用",
+    "input": "文本"
+  },
+  "cost": {
+    "title": "成本估算",
+    "input": "输入成本",
+    "output": "输出成本",
+    "total": "合计",
+    "prices": "单价（每百万 token）",
+    "inputPrice": "输入单价",
+    "outputPrice": "输出单价",
+    "expectedOutput": "预计输出 token",
+    "remember": "记住单价与模型（保存在本机）"
+  },
+  "units": {
+    "usd": "美元",
+    "cny": "元"
+  },
+  "disclaimer": "结果为启发式近似值，实际计费以各厂商为准；单价由你维护并保存在本机。"
+}

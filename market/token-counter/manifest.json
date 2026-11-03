@@ -1,0 +1,74 @@
+{
+  "id": "org.devlive.toolforge.token-counter",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "calc",
+  "keywords": [
+    "token",
+    "llm",
+    "gpt",
+    "cost",
+    "context",
+    "大模型",
+    "令牌",
+    "成本",
+    "上下文"
+  ],
+  "accent": "purple",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "count": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.count.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "text"
+          ],
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "i18n:api.count.text",
+              "x-positional": 0,
+              "x-stdin": true
+            },
+            "model": {
+              "type": "string",
+              "description": "i18n:api.count.model",
+              "x-positional": 1
+            },
+            "inputPrice": {
+              "type": "number",
+              "description": "i18n:api.count.inputPrice"
+            },
+            "outputPrice": {
+              "type": "number",
+              "description": "i18n:api.count.outputPrice"
+            },
+            "expectedOutput": {
+              "type": "integer",
+              "description": "i18n:api.count.expectedOutput"
+            }
+          }
+        },
+        "examples": [
+          "tfp-token-counter count '你好世界' --model gpt-4o",
+          "cat notes.txt | tfp-token-counter count --model claude-sonnet --inputPrice 3 --outputPrice 15"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

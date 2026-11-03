@@ -1,0 +1,61 @@
+{
+  "name": "Token Counter",
+  "description": "Estimate token usage and cost per model: character comparison, locally saved unit prices and context window usage.",
+  "api": {
+    "count": {
+      "summary": "Estimate token count, window usage and cost per model (heuristic approximation)",
+      "text": "Text to measure",
+      "model": "Model id (unknown ids use the generic factor)",
+      "inputPrice": "Input price per million tokens",
+      "outputPrice": "Output price per million tokens",
+      "expectedOutput": "Expected output tokens"
+    }
+  },
+  "models": {
+    "gpt-4o": "GPT-4o",
+    "gpt-4o-mini": "GPT-4o mini",
+    "gpt-4.1": "GPT-4.1",
+    "o3": "o3",
+    "claude-sonnet": "Claude Sonnet",
+    "claude-haiku": "Claude Haiku",
+    "gemini-pro": "Gemini Pro",
+    "deepseek-chat": "DeepSeek Chat",
+    "qwen-max": "Qwen Max",
+    "generic": "Generic estimate"
+  },
+  "method": {
+    "approxGpt": "GPT-family heuristic (~4 chars/token, not an exact tokenizer)",
+    "approxClaude": "Claude-family heuristic (not an exact tokenizer)",
+    "approxGemini": "Gemini heuristic (not an exact tokenizer)",
+    "approxGeneric": "Generic heuristic (not an exact tokenizer)"
+  },
+  "results": {
+    "title": "Estimate",
+    "empty": "Enter text to see the estimate",
+    "tokens": "Tokens (approx)",
+    "characters": "Characters",
+    "charsNoSpaces": "Characters (no spaces)",
+    "cjk": "CJK characters",
+    "latinWords": "Latin words",
+    "digitGroups": "Digit groups",
+    "window": "Context window",
+    "usage": "Window usage",
+    "input": "Text"
+  },
+  "cost": {
+    "title": "Cost estimate",
+    "input": "Input cost",
+    "output": "Output cost",
+    "total": "Total",
+    "prices": "Prices (per million tokens)",
+    "inputPrice": "Input price",
+    "outputPrice": "Output price",
+    "expectedOutput": "Expected output tokens",
+    "remember": "Remember prices and model (stored locally)"
+  },
+  "units": {
+    "usd": "USD",
+    "cny": "CNY"
+  },
+  "disclaimer": "Heuristic approximation only; actual billing follows each vendor. Prices are maintained by you and stored locally."
+}
