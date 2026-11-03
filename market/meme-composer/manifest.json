@@ -1,0 +1,74 @@
+{
+  "id": "org.devlive.toolforge.meme-composer",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": [
+    "meme",
+    "caption",
+    "image",
+    "表情包",
+    "字幕",
+    "梗图"
+  ],
+  "accent": "green",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [
+    "fs:user-selected"
+  ],
+  "functions": {
+    "compose": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.compose.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "imagePath"
+          ],
+          "properties": {
+            "imagePath": {
+              "type": "string",
+              "description": "i18n:api.compose.imagePath",
+              "x-positional": 0
+            },
+            "topText": {
+              "type": "string",
+              "description": "i18n:api.compose.topText"
+            },
+            "bottomText": {
+              "type": "string",
+              "description": "i18n:api.compose.bottomText"
+            },
+            "width": {
+              "type": "integer",
+              "description": "i18n:api.compose.width"
+            },
+            "textColor": {
+              "type": "string",
+              "description": "i18n:api.compose.textColor"
+            },
+            "strokeColor": {
+              "type": "string",
+              "description": "i18n:api.compose.strokeColor"
+            }
+          }
+        },
+        "examples": [
+          "tfp-meme-composer compose photo.png --topText 上班前 --bottomText 下班后"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

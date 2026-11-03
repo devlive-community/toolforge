@@ -1,0 +1,32 @@
+{
+  "name": "表情包工坊",
+  "description": "给图片配上字幕与文字层生成表情包：上图下字等模板、描边换行与可编辑方案。",
+  "api": {
+    "compose": {
+      "summary": "合成表情包 SVG",
+      "imagePath": "图片路径",
+      "topText": "上方文字",
+      "bottomText": "下方文字",
+      "width": "画布宽 px",
+      "textColor": "字色",
+      "strokeColor": "描边色"
+    }
+  },
+  "ui": {
+    "top": "上方文字",
+    "bottom": "下方文字",
+    "width": "画布宽",
+    "compose": "生成",
+    "export": "导出 PNG",
+    "pick": "选择图片…",
+    "pick_file": "选择文件…"
+  },
+  "errors": {
+    "meme.text_too_long": "文字超过 200 字符",
+    "meme.text_overflow": "文字超出画布，请减少内容",
+    "meme.image_too_large": "图片超过 8MB",
+    "meme.bad_image": "不是有效图片：{{detail}}",
+    "meme.read_failed": "读取失败：{{detail}}",
+    "meme.bad_color": "颜色无效：{{color}}"
+  }
+}

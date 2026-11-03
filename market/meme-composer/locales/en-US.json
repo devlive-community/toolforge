@@ -1,0 +1,32 @@
+{
+  "name": "Meme Composer",
+  "description": "Compose memes with caption templates, stroke text and editable layers over your own images.",
+  "api": {
+    "compose": {
+      "summary": "Compose a meme SVG",
+      "imagePath": "Image path",
+      "topText": "Top text",
+      "bottomText": "Bottom text",
+      "width": "Canvas width px",
+      "textColor": "Text color",
+      "strokeColor": "Stroke color"
+    }
+  },
+  "ui": {
+    "top": "Top text",
+    "bottom": "Bottom text",
+    "width": "Canvas width",
+    "compose": "Compose",
+    "export": "Export PNG",
+    "pick": "Choose an image…",
+    "pick_file": "Choose file…"
+  },
+  "errors": {
+    "meme.text_too_long": "Text over 200 characters",
+    "meme.text_overflow": "Text overflows the canvas",
+    "meme.image_too_large": "Image over 8MB",
+    "meme.bad_image": "Not a valid image: {{detail}}",
+    "meme.read_failed": "Read failed: {{detail}}",
+    "meme.bad_color": "Invalid color: {{color}}"
+  }
+}
