@@ -1,0 +1,81 @@
+{
+  "id": "org.devlive.toolforge.file-extension",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "other",
+  "keywords": [
+    "file extension",
+    "mime",
+    "magic bytes",
+    "file type",
+    "后缀",
+    "文件类型",
+    "魔数",
+    "格式"
+  ],
+  "accent": "cyan",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [
+    "fs:user-selected"
+  ],
+  "functions": {
+    "list": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.list.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "i18n:api.list.query",
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "tfp-file-extension list",
+          "tfp-file-extension list exe",
+          "tfp-file-extension list image"
+        ]
+      }
+    },
+    "identify": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli"
+        ],
+        "summary": "i18n:api.identify.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "path"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "i18n:api.identify.path",
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "tfp-file-extension identify /path/to/mystery.bin"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}
