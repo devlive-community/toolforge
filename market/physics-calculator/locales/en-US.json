@@ -1,0 +1,96 @@
+{
+  "name": "Physics Calculator",
+  "description": "Kinematics, mechanics and electricity formulas with dimension checks and a constants table.",
+  "api": {
+    "solve": {
+      "summary": "Solve a formula card for the target variable (SI units, fixed dimensions)",
+      "card": "Card id",
+      "target": "Variable to solve",
+      "given": "Known values (variable → number, SI units)"
+    },
+    "constants": {
+      "summary": "Physical constants (g, c, e, G, atm, water specific heat)"
+    }
+  },
+  "cards": {
+    "kinematics_v": "Velocity v = v0 + at",
+    "kinematics_s": "Displacement s = v0t + ½at²",
+    "kinematics_v2": "v² = v0² + 2as",
+    "newton": "Newton's second law F = ma",
+    "friction": "Friction f = μN",
+    "work": "Work W = Fs",
+    "power": "Power P = W/t",
+    "potential": "Potential energy Ep = mgh",
+    "kinetic": "Kinetic energy Ek = ½mv²",
+    "ohm": "Ohm's law U = IR",
+    "electric_power": "Electric power P = UI",
+    "electric_power_r": "Electric power P = I²R",
+    "series_r": "Series resistors R = R1 + R2",
+    "parallel_r": "Parallel resistors 1/R = 1/R1 + 1/R2",
+    "refraction": "Refractive index n = c/v",
+    "heat": "Heat Q = cmΔt"
+  },
+  "vars": {
+    "v": "Velocity v (m/s)",
+    "v0": "Initial velocity v0 (m/s)",
+    "a": "Acceleration a (m/s²)",
+    "t": "Time t (s)",
+    "s": "Displacement s (m)",
+    "f": "Force F (N)",
+    "m": "Mass m (kg)",
+    "mu": "Friction coefficient μ",
+    "n": "Normal force N (N)",
+    "w": "Work W (J)",
+    "p": "Power P (W)",
+    "ep": "Potential energy Ep (J)",
+    "ek": "Kinetic energy Ek (J)",
+    "u": "Voltage U (V)",
+    "i": "Current I (A)",
+    "r": "Resistance R (Ω)",
+    "r1": "Resistance R1 (Ω)",
+    "r2": "Resistance R2 (Ω)",
+    "c": "Speed of light c (m/s)",
+    "h": "Height h (m)",
+    "g": "Gravity g (m/s²)",
+    "q": "Heat Q (J)",
+    "cc": "Specific heat c (J/(kg·K))",
+    "dt": "Temperature rise Δt (K)",
+    "G": "Gravitational constant",
+    "e_charge": "Elementary charge",
+    "atm": "Standard atmosphere",
+    "water_c": "Water specific heat"
+  },
+  "units": {
+    "m/s": "m/s",
+    "m/s2": "m/s²",
+    "m": "m",
+    "s": "s",
+    "N": "N",
+    "kg": "kg",
+    "1": "—",
+    "J": "J",
+    "W": "W",
+    "V": "V",
+    "A": "A",
+    "Ω": "Ω",
+    "K": "K",
+    "C": "C",
+    "Pa": "Pa",
+    "N·m2/kg2": "N·m²/kg²",
+    "J/(kg·K)": "J/(kg·K)"
+  },
+  "constants": {
+    "title": "Physical constants"
+  },
+  "errors": {
+    "physics.unknown_card": "Unknown card: {{card}}",
+    "physics.unknown_variable": "Card has no variable: {{target}}",
+    "physics.unknown_target": "Cannot solve this target",
+    "physics.missing_given": "Missing known value: {{name}}",
+    "physics.extra_given": "Extra known value: {{name}}",
+    "physics.bad_number": "Known value is not finite: {{name}}",
+    "physics.divide_by_zero": "Division by zero: {{name}}",
+    "physics.no_real_solution": "Negative discriminant, no real solution",
+    "physics.not_finite": "Result is not finite"
+  }
+}

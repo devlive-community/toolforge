@@ -1,0 +1,96 @@
+{
+  "name": "物理公式计算器",
+  "description": "运动学、力学、电学等常用物理公式速算，含量纲校验与常量表。",
+  "api": {
+    "solve": {
+      "summary": "按公式卡求解目标量（国际单位制，量纲固定）",
+      "card": "公式卡 id",
+      "target": "求解变量名",
+      "given": "已知量（变量名 → 数值，SI 单位）"
+    },
+    "constants": {
+      "summary": "物理常量表（g、c、e、G、atm、水的比热容）"
+    }
+  },
+  "cards": {
+    "kinematics_v": "速度公式 v = v0 + at",
+    "kinematics_s": "位移公式 s = v0t + ½at²",
+    "kinematics_v2": "速度位移公式 v² = v0² + 2as",
+    "newton": "牛顿第二定律 F = ma",
+    "friction": "滑动摩擦 f = μN",
+    "work": "功 W = Fs",
+    "power": "功率 P = W/t",
+    "potential": "重力势能 Ep = mgh",
+    "kinetic": "动能 Ek = ½mv²",
+    "ohm": "欧姆定律 U = IR",
+    "electric_power": "电功率 P = UI",
+    "electric_power_r": "电功率 P = I²R",
+    "series_r": "串联电阻 R = R1 + R2",
+    "parallel_r": "并联电阻 1/R = 1/R1 + 1/R2",
+    "refraction": "折射率 n = c/v",
+    "heat": "热量 Q = cmΔt"
+  },
+  "vars": {
+    "v": "速度 v (m/s)",
+    "v0": "初速度 v0 (m/s)",
+    "a": "加速度 a (m/s²)",
+    "t": "时间 t (s)",
+    "s": "位移 s (m)",
+    "f": "力 F (N)",
+    "m": "质量 m (kg)",
+    "mu": "摩擦系数 μ",
+    "n": "支持力 N (N)",
+    "w": "功 W (J)",
+    "p": "功率 P (W)",
+    "ep": "势能 Ep (J)",
+    "ek": "动能 Ek (J)",
+    "u": "电压 U (V)",
+    "i": "电流 I (A)",
+    "r": "电阻 R (Ω)",
+    "r1": "电阻 R1 (Ω)",
+    "r2": "电阻 R2 (Ω)",
+    "c": "光速 c (m/s)",
+    "h": "高度 h (m)",
+    "g": "重力加速度 g (m/s²)",
+    "q": "热量 Q (J)",
+    "cc": "比热容 c (J/(kg·K))",
+    "dt": "温升 Δt (K)",
+    "G": "引力常量",
+    "e_charge": "元电荷",
+    "atm": "标准大气压",
+    "water_c": "水的比热容"
+  },
+  "units": {
+    "m/s": "m/s",
+    "m/s2": "m/s²",
+    "m": "m",
+    "s": "s",
+    "N": "N",
+    "kg": "kg",
+    "1": "—",
+    "J": "J",
+    "W": "W",
+    "V": "V",
+    "A": "A",
+    "Ω": "Ω",
+    "K": "K",
+    "C": "C",
+    "Pa": "Pa",
+    "N·m2/kg2": "N·m²/kg²",
+    "J/(kg·K)": "J/(kg·K)"
+  },
+  "constants": {
+    "title": "物理常量"
+  },
+  "errors": {
+    "physics.unknown_card": "未知公式卡：{{card}}",
+    "physics.unknown_variable": "该卡没有变量：{{target}}",
+    "physics.unknown_target": "无法求解该目标量",
+    "physics.missing_given": "缺少已知量：{{name}}",
+    "physics.extra_given": "多余的已知量：{{name}}",
+    "physics.bad_number": "已知量不是有限数：{{name}}",
+    "physics.divide_by_zero": "分母为零：{{name}}",
+    "physics.no_real_solution": "判别式为负，无实数解",
+    "physics.not_finite": "结果不是有限数"
+  }
+}

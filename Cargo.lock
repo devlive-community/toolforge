@@ -8811,6 +8811,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-dev-directory"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-domain-toolbox"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-dynasty-timeline"
 version = "0.1.0"
 dependencies = [
@@ -8924,6 +8944,16 @@ dependencies = [
  "tf-plugin-api",
  "tf-plugin-guest",
  "toml 1.1.6+spec-1.1.0",
+]
+
+[[package]]
+name = "tfm-fortune-tarot"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
 ]
 
 [[package]]
@@ -9114,6 +9144,16 @@ dependencies = [
  "tf-plugin-api",
  "tf-plugin-guest",
  "ttf-parser",
+]
+
+[[package]]
+name = "tfm-invoice-assistant"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
 ]
 
 [[package]]
@@ -9322,6 +9362,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-package-entry-resolver"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-packing-list"
 version = "0.1.0"
 dependencies = [
@@ -9387,12 +9437,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-physics-calculator"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-plant-care"
 version = "0.1.0"
 dependencies = [
  "data-encoding",
  "image",
  "jiff",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-pour-over-coffee"
+version = "0.1.0"
+dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -9500,6 +9570,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-shortcut-cheatsheet"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-sourcemap-symbolicator"
 version = "0.1.0"
 dependencies = [
@@ -9516,6 +9596,16 @@ dependencies = [
  "serde",
  "serde_json",
  "sqlformat",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-sudoku"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
  "tf-plugin-api",
  "tf-plugin-guest",
 ]
@@ -9713,6 +9803,16 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2 0.10.9",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-world-geography"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
  "tf-plugin-api",
  "tf-plugin-guest",
 ]
