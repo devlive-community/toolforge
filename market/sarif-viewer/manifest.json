@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.sarif-viewer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "dev",
@@ -25,19 +25,44 @@
   ],
   "functions": {
     "parse": {
-      "task": true
+      "task": true,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.parse.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["paths"],
+          "properties": {
+            "paths": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "i18n:api.parse.paths",
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "tfp-sarif-viewer parse report.sarif",
+          "tfp-sarif-viewer parse eslint.sarif clippy.sarif"
+        ]
+      }
     },
     "browse": {
-      "task": true
+      "task": true,
+      "interface": false
     },
     "detail": {
-      "task": true
+      "task": true,
+      "interface": false
     },
     "readSource": {
-      "task": true
+      "task": true,
+      "interface": false
     },
     "export": {
-      "task": true
+      "task": true,
+      "interface": false
     }
   },
   "sensitive": true

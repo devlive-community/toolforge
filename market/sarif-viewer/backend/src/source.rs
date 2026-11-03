@@ -118,7 +118,14 @@ pub fn read(report: &Report, args: &ReadSourceArgs, ctx: &dyn TaskContext) -> Pl
     let start_line = region.start_line.ok_or_else(|| error("region"))?;
     let (candidate, mut notes) = resolve(report, location, &args.root)?;
     let root_canon = std::fs::canonicalize(&args.root).map_err(|_| error("root"))?;
-    let path = std::fs::canonicalize(&candidate).map_err(|_| error("missing"))?;
+    // Lexical containment first: absolute paths outside (or unrelated to) the
+    // authorized root are refused before touching the filesystem, which also
+    // keeps the error stable across platforms for paths that do not exist.
+    let relative = std::path::Path::new(&candidate)
+        .strip_prefix(&args.root)
+        .map_err(|_| error("outside"))?;
+    let path = std::fs::canonicalize(root_canon.join(relative)).map_err(|_| error("missing"))?;
+    // Canonical containment second: symlinks may not escape the root either.
     if !path.starts_with(&root_canon) {
         return Err(error("outside"));
     }

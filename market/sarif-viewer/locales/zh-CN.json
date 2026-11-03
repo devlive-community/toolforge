@@ -200,5 +200,11 @@
     "detail": "读取结果完整详情",
     "readSource": "读取授权源码上下文",
     "export": "导出筛选结果"
+  },
+  "api": {
+    "parse": {
+      "summary": "读取一个或多个 SARIF 报告，返回结果统计摘要",
+      "paths": "SARIF 报告文件路径（.sarif / .json，最多 32 个）"
+    }
   }
 }

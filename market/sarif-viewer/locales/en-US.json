@@ -200,5 +200,11 @@
     "detail": "Read full result detail",
     "readSource": "Read authorized source context",
     "export": "Export filtered results"
+  },
+  "api": {
+    "parse": {
+      "summary": "Parse one or more SARIF reports and return a result summary",
+      "paths": "SARIF report file paths (.sarif / .json, up to 32)"
+    }
   }
 }
