@@ -1,0 +1,78 @@
+{
+  "name": "Paper Size Reference",
+  "description": "ISO A/B/C, Chinese K-series, envelope and photo sizes with mm/inch/pixel conversion at any DPI.",
+  "api": {
+    "list": {
+      "summary": "List paper, envelope and photo sizes, filter by name or category",
+      "query": "Filter keyword (optional)"
+    },
+    "convert": {
+      "summary": "Convert millimeters to inches and pixels at a DPI",
+      "mm": "Millimeters",
+      "dpi": "DPI (default 300)"
+    }
+  },
+  "categories": {
+    "iso": "ISO A/B/C",
+    "k": "Chinese K series",
+    "envelope": "Envelopes",
+    "photo": "Photo & ID"
+  },
+  "table": {
+    "key": "Size",
+    "short": "Short (mm)",
+    "long": "Long (mm)",
+    "inches": "Inches",
+    "pixels": "Pixels @{{dpi}} DPI"
+  },
+  "convert": {
+    "title": "Pixel conversion",
+    "mmLabel": "Millimeters",
+    "dpiLabel": "DPI",
+    "inches": "Inches",
+    "pixels": "Pixels"
+  },
+  "errors": {
+    "paper.not_found": "No matching sizes",
+    "paper.positive_required": "Parameter must be positive: {{name}}"
+  },
+  "sizes": {
+    "a0": "A0",
+    "a1": "A1",
+    "a2": "A2",
+    "a3": "A3",
+    "a4": "A4",
+    "a5": "A5",
+    "a6": "A6",
+    "a7": "A7",
+    "a8": "A8",
+    "b0": "B0",
+    "b1": "B1",
+    "b2": "B2",
+    "b3": "B3",
+    "b4": "B4",
+    "b5": "B5",
+    "b6": "B6",
+    "c0": "C0",
+    "c4": "C4",
+    "c5": "C5",
+    "c6": "C6",
+    "k8-dadu": "8K (large)",
+    "k16-dadu": "16K (large)",
+    "k32-dadu": "32K (large)",
+    "k8-zhengdu": "8K (standard)",
+    "k16-zhengdu": "16K (standard)",
+    "k32-zhengdu": "32K (standard)",
+    "env-dl": "Envelope DL",
+    "env-c5": "Envelope C5",
+    "env-c6": "Envelope C6",
+    "env-5": "No.5 envelope",
+    "env-7": "No.7 envelope",
+    "photo-1in": "1-inch photo",
+    "photo-2in": "2-inch photo",
+    "photo-id": "ID photo",
+    "photo-5in": "5-inch photo",
+    "photo-6in": "6-inch photo",
+    "photo-7in": "7-inch photo"
+  }
+}

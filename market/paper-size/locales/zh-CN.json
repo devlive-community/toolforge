@@ -1,0 +1,78 @@
+{
+  "name": "纸张尺寸速查",
+  "description": "ISO A/B/C 与国产 K 系列纸张、信封与照片尺寸速查，毫米/英寸/像素按 DPI 换算。",
+  "api": {
+    "list": {
+      "summary": "列出纸张/信封/照片规格，按名称或类别过滤",
+      "query": "过滤关键词（可选）"
+    },
+    "convert": {
+      "summary": "毫米换算为英寸与像素（按 DPI）",
+      "mm": "毫米数",
+      "dpi": "DPI（默认 300）"
+    }
+  },
+  "categories": {
+    "iso": "ISO A/B/C 系列",
+    "k": "国产 K 系列",
+    "envelope": "信封",
+    "photo": "照片与证件"
+  },
+  "table": {
+    "key": "规格",
+    "short": "短边 (mm)",
+    "long": "长边 (mm)",
+    "inches": "英寸",
+    "pixels": "像素 @{{dpi}} DPI"
+  },
+  "convert": {
+    "title": "像素换算",
+    "mmLabel": "毫米",
+    "dpiLabel": "DPI",
+    "inches": "英寸",
+    "pixels": "像素"
+  },
+  "errors": {
+    "paper.not_found": "没有匹配的规格",
+    "paper.positive_required": "参数必须为正数：{{name}}"
+  },
+  "sizes": {
+    "a0": "A0",
+    "a1": "A1",
+    "a2": "A2",
+    "a3": "A3",
+    "a4": "A4",
+    "a5": "A5",
+    "a6": "A6",
+    "a7": "A7",
+    "a8": "A8",
+    "b0": "B0",
+    "b1": "B1",
+    "b2": "B2",
+    "b3": "B3",
+    "b4": "B4",
+    "b5": "B5",
+    "b6": "B6",
+    "c0": "C0",
+    "c4": "C4",
+    "c5": "C5",
+    "c6": "C6",
+    "k8-dadu": "8开（大度）",
+    "k16-dadu": "16开（大度）",
+    "k32-dadu": "32开（大度）",
+    "k8-zhengdu": "8开（正度）",
+    "k16-zhengdu": "16开（正度）",
+    "k32-zhengdu": "32开（正度）",
+    "env-dl": "信封 DL",
+    "env-c5": "信封 C5",
+    "env-c6": "信封 C6",
+    "env-5": "5号信封",
+    "env-7": "7号信封",
+    "photo-1in": "1寸照片",
+    "photo-2in": "2寸照片",
+    "photo-id": "证件照",
+    "photo-5in": "5寸照片",
+    "photo-6in": "6寸照片",
+    "photo-7in": "7寸照片"
+  }
+}
