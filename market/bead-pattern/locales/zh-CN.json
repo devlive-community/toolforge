@@ -1,0 +1,37 @@
+{
+  "name": "拼豆图纸生成器",
+  "description": "把图片映射到限定珠色色表的方格图纸：逐格颜色、用量统计与 SVG 图纸导出。",
+  "api": {
+    "generate": {
+      "summary": "生成拼豆图纸",
+      "path": "图片路径",
+      "columns": "横向格数 4–100",
+      "rows": "纵向格数 4–100",
+      "maxColors": "最多颜色数",
+      "keepTransparent": "透明留空"
+    }
+  },
+  "usage": {
+    "title": "用量",
+    "total": "总计 {{count}} 颗",
+    "color": "颜色",
+    "count": "颗数"
+  },
+  "ui": {
+    "pick": "选择图片…",
+    "columns": "横向格数",
+    "rows": "纵向格数",
+    "maxColors": "最多颜色",
+    "gen": "生成图纸",
+    "export": "导出 SVG",
+    "transparent": "透明留空",
+    "symbol": "符号",
+    "pick_file": "选择文件…"
+  },
+  "errors": {
+    "bead.bad_grid": "格数需在 4–100",
+    "bead.too_large": "图片超过 10MB",
+    "bead.bad_image": "不是有效图片：{{detail}}",
+    "bead.read_failed": "读取失败：{{detail}}"
+  }
+}

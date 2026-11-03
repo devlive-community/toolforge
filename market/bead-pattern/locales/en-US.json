@@ -1,0 +1,37 @@
+{
+  "name": "Bead Pattern Maker",
+  "description": "Map images onto a limited bead palette grid with per-cell colors, usage counts and SVG sheets.",
+  "api": {
+    "generate": {
+      "summary": "Generate a bead pattern",
+      "path": "Image path",
+      "columns": "Columns 4-100",
+      "rows": "Rows 4-100",
+      "maxColors": "Max colors",
+      "keepTransparent": "Keep transparency empty"
+    }
+  },
+  "usage": {
+    "title": "Usage",
+    "total": "{{count}} beads total",
+    "color": "Color",
+    "count": "Beads"
+  },
+  "ui": {
+    "pick": "Choose an image…",
+    "columns": "Columns",
+    "rows": "Rows",
+    "maxColors": "Max colors",
+    "gen": "Generate",
+    "export": "Export SVG",
+    "transparent": "Empty transparency",
+    "symbol": "Symbol",
+    "pick_file": "Choose file…"
+  },
+  "errors": {
+    "bead.bad_grid": "Grid must be 4-100",
+    "bead.too_large": "Image over 10MB",
+    "bead.bad_image": "Not a valid image: {{detail}}",
+    "bead.read_failed": "Read failed: {{detail}}"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "id": "org.devlive.toolforge.bead-pattern",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": [
+    "bead",
+    "pixel",
+    "pattern",
+    "拼豆",
+    "图纸",
+    "像素"
+  ],
+  "accent": "yellow",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [
+    "fs:user-selected"
+  ],
+  "functions": {
+    "generate": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.generate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "path",
+            "columns",
+            "rows"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "i18n:api.generate.path",
+              "x-positional": 0
+            },
+            "columns": {
+              "type": "integer",
+              "description": "i18n:api.generate.columns",
+              "x-positional": 1
+            },
+            "rows": {
+              "type": "integer",
+              "description": "i18n:api.generate.rows",
+              "x-positional": 2
+            },
+            "maxColors": {
+              "type": "integer",
+              "description": "i18n:api.generate.maxColors"
+            },
+            "keepTransparent": {
+              "type": "boolean",
+              "description": "i18n:api.generate.keepTransparent"
+            }
+          }
+        },
+        "examples": [
+          "tfp-bead-pattern generate photo.png 32 32 --maxColors 8"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}
