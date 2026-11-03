@@ -1,0 +1,48 @@
+{
+  "id": "org.devlive.toolforge.ascii-art",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "image",
+  "keywords": ["ascii", "ascii art", "ansi", "text art", "terminal", "character art", "字符画", "字符艺术", "文本图", "终端", "怀旧"],
+  "accent": "cyan",
+  "locales": ["zh-CN", "en-US"],
+  "minAppVersion": "0.2.0",
+  "permissions": ["fs:user-selected"],
+  "functions": {
+    "prepare": { "interface": false },
+    "convert": {
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.convert.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string", "description": "i18n:api.convert.path", "x-positional": 0, "x-stdin": true },
+            "data": { "type": "string", "description": "i18n:api.convert.data" },
+            "width": { "type": "integer", "description": "i18n:api.convert.width", "minimum": 8, "maximum": 500, "default": 80 },
+            "chars": { "type": "string", "description": "i18n:api.convert.chars" },
+            "preset": { "type": "string", "description": "i18n:api.convert.preset", "enum": ["classic", "blocks", "minimal", "dots", "binary"], "default": "classic" },
+            "brightness": { "type": "number", "description": "i18n:api.convert.brightness", "minimum": -1, "maximum": 1, "default": 0 },
+            "contrast": { "type": "number", "description": "i18n:api.convert.contrast", "minimum": 0.2, "maximum": 3, "default": 1 },
+            "invert": { "type": "boolean", "description": "i18n:api.convert.invert", "default": false },
+            "color": { "type": "boolean", "description": "i18n:api.convert.color", "default": false },
+            "aspect": { "type": "number", "description": "i18n:api.convert.aspect", "minimum": 0.3, "maximum": 1, "default": 0.5 },
+            "alphaMode": { "type": "string", "description": "i18n:api.convert.alphaMode", "enum": ["keep", "fill"], "default": "keep" },
+            "bg": { "type": "string", "description": "i18n:api.convert.bg" }
+          }
+        },
+        "examples": [
+          "tfp-ascii-art convert photo.png",
+          "tfp-ascii-art convert photo.png --width 120 --invert",
+          "tfp-ascii-art convert logo.png --chars \" .oO@\" --color"
+        ]
+      }
+    },
+    "fetch": { "interface": false },
+    "save": { "interface": false }
+  },
+  "sensitive": false
+}

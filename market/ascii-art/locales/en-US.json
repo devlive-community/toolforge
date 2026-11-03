@@ -1,0 +1,91 @@
+{
+  "name": "ASCII Art Studio",
+  "description": "Turn photos into nostalgic computer-era character art, tune it live, then copy or export plain text and ANSI-colored versions",
+  "help": [
+    "Pick an image; rows are derived from the character width using the cell aspect ratio (default 0.5 to compensate for tall monospace cells), and each cell samples luminance into the gradient.",
+    "The gradient is ordered by ink density, light to dark: bright pixels take dense glyphs which render bright on a dark terminal; invert flips this.",
+    "Transparent areas can stay blank (spaces) or be composited over a background color first; solid images map to a single repeated glyph.",
+    "The plain output never contains control characters; the colored output uses 24-bit ANSI foreground colors and resets at every line end, so color never leaks past the artwork.",
+    "Custom glyphs accept printable ASCII only: duplicates are merged, unusable characters are skipped and reported in the result."
+  ],
+  "file": {
+    "filter": "Images (PNG / JPEG / WebP)"
+  },
+  "options": {
+    "title": "Options",
+    "width": "Characters per row",
+    "preset": "Glyph set",
+    "custom": "Custom glyphs (light to dark)",
+    "brightness": "Brightness",
+    "contrast": "Contrast",
+    "invert": "Invert (bright takes light glyphs)",
+    "color": "ANSI colors",
+    "aspect": "Cell aspect ratio",
+    "alphaMode": "Transparency",
+    "keep": "Keep blank",
+    "fill": "Fill background",
+    "bg": "Background (hex)"
+  },
+  "presets": {
+    "classic": "Classic (space → @)",
+    "blocks": "Blocks (space → █)",
+    "minimal": "Minimal (space → @)",
+    "dots": "Dots (space → ∴)",
+    "binary": "Binary (space / 0 / 1)"
+  },
+  "view": {
+    "art": "Character art",
+    "original": "Original"
+  },
+  "actions": {
+    "pick": "Choose image",
+    "replace": "Replace",
+    "copyText": "Copy text",
+    "copyAnsi": "Copy ANSI",
+    "saveText": "Save .txt",
+    "saveAnsi": "Save .ans"
+  },
+  "info": {
+    "size": "{{cols}} cols × {{rows}} rows · {{chars}} characters"
+  },
+  "hint": {
+    "monospace": "The preview is monospaced; chat apps may reflow or re-font it. Exported text keeps every space and newline."
+  },
+  "state": {
+    "noImage": "Pick an image to start",
+    "busy": "Rendering…"
+  },
+  "warnings": {
+    "duplicateChars": "Duplicate custom glyphs were merged",
+    "skippedChars": "Skipped {{count}} unusable character(s), printable ASCII only"
+  },
+  "errors": {
+    "ascii.bad_data": "Invalid image data",
+    "ascii.decode_failed": "Failed to decode the image",
+    "ascii.too_large": "Image exceeds the {{limit}}-pixel limit",
+    "ascii.bad_width": "Characters per row must be between 8 and 500",
+    "ascii.bad_custom": "Invalid custom glyphs: {{reason}}",
+    "ascii.bad_bg": "Background must be a 6-digit hex color (e.g. 1a1a1a)",
+    "ascii.bad_params": "Invalid parameters: {{reason}}",
+    "ascii.not_found": "Result expired (evicted from cache), please regenerate",
+    "ascii.io": "File I/O failed"
+  },
+  "api": {
+    "convert": {
+      "summary": "Convert an image to character art text, optionally with 24-bit ANSI colors",
+      "path": "Image file path (PNG / JPEG / WebP)",
+      "data": "Image contents as a Data URI or raw base64 (alternative to path)",
+      "width": "Characters per row, 8-500, default 80",
+      "chars": "Custom glyph string, light to dark; overrides the preset",
+      "preset": "Built-in glyph set: classic / blocks / minimal / dots / binary",
+      "brightness": "Brightness -1 to 1, default 0",
+      "contrast": "Contrast 0.2 to 3, default 1",
+      "invert": "Invert: bright pixels take light glyphs",
+      "color": "Output ANSI-colored text",
+      "aspect": "Cell aspect ratio 0.3-1, default 0.5",
+      "alphaMode": "Transparency: keep blank or fill with background",
+      "bg": "Background hex color (e.g. 1a1a1a) used by fill mode"
+    }
+  },
+  "saved": "Saved"
+}

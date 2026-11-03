@@ -8628,6 +8628,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-ascii-art"
+version = "0.1.0"
+dependencies = [
+ "data-encoding",
+ "image",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-base-converter"
 version = "0.1.0"
 dependencies = [

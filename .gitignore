@@ -36,3 +36,6 @@ apps/server/bin/
 apps/server/coverage.out
 apps/server/plugin-stats
 apps/server/build/
+
+# local pnpm store cache
+.pnpm-store/

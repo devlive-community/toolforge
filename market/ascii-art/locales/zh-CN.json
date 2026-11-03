@@ -1,0 +1,91 @@
+{
+  "name": "字符画工坊",
+  "description": "把照片变成由字符拼出的怀旧电脑画，实时调参预览，复制或导出纯文本与带 ANSI 颜色的版本",
+  "help": [
+    "选择图片后按每行字符数换算行数（字符宽高比默认 0.5，补偿等宽字体字符格偏高），逐格取样亮度并映射到符号梯度。",
+    "符号梯度按墨量由浅到深排列：亮像素取深符号，黑底白字终端里呈现为亮块；开启反相则反过来。",
+    "透明区域可留空（空格）或先铺指定底色再参与映射；纯黑、纯白、小图也都有明确结果。",
+    "输出始终是无颜色控制字符的纯文本；彩色版使用 24 位 ANSI 前景色并在每行结束重置，不会把颜色带到作品之后。",
+    "自定义符号只接受可打印 ASCII，重复符号会合并、不可用字符会跳过并在结果中提示。"
+  ],
+  "file": {
+    "filter": "图片（PNG / JPEG / WebP）"
+  },
+  "options": {
+    "title": "参数",
+    "width": "每行字符数",
+    "preset": "符号组",
+    "custom": "自定义符号（由浅到深）",
+    "brightness": "亮度",
+    "contrast": "对比度",
+    "invert": "反相（亮取浅符号）",
+    "color": "ANSI 彩色",
+    "aspect": "字符宽高比",
+    "alphaMode": "透明处理",
+    "keep": "留空",
+    "fill": "铺底色",
+    "bg": "底色（十六进制）"
+  },
+  "presets": {
+    "classic": "经典（空格 → @）",
+    "blocks": "块面（空格 → █）",
+    "minimal": "极简（空格 → @）",
+    "dots": "点阵（空格 → ∴）",
+    "binary": "二进制（空格 / 0 / 1）"
+  },
+  "view": {
+    "art": "字符画",
+    "original": "原图"
+  },
+  "actions": {
+    "pick": "选择图片",
+    "replace": "换一张",
+    "copyText": "复制文本",
+    "copyAnsi": "复制 ANSI",
+    "saveText": "保存 .txt",
+    "saveAnsi": "保存 .ans"
+  },
+  "info": {
+    "size": "{{cols}} 列 × {{rows}} 行 · 共 {{chars}} 字符"
+  },
+  "hint": {
+    "monospace": "预览为等宽显示；聊天软件的字体或自动换行可能影响外观，导出文本保留了全部空格与换行。"
+  },
+  "state": {
+    "noImage": "选一张图片开始",
+    "busy": "正在生成…"
+  },
+  "warnings": {
+    "duplicateChars": "自定义符号有重复，已合并",
+    "skippedChars": "已忽略 {{count}} 个不可用字符（需为可打印 ASCII）"
+  },
+  "errors": {
+    "ascii.bad_data": "图片数据无效",
+    "ascii.decode_failed": "图片解码失败",
+    "ascii.too_large": "图片像素超过 {{limit}} 的上限",
+    "ascii.bad_width": "每行字符数需在 8 到 500 之间",
+    "ascii.bad_custom": "自定义符号无效：{{reason}}",
+    "ascii.bad_bg": "底色需为 6 位十六进制颜色（如 1a1a1a）",
+    "ascii.bad_params": "参数无效：{{reason}}",
+    "ascii.not_found": "结果已失效（缓存被淘汰），请重新生成",
+    "ascii.io": "文件读写失败"
+  },
+  "api": {
+    "convert": {
+      "summary": "把图片转换为字符画文本，可带 24 位 ANSI 颜色",
+      "path": "图片文件路径（PNG / JPEG / WebP）",
+      "data": "图片内容，Data URI 或裸 base64（与 path 二选一）",
+      "width": "每行字符数 8-500，默认 80",
+      "chars": "自定义符号串，由浅到深；提供时覆盖符号组",
+      "preset": "内置符号组：classic / blocks / minimal / dots / binary",
+      "brightness": "亮度 -1 到 1，默认 0",
+      "contrast": "对比度 0.2 到 3，默认 1",
+      "invert": "反相：亮像素取浅符号",
+      "color": "输出带 ANSI 颜色的文本",
+      "aspect": "字符格宽高比 0.3-1，默认 0.5",
+      "alphaMode": "透明处理：keep 留空或 fill 铺底色",
+      "bg": "底色十六进制（如 1a1a1a），fill 模式使用"
+    }
+  },
+  "saved": "已保存"
+}
