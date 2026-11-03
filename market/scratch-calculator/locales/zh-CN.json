@@ -3,8 +3,11 @@
   "description": "逐行求值的表达式稿纸：四则与幂、变量赋值、上一行结果、常见长度/质量/时间单位，出错行不影响后续计算。",
   "api": {
     "evaluate": {
-      "summary": "逐行求值多行表达式，返回每行的结果或错误码",
-      "input": "多行表达式；空行与 # 注释跳过"
+      "angleMode": "三角函数角度模式：deg（默认）或 rad"
+    },
+    "statistics": {
+      "summary": "对多行数值（支持表达式与单位）做统计摘要：计数、和、均值、中位数、方差与标准差",
+      "input": "多行数值或表达式，每行一个"
     }
   },
   "input": {
@@ -27,7 +30,14 @@
     "eval.dimension_mismatch": "单位量纲不匹配，不能相加减",
     "eval.unknown_name": "未定义的名称：{{name}}",
     "eval.trailing_input": "表达式末尾有多余内容",
-    "eval.not_finite": "结果不是有限数"
+    "eval.not_finite": "结果不是有限数",
+    "eval.reserved_name": "不能给内置常量或函数赋值：{{name}}",
+    "eval.bad_factorial": "阶乘只支持 0–170 的非负整数",
+    "eval.expected_lparen": "函数调用缺少左括号",
+    "eval.unknown_function": "未知函数",
+    "eval.bad_args": "函数参数个数错误",
+    "eval.missing_args": "至少需要一个参数",
+    "stat.no_numbers": "没有可以求值的数值行"
   },
   "help": {
     "syntax": [
@@ -35,7 +45,22 @@
       "百分比：50% 即 0.5；取模：10 % 3",
       "变量：x = 6 之后用 x 引用；prev 是上一个表达式行的结果",
       "单位：1km + 10cm、2kg、3min，相加减要求同一量纲",
-      "# 开头的行为注释，空行跳过；出错行不影响后续行"
+      "# 开头的行为注释，空行跳过；出错行不影响后续行",
+      "函数：sin cos tan asin acos atan sqrt cbrt ln log10 log2 exp abs round floor ceil fact deg rad min max；常量：pi tau e phi"
     ]
+  },
+  "stats": {
+    "title": "统计摘要",
+    "count": "计数",
+    "sum": "总和",
+    "mean": "均值",
+    "median": "中位数",
+    "min": "最小",
+    "max": "最大",
+    "variance": "方差（总体）",
+    "sampleVariance": "方差（样本）",
+    "stddev": "标准差（总体）",
+    "sampleStddev": "标准差（样本）",
+    "noNumbers": "没有可以求值的数值行"
   }
 }

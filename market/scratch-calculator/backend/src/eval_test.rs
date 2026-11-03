@@ -2,7 +2,7 @@ use super::{Output, evaluate};
 use serde_json::json;
 
 fn run(input: &str) -> Output {
-    evaluate(input).unwrap()
+    evaluate(input, None).unwrap()
 }
 
 fn value_of(out: &Output, index: usize) -> f64 {
@@ -79,7 +79,68 @@ fn unknown_unit_or_trailing_tokens_fail() {
 
 #[test]
 fn empty_input_is_rejected() {
-    let err = evaluate("  \n# only a comment\n").unwrap_err();
+    let err = evaluate("  \n# only a comment\n", None).unwrap_err();
     assert_eq!(err.code, "eval.empty_input");
     let _ = json!(null); // 保持 serde_json 在测试树中被使用
+}
+
+#[test]
+fn scientific_functions_and_constants() {
+    let out = run(
+        "sqrt(16)\nln(e)\nabs(-3)\nround(2.5) + floor(1.9) + ceil(2.1)\nmin(3, 1, 2) + max(2, 5)\npi\n5!",
+    );
+    assert_eq!(value_of(&out, 0), 4.0);
+    assert_eq!(value_of(&out, 1), 1.0);
+    assert_eq!(value_of(&out, 2), 3.0);
+    assert_eq!(
+        value_of(&out, 3),
+        7.0,
+        "round(2.5)=3, floor(1.9)=1, ceil(2.1)=3"
+    );
+    assert_eq!(value_of(&out, 4), 6.0);
+    assert!((value_of(&out, 5) - std::f64::consts::PI).abs() < 1e-12);
+    assert_eq!(value_of(&out, 6), 120.0);
+}
+
+#[test]
+fn angle_mode_affects_trigonometry() {
+    let deg = evaluate("sin(30)", Some("deg")).unwrap();
+    assert!((deg.lines[0].value.unwrap() - 0.5).abs() < 1e-12);
+    let rad = evaluate("sin(pi / 6)", Some("rad")).unwrap();
+    assert!((rad.lines[0].value.unwrap() - 0.5).abs() < 1e-12);
+    let asin = evaluate("asin(0.5)", Some("deg")).unwrap();
+    assert!((asin.lines[0].value.unwrap() - 30.0).abs() < 1e-9);
+}
+
+#[test]
+fn domain_errors_and_reserved_names() {
+    let out = run("ln(-1)\nsqrt(-4)");
+    assert_eq!(out.lines[0].error.as_deref(), Some("eval.not_finite"));
+    assert_eq!(out.lines[1].error.as_deref(), Some("eval.not_finite"));
+    let out = run("pi = 3\nsin = 1");
+    assert_eq!(out.lines[0].error.as_deref(), Some("eval.reserved_name"));
+    assert_eq!(out.lines[1].error.as_deref(), Some("eval.reserved_name"));
+}
+
+#[test]
+fn statistics_summarize_values() {
+    let stats = crate::eval::statistics("1\n2\n3\n4\n10", None).unwrap();
+    assert_eq!(stats.count, 5);
+    assert_eq!(stats.sum, 20.0);
+    assert_eq!(stats.mean, 4.0);
+    assert_eq!(stats.median, 3.0);
+    assert_eq!(stats.min, 1.0);
+    assert_eq!(stats.max, 10.0);
+    assert!((stats.sample_variance - 12.5).abs() < 1e-12);
+    assert!((stats.stddev.powi(2) - stats.variance).abs() < 1e-12);
+}
+
+#[test]
+fn statistics_use_expressions_and_report_failures() {
+    // 表达式行参与统计（含单位换算），失败行不计入
+    let stats = crate::eval::statistics("2^3\n1km + 10cm\nfoo", None).unwrap();
+    assert_eq!(stats.count, 2);
+    assert_eq!(stats.sum, 1008.1, "2^3=8 and 1km+10cm=1000.1");
+    let err = crate::eval::statistics("foo\nbar", None).unwrap_err();
+    assert_eq!(err.code, "stat.no_numbers");
 }

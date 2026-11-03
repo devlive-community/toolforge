@@ -3,8 +3,11 @@
   "description": "Line-by-line expression scratchpad: arithmetic and powers, variable assignment, previous-result reference and common length/mass/time units. A failing line does not stop later lines.",
   "api": {
     "evaluate": {
-      "summary": "Evaluate multi-line expressions line by line, returning each line's value or error code",
-      "input": "Multi-line expressions; blank lines and # comments are skipped"
+      "angleMode": "Angle mode for trigonometry: deg (default) or rad"
+    },
+    "statistics": {
+      "summary": "Summarize multi-line numbers (expressions and units allowed): count, sum, mean, median, variance and standard deviation",
+      "input": "One number or expression per line"
     }
   },
   "input": {
@@ -27,7 +30,14 @@
     "eval.dimension_mismatch": "Units of different dimensions cannot be added or subtracted",
     "eval.unknown_name": "Unknown name: {{name}}",
     "eval.trailing_input": "Unexpected content after the expression",
-    "eval.not_finite": "Result is not a finite number"
+    "eval.not_finite": "Result is not a finite number",
+    "eval.reserved_name": "Cannot assign to a built-in constant or function: {{name}}",
+    "eval.bad_factorial": "Factorial only supports integers 0-170",
+    "eval.expected_lparen": "Missing opening parenthesis in function call",
+    "eval.unknown_function": "Unknown function",
+    "eval.bad_args": "Wrong number of arguments",
+    "eval.missing_args": "At least one argument is required",
+    "stat.no_numbers": "No numeric lines to evaluate"
   },
   "help": {
     "syntax": [
@@ -35,7 +45,22 @@
       "Percent: 50% means 0.5; modulo: 10 % 3",
       "Variables: x = 6 then reference x; prev is the last expression line's result",
       "Units: 1km + 10cm, 2kg, 3min; addition and subtraction require the same dimension",
-      "Lines starting with # are comments; blank lines are skipped; a failing line does not stop later lines"
+      "Lines starting with # are comments; blank lines are skipped; a failing line does not stop later lines",
+      "Functions: sin cos tan asin acos atan sqrt cbrt ln log10 log2 exp abs round floor ceil fact deg rad min max; constants: pi tau e phi"
     ]
+  },
+  "stats": {
+    "title": "Statistics",
+    "count": "Count",
+    "sum": "Sum",
+    "mean": "Mean",
+    "median": "Median",
+    "min": "Min",
+    "max": "Max",
+    "variance": "Variance (population)",
+    "sampleVariance": "Variance (sample)",
+    "stddev": "Std dev (population)",
+    "sampleStddev": "Std dev (sample)",
+    "noNumbers": "No numeric lines to evaluate"
   }
 }

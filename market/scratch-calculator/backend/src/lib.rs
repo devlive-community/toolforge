@@ -28,7 +28,11 @@ impl ToolPlugin for ScratchCalculator {
         match function {
             "evaluate" => {
                 let args: eval::Args = parse_args(args)?;
-                to_value(eval::evaluate(&args.input)?)
+                to_value(eval::evaluate(&args.input, args.angle_mode.as_deref())?)
+            }
+            "statistics" => {
+                let args: eval::Args = parse_args(args)?;
+                to_value(eval::statistics(&args.input, args.angle_mode.as_deref())?)
             }
             other => Err(unknown_function(other)),
         }

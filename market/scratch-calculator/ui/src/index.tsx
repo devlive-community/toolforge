@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CodeEditor, Empty, Panel, Spinner } from '@toolforge/ui'
+import { CodeEditor, Empty, Panel, SegmentedControl, Spinner } from '@toolforge/ui'
 import { ValueRow, useDebouncedCall, useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { Calculator, HelpCircle } from 'lucide-react'
 
@@ -20,17 +20,35 @@ const DEFAULT_INPUT = 'x = 6\nx * 7\n1km + 10cm\nprev * 2' // tf-allow: 默认�
 export default function ScratchCalculator() {
   const { t } = usePlugin()
   const [input, setInput] = useState(DEFAULT_INPUT) // tf-allow: 默认输入值
+  const [angleMode, setAngleMode] = useState<'deg' | 'rad'>('deg')
   useLaunchInput((text) => setInput(text))
 
   const trimmed = input.trim()
   const { result, pending } = useDebouncedCall<EvalResult>(
     trimmed ? 'evaluate' : null,
-    { input },
-    [input],
+    { input, angleMode },
+    [input, angleMode],
   )
   return (
     <div className="grid h-full min-h-0 grid-cols-2 gap-3">
-      <Panel icon={<Calculator />} title={t('input.label')} className="min-h-0 overflow-hidden" bodyClassName="h-full">
+      <Panel
+        icon={<Calculator />}
+        title={t('input.label')}
+        className="min-h-0 overflow-hidden"
+        bodyClassName="h-full p-0 [&>div]:h-full"
+        extra={
+          <SegmentedControl
+            size="sm"
+            value={angleMode}
+            onValueChange={setAngleMode}
+            aria-label={t('api.evaluate.angleMode')}
+            options={[
+              { value: 'deg', label: 'DEG' },
+              { value: 'rad', label: 'RAD' },
+            ]}
+          />
+        }
+      >
         <CodeEditor
           value={input}
           onChange={setInput}

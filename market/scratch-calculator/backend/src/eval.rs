@@ -34,11 +34,32 @@ const UNITS: &[(&str, f64, &str)] = &[
 /// 上一行（最近一个产生值而非赋值的行）的引用名
 pub const PREV: &str = "prev";
 
+/// 内置常量（不可被赋值覆盖）
+const CONSTANTS: &[(&str, f64)] = &[
+    ("pi", std::f64::consts::PI),
+    ("tau", std::f64::consts::TAU),
+    ("e", std::f64::consts::E),
+    ("phi", std::f64::consts::GOLDEN_RATIO),
+];
+
+/// 期望的参数个数；None 表示可变参数（min/max 至少 1 个）
+const FUNCTIONS: &[&str] = &[
+    "sin", "cos", "tan", "asin", "acos", "atan", "sqrt", "cbrt", "ln", "log10", "log2", "exp",
+    "abs", "round", "floor", "ceil", "fact", "deg", "rad", "min", "max",
+];
+
+fn is_known_name(name: &str) -> bool {
+    CONSTANTS.iter().any(|(n, _)| *n == name) || FUNCTIONS.contains(&name) || name == PREV
+}
+
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Args {
     /// 多行表达式；空行与 # 开头的注释行跳过
     pub input: String,
+    /// 三角函数的角度模式：deg（默认）或 rad
+    #[serde(default)]
+    pub angle_mode: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -114,7 +135,7 @@ fn tokenize(src: &str) -> PluginResult<Vec<Token>> {
                 }
                 out.push(Token::Ident(text));
             }
-            '+' | '-' | '*' | '/' | '^' | '%' | '=' => {
+            '+' | '-' | '*' | '/' | '^' | '%' | '=' | '!' => {
                 out.push(Token::Op(c));
                 chars.next();
             }
@@ -144,6 +165,8 @@ struct Parser<'a> {
     tokens: &'a [Token],
     pos: usize,
     vars: &'a HashMap<String, f64>,
+    /// 三角函数的角度模式（true = deg）
+    angle_deg: bool,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -255,7 +278,20 @@ impl<'a> Parser<'a> {
     }
 
     fn postfix(&mut self) -> PluginResult<(f64, Dim)> {
-        let (value, dim) = self.primary()?;
+        let (mut value, mut dim) = self.primary()?;
+        // 阶乘后缀：5!（非负整数，上限 170 防溢出）
+        while let Some(Token::Op('!')) = self.peek() {
+            if value < 0.0 || value.fract() != 0.0 || value > 170.0 {
+                return Err(PluginError::new("eval.bad_factorial"));
+            }
+            self.pos += 1;
+            let mut acc = 1.0;
+            for n in 2..=(value as u64) {
+                acc *= n as f64;
+            }
+            value = acc;
+            dim = Dim::None;
+        }
         if let Some(Token::Op('%')) = self.peek() {
             // % 后面没有操作数时是百分比后缀（50% = 0.5）；
             // 后面跟操作数则是中缀取模（10 % 3），留给 term 循环处理
@@ -269,6 +305,78 @@ impl<'a> Parser<'a> {
             }
         }
         Ok((value, dim))
+    }
+
+    /// 调用科学函数；Ident 已被消费，pos 指向参数列表
+    fn call_function(&mut self, name: &str) -> PluginResult<(f64, Dim)> {
+        if !matches!(self.next(), Some(Token::LParen)) {
+            return Err(PluginError::new("eval.expected_lparen"));
+        }
+        let mut args = Vec::new();
+        if matches!(self.peek(), Some(Token::RParen)) {
+            self.pos += 1;
+        } else {
+            loop {
+                let (value, _) = self.expr()?;
+                args.push(value);
+                match self.next() {
+                    Some(Token::Comma) => continue,
+                    Some(Token::RParen) => break,
+                    _ => return Err(PluginError::new("eval.expected_rparen")),
+                }
+            }
+        }
+        let to_rad = |x: f64| if self.angle_deg { x.to_radians() } else { x };
+        let from_rad = |x: f64| if self.angle_deg { x.to_degrees() } else { x };
+        let unary = |x: f64| -> PluginResult<f64> {
+            let out = match name {
+                "sin" => to_rad(x).sin(),
+                "cos" => to_rad(x).cos(),
+                "tan" => to_rad(x).tan(),
+                "asin" => from_rad(x.asin()),
+                "acos" => from_rad(x.acos()),
+                "atan" => from_rad(x.atan()),
+                "sqrt" => x.sqrt(),
+                "cbrt" => x.cbrt(),
+                "ln" => x.ln(),
+                "log10" => x.log10(),
+                "log2" => x.log2(),
+                "exp" => x.exp(),
+                "abs" => x.abs(),
+                "round" => x.round(),
+                "floor" => x.floor(),
+                "ceil" => x.ceil(),
+                "deg" => x.to_degrees(),
+                "rad" => x.to_radians(),
+                "fact" => {
+                    if x < 0.0 || x.fract() != 0.0 || x > 170.0 {
+                        return Err(PluginError::new("eval.bad_factorial"));
+                    }
+                    (2..=(x as u64)).fold(1.0, |acc, n| acc * n as f64)
+                }
+                _ => return Err(PluginError::new("eval.unknown_function")),
+            };
+            if !out.is_finite() {
+                return Err(PluginError::new("eval.not_finite"));
+            }
+            Ok(out)
+        };
+        let value = match name {
+            "min" | "max" => {
+                let pick = args
+                    .iter()
+                    .cloned()
+                    .reduce(|a, b| if name == "min" { a.min(b) } else { a.max(b) });
+                pick.ok_or_else(|| PluginError::new("eval.missing_args"))?
+            }
+            _ => {
+                if args.len() != 1 {
+                    return Err(PluginError::new("eval.bad_args"));
+                }
+                unary(args[0])?
+            }
+        };
+        Ok((value, Dim::None))
     }
 
     fn primary(&mut self) -> PluginResult<(f64, Dim)> {
@@ -292,9 +400,14 @@ impl<'a> Parser<'a> {
             }
             Some(Token::Ident(name)) => {
                 let name = name.clone();
-                // 常量与变量直接取值；带括号视为函数调用（科学函数在扩展里提供）
                 if let Some(value) = self.vars.get(&name) {
                     return Ok((*value, Dim::None));
+                }
+                if let Some((_, value)) = CONSTANTS.iter().find(|(n, _)| *n == name) {
+                    return Ok((*value, Dim::None));
+                }
+                if FUNCTIONS.contains(&name.as_str()) {
+                    return self.call_function(&name);
                 }
                 Err(PluginError::new("eval.unknown_name").with("name", name))
             }
@@ -314,6 +427,7 @@ impl<'a> Parser<'a> {
 pub fn eval_line(
     raw: &str,
     vars: &mut HashMap<String, f64>,
+    angle_deg: bool,
 ) -> PluginResult<(Option<String>, f64)> {
     let tokens = tokenize(raw)?;
     if tokens.is_empty() {
@@ -331,6 +445,7 @@ pub fn eval_line(
             tokens: &tokens[2..],
             pos: 0,
             vars,
+            angle_deg,
         };
         let (value, _) = parser.expr()?;
         if parser.pos != parser.tokens.len() {
@@ -339,6 +454,9 @@ pub fn eval_line(
         if !isfinite(value) {
             return Err(PluginError::new("eval.not_finite"));
         }
+        if is_known_name(&name) {
+            return Err(PluginError::new("eval.reserved_name").with("name", name));
+        }
         vars.insert(name.clone(), value);
         return Ok((Some(name), value));
     }
@@ -346,6 +464,7 @@ pub fn eval_line(
         tokens: &tokens,
         pos: 0,
         vars,
+        angle_deg,
     };
     let (value, _) = parser.expr()?;
     if parser.pos != parser.tokens.len() {
@@ -361,7 +480,61 @@ fn isfinite(value: f64) -> bool {
     value.is_finite()
 }
 
-pub fn evaluate(input: &str) -> PluginResult<Output> {
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Stats {
+    pub count: u64,
+    pub sum: f64,
+    pub mean: f64,
+    pub median: f64,
+    pub min: f64,
+    pub max: f64,
+    pub variance: f64,
+    pub sample_variance: f64,
+    pub stddev: f64,
+    pub sample_stddev: f64,
+}
+
+/// 多行数值列表的统计摘要：每行先用同一求值器算出数值（支持表达式/单位），
+/// 无一行成功时返回错误
+pub fn statistics(input: &str, angle_mode: Option<&str>) -> PluginResult<Stats> {
+    let output = evaluate(input, angle_mode)?;
+    let mut values: Vec<f64> = output.lines.iter().filter_map(|line| line.value).collect();
+    if values.is_empty() {
+        return Err(PluginError::new("stat.no_numbers"));
+    }
+    values.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
+    let count = values.len() as f64;
+    let sum: f64 = values.iter().sum();
+    let mean = sum / count;
+    let median = if values.len() % 2 == 1 {
+        values[values.len() / 2]
+    } else {
+        (values[values.len() / 2 - 1] + values[values.len() / 2]) / 2.0
+    };
+    let ss: f64 = values.iter().map(|v| (v - mean).powi(2)).sum();
+    let variance = ss / count;
+    let sample_variance = if values.len() > 1 {
+        ss / (count - 1.0)
+    } else {
+        variance
+    };
+    Ok(Stats {
+        count: values.len() as u64,
+        sum,
+        mean,
+        median,
+        min: values[0],
+        max: values[values.len() - 1],
+        variance,
+        sample_variance,
+        stddev: variance.sqrt(),
+        sample_stddev: sample_variance.sqrt(),
+    })
+}
+
+pub fn evaluate(input: &str, angle_mode: Option<&str>) -> PluginResult<Output> {
+    let angle_deg = !matches!(angle_mode, Some("rad"));
     let mut vars: HashMap<String, f64> = HashMap::new();
     let mut lines = Vec::new();
     let mut last: Option<f64> = None;
@@ -381,7 +554,7 @@ pub fn evaluate(input: &str) -> PluginResult<Output> {
         if let Some(prev_value) = prev {
             vars.insert(PREV.to_owned(), prev_value);
         }
-        match eval_line(raw, &mut vars) {
+        match eval_line(raw, &mut vars, angle_deg) {
             Ok((name, value)) => {
                 if name.is_none() {
                     prev = Some(value);
