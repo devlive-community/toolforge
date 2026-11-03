@@ -1,0 +1,66 @@
+{
+  "name": "Pour-over Coffee Companion",
+  "description": "Ratio scaling and segmented pour plans with step-by-step guidance and tasting notes.",
+  "api": {
+    "plan": {
+      "summary": "Build a pour plan from dose and ratio (stages by fraction or ml)",
+      "coffeeG": "Coffee dose (g)",
+      "ratio": "Ratio (1:15 → 15)",
+      "stages": "Stages [{fraction, ml, label, seconds}]"
+    },
+    "scale": {
+      "summary": "Scale recipe stages to a new dose",
+      "originalCoffeeG": "Original dose",
+      "newCoffeeG": "New dose",
+      "stageMl": "Original stage ml (comma separated)",
+      "originalRatio": "Original ratio (validates stage total)"
+    }
+  },
+  "plan": {
+    "title": "Pour plan",
+    "total": "Total water",
+    "covered": "Stage coverage",
+    "stage": "This stage",
+    "cumulative": "Scale reads",
+    "seconds": "{{value}} s"
+  },
+  "scale": {
+    "title": "Scale recipe",
+    "factor": "Factor",
+    "stageMlHint": "Original stage ml, comma separated",
+    "result": "Scaled stages"
+  },
+  "brew": {
+    "start": "Start",
+    "pause": "Pause",
+    "reset": "Reset",
+    "next": "Next step",
+    "elapsed": "{{value}} s elapsed",
+    "step": "Current step",
+    "target": "Stage target",
+    "onScale": "Scale should read"
+  },
+  "notes": {
+    "title": "Brew notes",
+    "bean": "Bean",
+    "roast": "Roast date",
+    "grind": "Grind",
+    "temp": "Water temp",
+    "taste": "Taste",
+    "score": "Score",
+    "save": "Save session",
+    "empty": "No brew notes yet",
+    "again": "Copy as recipe",
+    "delete": "Delete"
+  },
+  "errors": {
+    "coffee.positive_required": "Parameter must be positive: {{name}}",
+    "coffee.bad_fraction": "Stage fraction must be 0-1: stage {{index}}",
+    "coffee.stage_overflow": "Stages exceed total water: stage {{index}}",
+    "coffee.stage_empty": "Stage {{index}} needs a fraction or ml",
+    "coffee.both_fraction_ml": "Stage {{index}} cannot have both fraction and ml"
+  },
+  "ui": {
+    "stageHint": "Stages as \"fraction label\" comma separated, e.g. 0.15 bloom, 0.4 pour2; or milliliters: 45 ml, 90 ml, 90 ml"
+  }
+}

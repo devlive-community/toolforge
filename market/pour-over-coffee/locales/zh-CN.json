@@ -1,0 +1,66 @@
+{
+  "name": "手冲咖啡助手",
+  "description": "粉水比换算与分段注水计划，配现场步骤指引与杯次口感记录。",
+  "api": {
+    "plan": {
+      "summary": "按粉量与粉水比生成注水计划（分段占比或毫升）",
+      "coffeeG": "咖啡粉克数",
+      "ratio": "粉水比（1:15 填 15）",
+      "stages": "分段 [{fraction, ml, label, seconds}]"
+    },
+    "scale": {
+      "summary": "把原配方分段按新粉量等比缩放",
+      "originalCoffeeG": "原粉量",
+      "newCoffeeG": "新粉量",
+      "stageMl": "原分段毫升（逗号分隔）",
+      "originalRatio": "原粉水比（校验分段总和）"
+    }
+  },
+  "plan": {
+    "title": "注水计划",
+    "total": "总注水",
+    "covered": "分段覆盖",
+    "stage": "本段",
+    "cumulative": "秤上累计",
+    "seconds": "{{value}} 秒"
+  },
+  "scale": {
+    "title": "配方缩放",
+    "factor": "缩放系数",
+    "stageMlHint": "原分段毫升，逗号分隔",
+    "result": "缩放后分段"
+  },
+  "brew": {
+    "start": "开始",
+    "pause": "暂停",
+    "reset": "重置",
+    "next": "下一步",
+    "elapsed": "已用 {{value}} 秒",
+    "step": "当前步骤",
+    "target": "本段目标",
+    "onScale": "秤上应到"
+  },
+  "notes": {
+    "title": "杯次笔记",
+    "bean": "豆子",
+    "roast": "烘焙日期",
+    "grind": "研磨",
+    "temp": "水温",
+    "taste": "口感",
+    "score": "评分",
+    "save": "保存本次",
+    "empty": "还没有杯次记录",
+    "again": "复制为配方",
+    "delete": "删除"
+  },
+  "errors": {
+    "coffee.positive_required": "参数必须为正数：{{name}}",
+    "coffee.bad_fraction": "分段占比需在 0–1：第 {{index}} 段",
+    "coffee.stage_overflow": "分段合计超出总注水：第 {{index}} 段",
+    "coffee.stage_empty": "第 {{index}} 段缺少占比或毫升",
+    "coffee.both_fraction_ml": "第 {{index}} 段不能同时填占比和毫升"
+  },
+  "ui": {
+    "stageHint": "分段用「占比 名称」逗号分隔，如 0.15 闷蒸, 0.4 二段；也可写毫升：45 ml, 90 ml, 90 ml"
+  }
+}

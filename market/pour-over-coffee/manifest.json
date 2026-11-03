@@ -1,0 +1,137 @@
+{
+  "id": "org.devlive.toolforge.pour-over-coffee",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": [
+    "coffee",
+    "pourover",
+    "ratio",
+    "brewing",
+    "咖啡",
+    "手冲",
+    "粉水比",
+    "注水"
+  ],
+  "accent": "brown",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "plan": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.plan.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "coffeeG",
+            "ratio"
+          ],
+          "properties": {
+            "coffeeG": {
+              "type": "number",
+              "description": "i18n:api.plan.coffeeG",
+              "x-positional": 0
+            },
+            "ratio": {
+              "type": "number",
+              "description": "i18n:api.plan.ratio",
+              "x-positional": 1
+            },
+            "stages": {
+              "type": "array",
+              "description": "i18n:api.plan.stages",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "fraction": {
+                    "type": "number"
+                  },
+                  "ml": {
+                    "type": "number"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "seconds": {
+                    "type": "number"
+                  }
+                }
+              },
+              "default": [
+                {
+                  "fraction": 0.2,
+                  "label": "bloom"
+                }
+              ]
+            }
+          }
+        },
+        "examples": [
+          "tfp-pour-over-coffee plan 15 15 --stages '[{\"fraction\":0.2,\"label\":\"bloom\"}]'"
+        ]
+      }
+    },
+    "scale": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.scale.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "originalCoffeeG",
+            "newCoffeeG",
+            "stageMl"
+          ],
+          "properties": {
+            "originalCoffeeG": {
+              "type": "number",
+              "description": "i18n:api.scale.originalCoffeeG",
+              "x-positional": 0
+            },
+            "newCoffeeG": {
+              "type": "number",
+              "description": "i18n:api.scale.newCoffeeG",
+              "x-positional": 1
+            },
+            "stageMl": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "description": "i18n:api.scale.stageMl",
+              "default": [
+                45,
+                90,
+                90
+              ]
+            },
+            "originalRatio": {
+              "type": "number",
+              "description": "i18n:api.scale.originalRatio"
+            }
+          }
+        },
+        "examples": [
+          "tfp-pour-over-coffee scale 15 22.5 --stageMl 45,90,90 --originalRatio 15"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}
