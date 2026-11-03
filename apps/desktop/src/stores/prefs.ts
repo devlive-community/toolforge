@@ -46,13 +46,31 @@ export function applyTheme(theme: ThemeMode) {
 }
 
 let saveTimer: ReturnType<typeof setTimeout> | undefined
+let dirty = false
 
 /** 偏好设置持久化到 SQLite（经 Rust），合并短时间内的多次修改 */
 function persist(prefs: Prefs) {
+  dirty = true
   clearTimeout(saveTimer)
   saveTimer = setTimeout(() => {
-    invoke('prefs_set', { prefs }).catch(() => {})
+    dirty = false
+    writePrefs(prefs)
   }, 300)
+}
+
+/** 立即写出待保存的偏好；退出确认前调用，避免防抖窗口内的修改随窗口销毁丢失 */
+export function flushPrefs() {
+  if (!dirty) return
+  dirty = false
+  clearTimeout(saveTimer)
+  invoke('prefs_set', { prefs: snapshot(usePrefs.getState()) }).catch(() => {})
+}
+
+function writePrefs(prefs: Prefs) {
+  invoke('prefs_set', { prefs }).catch((error) => {
+    // 保存失败不能完全静默：留一条日志便于诊断（主题等偏好“保存不成功”的反馈曾无法定位）
+    invoke('app_log', { level: 'error', message: `prefs_set failed: ${String(error)}` }).catch(() => {})
+  })
 }
 
 const snapshot = (state: PrefsState): Prefs => ({
@@ -87,7 +105,10 @@ export const usePrefs = create<PrefsState>((set, get) => ({
   setTheme: (theme) => {
     applyTheme(theme)
     set({ theme })
-    persist(snapshot(get()))
+    // 低频关键偏好立即写入：切换主题后立刻关闭应用也不能丢失
+    dirty = false
+    clearTimeout(saveTimer)
+    writePrefs(snapshot(get()))
   },
   setLocale: (locale) => {
     i18n.changeLanguage(locale)

@@ -5,7 +5,7 @@ import { Button, Checkbox, Modal } from '@toolforge/ui'
 import { LogOut, Minus, TriangleAlert } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useApp } from '../stores/app'
-import { usePrefs } from '../stores/prefs'
+import { flushPrefs, usePrefs } from '../stores/prefs'
 import { useTasks } from '../stores/tasks'
 
 /** 退出确认：关闭窗口、⌘Q、菜单退出都会先弹出此对话框 */
@@ -24,6 +24,8 @@ export function QuitDialog() {
 
   const quit = () => {
     if (dontAsk) setConfirmQuit(false)
+    // 防抖窗口内的偏好修改（折叠状态等）在窗口销毁前落盘
+    flushPrefs()
     invoke('app_quit').catch(() => {})
   }
 
