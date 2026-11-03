@@ -21,3 +21,20 @@ export interface Converted {
   shades: string[]
   harmonies: { key: string; colors: string[] }[]
 }
+
+export interface PaletteSwatch {
+  name: string
+  pinyin: string
+  hex: string
+  category: string
+}
+
+export interface PaletteGroup {
+  category: string
+  colors: PaletteSwatch[]
+}
+
+export interface PaletteResult {
+  groups: PaletteGroup[]
+  total: number
+}

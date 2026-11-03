@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.color",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "convert",
@@ -25,6 +25,21 @@
           }
         },
         "examples": ["tfp-color convert '#3b82f6'", "tfp-color convert '#3b82f6' --compare white"]
+      }
+    },
+    "palette": {
+      "history": false,
+      "interface": {
+        "expose": ["cli", "agent"],
+        "summary": "i18n:api.palette.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "properties": {
+            "query": { "type": "string", "description": "i18n:api.palette.query", "x-positional": 0 }
+          }
+        },
+        "examples": ["tfp-color palette", "tfp-color palette 黛", "tfp-color palette --query dian"]
       }
     }
   },

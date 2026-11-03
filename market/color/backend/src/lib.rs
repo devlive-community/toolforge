@@ -2,6 +2,7 @@
 
 mod color;
 mod detect;
+mod palette;
 
 use serde_json::Value;
 use tf_plugin_api::{Manifest, PluginResult, ToolPlugin, parse_args, to_value, unknown_function};
@@ -32,6 +33,7 @@ impl ToolPlugin for ColorTool {
     fn call(&self, function: &str, args: Value) -> PluginResult<Value> {
         match function {
             "convert" => to_value(color::convert(parse_args(args)?)?),
+            "palette" => to_value(palette::palette(parse_args(args)?)?),
             other => Err(unknown_function(other)),
         }
     }

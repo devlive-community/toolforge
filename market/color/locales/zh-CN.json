@@ -62,10 +62,29 @@
     "color.invalid": "无法识别的颜色：“{{input}}”"
   },
   "api": {
-    "convert": {
-      "summary": "解析颜色，给出各种格式、对比度、明暗色阶与配色方案",
-      "input": "任意 CSS 写法的颜色，如 #3b82f6、rgb()、hsl() 或颜色名",
-      "compare": "用于计算对比度的另一种颜色"
+    "palette": {
+      "summary": "查询中国传统色卡，按色名、拼音或色值过滤",
+      "query": "过滤关键词（可选）"
+    }
+  },
+  "view": {
+    "label": "视图",
+    "convert": "转换",
+    "traditional": "传统色"
+  },
+  "traditional": {
+    "title": "中国传统色",
+    "search": "搜索色名、拼音或色值",
+    "empty": "没有匹配的传统色",
+    "categories": {
+      "red": "赤",
+      "yellow": "黄",
+      "green": "绿",
+      "cyan": "青",
+      "blue": "蓝",
+      "purple": "紫",
+      "brown": "褐",
+      "neutral": "黑白灰"
     }
   }
 }

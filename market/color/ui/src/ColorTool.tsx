@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Badge, Empty, Input, Panel, Spinner, Tooltip, cn } from '@toolforge/ui'
+import { Badge, Empty, Input, Panel, SegmentedControl, Spinner, Tooltip, cn } from '@toolforge/ui'
 import { ValueRow, useDebouncedCall, useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { Blend, Contrast as ContrastIcon, Palette, Pipette } from 'lucide-react'
-import type { Contrast, Converted } from './types'
+import type { Contrast, Converted, PaletteResult } from './types'
 
 const EXAMPLES = ['#3b82f6', 'rebeccapurple', 'hsl(142 71% 45%)', 'oklch(0.7 0.15 30)', 'rgba(255, 99, 71, 0.6)'] // tf-allow: 示例输入
 
@@ -10,7 +10,15 @@ export function ColorTool() {
   const { t, errorMessage } = usePlugin()
   const [input, setInput] = useState('#16a34a') // tf-allow: 默认输入值
   const [compare, setCompare] = useState('#ffffff') // tf-allow: 默认对比色
-  useLaunchInput((text) => setInput(text))
+  const [view, setView] = useState<'convert' | 'traditional'>('convert')
+  const [query, setQuery] = useState('')
+  useLaunchInput((text) => {
+    setInput(text)
+    setView('convert')
+  })
+
+  const needle = query.trim()
+  const palette = useDebouncedCall<PaletteResult>('palette', needle ? { query: needle } : {}, [needle])
 
   const trimmed = input.trim()
   const args = trimmed ? { input: trimmed, compare } : null
@@ -19,7 +27,20 @@ export function ColorTool() {
   const compareError = error?.params?.field === 'compare'
 
   return (
-    <div className="grid h-full min-h-0 grid-cols-[minmax(320px,0.9fr)_minmax(0,1.3fr)] gap-3">
+    <div className="flex h-full min-h-0 flex-col gap-3">
+      <div className="flex items-center justify-between">
+        <SegmentedControl
+          value={view}
+          onValueChange={setView}
+          aria-label={t('view.label')}
+          options={[
+            { value: 'convert', label: t('view.convert') },
+            { value: 'traditional', label: t('view.traditional') },
+          ]}
+        />
+      </div>
+      {view === 'traditional' ? <TraditionalPalette palette={palette} query={query} onQuery={setQuery} onPick={(hex) => { setInput(hex); setView('convert') }} /> : (
+      <div className="grid min-h-0 flex-1 grid-cols-[minmax(320px,0.9fr)_minmax(0,1.3fr)] gap-3">
       <div className="flex min-h-0 flex-col gap-3 overflow-auto">
         <section className="overflow-hidden rounded-card border border-border bg-surface shadow-card">
           <div
@@ -117,7 +138,69 @@ export function ColorTool() {
           )}
         </Panel>
       </div>
+      </div>
+      )}
     </div>
+  )
+}
+
+/** 中国传统色卡：按色系分组浏览，点击任一色回到转换视图 */
+function TraditionalPalette({
+  palette,
+  query,
+  onQuery,
+  onPick,
+}: {
+  palette: { result: PaletteResult | null; error: { params?: Record<string, unknown> } | null; pending: boolean }
+  query: string
+  onQuery: (value: string) => void
+  onPick: (hex: string) => void
+}) {
+  const { t, errorMessage } = usePlugin()
+  const groups = palette.result?.groups ?? []
+  return (
+    <Panel
+      icon={<Palette />}
+      title={t('traditional.title')}
+      className="min-h-0 flex-1 overflow-hidden flex flex-col"
+      bodyClassName="min-h-0 flex-1 overflow-auto space-y-4 p-3"
+    >
+      <Input
+        value={query}
+        onChange={(event) => onQuery(event.target.value)}
+        leading={<Palette />}
+        trailing={palette.pending && <Spinner className="size-3.5" />}
+        placeholder={t('traditional.search')}
+        aria-label={t('traditional.search')}
+      />
+      {palette.error && <p className="text-xs text-danger">{errorMessage(palette.error)}</p>}
+      {groups.map((group) => (
+        <section key={group.category} className="space-y-1.5">
+          <p className="text-xs font-medium text-fg-muted">
+            {t(`traditional.categories.${group.category}`)}
+            <span className="ml-1.5 text-fg-subtle">{group.colors.length}</span>
+          </p>
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-2">
+            {group.colors.map((swatch) => (
+              <Tooltip key={swatch.hex + swatch.name} content={`${swatch.hex.toUpperCase()} · ${swatch.pinyin}`}>
+                <button
+                  type="button"
+                  onClick={() => onPick(swatch.hex)}
+                  aria-label={`${swatch.name} ${swatch.hex}`}
+                  className="group h-16 w-full overflow-hidden rounded-control border border-border outline-none transition-transform hover:scale-[1.03] focus-visible:ring-2 focus-visible:ring-ring"
+                  style={{ backgroundColor: swatch.hex }}
+                >
+                  <span className="flex h-full items-end bg-gradient-to-t from-black/35 to-transparent p-1.5 text-left text-[11px] leading-tight text-white opacity-0 transition-opacity group-hover:opacity-100">
+                    {swatch.name}
+                  </span>
+                </button>
+              </Tooltip>
+            ))}
+          </div>
+        </section>
+      ))}
+      {!palette.pending && !palette.error && groups.length === 0 && <Empty icon={<Palette />} title={t('traditional.empty')} />}
+    </Panel>
   )
 }
 
