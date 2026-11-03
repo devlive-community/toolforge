@@ -140,7 +140,7 @@ export function Sidebar() {
           <div className="flex items-center gap-2 px-3 py-2.5 text-xs text-fg-muted">
             <Spinner className="size-3.5 shrink-0" />
             <span className="truncate">
-              {t('app.sidebar.loadingPlugins', { done: progress.done, total: progress.total })}
+              {t('sidebar.loadingPlugins', { done: progress.done, total: progress.total })}
             </span>
           </div>
         )}

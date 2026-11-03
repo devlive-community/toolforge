@@ -91,9 +91,10 @@ pub fn load_installed(
         // 应用升级后内置插件可能变化，已生成的命令行入口随之刷新
         crate::cli_tools::refresh(&registry, &store);
         progress.lock().unwrap_or_else(|e| e.into_inner()).finished = true;
-        if loaded > 0 {
-            let _ = app.emit(PLUGINS_CHANGED, ());
-        }
+        // 无论是否加载成功都通知前端刷新：前端据此清掉侧边栏的加载进度，
+        // 全部失败时也不能让进度提示一直挂着
+        let _ = app.emit(PLUGINS_CHANGED, ());
+        log::info!("loaded {loaded} of {} installed plugins", pending.len());
     });
 }
 
