@@ -1,0 +1,101 @@
+{
+  "name": "Dynasty Timeline",
+  "description": "Chinese dynasties from Xia to Qing: date ranges, capitals and rulers, with year lookup.",
+  "api": {
+    "list": {
+      "summary": "List Chinese dynasties from Xia to Qing, filter by name",
+      "query": "Filter keyword (optional)"
+    },
+    "lookup": {
+      "summary": "Find which dynasty a year belongs to (negative for BCE)",
+      "year": "Year, negative for BCE"
+    }
+  },
+  "dynasties": {
+    "xia": "Xia",
+    "shang": "Shang",
+    "western-zhou": "Western Zhou",
+    "spring-autumn": "Spring & Autumn",
+    "warring-states": "Warring States",
+    "qin": "Qin",
+    "western-han": "Western Han",
+    "xin": "Xin",
+    "eastern-han": "Eastern Han",
+    "three-kingdoms": "Three Kingdoms",
+    "western-jin": "Western Jin",
+    "eastern-jin": "Eastern Jin",
+    "northern-southern": "N & S Dynasties",
+    "sui": "Sui",
+    "tang": "Tang",
+    "five-dynasties": "Five Dynasties",
+    "northern-song": "Northern Song",
+    "southern-song": "Southern Song",
+    "yuan": "Yuan",
+    "ming": "Ming",
+    "qing": "Qing"
+  },
+  "capitals": {
+    "yangcheng": "Yangcheng",
+    "yin": "Yin (Anyang)",
+    "haojing": "Haojing",
+    "luoyi": "Luoyi",
+    "various": "Multiple (divided era)",
+    "xianyang": "Xianyang",
+    "changan": "Chang'an",
+    "luoyang": "Luoyang",
+    "jiankang": "Jiankang (Nanjing)",
+    "daxing": "Daxing",
+    "bianliang": "Bianliang (Kaifeng)",
+    "linan": "Lin'an (Hangzhou)",
+    "dadu": "Dadu (Beijing)",
+    "beijing": "Beijing"
+  },
+  "rulers": {
+    "yu": "Yu",
+    "jie": "Jie",
+    "tang": "Tang",
+    "zhou": "Zhou (last)",
+    "wu": "King Wu",
+    "you": "King You",
+    "ping": "King Ping",
+    "jing": "King Jing",
+    "none": "—",
+    "shihuang": "Qin Shi Huang",
+    "er": "Qin Er Shi",
+    "gaozu": "Han Gaozu",
+    "mang": "Wang Mang",
+    "guangwu": "Emperor Guangwu",
+    "xian": "Emperor Xian",
+    "wudi": "Emperor Wu of Jin",
+    "huai": "Emperor Huai",
+    "yuandi": "Emperor Yuan of Jin",
+    "gong": "Emperor Gong",
+    "wendi": "Emperor Wen of Sui",
+    "ai": "Emperor Ai of Tang",
+    "taizu": "Song Taizu",
+    "qinzong": "Emperor Qinzong",
+    "gaozong": "Emperor Gaozong of Song",
+    "bing": "Emperor Bing",
+    "shizu": "Kublai Khan",
+    "shundi": "Toghon Temür",
+    "chongzhen": "Chongzhen",
+    "shunzhi": "Shunzhi",
+    "xuantong": "Xuantong (Puyi)"
+  },
+  "table": {
+    "range": "Range",
+    "capital": "Capital",
+    "founder": "Founder",
+    "last": "Last ruler"
+  },
+  "lookup": {
+    "title": "Year lookup",
+    "bce": "{{year}} BCE",
+    "ce": "AD {{year}}",
+    "none": "No dynasty covers this year"
+  },
+  "errors": {
+    "dynasty.not_found": "No matching dynasties",
+    "dynasty.bad_year": "Invalid year (2100 BCE to 2100 CE supported, no year 0)"
+  }
+}

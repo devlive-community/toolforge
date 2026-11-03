@@ -1,0 +1,80 @@
+{
+  "id": "org.devlive.toolforge.dynasty-timeline",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "other",
+  "keywords": [
+    "history",
+    "dynasty",
+    "china",
+    "timeline",
+    "历史",
+    "朝代",
+    "年号",
+    "时间轴"
+  ],
+  "accent": "red",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "list": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.list.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "i18n:api.list.query",
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "tfp-dynasty-timeline list",
+          "tfp-dynasty-timeline list tang"
+        ]
+      }
+    },
+    "lookup": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.lookup.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "year"
+          ],
+          "properties": {
+            "year": {
+              "type": "integer",
+              "description": "i18n:api.lookup.year",
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "tfp-dynasty-timeline lookup -221",
+          "tfp-dynasty-timeline lookup 742"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

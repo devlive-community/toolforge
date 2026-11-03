@@ -1,0 +1,101 @@
+{
+  "name": "朝代速查",
+  "description": "中国历史朝代速查：从夏到清的起止年份、都城与君主，公元年份归属查询。",
+  "api": {
+    "list": {
+      "summary": "列出从夏到清的朝代时间线，可按名称过滤",
+      "query": "过滤关键词（可选）"
+    },
+    "lookup": {
+      "summary": "查询公元年份所属朝代（负数为公元前）",
+      "year": "公元年份，负数为公元前"
+    }
+  },
+  "dynasties": {
+    "xia": "夏",
+    "shang": "商",
+    "western-zhou": "西周",
+    "spring-autumn": "春秋",
+    "warring-states": "战国",
+    "qin": "秦",
+    "western-han": "西汉",
+    "xin": "新莽",
+    "eastern-han": "东汉",
+    "three-kingdoms": "三国",
+    "western-jin": "西晋",
+    "eastern-jin": "东晋",
+    "northern-southern": "南北朝",
+    "sui": "隋",
+    "tang": "唐",
+    "five-dynasties": "五代十国",
+    "northern-song": "北宋",
+    "southern-song": "南宋",
+    "yuan": "元",
+    "ming": "明",
+    "qing": "清"
+  },
+  "capitals": {
+    "yangcheng": "阳城（今登封一带）",
+    "yin": "殷（今安阳）",
+    "haojing": "镐京",
+    "luoyi": "洛邑",
+    "various": "多个（分裂时期）",
+    "xianyang": "咸阳",
+    "changan": "长安",
+    "luoyang": "洛阳",
+    "jiankang": "建康（今南京）",
+    "daxing": "大兴",
+    "bianliang": "汴梁（今开封）",
+    "linan": "临安（今杭州）",
+    "dadu": "大都（今北京）",
+    "beijing": "北京"
+  },
+  "rulers": {
+    "yu": "禹",
+    "jie": "桀",
+    "tang": "汤",
+    "zhou": "纣",
+    "wu": "武王",
+    "you": "幽王",
+    "ping": "平王",
+    "jing": "敬王",
+    "none": "—",
+    "shihuang": "秦始皇",
+    "er": "秦二世",
+    "gaozu": "汉高祖",
+    "mang": "王莽",
+    "guangwu": "光武帝",
+    "xian": "汉献帝",
+    "wudi": "晋武帝",
+    "huai": "晋怀帝",
+    "yuandi": "晋元帝",
+    "gong": "恭帝",
+    "wendi": "隋文帝",
+    "ai": "唐哀帝",
+    "taizu": "宋太祖",
+    "qinzong": "宋钦宗",
+    "gaozong": "宋高宗",
+    "bing": "宋帝昺",
+    "shizu": "元世祖",
+    "shundi": "元顺帝",
+    "chongzhen": "崇祯帝",
+    "shunzhi": "顺治帝",
+    "xuantong": "宣统帝"
+  },
+  "table": {
+    "range": "起止",
+    "capital": "都城",
+    "founder": "开国之君",
+    "last": "亡国之君"
+  },
+  "lookup": {
+    "title": "年份归属",
+    "bce": "公元前 {{year}}",
+    "ce": "公元 {{year}}",
+    "none": "该年份没有对应的朝代（可能在数据范围之外）"
+  },
+  "errors": {
+    "dynasty.not_found": "没有匹配的朝代",
+    "dynasty.bad_year": "年份无效（支持公元前 2100 至公元 2100，不含公元 0）"
+  }
+}
