@@ -1,0 +1,70 @@
+{
+  "name": "Party Game Host: Undercover",
+  "description": "Pass-and-play undercover game host: word dealing, turn prompts, voting, ties and win checks.",
+  "api": {
+    "deal": {
+      "summary": "Deal words with one undercover",
+      "players": "Player names (4-12)",
+      "category": "Pair category",
+      "customPair": "Custom pair [civilian, undercover]",
+      "seed": "Random seed"
+    },
+    "tally": {
+      "summary": "Tally votes and decide the round",
+      "alive": "Alive seats",
+      "votes": "Votes (seat or null to abstain)",
+      "runoff": "Runoff round",
+      "runoffCandidates": "Runoff candidates",
+      "undercover": "Undercover seat"
+    }
+  },
+  "status": {
+    "eliminated": "Eliminated",
+    "tie": "Tie — one runoff vote",
+    "runoff_stalemate": "Runoff tied again, nobody leaves",
+    "victory_civilian": "Civilians win: undercover found",
+    "victory_undercover": "Undercover wins: only three remain"
+  },
+  "roles": {
+    "civilian": "Civilian",
+    "undercover": "Undercover"
+  },
+  "ui": {
+    "players": "Player names (comma separated, 4-12)",
+    "category": "Pair category",
+    "deal": "Deal",
+    "show": "Hold to peek my word",
+    "hide": "Release to hide",
+    "viewed": "Viewed",
+    "next": "Pass to next",
+    "allViewed": "All viewed — start describing",
+    "vote": "Voting",
+    "abstain": "Abstain",
+    "round": "Round {{round}}",
+    "alive": "Alive",
+    "reveal": "Reveal",
+    "summary": "Game summary",
+    "newGame": "Play again",
+    "cancel": "Cancel game",
+    "cancelled": "Cancelled, not scored",
+    "categories": {
+      "food": "Food",
+      "life": "Household",
+      "place": "Places",
+      "work": "Work",
+      "tech": "Gadgets",
+      "sport": "Sports",
+      "random": "Random"
+    }
+  },
+  "errors": {
+    "undercover.bad_player_count": "4-12 players required",
+    "undercover.empty_name": "Names cannot be empty",
+    "undercover.bad_category": "Unknown category: {{category}}",
+    "undercover.same_words": "The two words must differ",
+    "undercover.no_alive": "No players alive",
+    "undercover.voter_mismatch": "Vote count mismatches alive players",
+    "undercover.bad_target": "Vote target out of range: {{seat}}",
+    "undercover.self_vote": "Cannot vote for yourself: {{seat}}"
+  }
+}

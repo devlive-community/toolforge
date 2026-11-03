@@ -1,0 +1,143 @@
+{
+  "id": "org.devlive.toolforge.undercover-host",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": [
+    "party",
+    "undercover",
+    "game",
+    "聚会",
+    "谁是卧底",
+    "桌游"
+  ],
+  "accent": "red",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "deal": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.deal.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "players",
+            "seed"
+          ],
+          "properties": {
+            "players": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "i18n:api.deal.players",
+              "default": [
+                "甲",
+                "乙",
+                "丙",
+                "丁"
+              ]
+            },
+            "category": {
+              "type": "string",
+              "description": "i18n:api.deal.category"
+            },
+            "customPair": {
+              "type": "array",
+              "description": "i18n:api.deal.customPair"
+            },
+            "seed": {
+              "type": "integer",
+              "description": "i18n:api.deal.seed"
+            }
+          }
+        },
+        "examples": [
+          "tfp-undercover-host deal --players a,b,c,d --category food --seed 3"
+        ]
+      }
+    },
+    "tally": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.tally.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "alive",
+            "votes",
+            "undercover"
+          ],
+          "properties": {
+            "alive": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "description": "i18n:api.tally.alive",
+              "default": [
+                0,
+                1,
+                2,
+                3
+              ]
+            },
+            "votes": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "nullable": true
+              },
+              "description": "i18n:api.tally.votes",
+              "default": [
+                1,
+                0,
+                0,
+                0
+              ]
+            },
+            "runoff": {
+              "type": "boolean",
+              "description": "i18n:api.tally.runoff"
+            },
+            "runoffCandidates": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "description": "i18n:api.tally.runoffCandidates",
+              "default": [
+                0,
+                1
+              ]
+            },
+            "undercover": {
+              "type": "integer",
+              "description": "i18n:api.tally.undercover"
+            }
+          }
+        },
+        "examples": [
+          "tfp-undercover-host tally --alive 0,1,2,3 --votes 3,3,3 --undercover 3"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

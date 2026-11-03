@@ -1,0 +1,70 @@
+{
+  "name": "谁是卧底主持台",
+  "description": "同机轮流查看的谁是卧底主持台：随机发词、逐轮发言提示、记票与平票重投、胜负判定。",
+  "api": {
+    "deal": {
+      "summary": "随机发词（卧底一名）",
+      "players": "玩家昵称（4–12）",
+      "category": "词对类别",
+      "customPair": "自定义词对 [平民词, 卧底词]",
+      "seed": "随机种子"
+    },
+    "tally": {
+      "summary": "计票与胜负判定",
+      "alive": "存活座位",
+      "votes": "投票（座位或 null 弃票）",
+      "runoff": "是否重投轮",
+      "runoffCandidates": "重投候选",
+      "undercover": "卧底座位"
+    }
+  },
+  "status": {
+    "eliminated": "出局",
+    "tie": "平票，重投一次",
+    "runoff_stalemate": "重投仍平票，本轮无人出局",
+    "victory_civilian": "平民胜：卧底已被找出",
+    "victory_undercover": "卧底胜：存活仅剩 3 人"
+  },
+  "roles": {
+    "civilian": "平民",
+    "undercover": "卧底"
+  },
+  "ui": {
+    "players": "玩家昵称（逗号分隔，4–12 人）",
+    "category": "词对类别",
+    "deal": "发词",
+    "show": "按住查看我的词",
+    "hide": "松开遮盖",
+    "viewed": "已查看",
+    "next": "交给下一位",
+    "allViewed": "全员已查看，开始描述",
+    "vote": "投票阶段",
+    "abstain": "弃票",
+    "round": "第 {{round}} 轮",
+    "alive": "存活",
+    "reveal": "揭晓",
+    "summary": "对局摘要",
+    "newGame": "再来一局",
+    "cancel": "取消本局",
+    "cancelled": "已取消，不计胜负",
+    "categories": {
+      "food": "食物",
+      "life": "日用品",
+      "place": "场所",
+      "work": "职场",
+      "tech": "数码",
+      "sport": "运动",
+      "random": "随机"
+    }
+  },
+  "errors": {
+    "undercover.bad_player_count": "玩家需要 4–12 人",
+    "undercover.empty_name": "昵称不能为空",
+    "undercover.bad_category": "未知词对类别：{{category}}",
+    "undercover.same_words": "平民词与卧底词不能相同",
+    "undercover.no_alive": "没有存活玩家",
+    "undercover.voter_mismatch": "投票人数与存活数不符",
+    "undercover.bad_target": "投票目标不在本轮范围内：{{seat}}",
+    "undercover.self_vote": "不能投自己：{{seat}}"
+  }
+}
