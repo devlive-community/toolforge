@@ -1,0 +1,86 @@
+{
+  "id": "org.devlive.toolforge.mini-instrument",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": [
+    "piano",
+    "keyboard",
+    "chord",
+    "乐器",
+    "琴键",
+    "和弦"
+  ],
+  "accent": "green",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "keyboard": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.keyboard.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "startMidi"
+          ],
+          "properties": {
+            "startMidi": {
+              "type": "integer",
+              "description": "i18n:api.keyboard.startMidi"
+            }
+          }
+        },
+        "examples": [
+          "tfp-mini-instrument keyboard 60"
+        ]
+      }
+    },
+    "chord": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.chord.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "rootMidi",
+            "kind"
+          ],
+          "properties": {
+            "rootMidi": {
+              "type": "integer",
+              "description": "i18n:api.chord.rootMidi"
+            },
+            "kind": {
+              "type": "string",
+              "description": "i18n:api.chord.kind"
+            },
+            "arpeggioMs": {
+              "type": "integer",
+              "description": "i18n:api.chord.arpeggioMs"
+            }
+          }
+        },
+        "examples": [
+          "tfp-mini-instrument chord 60 major --arpeggioMs 120"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

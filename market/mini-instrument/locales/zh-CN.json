@@ -1,0 +1,44 @@
+{
+  "name": "桌面小乐器",
+  "description": "两八度合成键盘：弹奏旋律、试听大/小三和弦与属七、琶音播放与八度切换。",
+  "api": {
+    "keyboard": {
+      "summary": "两八度键盘（MIDI 音高、频率、音名）",
+      "startMidi": "起始 MIDI 音高"
+    },
+    "chord": {
+      "summary": "和弦组成音与琶音顺序",
+      "rootMidi": "根音 MIDI",
+      "kind": "major / minor / dom7",
+      "arpeggioMs": "琶音间隔毫秒（0 = 整组）"
+    }
+  },
+  "chords": {
+    "major": "大三和弦",
+    "minor": "小三和弦",
+    "dom7": "属七和弦"
+  },
+  "roles": {
+    "root": "根音",
+    "third": "三音",
+    "fifth": "五音",
+    "seventh": "七音"
+  },
+  "ui": {
+    "octave": "八度",
+    "down": "低八度",
+    "up": "高八度",
+    "volume": "音量",
+    "sustain": "延音",
+    "stopAll": "一键停音",
+    "arpeggio": "琶音",
+    "favorites": "收藏",
+    "name": "音名",
+    "solfege": "唱名",
+    "hint": "点击琴键或用键盘 A–K 弹奏；空格停音"
+  },
+  "errors": {
+    "instrument.bad_range": "起始音高超出范围",
+    "instrument.bad_chord": "未知和弦：{{kind}}"
+  }
+}

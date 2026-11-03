@@ -1,0 +1,44 @@
+{
+  "name": "Mini Instrument",
+  "description": "Two-octave synth keyboard: melodies, major/minor/dominant-seventh chords and arpeggios.",
+  "api": {
+    "keyboard": {
+      "summary": "Two-octave keyboard (MIDI, frequency, names)",
+      "startMidi": "Starting MIDI note"
+    },
+    "chord": {
+      "summary": "Chord tones and arpeggio order",
+      "rootMidi": "Root MIDI",
+      "kind": "major / minor / dom7",
+      "arpeggioMs": "Arpeggio interval ms (0 = block)"
+    }
+  },
+  "chords": {
+    "major": "Major",
+    "minor": "Minor",
+    "dom7": "Dominant 7th"
+  },
+  "roles": {
+    "root": "Root",
+    "third": "Third",
+    "fifth": "Fifth",
+    "seventh": "Seventh"
+  },
+  "ui": {
+    "octave": "Octave",
+    "down": "Octave down",
+    "up": "Octave up",
+    "volume": "Volume",
+    "sustain": "Sustain",
+    "stopAll": "Stop all",
+    "arpeggio": "Arpeggio",
+    "favorites": "Favorites",
+    "name": "Note",
+    "solfege": "Solfège",
+    "hint": "Click keys or play with A–K; space stops all"
+  },
+  "errors": {
+    "instrument.bad_range": "Starting note out of range",
+    "instrument.bad_chord": "Unknown chord: {{kind}}"
+  }
+}
