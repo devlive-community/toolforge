@@ -8,6 +8,7 @@ authors.workspace = true
 
 [dependencies]
 jiff = "0.2"
+log = "0.4"
 serde_json.workspace = true
 tf-plugin-api.workspace = true
 tf-net.workspace = true

@@ -233,12 +233,19 @@ impl Installed {
             .map_err(|e| AppError::new("package.invalid").with("detail", e.to_string()))
     }
 
-    /// 编译 WASM 组件
+    /// 编译 WASM 组件；优先反序列化目录内的编译缓存（plugin.compiled），
+    /// 未命中时编译并写回，下次启动不再重复编译
     pub fn load(&self, id: &str) -> AppResult<Arc<WasmPlugin>> {
         let manifest = self.manifest(id)?;
         self.check_app_version(&manifest)?;
-        let wasm = std::fs::read(self.dir(id)?.join("plugin.wasm"))?;
-        Ok(Arc::new(WasmPlugin::load(manifest, &wasm)?))
+        let dir = self.dir(id)?;
+        let wasm = std::fs::read(dir.join("plugin.wasm"))?;
+        let cache = dir.join("plugin.compiled");
+        Ok(Arc::new(WasmPlugin::load_cached(
+            manifest,
+            &wasm,
+            Some(&cache),
+        )?))
     }
 
     /// 供 tfplugin:// 协议读取的界面文件

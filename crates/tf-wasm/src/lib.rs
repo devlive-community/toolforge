@@ -415,11 +415,65 @@ fn trapped(err: wasmtime::Error) -> PluginError {
     PluginError::new("plugin.crashed").with("detail", format!("{err:#}"))
 }
 
+/// 从磁盘缓存反序列化编译产物；文件缺失、损坏或与当前 wasmtime 版本/配置
+/// 不兼容时返回 None（缓存文件随后会被重新编译的结果覆盖）
+fn cached_component(engine: &Engine, path: &Path) -> Option<Component> {
+    if !path.exists() {
+        return None;
+    }
+    // SAFETY: 缓存文件只能由本应用在插件数据目录内写出，与插件本体（plugin.wasm）
+    // 同一信任域——能改写缓存的进程也能改写插件本身，不新增攻击面；
+    // 工件头部的版本与配置校验保证跨版本误用时返回 Err 而不是加载错误代码。
+    match unsafe { Component::deserialize_file(engine, path) } {
+        Ok(component) => Some(component),
+        Err(err) => {
+            log::warn!(
+                "discarding incompatible plugin compile cache {}: {err}",
+                path.display()
+            );
+            let _ = std::fs::remove_file(path);
+            None
+        }
+    }
+}
+
+/// 编译产物原子写入缓存；失败只影响下次启动的加载速度
+fn write_cache(component: &Component, path: &Path) {
+    let Ok(bytes) = component.serialize() else {
+        return;
+    };
+    let tmp = path.with_extension(format!("tmp-{}", std::process::id()));
+    if std::fs::write(&tmp, &bytes).is_ok() && std::fs::rename(&tmp, path).is_ok() {
+        return;
+    }
+    let _ = std::fs::remove_file(&tmp);
+}
+
 impl WasmPlugin {
     /// 编译组件并检查导出；实例在第一次调用时创建
     pub fn load(manifest: Manifest, wasm: &[u8]) -> PluginResult<Self> {
+        Self::load_cached(manifest, wasm, None)
+    }
+
+    /// 带编译缓存加载：cache 存在则直接反序列化（毫秒级），未命中时编译并写回。
+    /// 启动时要加载大量在线插件，Cranelift 编译每个都会占满所有核心，
+    /// 缓存把重复启动的编译成本降为零
+    pub fn load_cached(
+        manifest: Manifest,
+        wasm: &[u8],
+        cache: Option<&Path>,
+    ) -> PluginResult<Self> {
         let engine = engine();
-        let component = Component::new(engine, wasm).map_err(load_error)?;
+        let component = match cache.and_then(|path| cached_component(engine, path)) {
+            Some(component) => component,
+            None => {
+                let component = Component::new(engine, wasm).map_err(load_error)?;
+                if let Some(path) = cache {
+                    write_cache(&component, path);
+                }
+                component
+            }
+        };
         let mut linker = Linker::new(engine);
         wasmtime_wasi::p2::add_to_linker_sync(&mut linker).map_err(load_error)?;
         Plugin::add_to_linker::<State, HasSelf<State>>(&mut linker, |state| state)

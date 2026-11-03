@@ -213,3 +213,27 @@ fn skips_loading_after_app_downgrade() {
     let err = older.load("org.example.demo").err().unwrap();
     assert_eq!(err.code, "market.needs_app");
 }
+
+/// 加载失败的插件不留下编译缓存；缓存文件随插件目录一起卸载
+#[test]
+fn failed_load_writes_no_cache() {
+    let installed = temp("no-cache");
+    installed
+        .install(&package("org.example.demo", "1.0.0"), None, true, |_| false)
+        .unwrap();
+    // 包内 plugin.wasm 只有魔数，不是合法组件
+    assert!(installed.load("org.example.demo").is_err());
+    assert!(
+        !installed
+            .dir("org.example.demo")
+            .unwrap()
+            .join("plugin.compiled")
+            .exists()
+    );
+
+    // 写入一个缓存文件后卸载，缓存随目录一起消失
+    let dir = installed.dir("org.example.demo").unwrap();
+    std::fs::write(dir.join("plugin.compiled"), b"stale").unwrap();
+    installed.uninstall("org.example.demo").unwrap();
+    assert!(!dir.exists());
+}

@@ -398,3 +398,35 @@ fn file_scope_limits_reads_and_writes_to_granted_folders() {
         .unwrap();
     std::fs::remove_dir_all(root).unwrap();
 }
+
+/// 编译缓存：第一次写入缓存文件，第二次直接反序列化；缓存损坏时自动重编译
+#[test]
+fn compile_cache_roundtrip_and_recovery() {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../target/tf-wasm-cache-test");
+    std::fs::create_dir_all(&root).unwrap();
+    let cache = root.join("plugin.compiled");
+
+    let manifest = Manifest::from_static(MANIFEST);
+    let wasm = fixture();
+    let plugin = WasmPlugin::load_cached(manifest.clone(), wasm, Some(&cache)).unwrap();
+    plugin.call("sum", json!({"values": [1, 2, 3]})).unwrap();
+    assert!(cache.exists(), "first load writes the cache");
+
+    // 第二次加载走反序列化路径，功能不变
+    let plugin = WasmPlugin::load_cached(manifest.clone(), wasm, Some(&cache)).unwrap();
+    assert_eq!(
+        plugin.call("sum", json!({"values": [1, 2, 39]})).unwrap(),
+        json!(42)
+    );
+
+    // 缓存损坏：回退重新编译并重写缓存
+    std::fs::write(&cache, b"not a compiled artifact").unwrap();
+    let plugin = WasmPlugin::load_cached(manifest, wasm, Some(&cache)).unwrap();
+    assert_eq!(
+        plugin.call("sum", json!({"values": [1, 2, 39]})).unwrap(),
+        json!(42)
+    );
+    assert_ne!(std::fs::read(&cache).unwrap(), b"not a compiled artifact");
+
+    std::fs::remove_dir_all(root).unwrap();
+}

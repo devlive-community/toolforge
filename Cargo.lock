@@ -8618,6 +8618,7 @@ name = "tf-wasm"
 version = "0.2.5"
 dependencies = [
  "jiff",
+ "log",
  "reqwest",
  "serde_json",
  "tf-net",
