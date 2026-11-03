@@ -1,0 +1,78 @@
+{
+  "name": "数独练习本",
+  "description": "离线数独：4×4 与 9×9 棋盘生成（唯一解校验）、候选数标记、冲突提示与解释性提示。",
+  "api": {
+    "generate": {
+      "summary": "生成经唯一解校验的数独题面（同种子可复现）",
+      "size": "棋盘 4 或 9",
+      "holes": "挖洞数量",
+      "seed": "随机种子"
+    },
+    "analyze": {
+      "summary": "分析棋盘：冲突/无解/多解/唯一解/已解决",
+      "size": "棋盘 4 或 9",
+      "grid": "棋盘（0 为空，行优先）"
+    },
+    "hint": {
+      "summary": "给出一条解释性提示（唯一候选或唯一缺失）",
+      "size": "棋盘 4 或 9",
+      "grid": "当前棋盘",
+      "solution": "唯一解"
+    }
+  },
+  "status": {
+    "unique": "唯一解",
+    "no_solution": "无解",
+    "multiple": "多解",
+    "conflicts": "存在冲突",
+    "solved": "已完成",
+    "invalid": "棋盘无效"
+  },
+  "hints": {
+    "only_candidate": "该格只允许这个数字（其余都被行/列/宫占用）",
+    "row_exhaust": "该行只剩这一格未填",
+    "column_exhaust": "该列只剩这一格未填",
+    "box_exhaust": "该宫只剩这一格未填",
+    "none": "暂无解释性提示"
+  },
+  "conflict": {
+    "row": "行重复",
+    "column": "列重复",
+    "box": "宫重复"
+  },
+  "ui": {
+    "new": "新题目",
+    "check": "检查答案",
+    "hint": "给我一个提示",
+    "undo": "撤销",
+    "redo": "重做",
+    "erase": "擦除",
+    "notes": "笔记",
+    "conflictsOn": "冲突提示",
+    "size": "棋盘",
+    "holes": "空格数",
+    "given": "题面数字",
+    "progress": "进度",
+    "seed": "种子",
+    "saved": "进度已保存",
+    "load": "继续上次对局",
+    "board": "棋盘",
+    "numbers": "数字",
+    "assist": "辅助",
+    "paused": "已暂停——点击继续按钮回来",
+    "play": "继续"
+  },
+  "errors": {
+    "sudoku.bad_size": "棋盘只支持 4 或 9",
+    "sudoku.bad_holes": "挖洞数量超出范围",
+    "sudoku.generate_failed": "生成失败，请重试",
+    "sudoku.invalid_grid": "棋盘数据无效",
+    "sudoku.conflicting_solution": "当前填写与唯一解矛盾，请先检查",
+    "sudoku.no_hint": "没有可用的提示"
+  },
+  "brew": {
+    "pause": "暂停",
+    "play": "继续"
+  },
+  "cell": "第 {{row}} 行第 {{col}} 列"
+}

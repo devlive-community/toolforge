@@ -1,0 +1,197 @@
+{
+  "id": "org.devlive.toolforge.sudoku",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": [
+    "sudoku",
+    "puzzle",
+    "game",
+    "数独",
+    "谜题",
+    "益智"
+  ],
+  "accent": "indigo",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "generate": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.generate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "size",
+            "holes",
+            "seed"
+          ],
+          "properties": {
+            "size": {
+              "type": "integer",
+              "description": "i18n:api.generate.size",
+              "x-positional": 0
+            },
+            "holes": {
+              "type": "integer",
+              "description": "i18n:api.generate.holes",
+              "x-positional": 1
+            },
+            "seed": {
+              "type": "integer",
+              "description": "i18n:api.generate.seed",
+              "x-positional": 2
+            }
+          }
+        },
+        "examples": [
+          "tfp-sudoku generate 9 45 20261103",
+          "tfp-sudoku generate 4 8 7"
+        ]
+      }
+    },
+    "analyze": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.analyze.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "size",
+            "grid"
+          ],
+          "properties": {
+            "size": {
+              "type": "integer",
+              "description": "i18n:api.analyze.size",
+              "x-positional": 0
+            },
+            "grid": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "i18n:api.analyze.grid",
+              "default": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "examples": [
+          "tfp-sudoku analyze 4 12030400123434102121430443032100"
+        ]
+      }
+    },
+    "hint": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.hint.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "size",
+            "grid",
+            "solution"
+          ],
+          "properties": {
+            "size": {
+              "type": "integer",
+              "description": "i18n:api.hint.size",
+              "x-positional": 0
+            },
+            "grid": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "i18n:api.hint.grid",
+              "default": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "solution": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "i18n:api.hint.solution",
+              "default": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        "examples": [
+          "tfp-sudoku hint 4 10203400... 1234..."
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

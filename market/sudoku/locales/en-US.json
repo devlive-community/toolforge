@@ -1,0 +1,78 @@
+{
+  "name": "Sudoku Notebook",
+  "description": "Offline sudoku: 4×4 and 9×9 generation with uniqueness checks, notes, conflict hints and explained hints.",
+  "api": {
+    "generate": {
+      "summary": "Generate a uniqueness-verified puzzle (same seed reproduces)",
+      "size": "Board 4 or 9",
+      "holes": "Number of blanks",
+      "seed": "Random seed"
+    },
+    "analyze": {
+      "summary": "Classify a board: conflicts/no solution/multiple/unique/solved",
+      "size": "Board 4 or 9",
+      "grid": "Board (0 for empty, row-major)"
+    },
+    "hint": {
+      "summary": "Give one explained hint (sole candidate or last empty unit)",
+      "size": "Board 4 or 9",
+      "grid": "Current board",
+      "solution": "Unique solution"
+    }
+  },
+  "status": {
+    "unique": "Unique solution",
+    "no_solution": "No solution",
+    "multiple": "Multiple solutions",
+    "conflicts": "Conflicts",
+    "solved": "Solved",
+    "invalid": "Invalid board"
+  },
+  "hints": {
+    "only_candidate": "Only this number fits (others blocked by row/column/box)",
+    "row_exhaust": "This is the last empty cell in the row",
+    "column_exhaust": "This is the last empty cell in the column",
+    "box_exhaust": "This is the last empty cell in the box",
+    "none": "No explained hint available"
+  },
+  "conflict": {
+    "row": "Row duplicate",
+    "column": "Column duplicate",
+    "box": "Box duplicate"
+  },
+  "ui": {
+    "new": "New puzzle",
+    "check": "Check answer",
+    "hint": "Give me a hint",
+    "undo": "Undo",
+    "redo": "Redo",
+    "erase": "Erase",
+    "notes": "Notes",
+    "conflictsOn": "Conflict hints",
+    "size": "Board",
+    "holes": "Blanks",
+    "given": "Given digits",
+    "progress": "Progress",
+    "seed": "Seed",
+    "saved": "Progress saved",
+    "load": "Resume last game",
+    "board": "Board",
+    "numbers": "Numbers",
+    "assist": "Assist",
+    "paused": "Paused — press play to return",
+    "play": "Resume"
+  },
+  "errors": {
+    "sudoku.bad_size": "Only board size 4 or 9",
+    "sudoku.bad_holes": "Blank count out of range",
+    "sudoku.generate_failed": "Generation failed, please retry",
+    "sudoku.invalid_grid": "Invalid board data",
+    "sudoku.conflicting_solution": "Current entries contradict the solution, check first",
+    "sudoku.no_hint": "No hint available"
+  },
+  "brew": {
+    "pause": "Pause",
+    "play": "Resume"
+  },
+  "cell": "Row {{row}}, column {{col}}"
+}
