@@ -1,0 +1,100 @@
+{
+  "name": "Domain Toolbox",
+  "description": "Generate domain candidates, DNS record sets for common scenarios and validate SPF/DMARC records.",
+  "api": {
+    "candidates": {
+      "summary": "Generate candidate domains from brand words and TLDs",
+      "brands": "Brand words (comma separated, 1-8)",
+      "tlds": "TLD list (comma separated, optional)",
+      "hyphens": "Generate hyphen variants"
+    },
+    "dns": {
+      "summary": "Generate DNS record sets for website/email/cdn scenarios",
+      "scenario": "Scenario: website / email / cdn",
+      "domain": "Root domain",
+      "ip": "Server IPv4",
+      "target": "CNAME target host",
+      "mailHost": "Mail server host",
+      "dkimSelector": "DKIM selector"
+    },
+    "validate_spf": {
+      "summary": "Validate SPF record syntax and policy strength",
+      "record": "SPF record value"
+    },
+    "validate_dmarc": {
+      "summary": "Validate DMARC tags and policy",
+      "record": "DMARC record value"
+    }
+  },
+  "prices": {
+    "standard": "Standard",
+    "premium": "Premium",
+    "expensive": "Expensive"
+  },
+  "purpose": {
+    "website_a": "Site points to server",
+    "website_www": "www subdomain alias",
+    "cdn_cname": "CDN entry",
+    "email_mx": "Mail exchange",
+    "email_spf": "Sender authorization",
+    "email_dkim": "Signing public key (replace placeholder)",
+    "email_dmarc": "Anti-spoof policy",
+    "email_mx_host": "Mail server address"
+  },
+  "dns_labels": {
+    "type": "Type",
+    "name": "Host",
+    "value": "Value",
+    "ttl": "TTL",
+    "purpose": "Purpose"
+  },
+  "spf": {
+    "valid": "Syntax valid",
+    "issues": "Issues",
+    "policy": "Policy strength",
+    "mechanisms": "Mechanisms",
+    "includes": "Included domains"
+  },
+  "dmarc": {
+    "valid": "Valid",
+    "policy": "Policy",
+    "reports": "Report addresses",
+    "percentage": "Apply percent"
+  },
+  "copy": "Copy",
+  "errors": {
+    "domain.bad_brands": "1-8 brand words of letters/digits/hyphens required",
+    "domain.bad_tlds": "1-20 well-formed TLDs required",
+    "domain.no_candidates": "No candidates generated",
+    "domain.bad_domain": "Invalid domain: {{domain}}",
+    "domain.bad_ip": "Invalid IPv4: {{ip}}",
+    "domain.missing_dns_param": "Missing parameter (server IP or CNAME target)",
+    "domain.unknown_scenario": "Unknown scenario: {{scenario}}",
+    "spf_too_long": "Record exceeds 255 characters",
+    "spf_missing_version": "Missing v=spf1 prefix",
+    "spf_missing_all": "Missing an all qualifier",
+    "spf_bad_include": "Invalid include domain: {{value}}",
+    "spf_bad_redirect": "Invalid redirect domain: {{value}}",
+    "spf_unknown_term": "Unknown mechanism: {{value}}",
+    "dmarc_missing_version": "Missing v=DMARC1 prefix",
+    "dmarc_missing_policy": "Missing p= policy",
+    "dmarc_bad_policy": "Invalid p value: {{value}}",
+    "dmarc_bad_tag": "Invalid tag: {{value}}",
+    "dmarc_unknown_tag": "Unknown tag: {{value}}",
+    "dmarc_bad_pct": "pct must be 0-100: {{value}}",
+    "dmarc_bad_uri": "Invalid report URI: {{value}}"
+  },
+  "tab": {
+    "label": "Mode",
+    "candidates": "Candidates",
+    "dns": "Website / CDN",
+    "email": "Email trio"
+  },
+  "scenario": {
+    "website": "Website",
+    "cdn": "CDN"
+  },
+  "results": {
+    "title": "Results"
+  }
+}

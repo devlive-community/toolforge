@@ -1,0 +1,170 @@
+{
+  "id": "org.devlive.toolforge.domain-toolbox",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "network",
+  "keywords": [
+    "domain",
+    "dns",
+    "spf",
+    "dmarc",
+    "域名",
+    "解析记录",
+    "邮箱"
+  ],
+  "accent": "green",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "candidates": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.candidates.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "brands"
+          ],
+          "properties": {
+            "brands": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "i18n:api.candidates.brands"
+            },
+            "tlds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "i18n:api.candidates.tlds"
+            },
+            "hyphens": {
+              "type": "boolean",
+              "description": "i18n:api.candidates.hyphens"
+            }
+          }
+        },
+        "examples": [
+          "tfp-domain-toolbox candidates acme,acmelabs --tlds com,io,dev --hyphens"
+        ]
+      }
+    },
+    "dns": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.dns.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "scenario",
+            "domain"
+          ],
+          "properties": {
+            "scenario": {
+              "type": "string",
+              "description": "i18n:api.dns.scenario",
+              "x-positional": 0
+            },
+            "domain": {
+              "type": "string",
+              "description": "i18n:api.dns.domain",
+              "x-positional": 1
+            },
+            "ip": {
+              "type": "string",
+              "description": "i18n:api.dns.ip"
+            },
+            "target": {
+              "type": "string",
+              "description": "i18n:api.dns.target"
+            },
+            "mailHost": {
+              "type": "string",
+              "description": "i18n:api.dns.mailHost"
+            },
+            "dkimSelector": {
+              "type": "string",
+              "description": "i18n:api.dns.dkimSelector"
+            }
+          }
+        },
+        "examples": [
+          "tfp-domain-toolbox dns website acme.com --ip 1.2.3.4",
+          "tfp-domain-toolbox dns email acme.com"
+        ]
+      }
+    },
+    "validate_spf": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.validate_spf.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "record"
+          ],
+          "properties": {
+            "record": {
+              "type": "string",
+              "description": "i18n:api.validate_spf.record",
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "tfp-domain-toolbox validate-spf \"v=spf1 include:_spf.acme.com -all\""
+        ]
+      }
+    },
+    "validate_dmarc": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.validate_dmarc.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "record"
+          ],
+          "properties": {
+            "record": {
+              "type": "string",
+              "description": "i18n:api.validate_dmarc.record",
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "tfp-domain-toolbox validate-dmarc \"v=DMARC1; p=quarantine; rua=mailto:d@acme.com\""
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

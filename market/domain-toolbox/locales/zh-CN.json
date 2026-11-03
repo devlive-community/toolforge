@@ -1,0 +1,100 @@
+{
+  "name": "域名工具箱",
+  "description": "域名候选批量生成、常见场景 DNS 记录配置生成与 SPF/DMARC 记录校验。",
+  "api": {
+    "candidates": {
+      "summary": "按品牌词与 TLD 批量生成候选域名（含变体与价位分组）",
+      "brands": "品牌词（逗号分隔，1-8 个）",
+      "tlds": "TLD 列表（逗号分隔，可选）",
+      "hyphens": "是否生成连字符变体"
+    },
+    "dns": {
+      "summary": "生成常见场景的 DNS 记录配置（网站/邮件/CDN）",
+      "scenario": "场景：website / email / cdn",
+      "domain": "根域名",
+      "ip": "服务器 IPv4",
+      "target": "目标主机（CNAME）",
+      "mailHost": "邮件服务器主机",
+      "dkimSelector": "DKIM 选择器"
+    },
+    "validate_spf": {
+      "summary": "校验 SPF 记录语法与策略强度",
+      "record": "SPF 记录值"
+    },
+    "validate_dmarc": {
+      "summary": "校验 DMARC 记录标签与策略",
+      "record": "DMARC 记录值"
+    }
+  },
+  "prices": {
+    "standard": "常规价位",
+    "premium": "较高价位",
+    "expensive": "高价"
+  },
+  "purpose": {
+    "website_a": "网站指向服务器",
+    "website_www": "www 子域跳转",
+    "cdn_cname": "CDN 接入",
+    "email_mx": "邮件交换",
+    "email_spf": "发件授权",
+    "email_dkim": "签名公钥（替换占位公钥）",
+    "email_dmarc": "反垃圾策略",
+    "email_mx_host": "邮件服务器地址"
+  },
+  "dns_labels": {
+    "type": "类型",
+    "name": "主机记录",
+    "value": "记录值",
+    "ttl": "TTL",
+    "purpose": "用途"
+  },
+  "spf": {
+    "valid": "语法有效",
+    "issues": "问题",
+    "policy": "策略强度",
+    "mechanisms": "机制",
+    "includes": "引用域"
+  },
+  "dmarc": {
+    "valid": "有效",
+    "policy": "策略",
+    "reports": "报告地址",
+    "percentage": "应用比例"
+  },
+  "copy": "复制",
+  "errors": {
+    "domain.bad_brands": "品牌词需要 1–8 个且仅含字母数字连字符",
+    "domain.bad_tlds": "TLD 需要 1–20 个且格式正确",
+    "domain.no_candidates": "没有生成任何候选域名",
+    "domain.bad_domain": "域名格式无效：{{domain}}",
+    "domain.bad_ip": "IPv4 地址无效：{{ip}}",
+    "domain.missing_dns_param": "缺少参数（服务器 IP 或目标主机）",
+    "domain.unknown_scenario": "未知场景：{{scenario}",
+    "spf_too_long": "记录超过 255 字符",
+    "spf_missing_version": "缺少 v=spf1 开头",
+    "spf_missing_all": "缺少 all 限定机制",
+    "spf_bad_include": "include 域名无效：{{value}}",
+    "spf_bad_redirect": "redirect 域名无效：{{value}}",
+    "spf_unknown_term": "无法识别的机制：{{value}}",
+    "dmarc_missing_version": "缺少 v=DMARC1 开头",
+    "dmarc_missing_policy": "缺少 p= 策略",
+    "dmarc_bad_policy": "p 值无效：{{value}}",
+    "dmarc_bad_tag": "无效标签：{{value}}",
+    "dmarc_unknown_tag": "未知标签：{{value}}",
+    "dmarc_bad_pct": "pct 应为 0–100：{{value}}",
+    "dmarc_bad_uri": "报告地址无效：{{value}}"
+  },
+  "tab": {
+    "label": "功能",
+    "candidates": "候选生成",
+    "dns": "网站 / CDN",
+    "email": "邮件三件套"
+  },
+  "scenario": {
+    "website": "网站",
+    "cdn": "CDN"
+  },
+  "results": {
+    "title": "结果"
+  }
+}
