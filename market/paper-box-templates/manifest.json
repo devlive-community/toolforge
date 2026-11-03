@@ -1,0 +1,114 @@
+{
+  "id": "org.devlive.toolforge.paper-box-templates",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "other",
+  "keywords": [
+    "box",
+    "envelope",
+    "template",
+    "paper",
+    "纸盒",
+    "信封",
+    "展开图",
+    "手工"
+  ],
+  "accent": "brown",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "box": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.box.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "length",
+            "width",
+            "height"
+          ],
+          "properties": {
+            "length": {
+              "type": "number",
+              "description": "i18n:api.box.length"
+            },
+            "width": {
+              "type": "number",
+              "description": "i18n:api.box.width"
+            },
+            "height": {
+              "type": "number",
+              "description": "i18n:api.box.height"
+            },
+            "glue": {
+              "type": "number",
+              "description": "i18n:api.box.glue"
+            },
+            "tab": {
+              "type": "number",
+              "description": "i18n:api.box.tab"
+            },
+            "paperLong": {
+              "type": "number",
+              "description": "i18n:api.box.paperLong"
+            },
+            "paperShort": {
+              "type": "number",
+              "description": "i18n:api.box.paperShort"
+            }
+          }
+        },
+        "examples": [
+          "tfp-paper-box-templates box 60 40 30"
+        ]
+      }
+    },
+    "envelope": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.envelope.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "cardLength",
+            "cardWidth"
+          ],
+          "properties": {
+            "cardLength": {
+              "type": "number",
+              "description": "i18n:api.envelope.cardLength"
+            },
+            "cardWidth": {
+              "type": "number",
+              "description": "i18n:api.envelope.cardWidth"
+            },
+            "clearance": {
+              "type": "number",
+              "description": "i18n:api.envelope.clearance"
+            }
+          }
+        },
+        "examples": [
+          "tfp-paper-box-templates envelope 120 80"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

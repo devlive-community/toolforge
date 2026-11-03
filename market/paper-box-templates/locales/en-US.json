@@ -1,0 +1,59 @@
+{
+  "name": "Paper Box & Envelope Templates",
+  "description": "Generate cut-and-fold templates for tuck boxes and petal envelopes as SVG with gluing tabs.",
+  "api": {
+    "box": {
+      "summary": "Tuck-end box template",
+      "length": "Inner length (mm)",
+      "width": "Inner width (mm)",
+      "height": "Inner height (mm)",
+      "glue": "Glue tab width (mm)",
+      "tab": "Tuck depth (mm)"
+    },
+    "envelope": {
+      "summary": "Four-petal envelope template",
+      "cardLength": "Card length (mm)",
+      "cardWidth": "Card width (mm)",
+      "clearance": "Clearance (mm)"
+    }
+  },
+  "steps": {
+    "cut": "1. Cut along solid lines",
+    "fold_sides": "2. Fold side panels on dashed lines",
+    "fold_flaps": "3. Fold top and bottom covers",
+    "glue_side": "4. Glue the hatched side tab",
+    "insert_tab": "5. Tuck the flap closed",
+    "fold_center": "2. Fold along the center square",
+    "fold_bottom": "3. Fold the bottom petal",
+    "fold_top": "4. Fold the top petal",
+    "fold_side": "5. Fold the side petals",
+    "tuck": "6. Tuck the last petal in"
+  },
+  "legend": {
+    "cut": "Cut line",
+    "fold": "Fold line",
+    "glue": "Glue area"
+  },
+  "ui": {
+    "fits": "Fits A4: {{fits}}",
+    "fitsYes": "Fits on A4",
+    "fitsNo": "Larger than A4 — reduce size",
+    "sheet": "Sheet {{long}} × {{short}} mm",
+    "export": "Export SVG",
+    "print": "Print",
+    "note": "Print at 100% scale",
+    "params": "Parameters",
+    "preview": "Template preview"
+  },
+  "errors": {
+    "template.positive_required": "Parameter must be positive: {{name}}",
+    "template.bad_tab_glue": "Glue/tab must be 5-40mm",
+    "template.too_large": "Over 500mm",
+    "template.bad_color": "Invalid color: {{color}}"
+  },
+  "tab": {
+    "label": "Template",
+    "box": "Tuck box",
+    "envelope": "Petal envelope"
+  }
+}

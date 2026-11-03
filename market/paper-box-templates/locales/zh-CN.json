@@ -1,0 +1,59 @@
+{
+  "name": "纸盒展开图",
+  "description": "按成品尺寸生成插口纸盒与四瓣信封的展开图 SVG，含粘边、插舌与折叠线图例。",
+  "api": {
+    "box": {
+      "summary": "插口长方纸盒展开图",
+      "length": "内长 (mm)",
+      "width": "内宽 (mm)",
+      "height": "内高 (mm)",
+      "glue": "粘边宽 (mm)",
+      "tab": "插舌深 (mm)"
+    },
+    "envelope": {
+      "summary": "四瓣信封展开图",
+      "cardLength": "卡片长 (mm)",
+      "cardWidth": "卡片宽 (mm)",
+      "clearance": "装入余量 (mm)"
+    }
+  },
+  "steps": {
+    "cut": "1. 沿实线裁切",
+    "fold_sides": "2. 沿虚线折叠侧片",
+    "fold_flaps": "3. 折出上下盖",
+    "glue_side": "4. 粘合侧边（斜线区）",
+    "insert_tab": "5. 插舌闭合",
+    "fold_center": "2. 沿中央矩形折线折",
+    "fold_bottom": "3. 折下瓣",
+    "fold_top": "4. 折上瓣",
+    "fold_side": "5. 折侧瓣",
+    "tuck": "6. 最后一瓣塞入固定"
+  },
+  "legend": {
+    "cut": "裁切线",
+    "fold": "折叠线",
+    "glue": "粘贴区"
+  },
+  "ui": {
+    "fits": "适配 A4：{{fits}}",
+    "fitsYes": "可放入 A4",
+    "fitsNo": "超出 A4，请缩小尺寸",
+    "sheet": "展开图 {{long}} × {{short}} mm",
+    "export": "导出 SVG",
+    "print": "打印",
+    "note": "打印时选择 100% 实际大小",
+    "params": "尺寸参数",
+    "preview": "展开图预览"
+  },
+  "errors": {
+    "template.positive_required": "参数必须为正数：{{name}}",
+    "template.bad_tab_glue": "粘边与插舌需在 5–40mm",
+    "template.too_large": "尺寸超过 500mm",
+    "template.bad_color": "颜色无效：{{color}}"
+  },
+  "tab": {
+    "label": "模板",
+    "box": "插口纸盒",
+    "envelope": "四瓣信封"
+  }
+}
