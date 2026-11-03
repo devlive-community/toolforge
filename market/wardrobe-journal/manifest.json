@@ -1,0 +1,123 @@
+{
+  "id": "org.devlive.toolforge.wardrobe-journal",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "life",
+  "keywords": [
+    "wardrobe",
+    "outfit",
+    "clothes",
+    "衣橱",
+    "穿搭",
+    "手账"
+  ],
+  "accent": "pink",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "suggest": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.suggest.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "items",
+            "outfits"
+          ],
+          "properties": {
+            "items": {
+              "type": "array",
+              "description": "i18n:api.suggest.items",
+              "default": [
+                {
+                  "id": "t1",
+                  "name": "白衬衫",
+                  "category": "top"
+                }
+              ]
+            },
+            "outfits": {
+              "type": "array",
+              "description": "i18n:api.suggest.outfits",
+              "default": [
+                {
+                  "id": "o1",
+                  "name": "通勤",
+                  "itemIds": [
+                    "t1"
+                  ]
+                }
+              ]
+            },
+            "season": {
+              "type": "string",
+              "description": "i18n:api.suggest.season"
+            }
+          }
+        },
+        "examples": []
+      }
+    },
+    "stats": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.stats.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "items",
+            "outfits"
+          ],
+          "properties": {
+            "items": {
+              "type": "array",
+              "description": "i18n:api.stats.items",
+              "default": [
+                {
+                  "id": "t1",
+                  "name": "白衬衫",
+                  "category": "top"
+                }
+              ]
+            },
+            "outfits": {
+              "type": "array",
+              "description": "i18n:api.stats.outfits",
+              "default": [
+                {
+                  "id": "o1",
+                  "name": "通勤",
+                  "itemIds": [
+                    "t1"
+                  ]
+                }
+              ]
+            },
+            "wearLog": {
+              "type": "string",
+              "description": "i18n:api.stats.wearLog"
+            }
+          }
+        },
+        "examples": []
+      }
+    }
+  },
+  "sensitive": false
+}

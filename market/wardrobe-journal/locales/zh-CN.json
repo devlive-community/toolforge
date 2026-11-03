@@ -1,0 +1,53 @@
+{
+  "name": "衣橱穿搭手账",
+  "description": "衣橱单品卡、穿搭组合与穿着历史：状态筛选、搭配建议与本地备份导出。",
+  "api": {
+    "suggest": {
+      "summary": "按季节给出搭配建议并标记待洗",
+      "items": "衣物数组",
+      "outfits": "搭配数组",
+      "season": "季节（可空）"
+    },
+    "stats": {
+      "summary": "单品穿着统计",
+      "items": "衣物数组",
+      "outfits": "搭配数组",
+      "wearLog": "搭配穿着次数"
+    }
+  },
+  "categories": {
+    "top": "上衣",
+    "bottom": "下装",
+    "shoes": "鞋",
+    "outer": "外套",
+    "accessory": "配饰"
+  },
+  "states": {
+    "clean": "可穿",
+    "dirty": "待洗"
+  },
+  "seasons": {
+    "all": "四季",
+    "spring": "春",
+    "summer": "夏",
+    "autumn": "秋",
+    "winter": "冬"
+  },
+  "ui": {
+    "name": "名称",
+    "category": "类别",
+    "add": "添加单品",
+    "outfits": "我的搭配",
+    "suggest": "今天穿什么",
+    "ready": "可穿",
+    "hasDirty": "含待洗",
+    "statsTitle": "穿着统计",
+    "wear": "{{count}} 次",
+    "items": "衣物",
+    "empty": "先添加一件衣物"
+  },
+  "errors": {
+    "wardrobe.no_outfits": "还没有搭配",
+    "wardrobe.no_match": "没有符合季节的搭配"
+  }
+}

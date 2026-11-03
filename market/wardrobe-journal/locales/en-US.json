@@ -1,0 +1,53 @@
+{
+  "name": "Wardrobe & Outfit Journal",
+  "description": "Wardrobe items, outfit combos and wear history with filters and local backup export.",
+  "api": {
+    "suggest": {
+      "summary": "Season-aware outfit suggestions with laundry flags",
+      "items": "Items array",
+      "outfits": "Outfits array",
+      "season": "Season (optional)"
+    },
+    "stats": {
+      "summary": "Per-item wear statistics",
+      "items": "Items array",
+      "outfits": "Outfits array",
+      "wearLog": "Wear counts per outfit"
+    }
+  },
+  "categories": {
+    "top": "Top",
+    "bottom": "Bottom",
+    "shoes": "Shoes",
+    "outer": "Outerwear",
+    "accessory": "Accessory"
+  },
+  "states": {
+    "clean": "Ready",
+    "dirty": "Laundry"
+  },
+  "seasons": {
+    "all": "All",
+    "spring": "Spring",
+    "summer": "Summer",
+    "autumn": "Autumn",
+    "winter": "Winter"
+  },
+  "ui": {
+    "name": "Name",
+    "category": "Category",
+    "add": "Add item",
+    "outfits": "My outfits",
+    "suggest": "What to wear",
+    "ready": "Ready",
+    "hasDirty": "Has laundry",
+    "statsTitle": "Wear stats",
+    "wear": "{{count}} wears",
+    "items": "Items",
+    "empty": "Add an item first"
+  },
+  "errors": {
+    "wardrobe.no_outfits": "No outfits yet",
+    "wardrobe.no_match": "No outfits match the season"
+  }
+}
