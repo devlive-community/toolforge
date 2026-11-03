@@ -1,0 +1,56 @@
+{
+  "id": "org.devlive.toolforge.dev-directory",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": [
+    "directory",
+    "docs",
+    "tools",
+    "navigation",
+    "导航",
+    "开发者",
+    "站点"
+  ],
+  "accent": "cyan",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "list": {
+      "history": false,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.list.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "i18n:api.list.query",
+              "x-positional": 0
+            },
+            "category": {
+              "type": "string",
+              "description": "i18n:api.list.category"
+            }
+          }
+        },
+        "examples": [
+          "tfp-dev-directory list",
+          "tfp-dev-directory list regex",
+          "tfp-dev-directory list --category docs"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

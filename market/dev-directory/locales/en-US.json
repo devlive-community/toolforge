@@ -1,0 +1,36 @@
+{
+  "name": "Dev Directory",
+  "description": "Curated offline directory of developer sites: docs, tools, resources and learning, searchable and extensible.",
+  "api": {
+    "list": {
+      "summary": "List curated sites, filter by name/description/URL",
+      "query": "Keyword (optional)",
+      "category": "Category filter"
+    }
+  },
+  "categories": {
+    "docs": "Docs",
+    "tools": "Tools",
+    "assets": "Assets",
+    "learn": "Learning",
+    "platform": "Community",
+    "all": "All"
+  },
+  "open": "Open",
+  "custom": {
+    "title": "Custom sites",
+    "add": "Add",
+    "name": "Name",
+    "url": "URL",
+    "category": "Category",
+    "empty": "No custom sites yet",
+    "saved": "Saved locally",
+    "delete": "Delete"
+  },
+  "errors": {
+    "directory.not_found": "No matching sites"
+  },
+  "results": {
+    "title": "Sites"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "开发者导航",
+  "description": "离线内置的开发者站点精选导航：文档、工具、资源与学习站，可搜索并自定义补充。",
+  "api": {
+    "list": {
+      "summary": "列出精选站点，按名称/说明/URL 过滤",
+      "query": "关键词（可选）",
+      "category": "分类过滤"
+    }
+  },
+  "categories": {
+    "docs": "开发文档",
+    "tools": "在线工具",
+    "assets": "素材资源",
+    "learn": "学习资源",
+    "platform": "社区平台",
+    "all": "全部分类"
+  },
+  "open": "打开",
+  "custom": {
+    "title": "自定义站点",
+    "add": "添加",
+    "name": "名称",
+    "url": "网址",
+    "category": "分类",
+    "empty": "还没有自定义站点",
+    "saved": "已保存到本机",
+    "delete": "删除"
+  },
+  "errors": {
+    "directory.not_found": "没有匹配的站点"
+  },
+  "results": {
+    "title": "站点"
+  }
+}
