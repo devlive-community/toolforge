@@ -1,0 +1,35 @@
+{
+  "name": "Dockerfile Lint",
+  "description": "Static Dockerfile checks: latest tags, root user, ADD misuse, apt cache and HEALTHCHECK rules.",
+  "api": {
+    "lint": {
+      "summary": "Static Dockerfile checks",
+      "content": "Dockerfile content"
+    }
+  },
+  "rules": {
+    "pin_tag": "Image tag not pinned",
+    "use_copy": "Use COPY instead of ADD",
+    "no_root": "Runs as root",
+    "apt_no_install_recommends": "apt-get should use --no-install-recommends",
+    "apt_cache_cleanup": "apt cache not cleaned",
+    "no_healthcheck": "Missing HEALTHCHECK"
+  },
+  "severity": {
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info"
+  },
+  "ui": {
+    "line": "Line {{line}}",
+    "fix": "Suggested fix",
+    "issues": "{{count}} issues",
+    "clean": "No issues found",
+    "input": "Paste Dockerfile",
+    "stages": "{{count}} build stages"
+  },
+  "errors": {
+    "dockerfile.empty": "Enter Dockerfile content",
+    "dockerfile.too_large": "Content over 512KB"
+  }
+}

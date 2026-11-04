@@ -1,0 +1,52 @@
+{
+  "id": "org.devlive.toolforge.dockerfile-lint",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": [
+    "dockerfile",
+    "lint",
+    "docker",
+    "容器",
+    "检查"
+  ],
+  "accent": "sky",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "lint": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.lint.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "content"
+          ],
+          "properties": {
+            "content": {
+              "type": "string",
+              "description": "i18n:api.lint.content",
+              "x-stdin": true,
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "cat Dockerfile | tfp-dockerfile-lint lint"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

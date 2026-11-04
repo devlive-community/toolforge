@@ -1,0 +1,35 @@
+{
+  "name": "Dockerfile 检查器",
+  "description": "Dockerfile 静态检查：latest 标签、root 运行、ADD 误用、apt 缓存与 HEALTHCHECK 缺失等规则。",
+  "api": {
+    "lint": {
+      "summary": "Dockerfile 静态检查",
+      "content": "Dockerfile 内容"
+    }
+  },
+  "rules": {
+    "pin_tag": "镜像未固定版本标签",
+    "use_copy": "用 COPY 代替 ADD",
+    "no_root": "以 root 运行",
+    "apt_no_install_recommends": "apt-get 建议加 --no-install-recommends",
+    "apt_cache_cleanup": "apt 缓存未清理",
+    "no_healthcheck": "缺少 HEALTHCHECK"
+  },
+  "severity": {
+    "error": "错误",
+    "warning": "警告",
+    "info": "提示"
+  },
+  "ui": {
+    "line": "第 {{line}} 行",
+    "fix": "修复示例",
+    "issues": "{{count}} 个问题",
+    "clean": "未发现问题",
+    "input": "粘贴 Dockerfile",
+    "stages": "{{count}} 个构建阶段"
+  },
+  "errors": {
+    "dockerfile.empty": "请输入 Dockerfile 内容",
+    "dockerfile.too_large": "内容超过 512KB"
+  }
+}
