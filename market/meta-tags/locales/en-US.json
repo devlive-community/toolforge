@@ -1,0 +1,39 @@
+{
+  "name": "Meta Tags Generator",
+  "description": "Generate the full head block: base meta, Open Graph, Twitter Card and JSON-LD.",
+  "api": {
+    "generate": {
+      "summary": "Generate the page head meta code",
+      "title": "Page title",
+      "description": "Description",
+      "keywords": "Keywords",
+      "author": "Author",
+      "image": "Social card image URL",
+      "url": "Page URL",
+      "ogType": "og:type (website/article/product)",
+      "siteName": "Site name",
+      "twitterCard": "Twitter Card type",
+      "locale": "Locale (e.g. en_US)",
+      "jsonLd": "JSON-LD preset (none/website/article)"
+    }
+  },
+  "warnings": {
+    "title_too_long": "Title over 60 chars ({{actual}})",
+    "description_too_long": "Description over 160 chars ({{actual}})"
+  },
+  "ui": {
+    "gen": "Generate",
+    "copy": "Copy code",
+    "head": "Head code",
+    "warnings": "Length warnings",
+    "preview": "Search result preview",
+    "titleLen": "{{count}}/60"
+  },
+  "errors": {
+    "meta.empty_title": "Title cannot be empty",
+    "meta.title_too_long": "Title too long",
+    "meta.bad_og_type": "Invalid og:type: {{type}}",
+    "meta.bad_card": "Invalid Twitter Card: {{card}}",
+    "meta.bad_jsonld": "Invalid JSON-LD preset: {{kind}}"
+  }
+}

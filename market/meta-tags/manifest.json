@@ -1,0 +1,93 @@
+{
+  "id": "org.devlive.toolforge.meta-tags",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": [
+    "meta",
+    "seo",
+    "open graph",
+    "元信息",
+    "标签",
+    "og"
+  ],
+  "accent": "pink",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "generate": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.generate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "title"
+          ],
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "i18n:api.generate.title",
+              "x-positional": 0
+            },
+            "description": {
+              "type": "string",
+              "description": "i18n:api.generate.description",
+              "default": "A demo page"
+            },
+            "keywords": {
+              "type": "string",
+              "description": "i18n:api.generate.keywords"
+            },
+            "author": {
+              "type": "string",
+              "description": "i18n:api.generate.author"
+            },
+            "image": {
+              "type": "string",
+              "description": "i18n:api.generate.image"
+            },
+            "url": {
+              "type": "string",
+              "description": "i18n:api.generate.url"
+            },
+            "ogType": {
+              "type": "string",
+              "description": "i18n:api.generate.ogType"
+            },
+            "siteName": {
+              "type": "string",
+              "description": "i18n:api.generate.siteName"
+            },
+            "twitterCard": {
+              "type": "string",
+              "description": "i18n:api.generate.twitterCard"
+            },
+            "locale": {
+              "type": "string",
+              "description": "i18n:api.generate.locale"
+            },
+            "jsonLd": {
+              "type": "string",
+              "description": "i18n:api.generate.jsonLd"
+            }
+          }
+        },
+        "examples": [
+          "tfp-meta-tags generate 'Demo' --jsonLd website"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

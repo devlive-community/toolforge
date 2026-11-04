@@ -1,0 +1,39 @@
+{
+  "name": "Meta 标签生成器",
+  "description": "生成页面 head 元信息整套代码：基础 meta、Open Graph、Twitter Card 与 JSON-LD。",
+  "api": {
+    "generate": {
+      "summary": "生成页面 head 元信息代码",
+      "title": "页面标题",
+      "description": "描述",
+      "keywords": "关键词",
+      "author": "作者",
+      "image": "社交卡片图片 URL",
+      "url": "页面 URL",
+      "ogType": "og:type（website/article/product）",
+      "siteName": "站点名",
+      "twitterCard": "Twitter Card 类型",
+      "locale": "语言（如 zh_CN）",
+      "jsonLd": "JSON-LD 预设（none/website/article）"
+    }
+  },
+  "warnings": {
+    "title_too_long": "标题超过 60 字符（{{actual}}）",
+    "description_too_long": "描述超过 160 字符（{{actual}}）"
+  },
+  "ui": {
+    "gen": "生成",
+    "copy": "复制代码",
+    "head": "head 代码",
+    "warnings": "长度告警",
+    "preview": "搜索结果预览",
+    "titleLen": "{{count}}/60"
+  },
+  "errors": {
+    "meta.empty_title": "标题不能为空",
+    "meta.title_too_long": "标题过长",
+    "meta.bad_og_type": "og:type 无效：{{type}}",
+    "meta.bad_card": "Twitter Card 无效：{{card}}",
+    "meta.bad_jsonld": "JSON-LD 预设无效：{{kind}}"
+  }
+}
