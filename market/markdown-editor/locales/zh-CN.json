@@ -105,6 +105,12 @@
       "source": "Markdown 源文本",
       "accent": "主题色（默认 #07c160）",
       "fontSize": "正文字号 px（14–20）"
+    },
+    "toc": {
+      "summary": "生成目录 Markdown 并校验文内锚点链接",
+      "source": "Markdown 源文本",
+      "maxDepth": "目录深度 1–6（默认 3）",
+      "linked": "目录项是否带链接（默认 true）"
     }
   },
   "styled": {
@@ -112,5 +118,13 @@
     "copy": "复制 HTML",
     "copied": "已复制，去平台编辑器粘贴",
     "hint": "样式全部内联，粘贴到公众号/知乎编辑器后保留排版。"
+  },
+  "tocPanel": {
+    "title": "目录（{{count}} 项）",
+    "copy": "复制目录",
+    "anchors": "锚点校验",
+    "anchorsOk": "全部锚点有效",
+    "anchorsBad": "{{count}} 个失效锚点",
+    "empty": "没有标题"
   }
 }

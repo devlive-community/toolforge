@@ -1,6 +1,6 @@
 {
   "id": "org.devlive.toolforge.markdown-editor",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "name": "i18n:name",
   "description": "i18n:description",
   "category": "text",
@@ -125,6 +125,42 @@
         },
         "examples": [
           "cat post.md | tfp-markdown-editor export-styled --accent '#07c160'"
+        ]
+      }
+    },
+    "toc": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.toc.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "source"
+          ],
+          "properties": {
+            "source": {
+              "type": "string",
+              "description": "i18n:api.toc.source",
+              "x-positional": 0,
+              "x-stdin": true
+            },
+            "maxDepth": {
+              "type": "integer",
+              "description": "i18n:api.toc.maxDepth"
+            },
+            "linked": {
+              "type": "boolean",
+              "description": "i18n:api.toc.linked"
+            }
+          }
+        },
+        "examples": [
+          "cat doc.md | tfp-markdown-editor toc --maxDepth 3"
         ]
       }
     }

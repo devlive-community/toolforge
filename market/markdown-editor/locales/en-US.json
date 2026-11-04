@@ -105,6 +105,12 @@
       "source": "Markdown source",
       "accent": "Accent color (default #07c160)",
       "fontSize": "Body font px (14-20)"
+    },
+    "toc": {
+      "summary": "Generate a TOC and validate in-document anchors",
+      "source": "Markdown source",
+      "maxDepth": "TOC depth 1-6 (default 3)",
+      "linked": "Whether TOC entries link (default true)"
     }
   },
   "styled": {
@@ -112,5 +118,13 @@
     "copy": "Copy HTML",
     "copied": "Copied — paste into the platform editor",
     "hint": "All styles are inlined so formatting survives pasting into WeChat/Zhihu editors."
+  },
+  "tocPanel": {
+    "title": "Outline ({{count}})",
+    "copy": "Copy TOC",
+    "anchors": "Anchor check",
+    "anchorsOk": "All anchors valid",
+    "anchorsBad": "{{count}} broken anchors",
+    "empty": "No headings"
   }
 }
