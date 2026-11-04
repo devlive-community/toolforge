@@ -1,0 +1,63 @@
+{
+  "id": "org.devlive.toolforge.redirect-map",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": [
+    "redirect",
+    "301",
+    "nginx",
+    "apache",
+    "重定向",
+    "映射"
+  ],
+  "accent": "yellow",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "generate": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.generate.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "mappings",
+            "format"
+          ],
+          "properties": {
+            "mappings": {
+              "type": "array",
+              "description": "i18n:api.generate.mappings",
+              "default": [
+                [
+                  "/old",
+                  "/new"
+                ]
+              ]
+            },
+            "format": {
+              "type": "string",
+              "description": "i18n:api.generate.format",
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "tfp-redirect-map generate nginx --mappings '/old:/new'"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

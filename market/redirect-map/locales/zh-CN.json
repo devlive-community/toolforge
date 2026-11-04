@@ -1,0 +1,26 @@
+{
+  "name": "重定向映射生成器",
+  "description": "旧→新 URL 映射批量生成 Nginx/Apache/Cloudflare 301 规则，含链式展平与环路检测。",
+  "api": {
+    "generate": {
+      "summary": "生成 301 重定向规则（链式展平 + 环路检测）",
+      "mappings": "旧→新映射数组",
+      "format": "nginx / apache / cloudflare"
+    }
+  },
+  "ui": {
+    "mappings": "映射（每行 旧路径:新路径）",
+    "gen": "生成规则",
+    "rules": "规则",
+    "flattened": "链式展平 {{count}} 条",
+    "cycles": "环路（未生成）",
+    "conflicts": "重复映射（取首个）",
+    "copy": "复制"
+  },
+  "errors": {
+    "redirect.bad_format": "格式只支持 nginx/apache/cloudflare：{{format}}",
+    "redirect.no_mappings": "请提供映射",
+    "redirect.too_many": "映射超过 5000 条",
+    "redirect.empty_mapping": "映射不能为空"
+  }
+}

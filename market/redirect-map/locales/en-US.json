@@ -1,0 +1,26 @@
+{
+  "name": "Redirect Map Generator",
+  "description": "Generate Nginx/Apache/Cloudflare 301 rules from URL maps with chain flattening and cycle detection.",
+  "api": {
+    "generate": {
+      "summary": "Generate 301 redirect rules (chain flattening + cycle detection)",
+      "mappings": "Old→new mappings array",
+      "format": "nginx / apache / cloudflare"
+    }
+  },
+  "ui": {
+    "mappings": "Mappings (one per line old:new)",
+    "gen": "Generate rules",
+    "rules": "Rules",
+    "flattened": "{{count}} chains flattened",
+    "cycles": "Cycles (no rules)",
+    "conflicts": "Duplicate mappings (first wins)",
+    "copy": "Copy"
+  },
+  "errors": {
+    "redirect.bad_format": "Format must be nginx/apache/cloudflare: {{format}}",
+    "redirect.no_mappings": "Provide mappings",
+    "redirect.too_many": "Over 5000 mappings",
+    "redirect.empty_mapping": "Mappings cannot be empty"
+  }
+}
