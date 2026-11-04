@@ -1,0 +1,42 @@
+{
+  "name": "元素周期表",
+  "description": "118 元素离线查询：中英文名/原子量/电子排布/分类着色与摩尔质量计算。",
+  "api": {
+    "list": {
+      "summary": "查询元素（中英文/符号/序数）",
+      "query": "关键词",
+      "category": "分类过滤"
+    },
+    "molar_mass": {
+      "summary": "化学式摩尔质量（首版不含括号）",
+      "formula": "化学式如 H2O"
+    }
+  },
+  "categories": {
+    "metal": "金属",
+    "nonmetal": "非金属",
+    "metalloid": "类金属",
+    "noble": "稀有气体"
+  },
+  "table": {
+    "number": "序数",
+    "symbol": "符号",
+    "nameZh": "中文名",
+    "nameEn": "英文名",
+    "weight": "原子量",
+    "shells": "电子层"
+  },
+  "molar": {
+    "title": "摩尔质量",
+    "parts": "分解",
+    "count": "×{{count}}",
+    "subtotal": "小计",
+    "unit": "g/mol"
+  },
+  "errors": {
+    "element.not_found": "没有匹配的元素",
+    "element.bad_formula": "化学式格式无效：{{char}}",
+    "element.unknown_symbol": "未知元素符号：{{symbol}}",
+    "element.bad_count": "原子数无效：{{text}}"
+  }
+}

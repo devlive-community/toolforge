@@ -1,0 +1,42 @@
+{
+  "name": "Periodic Table",
+  "description": "All 118 elements offline: names, atomic weights, electron shells, categories and molar mass calculator.",
+  "api": {
+    "list": {
+      "summary": "Look up elements (names/symbol/number)",
+      "query": "Keyword",
+      "category": "Category filter"
+    },
+    "molar_mass": {
+      "summary": "Molar mass of a formula (no parentheses in v1)",
+      "formula": "Formula like H2O"
+    }
+  },
+  "categories": {
+    "metal": "Metal",
+    "nonmetal": "Nonmetal",
+    "metalloid": "Metalloid",
+    "noble": "Noble gas"
+  },
+  "table": {
+    "number": "No.",
+    "symbol": "Symbol",
+    "nameZh": "Chinese",
+    "nameEn": "English",
+    "weight": "Atomic weight",
+    "shells": "Shells"
+  },
+  "molar": {
+    "title": "Molar mass",
+    "parts": "Breakdown",
+    "count": "×{{count}}",
+    "subtotal": "Subtotal",
+    "unit": "g/mol"
+  },
+  "errors": {
+    "element.not_found": "No matching elements",
+    "element.bad_formula": "Invalid formula: {{char}}",
+    "element.unknown_symbol": "Unknown element symbol: {{symbol}}",
+    "element.bad_count": "Invalid atom count: {{text}}"
+  }
+}

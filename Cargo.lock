@@ -7303,6 +7303,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "serde_yaml"
+version = "0.9.34+deprecated"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a8b1a1a2ebf674015cc02edccce75287f1a0130d394307b36743c2f5d504b47"
+dependencies = [
+ "indexmap 2.14.2",
+ "itoa",
+ "ryu",
+ "serde",
+ "unsafe-libyaml",
+]
+
+[[package]]
 name = "serde_yaml_ng"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8852,6 +8865,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-dockerfile-lint"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-domain-toolbox"
 version = "0.1.0"
 dependencies = [
@@ -9298,6 +9321,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-kinship-calculator"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-knitting"
 version = "0.1.0"
 dependencies = [
@@ -9374,6 +9407,16 @@ name = "tfm-meme-composer"
 version = "0.1.0"
 dependencies = [
  "image",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-meta-tags"
+version = "0.1.0"
+dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -9519,6 +9562,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-periodic-table"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-pg-plan-analyzer"
 version = "0.1.0"
 dependencies = [
@@ -9545,6 +9598,16 @@ dependencies = [
  "data-encoding",
  "image",
  "jiff",
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-postal-lookup"
+version = "0.1.0"
+dependencies = [
  "serde",
  "serde_json",
  "tf-plugin-api",
@@ -9621,6 +9684,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-redirect-map"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-regex"
 version = "0.1.0"
 dependencies = [
@@ -9633,6 +9706,16 @@ dependencies = [
 
 [[package]]
 name = "tfm-registry-viewer"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-robots-sitemap"
 version = "0.1.0"
 dependencies = [
  "serde",
@@ -9838,6 +9921,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "tfm-torrent-analyzer"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
 name = "tfm-trace-viewer"
 version = "0.1.0"
 dependencies = [
@@ -9983,6 +10076,17 @@ version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
+ "tf-plugin-api",
+ "tf-plugin-guest",
+]
+
+[[package]]
+name = "tfm-workflow-dag"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "serde_yaml",
  "tf-plugin-api",
  "tf-plugin-guest",
 ]
