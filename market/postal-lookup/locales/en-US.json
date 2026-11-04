@@ -1,0 +1,26 @@
+{
+  "name": "Postal & Area Code Lookup",
+  "description": "Offline lookup of Chinese postal codes and phone area codes, both directions.",
+  "api": {
+    "lookup": {
+      "summary": "Two-way postal code / area code / city lookup",
+      "query": "Postal code, area code or city"
+    }
+  },
+  "table": {
+    "city": "City",
+    "postal": "Postal",
+    "area": "Area code",
+    "admin": "Admin code",
+    "matched": "Matched by"
+  },
+  "matched": {
+    "city": "city name",
+    "postal": "postal code",
+    "area": "area code"
+  },
+  "errors": {
+    "postal.empty_query": "Enter a query",
+    "postal.not_found": "No matching city: {{query}}"
+  }
+}

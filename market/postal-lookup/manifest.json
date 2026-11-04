@@ -1,0 +1,53 @@
+{
+  "id": "org.devlive.toolforge.postal-lookup",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": [
+    "postal",
+    "area code",
+    "zip",
+    "邮编",
+    "区号",
+    "查询"
+  ],
+  "accent": "green",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "lookup": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.lookup.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "query"
+          ],
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "i18n:api.lookup.query",
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "tfp-postal-lookup lookup 北京",
+          "tfp-postal-lookup lookup 028"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

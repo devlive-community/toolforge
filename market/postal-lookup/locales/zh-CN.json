@@ -1,0 +1,26 @@
+{
+  "name": "邮编区号查询",
+  "description": "中国主要城市邮编与电话区号的离线双向查询。",
+  "api": {
+    "lookup": {
+      "summary": "邮编/区号/城市双向查询",
+      "query": "邮编、区号或城市名"
+    }
+  },
+  "table": {
+    "city": "城市",
+    "postal": "邮编",
+    "area": "区号",
+    "admin": "区划码",
+    "matched": "命中"
+  },
+  "matched": {
+    "city": "城市名",
+    "postal": "邮编",
+    "area": "区号"
+  },
+  "errors": {
+    "postal.empty_query": "请输入查询内容",
+    "postal.not_found": "没有匹配的城市：{{query}}"
+  }
+}
