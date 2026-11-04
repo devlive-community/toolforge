@@ -1,0 +1,112 @@
+{
+  "id": "org.devlive.toolforge.robots-sitemap",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": [
+    "robots",
+    "sitemap",
+    "seo",
+    "爬虫",
+    "站点地图",
+    "生成"
+  ],
+  "accent": "teal",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "robots": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.robots.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "groups"
+          ],
+          "properties": {
+            "groups": {
+              "type": "array",
+              "description": "i18n:api.robots.groups",
+              "default": [
+                {
+                  "userAgent": "*",
+                  "rules": [
+                    "disallow:/admin"
+                  ],
+                  "crawlDelay": 10
+                }
+              ]
+            },
+            "sitemaps": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "i18n:api.robots.sitemaps"
+            }
+          }
+        },
+        "examples": [
+          "tfp-robots-sitemap robots"
+        ]
+      }
+    },
+    "sitemap": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.sitemap.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "urls"
+          ],
+          "properties": {
+            "urls": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "i18n:api.sitemap.urls",
+              "default": [
+                "https://example.com/a",
+                "https://example.com/b"
+              ]
+            },
+            "lastmod": {
+              "type": "string",
+              "description": "i18n:api.sitemap.lastmod"
+            },
+            "changefreq": {
+              "type": "string",
+              "description": "i18n:api.sitemap.changefreq"
+            },
+            "priority": {
+              "type": "number",
+              "description": "i18n:api.sitemap.priority"
+            }
+          }
+        },
+        "examples": [
+          "tfp-robots-sitemap sitemap --urls https://a.com,https://b.com --changefreq weekly"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

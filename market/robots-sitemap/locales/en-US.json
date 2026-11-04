@@ -1,0 +1,38 @@
+{
+  "name": "robots & sitemap Generator",
+  "description": "Generate robots.txt and sitemap.xml with UA rules, crawler presets, sharding and validation.",
+  "api": {
+    "robots": {
+      "summary": "Generate robots.txt",
+      "groups": "UA rule groups",
+      "sitemaps": "Sitemap URL list"
+    },
+    "sitemap": {
+      "summary": "Generate sitemap.xml (sharded, validated)",
+      "urls": "URL list",
+      "lastmod": "Last modified date",
+      "changefreq": "Change frequency",
+      "priority": "Priority 0-1"
+    }
+  },
+  "ui": {
+    "robotsTab": "robots.txt",
+    "sitemapTab": "sitemap.xml",
+    "ua": "User-agent",
+    "rulesHint": "Rule format allow:/path or disallow:/path",
+    "delay": "Crawl-delay",
+    "add": "Add",
+    "gen": "Generate",
+    "copy": "Copy",
+    "warnings": "Validation notes"
+  },
+  "errors": {
+    "robots.no_groups": "At least one rule group required",
+    "robots.empty_ua": "User-agent cannot be empty",
+    "robots.bad_rule": "Invalid rule (allow:/disallow: prefix): {{rule}}",
+    "sitemap.no_urls": "Provide a URL list",
+    "sitemap.no_valid_urls": "No valid absolute URLs",
+    "sitemap.bad_changefreq": "Invalid frequency: {{value}}",
+    "sitemap.bad_priority": "Priority must be 0-1: {{value}}"
+  }
+}

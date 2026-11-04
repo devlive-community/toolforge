@@ -1,0 +1,38 @@
+{
+  "name": "robots & sitemap 生成器",
+  "description": "生成 robots.txt 与 sitemap.xml：UA 规则、常见爬虫预设、URL 列表分片与语法校验。",
+  "api": {
+    "robots": {
+      "summary": "生成 robots.txt",
+      "groups": "UA 规则组",
+      "sitemaps": "Sitemap URL 列表"
+    },
+    "sitemap": {
+      "summary": "生成 sitemap.xml（含分片与校验）",
+      "urls": "URL 列表",
+      "lastmod": "最后修改日期",
+      "changefreq": "更新频率",
+      "priority": "优先级 0–1"
+    }
+  },
+  "ui": {
+    "robotsTab": "robots.txt",
+    "sitemapTab": "sitemap.xml",
+    "ua": "User-agent",
+    "rulesHint": "规则格式 allow:/path 或 disallow:/path",
+    "delay": "Crawl-delay",
+    "add": "添加",
+    "gen": "生成",
+    "copy": "复制",
+    "warnings": "校验提示"
+  },
+  "errors": {
+    "robots.no_groups": "至少需要一组规则",
+    "robots.empty_ua": "User-agent 不能为空",
+    "robots.bad_rule": "规则无效（需 allow:/disallow: 前缀）：{{rule}}",
+    "sitemap.no_urls": "请提供 URL 列表",
+    "sitemap.no_valid_urls": "没有合法的绝对 URL",
+    "sitemap.bad_changefreq": "更新频率无效：{{value}}",
+    "sitemap.bad_priority": "优先级需在 0–1：{{value}}"
+  }
+}
