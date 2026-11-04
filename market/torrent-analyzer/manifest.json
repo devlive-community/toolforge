@@ -1,0 +1,54 @@
+{
+  "id": "org.devlive.toolforge.torrent-analyzer",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": [
+    "torrent",
+    "bencode",
+    "magnet",
+    "种子",
+    "磁力",
+    "解析"
+  ],
+  "accent": "purple",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [
+    "fs:user-selected"
+  ],
+  "functions": {
+    "analyze": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.analyze.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "source"
+          ],
+          "properties": {
+            "source": {
+              "type": "string",
+              "description": "i18n:api.analyze.source",
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "tfp-torrent-analyzer analyze file.torrent"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

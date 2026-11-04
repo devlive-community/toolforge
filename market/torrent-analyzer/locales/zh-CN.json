@@ -1,0 +1,39 @@
+{
+  "name": "种子文件分析器",
+  "description": "解析 .torrent 与 magnet 链接的元数据：文件树、infohash、tracker 列表与分块信息。",
+  "api": {
+    "analyze": {
+      "summary": "解析 .torrent 或 magnet 元数据（仅本地，无网络请求）",
+      "source": ".torrent 文件路径或 magnet URI"
+    }
+  },
+  "ui": {
+    "kind": {
+      "torrent": "种子文件",
+      "magnet": "磁力链接"
+    },
+    "name": "名称",
+    "infohash": "Infohash (SHA-1)",
+    "piece": "分块",
+    "pieceValue": "{{length}} KB × {{count}} 块",
+    "total": "总大小",
+    "files": "文件树",
+    "trackers": "Tracker",
+    "comment": "注释",
+    "creator": "创建工具",
+    "pick": "选择 .torrent 文件…",
+    "magnetPlaceholder": "或粘贴 magnet:?xt=urn:btih:…",
+    "analyze": "解析",
+    "privacy": "纯本地解析，零网络请求"
+  },
+  "errors": {
+    "torrent.empty_source": "请提供 .torrent 文件或 magnet 链接",
+    "torrent.too_large": "文件超过 4MB",
+    "torrent.bad_bencode": "bencode 数据损坏",
+    "torrent.no_info": "缺少 info 字典",
+    "torrent.no_pieces": "缺少分块信息",
+    "torrent.trailing_data": "文件尾部有多余数据",
+    "torrent.magnet_no_hash": "magnet 链接缺少 btih 哈希",
+    "torrent.read_failed": "读取失败：{{detail}}"
+  }
+}

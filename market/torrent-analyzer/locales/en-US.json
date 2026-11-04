@@ -1,0 +1,39 @@
+{
+  "name": "Torrent File Analyzer",
+  "description": "Parse .torrent files and magnet URIs: file tree, infohash, trackers and piece info.",
+  "api": {
+    "analyze": {
+      "summary": "Parse .torrent or magnet metadata (local only, no network)",
+      "source": ".torrent file path or magnet URI"
+    }
+  },
+  "ui": {
+    "kind": {
+      "torrent": "Torrent file",
+      "magnet": "Magnet link"
+    },
+    "name": "Name",
+    "infohash": "Infohash (SHA-1)",
+    "piece": "Pieces",
+    "pieceValue": "{{length}} KB × {{count}}",
+    "total": "Total size",
+    "files": "Files",
+    "trackers": "Trackers",
+    "comment": "Comment",
+    "creator": "Created by",
+    "pick": "Choose a .torrent file…",
+    "magnetPlaceholder": "or paste magnet:?xt=urn:btih:…",
+    "analyze": "Analyze",
+    "privacy": "Parsed locally, zero network requests"
+  },
+  "errors": {
+    "torrent.empty_source": "Provide a .torrent file or magnet link",
+    "torrent.too_large": "File over 4MB",
+    "torrent.bad_bencode": "Corrupt bencode data",
+    "torrent.no_info": "Missing info dictionary",
+    "torrent.no_pieces": "Missing piece info",
+    "torrent.trailing_data": "Trailing data after the torrent",
+    "torrent.magnet_no_hash": "Magnet link has no btih hash",
+    "torrent.read_failed": "Read failed: {{detail}}"
+  }
+}
