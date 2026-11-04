@@ -1,0 +1,59 @@
+{
+  "id": "org.devlive.toolforge.kinship-calculator",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": [
+    "kinship",
+    "family",
+    "relatives",
+    "亲戚",
+    "称呼",
+    "春节"
+  ],
+  "accent": "red",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "resolve": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.resolve.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "chain"
+          ],
+          "properties": {
+            "chain": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "i18n:api.resolve.chain",
+              "default": [
+                "f",
+                "ob",
+                "s"
+              ]
+            }
+          }
+        },
+        "examples": [
+          "tfp-kinship-calculator resolve f,ob,s"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

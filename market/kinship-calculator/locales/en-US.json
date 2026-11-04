@@ -1,0 +1,36 @@
+{
+  "name": "Kinship Term Calculator",
+  "description": "Pick a kinship chain step by step and get the Chinese kinship term and self-address.",
+  "api": {
+    "resolve": {
+      "summary": "Kinship chain → term and self-address",
+      "chain": "Steps (f m ob os yb ys h w s d)"
+    }
+  },
+  "ui": {
+    "title": "Kinship calculator",
+    "pick": "Pick the chain",
+    "term": "Term",
+    "self": "Self-address",
+    "chainDesc": "Chain",
+    "steps": {
+      "f": "Father",
+      "m": "Mother",
+      "ob": "Elder brother",
+      "os": "Elder sister",
+      "yb": "Younger brother",
+      "ys": "Younger sister",
+      "h": "Husband",
+      "w": "Wife",
+      "s": "Son",
+      "d": "Daughter"
+    },
+    "reset": "Reset",
+    "empty": "Start picking from \"me\""
+  },
+  "errors": {
+    "kinship.bad_step": "Invalid step: {{step}}",
+    "kinship.empty_chain": "Pick at least one relation",
+    "kinship.unknown_chain": "This chain is not in the term database yet"
+  }
+}

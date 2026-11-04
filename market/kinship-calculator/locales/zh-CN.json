@@ -1,0 +1,36 @@
+{
+  "name": "亲戚称呼计算器",
+  "description": "从「我」逐级点选关系链，即时得到称呼与自称，支持反向查询。",
+  "api": {
+    "resolve": {
+      "summary": "关系链 → 称呼与自称",
+      "chain": "关系步（f父 m母 ob兄 os姐 yb弟 ys妹 h夫 w妻 s子 d女）"
+    }
+  },
+  "ui": {
+    "title": "亲戚称呼计算器",
+    "pick": "点选关系链",
+    "term": "称呼",
+    "self": "自称",
+    "chainDesc": "关系链",
+    "steps": {
+      "f": "爸爸",
+      "m": "妈妈",
+      "ob": "哥哥",
+      "os": "姐姐",
+      "yb": "弟弟",
+      "ys": "妹妹",
+      "h": "丈夫",
+      "w": "妻子",
+      "s": "儿子",
+      "d": "女儿"
+    },
+    "reset": "重新选",
+    "empty": "从「我」开始点选关系"
+  },
+  "errors": {
+    "kinship.bad_step": "无效的关系步：{{step}}",
+    "kinship.empty_chain": "请先选择关系",
+    "kinship.unknown_chain": "暂未收录这条关系链的称呼"
+  }
+}
