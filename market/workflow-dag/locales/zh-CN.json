@@ -1,0 +1,29 @@
+{
+  "name": "Actions 工作流可视化",
+  "description": "解析 GitHub Actions workflow YAML：job 依赖 DAG、循环依赖高亮与 Mermaid 导出。",
+  "api": {
+    "parse": {
+      "summary": "解析 workflow YAML 为 job 依赖 DAG",
+      "yaml": "workflow YAML 文本"
+    }
+  },
+  "ui": {
+    "triggers": "触发",
+    "jobs": "Job（{{count}}）",
+    "steps": "{{count}} 步",
+    "needs": "依赖",
+    "cycles": "循环依赖",
+    "noCycles": "无循环依赖",
+    "mermaid": "Mermaid 导出",
+    "copy": "复制",
+    "level": "层级 {{level}}",
+    "condition": "条件",
+    "input": "粘贴 workflow YAML"
+  },
+  "errors": {
+    "workflow.bad_yaml": "YAML 解析失败：{{detail}}",
+    "workflow.no_jobs": "缺少 jobs 配置",
+    "workflow.too_large": "YAML 超过 512KB",
+    "workflow.too_many_jobs": "job 超过 {{max}}"
+  }
+}

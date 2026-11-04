@@ -1,0 +1,53 @@
+{
+  "id": "org.devlive.toolforge.workflow-dag",
+  "version": "0.1.0",
+  "name": "i18n:name",
+  "description": "i18n:description",
+  "category": "dev",
+  "keywords": [
+    "github actions",
+    "workflow",
+    "dag",
+    "ci",
+    "工作流",
+    "依赖图"
+  ],
+  "accent": "indigo",
+  "locales": [
+    "zh-CN",
+    "en-US"
+  ],
+  "minAppVersion": "0.2.0",
+  "permissions": [],
+  "functions": {
+    "parse": {
+      "history": true,
+      "interface": {
+        "expose": [
+          "cli",
+          "agent"
+        ],
+        "summary": "i18n:api.parse.summary",
+        "effect": "read",
+        "params": {
+          "type": "object",
+          "required": [
+            "yaml"
+          ],
+          "properties": {
+            "yaml": {
+              "type": "string",
+              "description": "i18n:api.parse.yaml",
+              "x-stdin": true,
+              "x-positional": 0
+            }
+          }
+        },
+        "examples": [
+          "cat ci.yml | tfp-workflow-dag parse"
+        ]
+      }
+    }
+  },
+  "sensitive": false
+}

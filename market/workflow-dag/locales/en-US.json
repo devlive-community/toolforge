@@ -1,0 +1,29 @@
+{
+  "name": "Workflow DAG Visualizer",
+  "description": "Parse GitHub Actions workflow YAML into a job DAG with cycle detection and Mermaid export.",
+  "api": {
+    "parse": {
+      "summary": "Parse workflow YAML into a job dependency DAG",
+      "yaml": "Workflow YAML text"
+    }
+  },
+  "ui": {
+    "triggers": "Triggers",
+    "jobs": "Jobs ({{count}})",
+    "steps": "{{count}} steps",
+    "needs": "Needs",
+    "cycles": "Cycles",
+    "noCycles": "No cycles",
+    "mermaid": "Mermaid export",
+    "copy": "Copy",
+    "level": "Level {{level}}",
+    "condition": "Condition",
+    "input": "Paste workflow YAML"
+  },
+  "errors": {
+    "workflow.bad_yaml": "YAML parse failed: {{detail}}",
+    "workflow.no_jobs": "Missing jobs config",
+    "workflow.too_large": "YAML over 512KB",
+    "workflow.too_many_jobs": "Over {{max}} jobs"
+  }
+}
