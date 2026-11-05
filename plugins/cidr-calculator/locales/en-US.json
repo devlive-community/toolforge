@@ -1,0 +1,47 @@
+{
+  "name": "CIDR Calculator",
+  "description": "Calculate IPv4 and IPv6 network details and plan subnets",
+  "help": [
+    "Enter an IPv4 or IPv6 address and prefix, for example 192.168.1.10/24 or 2001:db8::1/64.",
+    "Subnet planning divides the network into equal-sized subnets and displays results in pages.",
+    "IPv4 /31 uses both addresses for point-to-point links; /32 represents one host. IPv6 displays the full address range."
+  ],
+  "input": {
+    "label": "IP CIDR",
+    "calculate": "Calculate",
+    "hint": "Enter an IPv4 or IPv6 address and prefix, such as 192.168.1.10/24 or 2001:db8::1/64"
+  },
+  "empty": "Enter a CIDR to calculate network details",
+  "result": {
+    "title": "Network details",
+    "network": "Network address",
+    "broadcast": "Broadcast / last address",
+    "mask": "Subnet mask",
+    "wildcard": "Wildcard mask",
+    "firstHost": "First usable address",
+    "lastHost": "Last usable address",
+    "addresses": "Total addresses",
+    "usableHosts": "Usable hosts",
+    "hostHint": "/31 counts both addresses for point-to-point links; /32 represents a single host.",
+    "lastAddress": "Last address",
+    "ipv6Hint": "IPv6 has no broadcast address. The range and count include all addresses; actual assignability depends on network configuration."
+  },
+  "plan": {
+    "title": "Subnet planning",
+    "hint": "Divide {{cidr}} into equal subnets. Choose a prefix from /{{prefix}} to /{{max}}.",
+    "prefix": "Target prefix length",
+    "split": "Split network",
+    "count": "{{total}} subnets",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {{page}}",
+    "subnet": "Subnet",
+    "range": "Usable address range",
+    "usableHosts": "Usable hosts"
+  },
+  "errors": {
+    "cidr.invalid": "Enter a valid IPv4 or IPv6 CIDR, such as 192.168.1.10/24 or 2001:db8::1/64.",
+    "cidr.invalid_prefix": "The target prefix must be at least the original prefix and no greater than the address family maximum.",
+    "cidr.invalid_page": "The subnet page is out of range."
+  }
+}

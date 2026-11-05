@@ -1,0 +1,47 @@
+{
+  "name": "CIDR 计算器",
+  "description": "计算 IPv4 和 IPv6 网段信息并规划子网划分",
+  "help": [
+    "输入 IPv4 或 IPv6 地址与前缀长度，例如 192.168.1.10/24 或 2001:db8::1/64。",
+    "子网规划按指定前缀等分网段，结果分页显示。",
+    "IPv4 /31 按点对点链路计算两个可用地址，/32 按单主机计算；IPv6 显示完整地址范围。"
+  ],
+  "input": {
+    "label": "IP CIDR",
+    "calculate": "计算",
+    "hint": "输入 IPv4 或 IPv6 地址和前缀，例如 192.168.1.10/24 或 2001:db8::1/64"
+  },
+  "empty": "输入 CIDR 后开始计算网段信息",
+  "result": {
+    "title": "网段信息",
+    "network": "网络地址",
+    "broadcast": "广播地址 / 末地址",
+    "mask": "子网掩码",
+    "wildcard": "通配符掩码",
+    "firstHost": "首个可用地址",
+    "lastHost": "最后可用地址",
+    "addresses": "地址总数",
+    "usableHosts": "可用主机数",
+    "hostHint": "/31 按点对点链路计算两个可用地址；/32 为单个主机地址。",
+    "lastAddress": "末地址",
+    "ipv6Hint": "IPv6 没有广播地址；范围和数量包含网段内全部地址，实际可分配情况取决于网络配置。"
+  },
+  "plan": {
+    "title": "子网规划",
+    "hint": "将 {{cidr}} 等分为更小的子网，目标前缀须在 /{{prefix}} 至 /{{max}} 之间。",
+    "prefix": "目标前缀长度",
+    "split": "划分子网",
+    "count": "共 {{total}} 个子网",
+    "previous": "上一页",
+    "next": "下一页",
+    "page": "第 {{page}} 页",
+    "subnet": "子网",
+    "range": "可用地址范围",
+    "usableHosts": "可用主机数"
+  },
+  "errors": {
+    "cidr.invalid": "请输入有效的 IPv4 或 IPv6 CIDR，例如 192.168.1.10/24 或 2001:db8::1/64。",
+    "cidr.invalid_prefix": "目标前缀必须大于或等于原网段前缀，且不超过该地址族的最大长度。",
+    "cidr.invalid_page": "子网页码超出范围。"
+  }
+}

@@ -40,6 +40,7 @@ tfp-archive = { path = "plugins/archive/backend" }
 tfp-background-remover = { path = "plugins/background-remover/backend" }
 tfp-barcode = { path = "plugins/barcode/backend" }
 tfp-batch-rename = { path = "plugins/batch-rename/backend" }
+tfp-cidr-calculator = { path = "plugins/cidr-calculator/backend" }
 tfp-certificate = { path = "plugins/certificate/backend" }
 tfp-dns-lookup = { path = "plugins/dns-lookup/backend" }
 tfp-disk-usage = { path = "plugins/disk-usage/backend" }
