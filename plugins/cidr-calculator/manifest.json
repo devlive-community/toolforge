@@ -25,8 +25,13 @@
     "clipboard:write"
   ],
   "functions": {
-    "calculate": {},
-    "split": {}
+    "calculate": {
+      "interface": false
+    },
+    "split": {
+      "interface": false
+    }
   },
-  "sensitive": false
+  "sensitive": false,
+  "minAppVersion": "0.2.5"
 }

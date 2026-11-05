@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Input, Panel } from '@toolforge/ui'
+import { Button, Input, Panel, Select } from '@toolforge/ui'
 import { CopyButton, useLaunchInput, usePlugin } from '@toolforge/plugin-ui-sdk'
 import { Calculator, Network, Search } from 'lucide-react'
 
@@ -56,13 +56,13 @@ export default function CidrCalculator() {
         <Panel icon={<Network />} title={t('plan.title')} bodyClassName="space-y-3 p-3">
           <p className="text-xs text-fg-muted">{t('plan.hint', { cidr: result.cidr, prefix: result.prefix, max: result.version === 4 ? 32 : 128 })}</p>
           <form className="flex flex-wrap items-end gap-2" onSubmit={(e) => { e.preventDefault(); void split() }}>
-            <label className="space-y-1.5"><span className="text-xs font-medium text-fg-muted">{t('plan.prefix')}</span><Input type="number" min={result.prefix} max={result.version === 4 ? 32 : 128} step={1} value={prefix} disabled={planning} onChange={(e) => { setPrefix(e.target.value); setPlan(null); setPlanError(null) }} aria-label={t('plan.prefix')} wrapperClassName="w-32" /></label>
+            <label className="space-y-1.5"><span className="text-xs font-medium text-fg-muted">{t('plan.prefix')}</span><Select value={prefix} disabled={planning} onValueChange={(value) => { setPrefix(value); setPlan(null); setPlanError(null) }} options={Array.from({ length: (result.version === 4 ? 32 : 128) - result.prefix + 1 }, (_, index) => { const value = String(result.prefix + index); return { value, label: `/${value}` } })} aria-label={t('plan.prefix')} className="w-32" /></label>
             <Button type="submit" loading={planning} disabled={!/^\d+$/.test(prefix) || Number(prefix) < result.prefix || Number(prefix) > (result.version === 4 ? 32 : 128)}>{t('plan.split')}</Button>
           </form>
           {planError != null && <p role="alert" className="text-xs text-danger">{errorMessage(planError)}</p>}
           {plan && <>
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-fg-muted"><span>{t('plan.count', { total: BigInt(plan.total).toLocaleString() })}</span><div className="flex items-center gap-2"><Button size="sm" disabled={planning || plan.page === 0} onClick={() => void split(plan.page - 1)}>{t('plan.previous')}</Button><span>{t('plan.page', { page: plan.page + 1 })}</span><Button size="sm" disabled={planning || !plan.hasNext} onClick={() => void split(plan.page + 1)}>{t('plan.next')}</Button></div></div>
-            <div className="overflow-x-auto"><table className="w-full text-left text-xs"><thead className="border-b border-border text-fg-subtle"><tr>{['subnet', 'range', 'usableHosts'].map((key) => <th key={key} className="px-2 py-2 font-medium">{t(`plan.${key}`)}</th>)}</tr></thead><tbody>{plan.subnets.map((subnet) => <tr key={subnet.cidr} className="border-b border-border last:border-0"><td className="px-2 py-2 font-mono text-fg"><div className="flex items-center gap-1">{subnet.cidr}<CopyButton text={subnet.cidr} /></div></td><td className="px-2 py-2 font-mono text-fg-muted">{subnet.firstHost} – {subnet.lastHost}</td><td className="px-2 py-2 tabular-nums text-fg-muted">{BigInt(subnet.usableHosts).toLocaleString()}</td></tr>)}</tbody></table></div>
+            <div className="overflow-x-auto"><table className="w-full text-left text-xs"><thead className="border-b border-border text-fg-subtle"><tr>{['subnet', 'range', 'usableHosts'].map((key) => <th key={key} className="px-2 py-2 font-medium">{t(`plan.${key}`)}</th>)}</tr></thead><tbody>{plan.subnets.map((subnet) => <tr key={subnet.cidr} className="border-b border-border last:border-0"><td className="px-2 py-2 font-mono text-fg"><div className="flex items-center gap-1">{subnet.cidr}<CopyButton text={subnet.cidr} /></div></td><td className="px-2 py-2 font-mono text-fg-muted">{subnet.firstHost}{' – '}{subnet.lastHost}</td><td className="px-2 py-2 tabular-nums text-fg-muted">{BigInt(subnet.usableHosts).toLocaleString()}</td></tr>)}</tbody></table></div>
           </>}
         </Panel>
       </div>}
